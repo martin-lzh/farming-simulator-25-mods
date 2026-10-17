@@ -15,10 +15,14 @@ end
 function APD:onOwnerChanged()
     if self.apdState ~= nil then
         local owner = self:getOwnerFarmId()
-        if self.apdState.ready and self.apdState.ownerFarmId ~= owner then
-            self.apdState.modes = {}
-        end
+        local changed = self.apdState.ready and self.apdState.ownerFarmId ~= owner
         self.apdState.ownerFarmId = owner
+        if changed then
+            self.apdState.modes = {}
+            if self.isServer and self.updatePallets ~= nil then
+                self:updatePallets()
+            end
+        end
     end
 end
 
@@ -203,12 +207,21 @@ function APD.withStoredPalletsHidden(placeable, superFunc, ...)
         end
     end
     local ok, result = pcall(superFunc, placeable, ...)
+    local resume = false
     for fillType, amount in pairs(hidden) do
         pending[fillType] = pending[fillType] + amount
+        -- Ownership or mode can change inside a synchronous native callback.
+        -- Its nested update saw zero stock; retry after the outer mask is gone.
+        if APD.mode(placeable, fillType) == APDDistribution.KEEP and pending[fillType] > 5 then
+            resume = true
+        end
     end
     placeable.apdState.palletDepth = placeable.apdState.palletDepth - 1
     if not ok then
         error(result)
+    end
+    if resume and placeable.apdState.palletDepth == 0 then
+        placeable:updatePallets()
     end
     return result
 end
@@ -234,8 +247,28 @@ function APD.changeMoney(farmId, amount, moneyType)
     local farm = g_farmManager:getFarmById(farmId)
     if farm == nil then return 0 end
     local before = farm:getBalance()
+    -- Farm publishes MONEY_CHANGED synchronously after changing its balance.
+    -- Exclude subscriber effects (loans, repayments, even nested settlements)
+    -- from this transaction, including when a subscriber throws after writing.
+    local center = g_messageCenter
+    local publish = center.publish
+    local ownPublish = rawget(center, "publish")
+    local listenerDelta, publishing = 0, false
+    center.publish = function(messageCenter, messageType, ...)
+        if messageCenter ~= center or messageType ~= MessageType.MONEY_CHANGED
+            or select(1, ...) ~= farmId or publishing then
+            return publish(messageCenter, messageType, ...)
+        end
+        local beforeListeners = farm:getBalance()
+        publishing = true
+        local ok, err = pcall(publish, messageCenter, messageType, ...)
+        publishing = false
+        listenerDelta = listenerDelta + farm:getBalance() - beforeListeners
+        if not ok then error(err, 0) end
+    end
     local ok, err = pcall(g_currentMission.addMoney, g_currentMission, amount, farmId, moneyType, true)
-    local delta = farm:getBalance() - before
+    center.publish = ownPublish
+    local delta = farm:getBalance() - before - listenerDelta
     if not ok then Logging.warning("Animal Product Distribution money callback failed: %s", tostring(err)) end
     return delta
 end

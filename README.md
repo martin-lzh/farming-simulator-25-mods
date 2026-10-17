@@ -4,7 +4,7 @@
 
 Farming Simulator 25 原创 Mod 开发目录。
 
-- [动物产品分配](animal-product-distribution-mod/README.md)：在动物页面为畜舍产品选择储存、出售或分配；0.1.1.0，待游戏内验收。
+- [动物产品分配](animal-product-distribution-mod/README.md)：在动物页面为畜舍产品选择储存、出售或分配；0.1.2.0，待游戏内验收。
 
 每项功能使用独立的 `<feature>-mod/` 目录，确定功能后再创建。
 

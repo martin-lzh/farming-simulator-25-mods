@@ -340,4 +340,221 @@ test("nonfinite prices cannot corrupt balances or stock", function()
         near(source.available(), 100)
     end
 end)
+-- A synchronous notification may make a separate balance change after the
+-- engine books this transaction, then throw. These are distinct ledger entries.
+local function moneyScenario(body)
+    local add, publish, balance = g_currentMission.addMoney, g_messageCenter.publish, g_currentMission.money
+    local ledger = {sales = 0, fees = 0, notifications = 0}
+    g_currentMission.money = 6000
+    g_currentMission.addMoney = function(self, amount, farmId)
+        self.money = self.money + amount
+        if amount > 0 then ledger.sales = ledger.sales + amount else ledger.fees = ledger.fees - amount end
+        g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, self.money)
+    end
+    local notify = function(_, messageType, farmId)
+        if messageType == MessageType.MONEY_CHANGED then
+            ledger.notifications = ledger.notifications + 1
+            if ledger.listener ~= nil then ledger.listener(farmId) end
+        end
+    end
+    g_messageCenter.publish = notify
+    body(ledger)
+    assert(g_messageCenter.publish == notify, "money observer leaked beyond settlement")
+    g_currentMission.addMoney, g_messageCenter.publish, g_currentMission.money = add, publish, balance
+end
+
+test("sale ignores synchronous loan and repayment even when notification throws", function()
+    for _, change in ipairs({-5000, 5000}) do
+        for _, fails in ipairs({false, true}) do
+            moneyScenario(function(ledger)
+                local h = mockHusbandry(); APD.applyMode(h, 7, 1)
+                ledger.listener = function()
+                    g_currentMission.money = g_currentMission.money + change
+                    if fails then error("subscriber failed after separate transaction") end
+                end
+                APD.processHour(h); APD.processHour(h)
+                near(ledger.sales, 180); near(APD.source(h, 7).available(), 0)
+                near(g_currentMission.money, 6000 + 180 + change)
+                assert(ledger.notifications == 1 and not h.apdState.processing)
+            end)
+        end
+    end
+end)
+test("delivery keeps paid goods when a balance subscriber borrows or repays", function()
+    for _, change in ipairs({-5000, 5000}) do
+        for _, fails in ipairs({false, true}) do
+            moneyScenario(function(ledger)
+                local h, storage = mockHusbandry(), mockStorage(0, 2000)
+                h.spec_husbandryPallets.pendingLiters[7] = 1000
+                APD.applyMode(h, 7, 2); receiverList({receiver(storage)})
+                ledger.listener = function()
+                    g_currentMission.money = g_currentMission.money + change
+                    if fails then error("subscriber failed after separate transaction") end
+                end
+                APD.processHour(h); APD.processHour(h)
+                near(ledger.fees, 3.5); near(storage.amount, 1000)
+                near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 6000 - 3.5 + change)
+            end)
+        end
+    end
+end)
+test("nested notifications and another husbandry settlement are counted once", function()
+    moneyScenario(function(ledger)
+        local a, b = mockHusbandry(), mockHusbandry()
+        APD.applyMode(a, 7, 1); APD.applyMode(b, 7, 1)
+        local entered = false
+        ledger.listener = function(farmId)
+            if entered then return end
+            entered = true
+            g_currentMission.money = g_currentMission.money - 5000
+            g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, g_currentMission.money)
+            APD.processHour(b)
+        end
+        APD.processHour(a); APD.processHour(a); APD.processHour(b)
+        near(ledger.sales, 360); near(g_currentMission.money, 6000 + 360 - 5000)
+        near(APD.source(a, 7).available(), 0); near(APD.source(b, 7).available(), 0)
+    end)
+end)
+test("subscriber side effects do not turn a rejected credit into a sale", function()
+    moneyScenario(function(ledger)
+        local h = mockHusbandry(); APD.applyMode(h, 7, 1)
+        local add = g_currentMission.addMoney
+        ledger.listener = function() g_currentMission.money = g_currentMission.money + 5000 end
+        g_currentMission.addMoney = function(_, _, farmId)
+            g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, g_currentMission.money)
+            error("rejected before sale credit")
+        end
+        APD.processHour(h)
+        near(APD.source(h, 7).available(), 100); near(ledger.sales, 0)
+        g_currentMission.addMoney = add
+    end)
+end)
+test("nested other-farm settlement and unrelated events remain isolated", function()
+    local add, publish, getFarm = g_currentMission.addMoney, g_messageCenter.publish, g_farmManager.getFarmById
+    local balances, farms = {[1] = 6000, [2] = 3000}, {}
+    for id = 1, 2 do
+        local farmId = id
+        farms[id] = {getBalance = function() return balances[farmId] end}
+    end
+    g_farmManager.getFarmById = function(_, id) return farms[id] end
+    local nested, custom = 0, 0
+    local notify = function(_, messageType, ...)
+        local farmId = select(1, ...)
+        if messageType == MessageType.MONEY_CHANGED then
+            if farmId == 1 then
+                nested = APD.changeMoney(2, 90, MoneyType.SOLD_PRODUCTS)
+            else
+                balances[2] = balances[2] - 1000
+            end
+        else
+            assert(messageType == "CUSTOM" and select("#", ...) == 3)
+            local a, b, c = ...
+            assert(a == 1 and b == nil and c == "tail")
+            custom = custom + 1
+            return "first", "second"
+        end
+    end
+    g_messageCenter.publish = notify
+    g_currentMission.addMoney = function(_, amount, farmId)
+        balances[farmId] = balances[farmId] + amount
+        local a, b = g_messageCenter:publish("CUSTOM", 1, nil, "tail")
+        assert(a == "first" and b == "second")
+        g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, balances[farmId])
+    end
+    near(APD.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+    near(nested, 90); near(balances[1], 6180); near(balances[2], 2090)
+    assert(custom == 2 and g_messageCenter.publish == notify)
+    g_currentMission.addMoney, g_messageCenter.publish, g_farmManager.getFarmById = add, publish, getFarm
+end)
+test("ownership reset restarts pending pallets once on the ready server", function()
+    for _, server in ipairs({false, true}) do
+        local h, calls = mockHusbandry(), 0
+        h.isServer = server; APD.applyMode(h, 7, 2)
+        h.updatePallets = function(self)
+            calls = calls + 1
+            assert(APD.mode(self, 7) == 0 and self.apdState.ownerFarmId == 2)
+            APD.onOwnerChanged(self) -- Same-owner notification must not recurse.
+        end
+        h.farmId = 2; APD.onOwnerChanged(h); APD.onOwnerChanged(h)
+        assert(calls == (server and 1 or 0)); near(APD.source(h, 7).available(), 100)
+    end
+end)
+test("loading owner assignment preserves modes without spawning pallets", function()
+    local h = mockHusbandry(); APD.onLoad(h); APD.applyMode(h, 7, 2)
+    h.updatePallets = function() error("must not spawn during load") end
+    h.farmId = 2; APD.onOwnerChanged(h)
+    assert(APD.mode(h, 7) == 2)
+    APD.onLoadFinished(h); APD.onPostFinalizePlacement(h); APD.onOwnerChanged(h)
+end)
+test("callback mode or owner changes resume stock after all pallet masks unwind", function()
+    for _, ownerChange in ipairs({false, true}) do
+        for _, nested in ipairs({false, true}) do
+            local h, spawned = mockHusbandry(), {[7] = 0, [8] = 0}
+            h.spec_husbandryPallets.pendingLiters[7] = 3000
+            APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 2)
+            h.updatePallets = function(self)
+                APD.updatePallets(self, function(p)
+                    for fillType, amount in pairs(p.spec_husbandryPallets.pendingLiters) do
+                        if amount > 5 then
+                            spawned[fillType] = spawned[fillType] + amount
+                            p.spec_husbandryPallets.pendingLiters[fillType] = 0
+                        end
+                    end
+                end)
+            end
+            local callback = function(p)
+                assert(p.spec_husbandryPallets.pendingLiters[7] == 0)
+                if ownerChange then p.farmId = 2; APD.onOwnerChanged(p)
+                else APD.applyMode(p, 7, APDDistribution.KEEP) end
+                near(spawned[7], 0) -- Stock is still masked until the callback returns.
+            end
+            if nested then
+                APD.updatePallets(h, function(p) APD.getPalletCallback(p, callback, {}, 0, 7) end)
+            else
+                APD.getPalletCallback(h, callback, {}, 0, 7)
+            end
+            near(spawned[7], 3000) -- Resumed without waiting for another hour/update.
+            h:updatePallets() -- No duplicate recovery on a later update.
+            near(spawned[7], 3000); near(APD.source(h, 7).available(), 0)
+            near(spawned[8], ownerChange and 40 or 0)
+            near(APD.source(h, 8).available(), ownerChange and 0 or 40)
+            assert(h.apdState.palletDepth == 0)
+        end
+    end
+end)
+test("money observer restores inherited publisher without freezing its class", function()
+    local originalCenter, add, balance = g_messageCenter, g_currentMission.addMoney, g_currentMission.money
+    for _, fails in ipairs({false, true}) do
+        local class = {publish = function() if fails then error("listener failure") end end}
+        g_messageCenter = setmetatable({}, {__index = class})
+        g_currentMission.addMoney = function(self, amount, farmId)
+            self.money = self.money + amount
+            g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, self.money)
+        end
+        near(APD.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+        assert(rawget(g_messageCenter, "publish") == nil)
+        class.publish = function() return "replacement" end
+        assert(g_messageCenter:publish("CUSTOM") == "replacement")
+    end
+    g_messageCenter, g_currentMission.addMoney, g_currentMission.money = originalCenter, add, balance
+end)
+test("both animal dialogs use native production mode translations", function()
+    local getText = g_i18n.getText
+    g_i18n.getText = function(_, key, customMod)
+        if key:find("ui_production_output_", 1, true) then
+            assert(customMod == nil, "native key resolved in mod namespace")
+            return "native:" .. key
+        end
+        assert(key ~= "apd_store" and key ~= "apd_sell" and key ~= "apd_distribute")
+        return key
+    end
+    local frame = {selectedHusbandry = mockHusbandry(), setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    assert(OptionDialog.options[1]:find("native:ui_production_output_storing", 1, true))
+    OptionDialog.callback(1)
+    for i, suffix in ipairs({"storing", "selling", "distributing"}) do
+        assert(OptionDialog.options[i] == "native:ui_production_output_" .. suffix)
+    end
+    g_i18n.getText = getText
+end)
 print(string.format("%d behavioral tests passed", passed))

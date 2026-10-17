@@ -3,10 +3,10 @@ FarmManager = {SPECTATOR_FARM_ID = 0}
 FillTypeManager = {SEND_NUM_BITS = 10}
 MoneyType = {SOLD_PRODUCTS = 1, PRODUCTION_COSTS = 2}
 ProductionPoint = {DIRECT_SELL_PRICE_FACTOR = 0.9, DIRECT_DELIVERY_PRICE = 0.000035}
-MessageType = {HOUR_CHANGED = 1}
+MessageType = {HOUR_CHANGED = 1, MONEY_CHANGED = 2}
 g_currentModName = "FS25_AnimalProductDistribution"
 g_modIsLoaded = {[g_currentModName] = true}
-g_messageCenter = {subscribe = function() end, unsubscribe = function() end}
+g_messageCenter = {subscribe = function() end, unsubscribe = function() end, publish = function() end}
 g_currentMission = {
     farmId = 1, allowed = true, money = 0,
     getFarmId = function(self, connection) return connection and connection.farmId or self.farmId end,

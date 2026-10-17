@@ -37,7 +37,8 @@ local function text(key)
 end
 
 local function modeText(mode)
-    return text(({[0] = "apd_store", [1] = "apd_sell", [2] = "apd_distribute"})[mode])
+    return g_i18n:getText(({[0] = "ui_production_output_storing",
+        [1] = "ui_production_output_selling", [2] = "ui_production_output_distributing"})[mode])
 end
 
 local function showProducts(placeable)
@@ -57,7 +58,7 @@ local function showProducts(placeable)
                 APD.requestMode(placeable, fillType, choice - 1)
             end
         end, text("apd_explanation"), placeable:getName() .. " / " .. g_fillTypeManager:getFillTypeTitleByIndex(fillType),
-            {text("apd_store"), text("apd_sell"), text("apd_distribute")}, APD.mode(placeable, fillType) + 1)
+            {modeText(0), modeText(1), modeText(2)}, APD.mode(placeable, fillType) + 1)
     end, text("apd_chooseProduct"), placeable:getName(), options, 1)
 end
 

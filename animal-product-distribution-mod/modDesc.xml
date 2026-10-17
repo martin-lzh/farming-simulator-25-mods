@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modDesc descVersion="114">
     <author>martin-lzh</author>
-    <version>0.1.1.0</version>
+    <version>0.1.2.0</version>
     <title><en>Animal Product Distribution</en><de>Tierprodukte verteilen</de><cs>动物产品分配</cs></title>
     <description>
         <en>Manage each husbandry's products in the Animals menu: store, sell or distribute to your farm's productions. Existing pallets require manual transport.</en>
@@ -20,9 +20,6 @@
     </extraSourceFiles>
     <l10n>
         <text name="apd_title"><en>Product destinations</en><de>Produktverteilung</de><cs>产品去向</cs></text>
-        <text name="apd_store"><en>Storing</en><de>Lagern</de><cs>储存</cs></text>
-        <text name="apd_sell"><en>Selling</en><de>Verkaufen</de><cs>出售</cs></text>
-        <text name="apd_distribute"><en>Distributing</en><de>Verteilen</de><cs>分配</cs></text>
         <text name="apd_chooseProduct"><en>Select a product.</en><de>Produkt auswählen.</de><cs>选择产品。</cs></text>
         <text name="apd_explanation"><en>Runs hourly in game. Uses automatic sale prices and delivery fees. Distribution supplies your farm's productions; excess stays here. Existing pallets require manual transport.</en><de>Abwicklung jede Spielstunde zu automatischen Verkaufspreisen und Lieferkosten. Verteilung an eigene Produktionen; Überschüsse bleiben hier. Vorhandene Paletten selbst transportieren.</de><cs>每游戏小时结算，使用自动售价和运费。分配送往本农场工厂，余量留存。已有托盘需手动搬运。</cs></text>
     </l10n>
