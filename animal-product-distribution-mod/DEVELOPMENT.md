@@ -9,7 +9,7 @@
 - `scripts/Register.lua`：向支持的 placeable 类型追加 specialization，并在动物页面加入操作按钮。
 - `tests/`：原创引擎替身及行为测试；不会加载或执行反编译文件。
 - `tools/build.py`：白名单打包，不安装。
-- `tools/make_icon.py`：原创图标生成，运行 `uv run animal-product-distribution-mod/tools/make_icon.py`。
+- `tools/make_icon.py`：原创图标生成；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon.dds`。使用 Microsoft DirectXTex 的 texconv 生成 BC1/DXT1 压缩纹理及完整 mipmap，运行 `uv run animal-product-distribution-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
 
 本机接口核对材料位于被忽略的 `work/analysis/animal-product-distribution-api.md`，全部游戏参考留在 `work/`。修改前重新核对目标版本和调用时机，反编译文本中的控制流不能直接复制或作为正确性的唯一依据。
 
@@ -47,3 +47,7 @@
 2026-10-18 用户验收反馈：0.1.2.0 测试完成，核心逻辑没有问题，记录为核心逻辑实测通过。未提供上述清单的逐项结果，因此不将联机客户端、第三方组合等所有场景一并标为通过。0.1.3.0 仅调整界面交互，新弹窗仍待验收。
 
 2026-10-18 布局修复：用户截图确认 0.1.3.0 的右箭头被裁切。0.1.3.1 在克隆产品行后按滚动区域实际宽度定宽，弹窗按最多四行和说明文字测量高度调整。新增布局边界回归；本机 `work/scripts/check_product_dialog_layout.py` 使用原生 GuiElement 几何方法，在五档缩放下复现旧宽度越界并验证修复。此为隔离几何验证，真实游戏截图复测仍待执行。
+
+2026-10-18 用户验收更新：0.1.3.1 单弹窗显示和修改均正常，记录为实测通过。
+
+0.1.3.2 图标使用 512×512 BC1/DXT1 DDS，包含到 1×1 的 10 级 mipmap，消除 PNG raw format 和 CPU mip generation 警告的来源。构建检查验证格式、尺寸、级数与完整压缩数据长度，ZIP 不含 PNG。真实游戏启动日志仍需复查。转换工具为 Microsoft DirectXTex texconv 2026.5.8.1（may2026）；[官方参数文档](https://github.com/microsoft/DirectXTex/wiki/Texconv)说明 `-f BC1_UNORM` 和 `-m 0` 的用途。本机 SDK 地图图标也使用 DXT1；本 Mod 额外包含完整 mipmap。

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modDesc descVersion="114">
     <author>martin-lzh</author>
-    <version>0.1.3.1</version>
+    <version>0.1.3.2</version>
     <title><en>Animal Product Distribution</en><de>Tierprodukte verteilen</de><cs>动物产品分配</cs></title>
     <description>
         <en>Manage each husbandry's products in the Animals menu: store, sell or distribute to your farm's productions. Existing pallets require manual transport.</en>
         <de>Im Tiermenü Produkte je Stall lagern, verkaufen oder an eigene Produktionen verteilen. Vorhandene Paletten müssen selbst transportiert werden.</de>
         <cs>在动物页面按畜舍管理产品：储存、出售或分配给本农场工厂。已有托盘需手动搬运。</cs>
     </description>
-    <iconFilename>icon.png</iconFilename>
+    <iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true"/>
     <placeableSpecializations>
         <specialization name="animalProductDistribution" className="AnimalProductDistribution" filename="scripts/AnimalProductDistribution.lua"/>
