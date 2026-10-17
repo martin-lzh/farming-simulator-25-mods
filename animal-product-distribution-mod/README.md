@@ -2,7 +2,7 @@
 
 为已有畜舍的牛奶、山羊奶、鸡蛋、羊毛等产品分别选择储存、出售或分配。识别游戏原生 milk / pallets specialization 声明的产品，不硬编码品种。
 
-版本：0.1.3.0。面向 PC 版 FS25 1.24.0.0，modDesc 114。当前为待游戏内验收版本，已完成离线行为和语法检查。
+版本：0.1.3.0。面向 PC 版 FS25 1.24.0.0，modDesc 114。0.1.2.0 核心逻辑已于 2026-10-18 经用户实测确认通过；0.1.3.0 新弹窗已完成离线行为和语法检查，待游戏内验收。
 
 ## 操作
 
@@ -35,10 +35,10 @@ ZIP 只包含原创脚本、描述文件和图标；不包含游戏反编译文�
 
 ## 验收边界
 
-尚未在真实游戏中验证菜单布局、存档回读、多人连接或其他 Mod 兼容性。第三方畜舍若替换了原生库存/托盘流程，需单独测试；控制同一产出的其他自动售卖/分配 Mod 也需单独确认兼容性。本版本不处理粪肥、粪浆、动物交易或 DLC 私有输出体系。
+用户已确认 0.1.2.0 核心逻辑实测通过。0.1.3.0 新弹窗布局和操作仍待验收；存档回读、联机客户端及第三方组合的逐项测试记录尚未提供。第三方畜舍若替换了原生库存/托盘流程，需单独测试；控制同一产出的其他自动售卖/分配 Mod 也需单独确认兼容性。本版本不处理粪肥、粪浆、动物交易或 DLC 私有输出体系。
 
 手动验收步骤见 DEVELOPMENT.md。卸载前切回储存，让需要的托盘生成并保存。正常库存使用原生保存字段；若日志出现 retained ... liters ... for recovery，表示仓库拒绝退回的产品暂存在 Mod 的恢复记录中。此时应保持 Mod 启用，排除仓库问题并让游戏小时结算完成返还后再卸载，否则这些恢复记录无法由原生游戏读取。
 
 ## English
 
-In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. This version has passed offline checks but still requires in-game acceptance testing.
+In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. The user confirmed core behavior in 0.1.2.0 on 2026-10-18. The new 0.1.3.0 dialog has passed offline checks and awaits in-game testing.
