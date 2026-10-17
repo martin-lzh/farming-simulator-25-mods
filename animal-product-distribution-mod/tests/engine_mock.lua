@@ -14,6 +14,10 @@ g_currentMission = {
     addMoney = function(self, value) self.money = self.money + value end,
     economyManager = {getPricePerLiter = function() return 2 end}
 }
+g_farmManager = {getFarmById = function(_, id)
+    if id ~= 1 and id ~= 2 then return nil end
+    return {getBalance = function() return g_currentMission.money end}
+end}
 g_fillTypeManager = {
     getFillTypeNameByIndex = function(_, i) return "TYPE_" .. i end,
     getFillTypeIndexByName = function(_, name) return name and tonumber(name:match("TYPE_(%d+)")) end,
@@ -52,7 +56,7 @@ g_i18n = {getText = function(_, key) return key end}
 OptionDialog = {show = function(callback, text, title, options, default)
     OptionDialog.callback, OptionDialog.options = callback, options
 end}
-Logging = {error = function(message) error(message) end}
+Logging = {error = function(message) error(message) end, warning = function() end}
 
 function mockHusbandry()
     local h = {
@@ -63,6 +67,8 @@ function mockHusbandry()
         updatePallets = function() end
     }
     AnimalProductDistribution.onLoad(h)
+    AnimalProductDistribution.onLoadFinished(h)
+    AnimalProductDistribution.onPostFinalizePlacement(h)
     return h
 end
 function mockStorage(amount, capacity)
@@ -76,6 +82,13 @@ end
 function mockXML()
     return {
         values = {},
+        removeProperty = function(self, key)
+            for path in pairs(self.values) do
+                if path:sub(1, #key + 1) == key .. "." or path:sub(1, #key + 1) == key .. "(" then
+                    self.values[path] = nil
+                end
+            end
+        end,
         setValue = function(self, key, value) self.values[key] = value end,
         getValue = function(self, key, default) local v = self.values[key]; if v == nil then return default end; return v end,
         iterator = function(self, key)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modDesc descVersion="114">
     <author>martin-lzh</author>
-    <version>0.1.0.0</version>
+    <version>0.1.1.0</version>
     <title><en>Animal Product Distribution</en><de>Tierprodukte verteilen</de><cs>动物产品分配</cs></title>
     <description>
         <en>Manage each husbandry's products in the Animals menu: store, sell or distribute to your farm's productions. Existing pallets require manual transport.</en>

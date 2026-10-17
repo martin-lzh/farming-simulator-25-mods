@@ -13,6 +13,11 @@ local function target(storage)
             local before = storage.amount
             storage:setFillLevel(before + amount)
             return storage.amount - before
+        end,
+        remove = function(amount)
+            local before = storage.amount
+            storage:setFillLevel(before - amount)
+            return before - storage.amount
         end
     }
 end
@@ -28,7 +33,7 @@ test("distribution conserves product and weights capacity", function()
     local h = mockHusbandry()
     local a, b = mockStorage(0, 100), mockStorage(0, 300)
     local charged = 0
-    local amount = APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function(_, liters) charged = charged + liters end)
+    local amount = APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function(_, liters) charged = charged + liters; return liters end)
     near(amount, 100); near(a.amount, 25); near(b.amount, 75)
     near(h.spec_husbandryPallets.pendingLiters[7], 0); near(charged, 100)
 end)
@@ -40,14 +45,14 @@ end)
 test("full and capacity limited destinations retain overflow", function()
     local h = mockHusbandry()
     local a, b = mockStorage(10, 10), mockStorage(0, 30)
-    near(APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function() end), 30)
+    near(APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function(_, n) return n end), 30)
     near(h.spec_husbandryPallets.pendingLiters[7], 70)
 end)
 test("partial acceptance refunds unaccepted source", function()
     local h = mockHusbandry()
     local charged = 0
     local t = {free = function() return 100 end, add = function() return 10 end}
-    near(APDDistribution.distribute(APD.source(h, 7), {t}, function(_, n) charged = n end), 10)
+    near(APDDistribution.distribute(APD.source(h, 7), {t}, function(_, n) charged = n; return n end), 10)
     near(h.spec_husbandryPallets.pendingLiters[7], 90); near(charged, 10)
 end)
 test("sale credits once and zero price preserves stock", function()
@@ -55,8 +60,8 @@ test("sale credits once and zero price preserves stock", function()
     local source = APD.source(h, 7)
     APDDistribution.sell(source, 0, function() error("credited") end)
     near(source.available(), 100)
-    APDDistribution.sell(source, 1.8, function(value) money = money + value end)
-    APDDistribution.sell(source, 1.8, function(value) money = money + value end)
+    APDDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
+    APDDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
     near(money, 180); near(source.available(), 0)
 end)
 test("milk adapter handles actual tank amounts", function()
@@ -146,7 +151,7 @@ test("deleted and unowned husbandries cannot be managed", function()
     assert(not APD.applyMode(h, 7, 1))
 end)
 test("ownership changes reset modes", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 2); APD.onOwnerChanged(h)
+    local h = mockHusbandry(); APD.applyMode(h, 7, 2); h.farmId = 2; APD.onOwnerChanged(h)
     assert(APD.mode(h, 7) == 0)
 end)
 test("only same-farm accepting production points receive goods", function()
@@ -198,5 +203,141 @@ test("disabled mod leaves native animal menu alone", function()
     InGameMenuAnimalsFrame.updateMenuButtons(frame)
     assert(#frame.menuButtonInfo == 0)
     g_modIsLoaded[g_currentModName] = true
+end)
+test("load restores modes before owner assignment without resetting them", function()
+    local saved, xml = mockHusbandry(), mockXML()
+    APD.applyMode(saved, 7, 2); APD.saveToXMLFile(saved, xml, "barn")
+    local loaded = mockHusbandry(); APD.onLoad(loaded)
+    APD.loadFromXMLFile(loaded, xml, "barn", false)
+    loaded.farmId = 2; APD.onOwnerChanged(loaded)
+    APD.onLoadFinished(loaded); APD.onPostFinalizePlacement(loaded)
+    assert(APD.mode(loaded, 7) == 2)
+    APD.onOwnerChanged(loaded); assert(APD.mode(loaded, 7) == 2)
+    loaded.farmId = 1; APD.onOwnerChanged(loaded); assert(APD.mode(loaded, 7) == 0)
+end)
+test("unfinished and missing-farm husbandries never settle", function()
+    local h = mockHusbandry(); APD.applyMode(h, 7, 1)
+    g_currentMission.money = 0; h.apdState.ready = false; APD.processHour(h)
+    h.apdState.ready = true; h.farmId = 99; APD.processHour(h)
+    near(g_currentMission.money, 0); near(APD.source(h, 7).available(), 100)
+end)
+test("reusing save XML cannot resurrect stale product modes", function()
+    local h, xml = mockHusbandry(), mockXML()
+    APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 1); APD.saveToXMLFile(h, xml, "barn")
+    APD.applyMode(h, 7, 0); APD.applyMode(h, 8, 0); APD.saveToXMLFile(h, xml, "barn")
+    APD.loadFromXMLFile(h, xml, "barn", false)
+    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+end)
+test("credit failure before mutation refunds inventory", function()
+    local h, original = mockHusbandry(), g_currentMission.addMoney
+    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    g_currentMission.addMoney = function() error("rejected before credit") end
+    APD.processHour(h); near(APD.source(h, 7).available(), 100); near(g_currentMission.money, 0)
+    g_currentMission.addMoney = original
+    APD.processHour(h); near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+end)
+test("credit exception after mutation never refunds paid product", function()
+    local h, original = mockHusbandry(), g_currentMission.addMoney
+    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    g_currentMission.addMoney = function(self, amount) self.money = self.money + amount; error("HUD error") end
+    APD.processHour(h); APD.processHour(h)
+    near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+    g_currentMission.addMoney = original
+end)
+test("silent no-op and partial credit preserve unpaid product", function()
+    local h, original = mockHusbandry(), g_currentMission.addMoney
+    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    g_currentMission.addMoney = function() end
+    APD.processHour(h); near(APD.source(h, 7).available(), 100)
+    g_currentMission.addMoney = function(self, amount) self.money = self.money + amount / 2 end
+    APD.processHour(h); near(APD.source(h, 7).available(), 50); near(g_currentMission.money, 90)
+    g_currentMission.addMoney = original
+end)
+test("reentrant money notification cannot settle another output twice", function()
+    local h, original = mockHusbandry(), g_currentMission.addMoney
+    APD.applyMode(h, 7, 1); APD.applyMode(h, 8, 1); g_currentMission.money = 0
+    g_currentMission.addMoney = function(self, amount)
+        self.money = self.money + amount; APD.processHour(h)
+    end
+    APD.processHour(h); near(g_currentMission.money, 252)
+    near(APD.source(h, 7).available(), 0); near(APD.source(h, 8).available(), 0)
+    assert(not h.apdState.processing)
+    g_currentMission.addMoney = original
+end)
+local function receiver(storage)
+    return {getOwnerFarmId = function() return 1 end, ownerFarmId = 1,
+        storage = storage, inputFillTypeIds = {[7] = true}, owningPlaceable = {rootNode = 20}}
+end
+local function receiverList(points)
+    g_currentMission.productionChainManager = {getProductionPointsForFarmId = function() return points end}
+end
+test("destination failures before and after mutation conserve product", function()
+    for _, accepted in ipairs({0, 20}) do
+        local h, storage = mockHusbandry(), mockStorage(0, 500)
+        APD.applyMode(h, 7, 2); g_currentMission.money = 0
+        storage.setFillLevel = function(self) self.amount = self.amount + accepted; error("listener error") end
+        receiverList({receiver(storage)}); APD.processHour(h)
+        near(APD.source(h, 7).available() + storage.amount, 100)
+        near(storage.amount, accepted); near(g_currentMission.money, -accepted * 100 * 0.000035)
+    end
+end)
+test("unpaid delivery restores goods and paid callback errors do not duplicate fees", function()
+    local original = g_currentMission.addMoney
+    for _, paid in ipairs({false, true}) do
+        local h, storage = mockHusbandry(), mockStorage(0, 500)
+        APD.applyMode(h, 7, 2); g_currentMission.money = 0; receiverList({receiver(storage)})
+        g_currentMission.addMoney = function(self, amount)
+            if paid then self.money = self.money + amount end
+            error("money callback error")
+        end
+        APD.processHour(h)
+        near(APD.source(h, 7).available() + storage.amount, 100)
+        near(storage.amount, paid and 100 or 0)
+        near(g_currentMission.money, paid and -0.35 or 0)
+    end
+    g_currentMission.addMoney = original
+end)
+test("duplicate receiver entries do not bias capacity shares", function()
+    local h, a, b = mockHusbandry(), mockStorage(0, 100), mockStorage(0, 100)
+    local pa, pb = receiver(a), receiver(b)
+    receiverList({pa, pa, pb}); APD.applyMode(h, 7, 2); APD.processHour(h)
+    near(a.amount, 50); near(b.amount, 50)
+    h.spec_husbandry = {storage = a}; assert(#APD.targets(h, 7) == 1)
+end)
+test("failed refund is saved separately and recovered exactly once", function()
+    local h = mockHusbandry()
+    local storage, xml = mockStorage(100, 100), mockXML()
+    h.spec_husbandry = {storage = storage}
+    h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
+    local set = storage.setFillLevel
+    storage.setFillLevel = function(self, value)
+        if value > self.amount then error("cannot return to tank") end
+        set(self, value)
+    end
+    local source = APD.source(h, 4)
+    APDDistribution.sell(source, 2, function() return 0 end)
+    near(storage.amount, 0); near(source.available(), 100); near(h.apdState.refunds[4], 100)
+    APD.saveToXMLFile(h, xml, "barn")
+    local loaded = mockHusbandry()
+    loaded.spec_husbandry = {storage = mockStorage(storage.amount, 100)}
+    loaded.spec_husbandryMilk = h.spec_husbandryMilk
+    APD.loadFromXMLFile(loaded, xml, "barn", false)
+    APD.processHour(loaded); APD.processHour(loaded)
+    near(loaded.spec_husbandry.storage.amount, 100); near(loaded.apdState.refunds[4], 0)
+    near(APD.source(loaded, 4).available(), 100)
+end)
+test("settlement cannot run while native pallet stock is temporarily hidden", function()
+    local h = mockHusbandry(); APD.applyMode(h, 7, 1); APD.applyMode(h, 8, 1)
+    g_currentMission.money = 0
+    APD.updatePallets(h, function() APD.processHour(h) end)
+    near(APD.source(h, 7).available(), 100); near(g_currentMission.money, 0)
+    assert(h.apdState.palletDepth == 0)
+end)
+test("nonfinite prices cannot corrupt balances or stock", function()
+    local source = APD.source(mockHusbandry(), 7)
+    for _, price in ipairs({math.huge, -math.huge, 0/0}) do
+        near(APDDistribution.sell(source, price, function() error("must not credit") end), 0)
+        near(source.available(), 100)
+    end
 end)
 print(string.format("%d behavioral tests passed", passed))
