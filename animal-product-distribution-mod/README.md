@@ -2,11 +2,11 @@
 
 为已有畜舍的牛奶、山羊奶、鸡蛋、羊毛等产品分别选择储存、出售或分配。识别游戏原生 milk / pallets specialization 声明的产品，不硬编码品种。
 
-版本：0.1.2.0。面向 PC 版 FS25 1.24.0.0，modDesc 114。当前为待游戏内验收版本，已完成离线行为和语法检查。
+版本：0.1.3.0。面向 PC 版 FS25 1.24.0.0，modDesc 114。当前为待游戏内验收版本，已完成离线行为和语法检查。
 
 ## 操作
 
-打开游戏菜单的“动物”页面，选择畜舍，点击“产品去向”，选择产品和挡位后确认。挡位名称使用原生生产链翻译，跟随游戏语言。取消不修改设置。拥有该畜舍的农场成员需具备动物交易权限；设置按畜舍和产品保存，新玩家加入时同步。
+打开游戏菜单的“动物”页面，选择畜舍，点击“产品去向”，在同一个弹窗中为每种产品选择挡位，统一确认。产品较多时可滚动；确认只提交改动项。挡位名称使用原生生产链翻译，跟随游戏语言。取消不修改设置。拥有该畜舍的农场成员需具备动物交易权限；设置按畜舍和产品保存，新玩家加入时同步。
 
 | 挡位 | 行为 |
 | --- | --- |
@@ -41,4 +41,4 @@ ZIP 只包含原创脚本、描述文件和图标；不包含游戏反编译文�
 
 ## English
 
-In the Animals menu, select a husbandry, choose Product destinations, then select a product and Storing, Selling or Distributing. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. This version has passed offline checks but still requires in-game acceptance testing.
+In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. This version has passed offline checks but still requires in-game acceptance testing.

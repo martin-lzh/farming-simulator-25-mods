@@ -12,7 +12,9 @@ def build():
     paths = {"modDesc.xml", desc.findtext("iconFilename")}
     paths.update(node.attrib["filename"] for node in desc.findall("extraSourceFiles/sourceFile"))
     paths.update(node.attrib["filename"] for node in desc.findall("placeableSpecializations/specialization"))
-    assert len(paths) == 6, "Review runtime whitelist when adding files"
+    paths.add("gui/ProductDialog.xml")
+    assert len(paths) == 8, "Review runtime whitelist when adding files"
+    ET.parse(ROOT / "gui/ProductDialog.xml")
     for name in paths:
         path = ROOT / name
         assert path.resolve().is_relative_to(ROOT.resolve()), name

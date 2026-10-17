@@ -187,15 +187,26 @@ test("specialization registration works with a proxy and is idempotent", functio
     TypeManager.validateTypes(manager); TypeManager.validateTypes(manager); assert(calls == 1)
     manager.typeName = "vehicle"; TypeManager.validateTypes(manager); assert(calls == 1)
 end)
-test("animal menu opens product and mode dialogs, cancel is harmless", function()
+test("animal menu edits all products in one dialog and cancel discards drafts", function()
     local h = mockHusbandry()
     local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
     InGameMenuAnimalsFrame.updateMenuButtons(frame); assert(#frame.menuButtonInfo == 1)
-    frame.menuButtonInfo[1].callback(); assert(#OptionDialog.options == 2)
-    OptionDialog.callback(0); assert(APD.mode(h, 7) == 0)
-    frame.menuButtonInfo[1].callback(); OptionDialog.callback(1)
-    assert(#OptionDialog.options == 3)
-    OptionDialog.callback(3); assert(APD.mode(h, 7) == 2)
+    local shows = g_gui.shows
+    frame.menuButtonInfo[1].callback()
+    local dialog = g_gui.dialog
+    assert(g_gui.shows == shows + 1 and #dialog.rows == 2)
+    assert(g_gui.previousGui == "InGameMenu", "lazy GUI loading lost parent focus")
+    dialog.rows[1].option:setState(3); dialog.rows[2].option:setState(2)
+    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    dialog:onClickBack()
+    assert(FocusManager.currentGui == "InGameMenu")
+    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    frame.menuButtonInfo[1].callback()
+    assert(dialog.rows[1].option:getState() == 1)
+    dialog.rows[1].option:setState(3); dialog.rows[2].option:setState(2)
+    dialog:onClickOk()
+    assert(g_gui.shows == shows + 2)
+    assert(APD.mode(h, 7) == 2 and APD.mode(h, 8) == 1)
 end)
 test("disabled mod leaves native animal menu alone", function()
     g_modIsLoaded[g_currentModName] = false
@@ -538,7 +549,7 @@ test("money observer restores inherited publisher without freezing its class", f
     end
     g_messageCenter, g_currentMission.addMoney, g_currentMission.money = originalCenter, add, balance
 end)
-test("both animal dialogs use native production mode translations", function()
+test("each product row uses native production mode translations", function()
     local getText = g_i18n.getText
     g_i18n.getText = function(_, key, customMod)
         if key:find("ui_production_output_", 1, true) then
@@ -550,11 +561,94 @@ test("both animal dialogs use native production mode translations", function()
     end
     local frame = {selectedHusbandry = mockHusbandry(), setMenuButtonInfoDirty = function() end}
     InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
-    assert(OptionDialog.options[1]:find("native:ui_production_output_storing", 1, true))
-    OptionDialog.callback(1)
-    for i, suffix in ipairs({"storing", "selling", "distributing"}) do
-        assert(OptionDialog.options[i] == "native:ui_production_output_" .. suffix)
+    for _, row in ipairs(g_gui.dialog.rows) do
+        for i, suffix in ipairs({"storing", "selling", "distributing"}) do
+            assert(row.option.texts[i] == "native:ui_production_output_" .. suffix)
+        end
     end
+    g_gui.dialog:onClickBack()
     g_i18n.getText = getText
+end)
+
+test("dialog confirms only edited rows and cannot submit twice", function()
+    local h = mockHusbandry()
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    local dialog, count = g_gui.dialog, g_server.count
+    -- A different player changes an untouched row while this window is open.
+    APD.applyMode(h, 8, 1)
+    dialog.rows[1].option:setState(3)
+    dialog:onClickOk(); dialog:onClickOk()
+    assert(APD.mode(h, 7) == 2 and APD.mode(h, 8) == 1)
+    assert(g_server.count == count + 1)
+    frame.menuButtonInfo[1].callback()
+    assert(dialog.rows[1].option:getState() == 3 and dialog.rows[2].option:getState() == 2)
+    dialog:onClickOk()
+    assert(g_server.count == count + 1)
+end)
+
+test("dialog rechecks permission deletion and original ownership at confirmation", function()
+    for _, change in ipairs({"permission", "delete", "owner"}) do
+        local h = mockHusbandry()
+        local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+        InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+        local dialog, count = g_gui.dialog, g_server.count
+        dialog.rows[1].option:setState(3)
+        if change == "permission" then g_currentMission.allowed = false end
+        if change == "delete" then h.apdState.deleted = true end
+        if change == "owner" then h.farmId = 2; g_currentMission.farmId = 2 end
+        dialog:onClickOk()
+        assert(APD.mode(h, 7) == 0 and g_server.count == count)
+        g_currentMission.allowed, g_currentMission.farmId = true, 1
+    end
+end)
+
+test("dialog reuse refreshes rows without retaining previous husbandry", function()
+    local first, second = mockHusbandry(), mockHusbandry()
+    second.spec_husbandryPallets.fillTypes = {8}
+    APD.applyMode(second, 8, 1)
+    local frame = {selectedHusbandry = first, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    local dialog, loads = g_gui.dialog, g_gui.loads
+    local oldRow = dialog.rows[1].element
+    dialog:onClickBack()
+    assert(oldRow.deleted and #dialog.productRows.elements == 0)
+    assert(dialog.entries == nil and dialog.confirmCallback == nil)
+    frame.selectedHusbandry = second; frame.menuButtonInfo[1].callback()
+    assert(g_gui.loads == loads and #dialog.rows == 1)
+    assert(dialog.rows[1].element.label.text == "Product 8")
+    assert(dialog.rows[1].option:getState() == 2)
+    dialog.rows[1].option:setState(3); dialog:onClickOk()
+    assert(APD.mode(second, 8) == 2 and APD.mode(first, 8) == 0)
+end)
+
+test("dialog batches client requests without locally changing modes", function()
+    local h, sent, previousClient = mockHusbandry(), {}, g_client
+    h.isServer = false
+    g_client = {getServerConnection = function() return {sendEvent = function(_, event)
+        table.insert(sent, event)
+    end} end}
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    g_gui.dialog.rows[1].option:setState(2); g_gui.dialog.rows[2].option:setState(3)
+    g_gui.dialog:onClickOk()
+    assert(#sent == 2 and sent[1].mode == 1 and sent[2].mode == 2)
+    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    g_client = previousClient
+end)
+
+test("dialog ignores opening key repeat and supports more than four products", function()
+    local h = mockHusbandry()
+    h.spec_husbandryPallets.fillTypes = {7, 8, 9, 10, 11, 12}
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    local dialog = g_gui.dialog
+    assert(#dialog.rows == 6 and FocusManager.focused == dialog.rows[1].option)
+    dialog.time = dialog.inputDelay
+    dialog.rows[6].option:setState(3)
+    assert(dialog:onClickOk() and dialog:onClickBack() and dialog.isOpen)
+    dialog.time = dialog.inputDelay + 1
+    dialog:onClickOk()
+    assert(APD.mode(h, 12) == 2)
 end)
 print(string.format("%d behavioral tests passed", passed))

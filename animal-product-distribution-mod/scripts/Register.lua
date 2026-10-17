@@ -36,30 +36,23 @@ local function text(key)
     return g_i18n:getText(key, modName)
 end
 
-local function modeText(mode)
-    return g_i18n:getText(({[0] = "ui_production_output_storing",
-        [1] = "ui_production_output_selling", [2] = "ui_production_output_distributing"})[mode])
-end
-
 local function showProducts(placeable)
     local APD = AnimalProductDistribution
     if not APD.canManage(placeable, nil) then return end
     local products = APD.products(placeable)
-    local options = {}
+    local entries = {}
     for _, fillType in ipairs(products) do
-        table.insert(options, g_fillTypeManager:getFillTypeTitleByIndex(fillType) .. " — " .. modeText(APD.mode(placeable, fillType)))
+        table.insert(entries, {fillType = fillType, title = g_fillTypeManager:getFillTypeTitleByIndex(fillType),
+            mode = APD.mode(placeable, fillType)})
     end
-    if #options == 0 then return end
-    OptionDialog.show(function(index)
-        local fillType = products[index]
-        if fillType == nil or not APD.canManage(placeable, nil) then return end
-        OptionDialog.show(function(choice)
-            if choice >= 1 and choice <= 3 then
-                APD.requestMode(placeable, fillType, choice - 1)
-            end
-        end, text("apd_explanation"), placeable:getName() .. " / " .. g_fillTypeManager:getFillTypeTitleByIndex(fillType),
-            {modeText(0), modeText(1), modeText(2)}, APD.mode(placeable, fillType) + 1)
-    end, text("apd_chooseProduct"), placeable:getName(), options, 1)
+    if #entries == 0 then return end
+    local ownerFarmId = placeable:getOwnerFarmId()
+    APDProductDialog.show(placeable:getName(), text("apd_explanation"), entries, function(changes)
+        if not APD.canManage(placeable, nil) or placeable:getOwnerFarmId() ~= ownerFarmId then return end
+        for _, change in ipairs(changes) do
+            APD.requestMode(placeable, change.fillType, change.mode)
+        end
+    end)
 end
 
 installHook(InGameMenuAnimalsFrame, "updateMenuButtons", false, function(frame)

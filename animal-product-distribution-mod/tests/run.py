@@ -9,7 +9,7 @@ from lupa import LuaRuntime
 root = Path(__file__).resolve().parents[1]
 lua = LuaRuntime(unpack_returned_tuples=True)
 lua.execute((root / "tests/engine_mock.lua").read_text(encoding="utf-8"))
-for name in ("Distribution", "AnimalProductDistribution", "ModeEvent", "Register"):
+for name in ("Distribution", "AnimalProductDistribution", "ModeEvent", "ProductDialog", "Register"):
     lua.execute((root / f"scripts/{name}.lua").read_text(encoding="utf-8"))
 # Simulate a second map load: hooks must not produce duplicate menu buttons.
 lua.execute((root / "scripts/Register.lua").read_text(encoding="utf-8"))

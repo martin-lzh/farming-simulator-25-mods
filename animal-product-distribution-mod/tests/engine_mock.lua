@@ -5,6 +5,7 @@ MoneyType = {SOLD_PRODUCTS = 1, PRODUCTION_COSTS = 2}
 ProductionPoint = {DIRECT_SELL_PRICE_FACTOR = 0.9, DIRECT_DELIVERY_PRICE = 0.000035}
 MessageType = {HOUR_CHANGED = 1, MONEY_CHANGED = 2}
 g_currentModName = "FS25_AnimalProductDistribution"
+g_currentModDirectory = "animal-product-distribution-mod/"
 g_modIsLoaded = {[g_currentModName] = true}
 g_messageCenter = {subscribe = function() end, unsubscribe = function() end, publish = function() end}
 g_currentMission = {
@@ -24,7 +25,11 @@ g_fillTypeManager = {
     getFillTypeTitleByIndex = function(_, i) return "Product " .. i end
 }
 function calcDistanceFrom() return 100 end
-function Class(class, base) return {__index = class} end
+function Class(class, base)
+    if base ~= nil then setmetatable(class, {__index = base}) end
+    class.superClass = function() return base end
+    return {__index = class}
+end
 Event = {new = function(mt) return setmetatable({}, mt) end}
 function InitEventClass() end
 g_server = {count = 0, broadcastEvent = function(self) self.count = self.count + 1 end}
@@ -53,9 +58,63 @@ end}
 InGameMenuAnimalsFrame = {updateMenuButtons = function(frame) frame.menuButtonInfo = {} end}
 InputAction = {MENU_EXTRA_1 = 123}
 g_i18n = {getText = function(_, key) return key end}
-OptionDialog = {show = function(callback, text, title, options, default)
-    OptionDialog.callback, OptionDialog.options = callback, options
-end}
+MessageDialog = {
+    new = function(_, mt) return setmetatable({time = 0}, mt) end,
+    onGuiSetupFinished = function() end,
+    onOpen = function(self) self.isOpen = true end,
+    onClose = function(self) self.isOpen = false end,
+    close = function(self) self:onClose(); FocusManager:setGui(g_gui.previousGui) end,
+    delete = function() end
+}
+FocusManager = {TOP = 1, BOTTOM = 2, currentGui = "InGameMenu", removeElement = function() end,
+    setGui = function(self, name) self.currentGui = name end,
+    linkElements = function() end, setFocus = function(self, element) self.focused = element end}
+local function mockText()
+    return {setText = function(self, value) self.text = value end}
+end
+local function mockRow(parent)
+    local row = {parent = parent, label = mockText(), option = {
+        setTexts = function(self, texts) self.texts = texts end,
+        setState = function(self, state) self.state = state end,
+        getState = function(self) return self.state end
+    }}
+    function row:getDescendantByName(name) return name == "mode" and self.option or self.label end
+    function row:delete()
+        self.deleted = true
+        if self.parent ~= nil then
+            for i, element in ipairs(self.parent.elements) do
+                if element == self then table.remove(self.parent.elements, i); break end
+            end
+        end
+    end
+    return row
+end
+g_gui = {guis = {}, loads = 0, shows = 0}
+function g_gui:loadGui(path, name, controller)
+    self.loads = self.loads + 1
+    FocusManager:setGui(name)
+    controller.name, controller.xmlFilename = name, path
+    controller.dialogTitleElement, controller.explanationElement = mockText(), mockText()
+    controller.productRows = {elements = {}, invalidateLayout = function() end,
+        scrollTo = function(self, position) self.scrollPosition = position end}
+    controller.rowTemplate = {unlinkElement = function() end, delete = function() end,
+        clone = function(_, parent)
+            local row = mockRow(parent)
+            table.insert(parent.elements, row)
+            return row
+        end}
+    controller:onGuiSetupFinished()
+    self.guis[name] = {target = controller}
+    return self.guis[name]
+end
+function g_gui:showDialog(name)
+    self.shows = self.shows + 1
+    self.previousGui = FocusManager.currentGui
+    FocusManager:setGui(name)
+    self.dialog = self.guis[name].target
+    self.dialog:onOpen()
+    self.dialog.time = self.dialog.time + 251
+end
 Logging = {error = function(message) error(message) end, warning = function() end}
 
 function mockHusbandry()
