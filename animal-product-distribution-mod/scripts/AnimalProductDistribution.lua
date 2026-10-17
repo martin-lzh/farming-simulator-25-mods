@@ -62,22 +62,29 @@ function APD:onDelete()
     end
 end
 
-function APD.products(placeable)
+-- UI rows follow the native animal-dependent list. Keep the full supported list
+-- for inventory, saved settings and streams, including products no longer active.
+function APD.products(placeable, activeOnly)
     local products, seen = {}, {}
+    local function collect(spec)
+        if spec == nil then return end
+        local active
+        if activeOnly and spec.activeFillTypes ~= nil then
+            active = {}
+            for _, fillType in ipairs(spec.activeFillTypes) do active[fillType] = true end
+        end
+        for _, fillType in ipairs(spec.fillTypes or {}) do
+            if not seen[fillType] and (active == nil or active[fillType]) then
+                table.insert(products, fillType)
+                seen[fillType] = true
+            end
+        end
+    end
     local milk = placeable.spec_husbandryMilk
     if milk ~= nil and milk.hasMilkProduction then
-        for _, fillType in ipairs(milk.fillTypes or {}) do
-            seen[fillType] = true
-            table.insert(products, fillType)
-        end
+        collect(milk)
     end
-    local pallets = placeable.spec_husbandryPallets
-    for _, fillType in ipairs(pallets ~= nil and pallets.fillTypes or {}) do
-        if not seen[fillType] then
-            table.insert(products, fillType)
-            seen[fillType] = true
-        end
-    end
+    collect(placeable.spec_husbandryPallets)
     table.sort(products)
     return products
 end

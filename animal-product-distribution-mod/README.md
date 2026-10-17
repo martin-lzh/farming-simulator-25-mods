@@ -2,13 +2,15 @@
 
 为已有畜舍的牛奶、山羊奶、鸡蛋、羊毛等产品分别选择储存、出售或分配。识别游戏原生 milk / pallets specialization 声明的产品，不硬编码品种。
 
-版本：0.1.3.2。面向 PC 版 FS25 1.24.0.0，modDesc 114。0.1.2.0 核心逻辑已于 2026-10-18 经用户实测确认通过；0.1.3.1 单弹窗显示和修改也经用户实测确认通过。0.1.3.2 仅优化图标纹理，待复查启动日志。
+版本：0.1.3.3。面向 PC 版 FS25 1.24.0.0，modDesc 114。0.1.2.0 核心逻辑已于 2026-10-18 经用户实测确认通过；0.1.3.1 单弹窗显示和修改也经用户实测确认通过。0.1.3.3 修复只养山羊时显示羊毛等不相关产品的问题，真实游戏界面待复测。
 
 ## 操作
 
 打开游戏菜单的“动物”页面，选择畜舍，点击“产品去向”，在同一个弹窗中为每种产品选择挡位，统一确认。产品较多时可滚动；确认只提交改动项。挡位名称使用原生生产链翻译，跟随游戏语言。取消不修改设置。拥有该畜舍的农场成员需具备动物交易权限；设置按畜舍和产品保存，新玩家加入时同步。
 
 同农场的多位经理可以操作。两人修改同一产品时，以服务器最后接受的设置为准；不同产品分别保存。已打开的弹窗保留本地草稿，查看另一位经理的修改需重新打开；未编辑的行不会覆盖他人的设置。出售和分配只在服务器结算。联机模拟已通过，真实双机验收仍待执行。
+
+产品列表跟随该畜舍实际动物的原生活动产品：只养山羊显示山羊奶，只养绵羊显示羊毛；幼龄或暂时零产量也能设置。动物改变后重新打开弹窗刷新，无当前产出类型时不显示入口。隐藏产品的旧挡位仍保存，遗留库存按原挡位处理；再次饲养对应动物时可继续编辑。未提供原生活动产品字段的第三方畜舍回退到其支持列表。
 
 | 挡位 | 行为 |
 | --- | --- |
@@ -43,4 +45,4 @@ ZIP 只包含原创脚本、描述文件和图标；不包含游戏反编译文�
 
 ## English
 
-In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. The user confirmed core behavior in 0.1.2.0 on 2026-10-18. The user also confirmed the 0.1.3.1 dialog displays and edits correctly. Version 0.1.3.2 only optimizes the icon texture; its startup log awaits verification.
+In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. The user confirmed core behavior in 0.1.2.0 on 2026-10-18 and the dialog in 0.1.3.1. Version 0.1.3.3 filters dialog products using the selected barn's native active animal outputs. Inactive products retain saved modes and leftover-stock handling. In-game verification of this filter is pending.

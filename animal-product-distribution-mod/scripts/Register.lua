@@ -39,7 +39,7 @@ end
 local function showProducts(placeable)
     local APD = AnimalProductDistribution
     if not APD.canManage(placeable, nil) then return end
-    local products = APD.products(placeable)
+    local products = APD.products(placeable, true)
     local entries = {}
     for _, fillType in ipairs(products) do
         table.insert(entries, {fillType = fillType, title = g_fillTypeManager:getFillTypeTitleByIndex(fillType),
@@ -57,7 +57,7 @@ end
 
 installHook(InGameMenuAnimalsFrame, "updateMenuButtons", false, function(frame)
     local placeable = frame.selectedHusbandry
-    if AnimalProductDistribution.canManage(placeable, nil) and #AnimalProductDistribution.products(placeable) > 0 then
+    if AnimalProductDistribution.canManage(placeable, nil) and #AnimalProductDistribution.products(placeable, true) > 0 then
         table.insert(frame.menuButtonInfo, {
             inputAction = InputAction.MENU_EXTRA_1,
             text = text("apd_title"),

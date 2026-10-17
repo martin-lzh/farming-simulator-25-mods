@@ -681,4 +681,93 @@ test("product rows fit the clipping viewport and height follows visible products
     near(dialog.productRows.size[2], dialog.rows[1].element.size[2])
     dialog:onClickBack(); dialog.explanationElement.measuredHeight = nil
 end)
+test("goat and sheep barns show only their own native active products", function()
+    local goats, sheep = mockHusbandry(), mockHusbandry()
+    goats.spec_husbandryPallets.activeFillTypes = {8}
+    sheep.spec_husbandryPallets.activeFillTypes = {7}
+    local frame = {selectedHusbandry = goats, setMenuButtonInfoDirty = function() end}
+    for _, selection in ipairs({{goats, 8}, {sheep, 7}, {goats, 8}}) do
+        frame.selectedHusbandry = selection[1]
+        InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+        assert(#g_gui.dialog.rows == 1)
+        assert(g_gui.dialog.rows[1].element.label.text == "Product " .. selection[2])
+        g_gui.dialog.rows[1].option:setState(3); g_gui.dialog:onClickOk()
+    end
+    assert(APD.mode(goats, 7) == 0 and APD.mode(goats, 8) == 2)
+    assert(APD.mode(sheep, 7) == 2 and APD.mode(sheep, 8) == 0)
+end)
+
+test("mixed herds show both products and animal changes refresh reopened rows", function()
+    local h = mockHusbandry()
+    h.spec_husbandryPallets.activeFillTypes = {8, 7}
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    assert(#g_gui.dialog.rows == 2)
+    g_gui.dialog:onClickBack()
+    h.spec_husbandryPallets.activeFillTypes = {8}
+    frame.menuButtonInfo[1].callback()
+    assert(#g_gui.dialog.rows == 1 and g_gui.dialog.rows[1].element.label.text == "Product 8")
+    g_gui.dialog:onClickBack()
+end)
+
+test("native milk activity selects subtype output even at zero production", function()
+    local h = mockHusbandry()
+    h.spec_husbandryPallets.activeFillTypes = {}
+    h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4, 5},
+        activeFillTypes = {5}, litersPerHour = {[4] = 0, [5] = 0}}
+    local products = APD.products(h, true)
+    assert(#products == 1 and products[1] == 5)
+    h.spec_husbandryMilk.hasMilkProduction = false
+    assert(#APD.products(h, true) == 0)
+end)
+
+test("empty native activity hides the entry without falling back to all products", function()
+    local h = mockHusbandry()
+    h.spec_husbandryPallets.activeFillTypes = {}
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame)
+    assert(#frame.menuButtonInfo == 0 and #APD.products(h, true) == 0)
+    assert(#APD.products(h) == 2)
+end)
+
+test("missing activity metadata falls back to supported products and lists deduplicate", function()
+    local h = mockHusbandry()
+    assert(#APD.products(h, true) == 2)
+    h.spec_husbandryPallets.activeFillTypes = {8, 8, 999}
+    h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {8, 8}, activeFillTypes = {8}}
+    local products = APD.products(h, true)
+    assert(#products == 1 and products[1] == 8)
+end)
+
+test("hiding inactive outputs preserves modes refunds and the complete join stream", function()
+    local h, xml = mockHusbandry(), mockXML()
+    h.spec_husbandryPallets.activeFillTypes = {8}
+    APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 1)
+    h.apdState.refunds[7] = 12
+    APD.saveToXMLFile(h, xml, "barn")
+    local loaded = mockHusbandry()
+    loaded.spec_husbandryPallets.activeFillTypes = {}
+    APD.loadFromXMLFile(loaded, xml, "barn", false)
+    assert(APD.mode(loaded, 7) == 2 and APD.mode(loaded, 8) == 1)
+    near(loaded.apdState.refunds[7], 12)
+    local stream, client = {}, mockHusbandry()
+    client.isServer = false
+    client.spec_husbandryPallets.activeFillTypes = {}
+    APD.onWriteStream(loaded, stream); APD.onReadStream(client, stream)
+    assert(APD.mode(client, 7) == 2 and APD.mode(client, 8) == 1)
+    client.spec_husbandryPallets.activeFillTypes = {7}
+    assert(APD.products(client, true)[1] == 7 and APD.mode(client, 7) == 2)
+end)
+
+test("inactive leftover inventory still settles once using its saved mode", function()
+    local h = mockHusbandry()
+    h.spec_husbandryPallets.activeFillTypes = {8}
+    APD.applyMode(h, 7, 1)
+    g_currentMission.money = 0
+    APD.processHour(h); APD.processHour(h)
+    near(g_currentMission.money, 180)
+    near(h.spec_husbandryPallets.pendingLiters[7], 0)
+    near(h.spec_husbandryPallets.pendingLiters[8], 40)
+    assert(APD.products(h, true)[1] == 8)
+end)
 print(string.format("%d behavioral tests passed", passed))

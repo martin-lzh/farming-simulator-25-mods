@@ -48,7 +48,7 @@ class Peer:
             end
             if serverPeer then
                 g_server.broadcastEvent = function(_, event, sendLocal, ignore, object)
-                    assert(not sendLocal and ignore == nil and object == barn)
+                    assert(not sendLocal and ignore == nil and objects[object.networkId] == object)
                     send(event, managers[1])
                 end
             else
@@ -60,8 +60,8 @@ class Peer:
                 APDModeEvent.emptyNew():readStream(packet, manager and managers[manager] or serverConnection)
             end
             function request(fillType, mode) APD.requestMode(barn, fillType, mode) end
-            function openDialog()
-                local frame = {selectedHusbandry = barn, setMenuButtonInfoDirty = function() end}
+            function openDialog(placeable)
+                local frame = {selectedHusbandry = placeable or barn, setMenuButtonInfoDirty = function() end}
                 InGameMenuAnimalsFrame.updateMenuButtons(frame)
                 frame.menuButtonInfo[1].callback()
             end
@@ -240,4 +240,35 @@ def run_multiplayer(root):
     session.broadcast()
     session.modes(0, 1)
     passed("server mode save/reload, paused join snapshot and post-join edits")
+    session = Session(root)
+    for peer in [session.server, *session.clients]:
+        peer.run("""
+            barn.spec_husbandryPallets.activeFillTypes = {8}
+            sheepBarn = mockHusbandry()
+            sheepBarn.isServer, sheepBarn.networkId = serverPeer, 43
+            sheepBarn.spec_husbandryPallets.activeFillTypes = {7}
+            objects[43] = sheepBarn
+        """)
+    session.clients[0].run("""
+        openDialog(barn)
+        assert(#g_gui.dialog.rows == 1 and g_gui.dialog.rows[1].element.label.text == 'Product 8')
+        g_gui.dialog.rows[1].option:setState(2); g_gui.dialog:onClickOk()
+    """)
+    session.clients[1].run("""
+        openDialog(sheepBarn)
+        assert(#g_gui.dialog.rows == 1 and g_gui.dialog.rows[1].element.label.text == 'Product 7')
+        g_gui.dialog.rows[1].option:setState(3); g_gui.dialog:onClickOk()
+    """)
+    session.deliver(0)
+    session.deliver(1)
+    session.broadcast()
+    session.modes(0, 1)
+    for peer in [session.server, *session.clients]:
+        peer.run("""
+            assert(APD.mode(sheepBarn, 7) == 2 and APD.mode(sheepBarn, 8) == 0)
+            openDialog(barn)
+            assert(#g_gui.dialog.rows == 1 and g_gui.dialog.rows[1].element.label.text == 'Product 8')
+            g_gui.dialog:onClickBack()
+        """)
+    passed("goat and sheep products stay local to their barn across manager broadcasts")
     print(f"{count} multiplayer scenarios passed")
