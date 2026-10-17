@@ -6,6 +6,7 @@ ProductionPoint = {DIRECT_SELL_PRICE_FACTOR = 0.9, DIRECT_DELIVERY_PRICE = 0.000
 MessageType = {HOUR_CHANGED = 1, MONEY_CHANGED = 2}
 g_currentModName = "FS25_AnimalProductDistribution"
 g_currentModDirectory = "animal-product-distribution-mod/"
+g_pixelSizeScaledY = 1 / 1080
 g_modIsLoaded = {[g_currentModName] = true}
 g_messageCenter = {subscribe = function() end, unsubscribe = function() end, publish = function() end}
 g_currentMission = {
@@ -78,6 +79,8 @@ local function mockRow(parent)
         setState = function(self, state) self.state = state end,
         getState = function(self) return self.state end
     }}
+    row.size = {860 / 1920, 56 / 1080}
+    function row:setSize(x, y) self.size = {x or self.size[1], y or self.size[2]} end
     function row:getDescendantByName(name) return name == "mode" and self.option or self.label end
     function row:delete()
         self.deleted = true
@@ -95,9 +98,21 @@ function g_gui:loadGui(path, name, controller)
     FocusManager:setGui(name)
     controller.name, controller.xmlFilename = name, path
     controller.dialogTitleElement, controller.explanationElement = mockText(), mockText()
-    controller.productRows = {elements = {}, invalidateLayout = function() end,
+    local function sized(width, height)
+        return {size = {width / 1920, height / 1080}, absSize = {width / 1920, height / 1080},
+            setSize = function(self, x, y)
+                self.size = {x or self.size[1], y or self.size[2]}
+                self.absSize = self.size
+            end}
+    end
+    controller.dialogElement, controller.contentContainer = sized(860, 500), sized(839, 421)
+    controller.explanationElement.position = {0, -80 / 1080}
+    controller.explanationElement.getTextHeight = function(self) return self.measuredHeight or 24 / 1080 end
+    controller.productRows = {elements = {}, position = {0, 25 / 1080},
+        size = {760 / 1920, 230 / 1080}, absSize = {760 / 1920, 230 / 1080},
+        setSize = sized(760, 230).setSize, invalidateLayout = function() end,
         scrollTo = function(self, position) self.scrollPosition = position end}
-    controller.rowTemplate = {unlinkElement = function() end, delete = function() end,
+    controller.rowTemplate = {size = {860 / 1920, 56 / 1080}, unlinkElement = function() end, delete = function() end,
         clone = function(_, parent)
             local row = mockRow(parent)
             table.insert(parent.elements, row)

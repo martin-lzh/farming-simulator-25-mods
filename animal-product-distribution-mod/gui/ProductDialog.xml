@@ -6,7 +6,7 @@
         <ThreePartBitmap profile="fs25_dialogBgMiddleSmall"/>
         <ThreePartBitmap profile="fs25_dialogBgTopSmall"/>
         <ThreePartBitmap profile="fs25_dialogBgBottom"/>
-        <GuiElement profile="fs25_dialogContentContainer">
+        <GuiElement profile="fs25_dialogContentContainer" id="contentContainer">
             <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -35px"/>
             <Text profile="fs25_dialogText" id="explanationElement" position="0px -80px" size="740px 90px"/>
             <GuiElement profile="apd_productRow" id="rowTemplate">

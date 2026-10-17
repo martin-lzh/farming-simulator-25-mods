@@ -27,6 +27,7 @@ end
 
 function APDProductDialog:onGuiSetupFinished()
     APDProductDialog:superClass().onGuiSetupFinished(self)
+    self.dialogChromeHeight = self.dialogElement.size[2] - self.contentContainer.size[2]
     self.rowTemplate:unlinkElement()
     FocusManager:removeElement(self.rowTemplate)
 end
@@ -34,6 +35,12 @@ end
 function APDProductDialog:onOpen()
     APDProductDialog:superClass().onOpen(self)
     self.inputDelay = self.time + 250
+    local visibleRows = math.min(math.max(#self.entries, 1), 4)
+    local rowsHeight = visibleRows * self.rowTemplate.size[2]
+    local explanationHeight = self.explanationElement:getTextHeight()
+    self.productRows:setSize(nil, rowsHeight)
+    self.dialogElement:setSize(nil, self.dialogChromeHeight - self.explanationElement.position[2]
+        + explanationHeight + 20 * g_pixelSizeScaledY + rowsHeight + self.productRows.position[2])
     local texts = {
         g_i18n:getText("ui_production_output_storing"),
         g_i18n:getText("ui_production_output_selling"),
@@ -41,6 +48,8 @@ function APDProductDialog:onOpen()
     }
     for _, entry in ipairs(self.entries) do
         local element = self.rowTemplate:clone(self.productRows)
+        -- Clones keep the template's original width; the scrolling viewport is narrower.
+        element:setSize(self.productRows.absSize[1], nil)
         element:getDescendantByName("productName"):setText(entry.title)
         local option = element:getDescendantByName("mode")
         option:setTexts(texts)

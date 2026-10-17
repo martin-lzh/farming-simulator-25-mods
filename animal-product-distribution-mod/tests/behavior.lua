@@ -651,4 +651,34 @@ test("dialog ignores opening key repeat and supports more than four products", f
     dialog:onClickOk()
     assert(APD.mode(h, 12) == 2)
 end)
+test("product rows fit the clipping viewport and height follows visible products", function()
+    local heights = {}
+    for _, count in ipairs({1, 2, 4, 6, 1}) do
+        local h = mockHusbandry()
+        h.spec_husbandryPallets.fillTypes = {}
+        for i = 1, count do table.insert(h.spec_husbandryPallets.fillTypes, i + 6) end
+        local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+        InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+        local dialog = g_gui.dialog
+        assert(#dialog.rows == count)
+        for _, row in ipairs(dialog.rows) do
+            assert(row.element.size[1] <= dialog.productRows.absSize[1], "right arrow clipped by viewport")
+        end
+        local visibleHeight = dialog.productRows.size[2]
+        near(visibleHeight, math.min(count, 4) * dialog.rows[1].element.size[2])
+        if heights[count] ~= nil then near(dialog.dialogElement.size[2], heights[count]) end
+        heights[count] = dialog.dialogElement.size[2]
+        dialog:onClickBack()
+    end
+    assert(heights[1] < heights[2] and heights[2] < heights[4])
+    near(heights[4], heights[6])
+    local dialog = g_gui.dialog
+    dialog.explanationElement.measuredHeight = 72 / 1080
+    local h = mockHusbandry(); h.spec_husbandryPallets.fillTypes = {7}
+    local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
+    InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
+    assert(dialog.dialogElement.size[2] > heights[1], "wrapped explanation overlaps products")
+    near(dialog.productRows.size[2], dialog.rows[1].element.size[2])
+    dialog:onClickBack(); dialog.explanationElement.measuredHeight = nil
+end)
 print(string.format("%d behavioral tests passed", passed))
