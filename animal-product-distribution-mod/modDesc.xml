@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modDesc descVersion="114">
+    <author>martin-lzh</author>
+    <version>0.1.0.0</version>
+    <title><en>Animal Product Distribution</en><de>Tierprodukte verteilen</de><cs>动物产品分配</cs></title>
+    <description>
+        <en>Choose storing, selling or distributing for each animal product from the Animals menu. Milk uses the husbandry tank; eggs and wool use output that has not yet spawned as pallets. Distribution supplies production points owned by the same farm.</en>
+        <de>Tierprodukte im Tiermenü lagern, verkaufen oder an eigene Produktionen verteilen. Bereits erzeugte Paletten bleiben unverändert.</de>
+        <cs>在动物页面为每个畜舍的产品选择储存、出售或分配。牛奶使用畜舍储罐；鸡蛋、羊毛处理尚未生成托盘的产出。分配送往同一农场的生产设施，已生成的托盘保持原状。</cs>
+    </description>
+    <iconFilename>icon.png</iconFilename>
+    <multiplayer supported="true"/>
+    <placeableSpecializations>
+        <specialization name="animalProductDistribution" className="AnimalProductDistribution" filename="scripts/AnimalProductDistribution.lua"/>
+    </placeableSpecializations>
+    <extraSourceFiles>
+        <sourceFile filename="scripts/Distribution.lua"/>
+        <sourceFile filename="scripts/ModeEvent.lua"/>
+        <sourceFile filename="scripts/Register.lua"/>
+    </extraSourceFiles>
+    <l10n>
+        <text name="apd_title"><en>Product destinations</en><de>Produktverteilung</de><cs>产品去向</cs></text>
+        <text name="apd_store"><en>Storing</en><de>Lagern</de><cs>储存</cs></text>
+        <text name="apd_sell"><en>Selling</en><de>Verkaufen</de><cs>出售</cs></text>
+        <text name="apd_distribute"><en>Distributing</en><de>Verteilen</de><cs>分配</cs></text>
+        <text name="apd_chooseProduct"><en>Select a product to change its destination.</en><de>Produkt zur Änderung der Verteilung auswählen.</de><cs>选择要更改去向的产品。</cs></text>
+        <text name="apd_explanation"><en>Processed hourly. Selling uses the native price factor. Distribution supplies your farm's productions and charges native delivery costs; excess remains here. Storing keeps normal tanks/pallets. Existing pallets are not collected.</en><de>Stündliche Verarbeitung. Verkauf und Lieferung verwenden die üblichen Preise und Kosten. Überschüsse bleiben hier. Lagern nutzt normale Tanks/Paletten. Vorhandene Paletten werden nicht eingesammelt.</de><cs>每游戏小时处理一次。出售使用原生价格系数；分配送往本农场工厂并收取原生运费，无法接收的部分留存。储存保留原生储罐及托盘行为，不回收已生成托盘。</cs></text>
+    </l10n>
+</modDesc>

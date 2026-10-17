@@ -2,7 +2,9 @@
 
 ## 中文
 
-Farming Simulator 25 原创 Mod 开发目录。目前尚未实现 Mod 功能。
+Farming Simulator 25 原创 Mod 开发目录。
+
+- [动物产品分配](animal-product-distribution-mod/README.md)：在动物页面为畜舍产品选择储存、出售或分配；0.1.0.0，待游戏内验收。
 
 每项功能使用独立的 `<feature>-mod/` 目录，确定功能后再创建。
 
@@ -19,6 +21,6 @@ Farming Simulator 25 原创 Mod 开发目录。目前尚未实现 Mod 功能。
 
 ## English
 
-Workspace for original Farming Simulator 25 Mods. No gameplay feature has been implemented yet.
+Workspace for original Farming Simulator 25 Mods. [Animal Product Distribution](animal-product-distribution-mod/README.md) adds storing, selling and distribution controls for husbandry outputs; in-game acceptance testing is pending.
 
 Create an independent `<feature>-mod/` directory when a feature is defined. Shared folders contain artwork (`assets/`), documentation (`docs/`), development tools (`tools/`) and release records (`releases/`). Local references belong in ignored `work/`; generated packages belong in ignored `outputs/`.
