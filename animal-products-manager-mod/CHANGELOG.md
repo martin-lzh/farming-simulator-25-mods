@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.1 — 2026-10-18
+
 - New Mod icon: a milk can and an egg with arrows to the three destinations, store, sell and distribute.
 - 新的 Mod 图标：奶罐和鸡蛋，箭头分别指向储存、出售和分配三种去向。
 - The description in the in-game Mods list now explains, in all 27 languages, what each mode does and how to open the dialog (Animals page, **Product destinations**, default key X).

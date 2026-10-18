@@ -41,6 +41,10 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 - 之后维护者要求去掉 PublicLuaCheck 标出的 8 处 pcall（AnimalProductsManager.lua 5 处、Distribution.lua 3 处）。改为“先记账、后调用”并按帧号收尾（见“结构”），存档格式和网络事件不变。PublicLuaCheck 通过；构建 SHA256 `5b4400e357bfc7734911710e7814f97e139b9cfe36c2f98e5911a9f34c0efcf6`（版本号仍为 1.0.0.0）。五个脚本用本机 fs-luau-compile 编译通过。脚本行为改变，发布前需维护者在游戏内复测出售、分配、托盘和保存重载。
 - 仍剩一项：`descVersion '114' outside allowed range`（min/max 113）。本机 1.24.0.0 的 `main.lua` 中 `g_maxModDescVersion = 114`，TestRunner 0.9.22 的更新记录也写着已升到 114，判断为工具范围未同步；保持 114，在提交备注中说明。
 
+## 1.0.0.1 发布准备
+
+2026-10-18：维护者选择按规则发布 1.0.0.1（不替换已发布的 1.0.0.0）。内容：fad4089 无 mipmap 新图标、7503e25 ModHub 详细描述、0f18416 移除 pcall（TestRunner PublicLuaCheck）。descVersion 按维护者决定保持 114。`release.json` 仍为正式版。因脚本行为改变，发布前需维护者在游戏内测试出售、分配、托盘及保存重载。
+
 ## 1.0.0.0 首次发布
 
 2026-10-18：维护者表示 Mod 可以进入发布流程，指定首个发布版本为 1.0.0.0。`release.json` 改为 `prerelease: false`，以正式版发布；0.1.x 均未在 GitHub 发布，CHANGELOG 中保留为开发历史。相对 dev 上 00d5dc5（含更名后的 0.1.4.0），1.0.0.0 只改版本号、`release.json` 和文档，不改脚本或界面。合并到 `main` 前，维护者需确认已在游戏内测试此构建（以提交和 SHA256 标识）。

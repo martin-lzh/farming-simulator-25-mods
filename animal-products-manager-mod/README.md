@@ -4,7 +4,7 @@
 
 ## English
 
-Version 1.0.0.0 · Farming Simulator 25 1.24 (PC)
+Version 1.0.0.1 · Farming Simulator 25 1.24 (PC)
 
 Choose what happens to each product of your husbandries, such as milk, goat milk, eggs and wool: keep storing it, sell it automatically, or deliver it to your own production points. Products are read from each barn, so every animal that produces them is supported.
 
@@ -54,7 +54,7 @@ MIT License, see [LICENSE](LICENSE).
 
 ## 中文
 
-版本 1.0.0.0 · 模拟农场 25 1.24（PC）
+版本 1.0.0.1 · 模拟农场 25 1.24（PC）
 
 为畜舍的每种产品（如牛奶、山羊奶、鸡蛋、羊毛）选择去向：继续储存、自动出售，或送往自己农场的生产点。产品按畜舍自动识别，所有产出这些产品的动物都适用。
 
