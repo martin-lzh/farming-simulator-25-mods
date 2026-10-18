@@ -2,7 +2,7 @@
 
 为已有畜舍的牛奶、山羊奶、鸡蛋、羊毛等产品分别选择储存、出售或分配。识别游戏原生 milk / pallets specialization 声明的产品，不硬编码品种。
 
-版本：0.1.3.3。面向 PC 版 FS25 1.24.0.0，modDesc 114。0.1.2.0 核心逻辑已于 2026-10-18 经用户实测确认通过；0.1.3.1 单弹窗显示和修改也经用户实测确认通过。0.1.3.3 修复只养山羊时显示羊毛等不相关产品的问题，真实游戏界面待复测。
+版本：0.1.4.0（测试版）。面向 PC 版 FS25 1.24.0.0，modDesc 114。0.1.2.0 核心逻辑已于 2026-10-18 经用户实测确认通过；0.1.3.1 单弹窗显示和修改也经用户实测确认通过；0.1.3.3 按实际动物筛选产品，用户试用反馈正常。0.1.4.0 补齐全部 27 种游戏语言，各语言的游戏内显示待复测。
 
 ## 操作
 
@@ -45,4 +45,4 @@ ZIP 只包含原创脚本、描述文件和图标；不包含游戏反编译文�
 
 ## English
 
-In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. The user confirmed core behavior in 0.1.2.0 on 2026-10-18 and the dialog in 0.1.3.1. Version 0.1.3.3 filters dialog products using the selected barn's native active animal outputs. Inactive products retain saved modes and leftover-stock handling. In-game verification of this filter is pending.
+In the Animals menu, select a husbandry, choose Product destinations, then set Storing, Selling or Distributing for each product in one dialog and confirm once. Only edited rows are submitted. Routing runs hourly on the server. Distribution supplies same-farm production points by available capacity and uses native delivery costs. Existing pallets are left alone. Default mode is Storing. The user confirmed core behavior in 0.1.2.0 on 2026-10-18 and the dialog in 0.1.3.1. Version 0.1.3.3 filters dialog products using the selected barn's native active animal outputs. Inactive products retain saved modes and leftover-stock handling. Version 0.1.4.0 (beta) adds names, descriptions, menu labels and help text for all 27 game languages; in-game checks of each language are pending.

@@ -1,12 +1,12 @@
 # 开发与验收
 
-## Unreleased 本地化
+## 0.1.4.0 本地化
 
 `modDesc.xml` 的 title、description、apd_title 和 apd_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
 
 挡位继续使用原生 ui_production_output_storing、ui_production_output_selling 和 ui_production_output_distributing；产品名称与确认/返回也沿用游戏翻译。无需新增 Lua 逻辑或翻译文件，ZIP 白名单仍为 8 个文件。沿用弹窗的原生文字测量和自动换行；新增语言的实际字体与布局仍需在游戏里切换检查。
 
-2026-10-18：维护者在安装 0.1.3.3 后反馈“没什么问题了”，并要求补齐其他语言。记录为当前测试反馈，不推定所有语言或全部联机角色已逐项验收。本次改动保持版本号 0.1.3.3 和 release.json 不变，进入 Unreleased。
+2026-10-18：维护者在安装 0.1.3.3 后反馈“没什么问题了”，并要求补齐其他语言。记录为当前测试反馈，不推定所有语言或全部联机角色已逐项验收。本次改动先记录在 Unreleased；0.1.3.3 从未发布，dev 上的 Release plan 因此报错。维护者随后指定本地化作为新版本 0.1.4.0（beta，release.json 保持 prerelease true），0.1.3.3 不单独发布。发布前需维护者在游戏内测试 0.1.4.0 构建并切换语言检查文字和布局。
 
 ## 结构
 
