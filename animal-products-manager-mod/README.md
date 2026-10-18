@@ -2,19 +2,40 @@
 
 ![Animal Products Manager](assets/cover.jpg)
 
+<p align="center">
+  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=animal-products-manager&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=animal-products-manager-v%2A&amp;label=latest%20release"></a>
+  <a href="https://www.nexusmods.com/farmingsimulator25/mods/220"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
+  <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
+  <img alt="Farming Simulator 25 1.24" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.24-5c8a1f">
+  <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
+</p>
+
+<p align="center">
+  <a href="#english">English</a> · <a href="#中文">中文</a>
+</p>
+
 ## English
 
 Version 1.0.0.2 · Farming Simulator 25 1.24 (PC)
+
+**Download:** [GitHub release 1.0.0.2](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2) (`FS25_AnimalProductsManager.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
 
 Choose what happens to each product of your husbandries, such as milk, goat milk, eggs and wool: keep storing it, sell it automatically, or deliver it to your own production points. Products are read from each barn, so every animal that produces them is supported.
 
 ### How to use
 
 1. Open the Animals page of the in-game menu and select a husbandry.
-2. Click **Product destinations**.
+2. Click **Product destinations** in the bottom bar.
+
+   ![Animals page with a chicken coop selected and Product destinations in the bottom bar](assets/screenshots/01-animals-page-product-destinations-button.jpg)
+
 3. Pick a mode for each product and press **OK**. **Back** leaves everything unchanged.
 
+   ![Product destinations dialog for a chicken coop with Eggs set to Distributing](assets/screenshots/02-chicken-coop-eggs-distributing.jpg)
+
 The list shows what the animals in that barn produce: goats only shows goat milk, sheep only shows wool. Young animals or a pause in production don't hide a product, so you can set it in advance. Reopen the dialog after your animals change. A barn whose animals produce nothing has no button. Settings for products you no longer produce are kept and apply again when you keep those animals again.
+
+![Product destinations dialog for a cow barn with Milk set to Distributing and Buffalo Milk set to Selling](assets/screenshots/03-cow-barn-milk-and-buffalo-milk.jpg)
 
 | Mode | What happens |
 | --- | --- |
@@ -56,15 +77,24 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.2 · 模拟农场 25 1.24（PC）
 
+**下载：**[GitHub 发布页 1.0.0.2](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2)（在 **Assets** 下载 `FS25_AnimalProductsManager.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
+
 为畜舍的每种产品（如牛奶、山羊奶、鸡蛋、羊毛）选择去向：继续储存、自动出售，或送往自己农场的生产点。产品按畜舍自动识别，所有产出这些产品的动物都适用。
 
 ### 使用方法
 
 1. 打开游戏菜单的“动物”页面，选择畜舍。
-2. 点击“产品去向”。
+2. 点击底栏的“产品去向”。
+
+   ![“动物”页面选中鸡舍，底栏显示“产品去向”](assets/screenshots/01-animals-page-product-destinations-button.jpg)
+
 3. 为每种产品选择挡位后按“确定”。按“返回”不会修改任何设置。
 
+   ![鸡舍的产品去向弹窗，鸡蛋设为分配](assets/screenshots/02-chicken-coop-eggs-distributing.jpg)
+
 列表显示该畜舍动物实际产出的产品：只养山羊显示山羊奶，只养绵羊显示羊毛。幼龄动物或暂时停产不会隐藏产品，可以提前设置。动物变化后重新打开弹窗即可刷新。动物没有任何产出的畜舍不显示按钮。不再产出的产品会保留原设置，再次饲养对应动物时重新生效。
+
+![牛棚的产品去向弹窗，牛奶设为分配，水牛奶设为出售](assets/screenshots/03-cow-barn-milk-and-buffalo-milk.jpg)
 
 | 挡位 | 效果 |
 | --- | --- |
