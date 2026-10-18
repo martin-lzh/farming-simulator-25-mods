@@ -8,6 +8,8 @@
 - 游戏内 Mod 列表中的简介改为全部 27 种语言的详细说明，介绍各挡位的作用和打开弹窗的方法（“动物”页面，“产品去向”，默认按键 X）。
 - Mod names in other languages now start every word with a capital letter, as in the English name.
 - 其他语言的 Mod 名称改为每个单词首字母大写，与英文名称一致。
+- If another Mod causes an error while products are sold or delivered, the error now appears in the game log instead of being hidden. Product that wasn't sold or delivered stays with the barn and is handled in the next in-game hour.
+- 如果其他 Mod 在出售或分配产品时出错，错误现在会显示在游戏日志中，不再被隐藏。未售出或未送达的产品仍归畜舍，在下一游戏小时继续处理。
 
 ## 1.0.0.0 — 2026-10-18
 

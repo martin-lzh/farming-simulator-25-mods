@@ -53,7 +53,7 @@ function APM.registerSavegameXMLPaths(schema, key)
 end
 
 function APM:onLoad()
-    self.apmState = {modes = {}, refunds = {}, deleted = false, ready = false, processing = false, palletDepth = 0}
+    self.apmState = {modes = {}, refunds = {}, hidden = {}, deleted = false, ready = false, processing = false, palletDepth = 0}
 end
 
 function APM:onDelete()
@@ -142,6 +142,8 @@ function APM.requestMode(placeable, fillType, mode)
 end
 
 function APM:saveToXMLFile(xmlFile, key)
+    -- Native pending stock may already be saved; keep masked stock in the refund buffer.
+    APM.recoverAbortedCalls(self, true)
     -- Remove only this specialization's subtree, including every repeated product.
     xmlFile:removeProperty(key)
     local index = 0
@@ -198,36 +200,60 @@ function APM:onReadStream(streamId, connection)
     self.apmState.ownerFarmId = self:getOwnerFarmId()
 end
 
+-- Errors raised by game or Mod code are not caught here, so they reach the log.
+-- An error unwinds past our cleanup; the next call in a later frame finishes it.
+function APM.recoverAbortedCalls(placeable, intoBuffer)
+    local state = placeable.apmState
+    if state.processing and state.processing ~= g_updateLoopIndex then
+        state.processing = false
+    end
+    if state.palletDepth > 0 and state.palletFrame ~= g_updateLoopIndex then
+        local pallets = placeable.spec_husbandryPallets
+        for fillType, amount in pairs(state.hidden) do
+            if intoBuffer or pallets == nil then
+                state.refunds[fillType] = (state.refunds[fillType] or 0) + amount
+            else
+                pallets.pendingLiters[fillType] = (pallets.pendingLiters[fillType] or 0) + amount
+            end
+        end
+        state.hidden = {}
+        state.palletDepth = 0
+    end
+end
+
 -- Keep native spawner bookkeeping and callbacks, hiding only managed pending stock.
--- Restore on exceptions too; an already requested pallet must not consume routed stock.
+-- Hidden stock is recorded in the state, so an error in the spawner cannot lose it.
 function APM.withStoredPalletsHidden(placeable, superFunc, ...)
     if placeable.apmState == nil or not placeable.isServer then
         return superFunc(placeable, ...)
     end
+    local state = placeable.apmState
+    APM.recoverAbortedCalls(placeable, false)
     local pending = placeable.spec_husbandryPallets.pendingLiters
-    placeable.apmState.palletDepth = placeable.apmState.palletDepth + 1
+    state.palletDepth = state.palletDepth + 1
+    state.palletFrame = g_updateLoopIndex
     local hidden = {}
     for fillType, amount in pairs(pending) do
-        if APM.mode(placeable, fillType) ~= APMDistribution.KEEP then
+        if APM.mode(placeable, fillType) ~= APMDistribution.KEEP and amount ~= 0 then
             hidden[fillType] = amount
+            state.hidden[fillType] = (state.hidden[fillType] or 0) + amount
             pending[fillType] = 0
         end
     end
-    local ok, result = pcall(superFunc, placeable, ...)
+    local result = superFunc(placeable, ...)
     local resume = false
     for fillType, amount in pairs(hidden) do
         pending[fillType] = pending[fillType] + amount
+        state.hidden[fillType] = state.hidden[fillType] - amount
+        if state.hidden[fillType] <= 0 then state.hidden[fillType] = nil end
         -- Ownership or mode can change inside a synchronous native callback.
         -- Its nested update saw zero stock; retry after the outer mask is gone.
         if APM.mode(placeable, fillType) == APMDistribution.KEEP and pending[fillType] > 5 then
             resume = true
         end
     end
-    placeable.apmState.palletDepth = placeable.apmState.palletDepth - 1
-    if not ok then
-        error(result)
-    end
-    if resume and placeable.apmState.palletDepth == 0 then
+    state.palletDepth = state.palletDepth - 1
+    if resume and state.palletDepth == 0 then
         placeable:updatePallets()
     end
     return result
@@ -241,47 +267,64 @@ function APM:getPalletCallback(superFunc, pallet, result, fillType)
     return APM.withStoredPalletsHidden(self, superFunc, pallet, result, fillType)
 end
 
--- A Storage listener can throw after changing the level. Always observe the result.
 function APM.writeLevel(get, set, value)
     local before = get()
-    local ok, err = pcall(set, value)
-    local after = get()
-    if not ok then Logging.warning("Animal Products Manager storage callback failed: %s", tostring(err)) end
-    return after - before
+    set(value)
+    return get() - before
 end
 
-function APM.changeMoney(farmId, amount, moneyType)
+function APM.releaseMoneyHook()
+    local hook = APM.moneyHook
+    if hook ~= nil then
+        APM.moneyHook = nil
+        if rawget(hook.center, "publish") == hook.publish then
+            hook.center.publish = hook.own
+        end
+    end
+end
+
+-- Farm:changeBalance changes the balance, then publishes MONEY_CHANGED.
+-- Book the change at that moment, before subscribers run: their own effects
+-- (loans, repayments, nested settlements) and their errors stay out of this
+-- transaction. The hook removes itself before calling them.
+function APM.changeMoney(farmId, amount, moneyType, onBooked)
     local farm = g_farmManager:getFarmById(farmId)
     if farm == nil then return 0 end
-    local before = farm:getBalance()
-    -- Farm publishes MONEY_CHANGED synchronously after changing its balance.
-    -- Exclude subscriber effects (loans, repayments, even nested settlements)
-    -- from this transaction, including when a subscriber throws after writing.
+    APM.releaseMoneyHook()
     local center = g_messageCenter
     local publish = center.publish
-    local ownPublish = rawget(center, "publish")
-    local listenerDelta, publishing = 0, false
-    center.publish = function(messageCenter, messageType, ...)
-        if messageCenter ~= center or messageType ~= MessageType.MONEY_CHANGED
-            or select(1, ...) ~= farmId or publishing then
-            return publish(messageCenter, messageType, ...)
+    local before = farm:getBalance()
+    local booked
+    local function book()
+        if booked == nil then
+            booked = farm:getBalance() - before
+            if onBooked ~= nil then onBooked(booked) end
         end
-        local beforeListeners = farm:getBalance()
-        publishing = true
-        local ok, err = pcall(publish, messageCenter, messageType, ...)
-        publishing = false
-        listenerDelta = listenerDelta + farm:getBalance() - beforeListeners
-        if not ok then error(err, 0) end
     end
-    local ok, err = pcall(g_currentMission.addMoney, g_currentMission, amount, farmId, moneyType, true)
-    center.publish = ownPublish
-    local delta = farm:getBalance() - before - listenerDelta
-    if not ok then Logging.warning("Animal Products Manager money callback failed: %s", tostring(err)) end
-    return delta
+    local hook = {center = center, own = rawget(center, "publish"), frame = g_updateLoopIndex}
+    hook.publish = function(messageCenter, messageType, ...)
+        if APM.moneyHook == hook then
+            if hook.frame ~= g_updateLoopIndex then
+                APM.releaseMoneyHook()
+            elseif messageCenter == center and messageType == MessageType.MONEY_CHANGED and select(1, ...) == farmId then
+                APM.releaseMoneyHook()
+                book()
+            end
+        end
+        return publish(messageCenter, messageType, ...)
+    end
+    center.publish = hook.publish
+    APM.moneyHook = hook
+    g_currentMission:addMoney(amount, farmId, moneyType, true)
+    -- Small changes are not published; nothing else ran between the change and here.
+    APM.releaseMoneyHook()
+    book()
+    return booked
 end
 
--- Refunds normally go straight back to native stock. If a third-party storage
--- refuses that write, retain the remainder in a separately persisted recovery buffer.
+-- The refund buffer holds this barn's product outside native stock: taken
+-- liters stay in it until they are sold or delivered, and liters a storage
+-- refuses to take back wait in it, saved with the game, until they fit.
 function APM.source(placeable, fillType)
     local pallets = placeable.spec_husbandryPallets
     local get, set
@@ -297,33 +340,37 @@ function APM.source(placeable, fillType)
         set = function(value) storage:setFillLevel(value, fillType) end
     end
     local refunds = placeable.apmState.refunds
-    return {
-        available = function() return get() + (refunds[fillType] or 0) end,
-        take = function(amount)
-            local held = math.min(refunds[fillType] or 0, math.max(amount, 0))
-            refunds[fillType] = (refunds[fillType] or 0) - held
-            local before = get()
-            local delta = APM.writeLevel(get, set, math.max(before - math.max(amount - held, 0), 0))
-            return held + math.max(-delta, 0)
-        end,
-        put = function(amount)
-            if amount > 0 then
-                local restored = math.max(APM.writeLevel(get, set, get() + amount), 0)
-                local retained = math.max(amount - restored, 0)
-                refunds[fillType] = (refunds[fillType] or 0) + retained
-                if retained > 0.000001 then
-                    Logging.warning("Animal Products Manager retained %.3f liters of %s for recovery; keep the mod enabled until restored",
-                        retained, g_fillTypeManager:getFillTypeNameByIndex(fillType))
-                end
-            end
-        end,
-        restore = function()
-            local held = refunds[fillType] or 0
-            if held > 0 then
-                local restored = math.max(APM.writeLevel(get, set, get() + held), 0)
-                refunds[fillType] = math.max(held - restored, 0)
-            end
+    local function held() return refunds[fillType] or 0 end
+    local function moveBack(amount, warn)
+        amount = math.min(math.max(amount, 0), held())
+        if amount <= 0 then return end
+        -- Count the liters as returned first; the tank changes before its listeners run.
+        refunds[fillType] = held() - amount
+        local retained = math.max(amount - math.max(APM.writeLevel(get, set, get() + amount), 0), 0)
+        refunds[fillType] = held() + retained
+        if warn and retained > 0.000001 then
+            Logging.warning("Animal Products Manager retained %.3f liters of %s for recovery; keep the mod enabled until restored",
+                retained, g_fillTypeManager:getFillTypeNameByIndex(fillType))
         end
+    end
+    return {
+        available = function() return get() + held() end,
+        take = function(amount)
+            amount = math.max(amount, 0)
+            local buffered = held()
+            local level = get()
+            local target = math.max(level - math.max(amount - buffered, 0), 0)
+            if target < level then
+                -- Count the liters as taken first; the tank changes before its listeners run.
+                refunds[fillType] = buffered + level - target
+                refunds[fillType] = buffered + math.max(-APM.writeLevel(get, set, target), 0)
+            end
+            return math.min(held(), amount)
+        end,
+        release = function(amount) refunds[fillType] = math.max(held() - math.max(amount, 0), 0) end,
+        hold = function(amount) refunds[fillType] = held() + math.max(amount, 0) end,
+        put = function(amount) moveBack(amount, true) end,
+        restore = function() moveBack(held(), false) end
     }
 end
 
@@ -358,15 +405,17 @@ end
 
 function APM:processHour()
     local state = self.apmState
-    if not self.isServer or state == nil or state.deleted or not state.ready
-        or state.processing or state.palletDepth > 0 or self:getOwnerFarmId() == FarmManager.SPECTATOR_FARM_ID
+    if not self.isServer or state == nil or state.deleted or not state.ready then
+        return
+    end
+    APM.recoverAbortedCalls(self, false)
+    if state.processing or state.palletDepth > 0 or self:getOwnerFarmId() == FarmManager.SPECTATOR_FARM_ID
         or g_farmManager:getFarmById(self:getOwnerFarmId()) == nil then
         return
     end
-    state.processing = true
-    local ok, err = pcall(APM.processOutputs, self)
+    state.processing = g_updateLoopIndex
+    APM.processOutputs(self)
     state.processing = false
-    if not ok then Logging.warning("Animal Products Manager settlement failed: %s", tostring(err)) end
 end
 
 function APM:processOutputs()
@@ -384,7 +433,7 @@ function APM:processOutputs()
                 if mode == APMDistribution.SELL then
                     APMDistribution.sell(source,
                         mission.economyManager:getPricePerLiter(fillType) * ProductionPoint.DIRECT_SELL_PRICE_FACTOR,
-                        function(revenue) return APM.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS) end)
+                        function(revenue, onPaid) APM.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS, onPaid) end)
                 elseif mode == APMDistribution.DISTRIBUTE then
                     APMDistribution.distribute(source, APM.targets(self, fillType), function(target, amount)
                         local distance = calcDistanceFrom(self.rootNode, target.point.owningPlaceable.rootNode)

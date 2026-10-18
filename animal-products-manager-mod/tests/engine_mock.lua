@@ -5,6 +5,7 @@ MoneyType = {SOLD_PRODUCTS = 1, PRODUCTION_COSTS = 2}
 ProductionPoint = {DIRECT_SELL_PRICE_FACTOR = 0.9, DIRECT_DELIVERY_PRICE = 0.000035}
 MessageType = {HOUR_CHANGED = 1, MONEY_CHANGED = 2}
 g_currentModName = "FS25_AnimalProductsManager"
+g_updateLoopIndex = 1
 g_currentModDirectory = "animal-products-manager-mod/"
 g_pixelSizeScaledY = 1 / 1080
 g_modIsLoaded = {[g_currentModName] = true}
