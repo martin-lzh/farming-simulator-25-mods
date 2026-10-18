@@ -50,7 +50,7 @@ Switch every barn back to Storing, let one in-game hour pass so the pallets appe
 
 ### License
 
-MIT License, see [LICENSE](LICENSE).
+PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-commercial use; commercial use is not allowed.
 
 ## 中文
 
@@ -100,4 +100,4 @@ MIT License, see [LICENSE](LICENSE).
 
 ### 许可
 
-MIT 许可，见 [LICENSE](LICENSE)。
+PolyForm Noncommercial 1.0.0 许可，见 [LICENSE](LICENSE)。可免费用于非商业用途，不允许商用。

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The Mod is now licensed under the PolyForm Noncommercial License 1.0.0: free to use, share and modify for non-commercial purposes; commercial use is not allowed. Versions released before this stay under MIT.
+- 本 Mod 改用 PolyForm Noncommercial 1.0.0 许可：可免费用于非商业用途的使用、分享和修改，不允许商用。此前已发布的版本仍为 MIT 许可。
+
 ## 1.0.0.1 — 2026-10-18
 
 - New Mod icon: a milk can and an egg with arrows to the three destinations, store, sell and distribute.
