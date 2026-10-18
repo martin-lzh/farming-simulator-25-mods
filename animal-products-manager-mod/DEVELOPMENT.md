@@ -44,7 +44,7 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 ## 1.0.0.2 发布准备
 
-2026-10-18：维护者要求为许可变更发补丁版。1.0.0.2 只改许可（PolyForm Noncommercial 1.0.0）、modDesc 作者名（Zhaohan Liu）和文档，脚本、界面和图标不变。`release.json` 仍为正式版。发布前需维护者在游戏内测试此构建。
+2026-10-18：维护者要求为许可变更发补丁版。1.0.0.2 只改许可（PolyForm Noncommercial 1.0.0）、modDesc 作者名（Zhaohan Liu）和文档，脚本、界面和图标不变。`release.json` 仍为正式版。维护者于 2026-10-19 以脚本、界面和图标未改为由免除此构建的游戏内测试。
 
 ## 1.0.0.1 发布准备
 
