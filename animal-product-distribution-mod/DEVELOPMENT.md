@@ -20,7 +20,7 @@ uv run animal-product-distribution-mod/tests/run.py
 python animal-product-distribution-mod/tools/build.py
 ```
 
-输出 `outputs/FS25_AnimalProductDistribution.zip`，由维护者手动放入游戏 mods 目录。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
+输出 `outputs/FS25_AnimalProductDistribution.zip`，由维护者放入游戏 mods 目录，或在维护者明确要求时由代理复制进去。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
 
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
 
