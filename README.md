@@ -1,5 +1,7 @@
 # Farming Simulator 25 Mods
 
+![LZH's FS25 Mods](assets/fs25-collection-cover.jpg)
+
 ## English
 
 Original Mods for Farming Simulator 25.
