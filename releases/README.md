@@ -1,6 +1,6 @@
 # Releases
 
-Each Mod is versioned and released on its own, with tags named `<mod>-v<version>` (for example `animal-product-distribution-v0.1.3.3`). Pull requests into `main` exist to ship new versions: merging one is the maintainer's approval, and CI then publishes automatically. The same flow and the same release code run in the sibling repositories [old-market-simulator-mods](https://github.com/martin-lzh/old-market-simulator-mods) and [parisian-bistro-simulator-mods](https://github.com/martin-lzh/parisian-bistro-simulator-mods).
+Each Mod is versioned and released on its own, with tags named `<mod>-v<version>` (for example `animal-products-manager-v0.1.3.3`). Pull requests into `main` exist to ship new versions: merging one is the maintainer's approval, and CI then publishes automatically. The same flow and the same release code run in the sibling repositories [old-market-simulator-mods](https://github.com/martin-lzh/old-market-simulator-mods) and [parisian-bistro-simulator-mods](https://github.com/martin-lzh/parisian-bistro-simulator-mods).
 
 ## How a version ships
 
@@ -51,4 +51,4 @@ $env:GH_TOKEN = gh auth token; python tools/ci.py release-plan --repository mart
 
 ## History
 
-The `animal-product-distribution-*.md` files are development notes for versions 0.1.0 to 0.1.3.3, written before automatic releases. The first GitHub release is published when the first PR into `main` is merged.
+The `animal-products-manager-*.md` files are development notes for versions 0.1.0 to 0.1.3.3, written before automatic releases. Those builds were still named Animal Product Distribution (`FS25_AnimalProductDistribution.zip`); the files and paths were renamed with the Mod before 1.0.0.0. The first GitHub release is published when the first PR into `main` is merged.

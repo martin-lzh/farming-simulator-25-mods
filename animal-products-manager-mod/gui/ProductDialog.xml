@@ -9,11 +9,11 @@
         <GuiElement profile="fs25_dialogContentContainer" id="contentContainer">
             <Text profile="fs25_dialogTitle" id="dialogTitleElement" position="0px -35px"/>
             <Text profile="fs25_dialogText" id="explanationElement" position="0px -80px" size="740px 90px"/>
-            <GuiElement profile="apd_productRow" id="rowTemplate">
-                <Text profile="apd_productName" name="productName"/>
-                <MultiTextOption profile="apd_productMode" name="mode"/>
+            <GuiElement profile="apm_productRow" id="rowTemplate">
+                <Text profile="apm_productName" name="productName"/>
+                <MultiTextOption profile="apm_productMode" name="mode"/>
             </GuiElement>
-            <ScrollingLayout profile="apd_productRows" id="productRows"/>
+            <ScrollingLayout profile="apm_productRows" id="productRows"/>
         </GuiElement>
         <BoxLayout profile="fs25_dialogButtonBox">
             <Button profile="buttonBack" text="$l10n_button_back" onClick="onClickBack"/>
@@ -22,21 +22,21 @@
         </BoxLayout>
     </GuiElement>
     <GUIProfiles>
-        <Profile name="apd_productRows" extends="emptyPanel" with="anchorBottomCenter">
+        <Profile name="apm_productRows" extends="emptyPanel" with="anchorBottomCenter">
             <size value="760px 230px"/>
             <position value="0px 25px"/>
             <flowDirection value="vertical"/>
         </Profile>
-        <Profile name="apd_productRow" extends="emptyPanel" with="anchorTopStretchingX">
+        <Profile name="apm_productRow" extends="emptyPanel" with="anchorTopStretchingX">
             <height value="56px"/>
         </Profile>
-        <Profile name="apd_productName" extends="fs25_textDefault" with="anchorMiddleLeft">
+        <Profile name="apm_productName" extends="fs25_textDefault" with="anchorMiddleLeft">
             <position value="12px 0px"/>
             <size value="330px 30px"/>
             <textSize value="18px"/>
             <textLayoutMode value="scrolling"/>
         </Profile>
-        <Profile name="apd_productMode" extends="fs25_multiTextOption" with="anchorMiddleRight">
+        <Profile name="apm_productMode" extends="fs25_multiTextOption" with="anchorMiddleRight">
             <position value="-12px 0px"/>
             <width value="350px"/>
         </Profile>

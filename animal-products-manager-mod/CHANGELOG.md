@@ -12,8 +12,8 @@
 - 支持多人游戏：有动物交易权限的农场成员可以修改设置，出售和分配由服务器每小时统一处理。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
-- If you played a test version, replace the old ZIP with this one; your settings are kept.
-- 如果玩过测试版，用本版 ZIP 替换旧文件即可，原有设置保留。
+- The Mod file is now `FS25_AnimalProductsManager.zip`. If you played a test version, delete the old `FS25_AnimalProductDistribution.zip` from your mods folder, add the new file and set your product destinations again; settings from test versions don't carry over.
+- Mod 文件改名为 `FS25_AnimalProductsManager.zip`。如果玩过测试版，请从 mods 目录删除旧的 `FS25_AnimalProductDistribution.zip`，放入新文件后重新设置产品去向；测试版的设置不会保留。
 
 ## 0.1.4.0 — 2026-10-18
 

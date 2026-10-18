@@ -15,7 +15,7 @@ from zipfile import ZipFile
 import modrelease
 
 ROOT = Path(__file__).resolve().parents[1]
-MODS = {"animal-product-distribution": "AnimalProductDistribution"}
+MODS = {"animal-products-manager": "AnimalProductsManager"}
 VERSION = r"(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){3}"
 GAME = "Farming Simulator 25 1.24 (PC)"
 

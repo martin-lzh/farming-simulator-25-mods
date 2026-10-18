@@ -63,7 +63,7 @@
     <iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true"/>
     <placeableSpecializations>
-        <specialization name="animalProductDistribution" className="AnimalProductDistribution" filename="scripts/AnimalProductDistribution.lua"/>
+        <specialization name="animalProductsManager" className="AnimalProductsManager" filename="scripts/AnimalProductsManager.lua"/>
     </placeableSpecializations>
     <extraSourceFiles>
         <sourceFile filename="scripts/Distribution.lua"/>
@@ -72,7 +72,7 @@
         <sourceFile filename="scripts/Register.lua"/>
     </extraSourceFiles>
     <l10n>
-        <text name="apd_title">
+        <text name="apm_title">
             <en>Product destinations</en>
             <de>Produktverteilung</de>
             <cs>产品去向</cs>
@@ -101,7 +101,7 @@
             <uk>Призначення продукції</uk>
             <vi>Nơi nhận sản phẩm</vi>
         </text>
-        <text name="apd_explanation">
+        <text name="apm_explanation">
             <en>Runs hourly in game. Uses automatic sale prices and delivery fees. Distribution supplies your farm's productions; excess stays here. Existing pallets require manual transport.</en>
             <de>Abwicklung jede Spielstunde zu automatischen Verkaufspreisen und Lieferkosten. Verteilung an eigene Produktionen; Überschüsse bleiben hier. Vorhandene Paletten selbst transportieren.</de>
             <cs>每游戏小时结算，使用自动售价和运费。分配送往本农场工厂，余量留存。已有托盘需手动搬运。</cs>

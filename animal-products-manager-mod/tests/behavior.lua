@@ -1,4 +1,4 @@
-local APD = AnimalProductDistribution
+local APM = AnimalProductsManager
 local passed = 0
 local function test(name, body)
     body()
@@ -24,58 +24,58 @@ end
 
 test("default and invalid modes", function()
     local h = mockHusbandry()
-    assert(APD.mode(h, 7) == 0)
-    assert(not APD.applyMode(h, 7, 3))
-    assert(not APD.applyMode(h, 999, 1))
-    assert(APD.mode(h, 7) == 0)
+    assert(APM.mode(h, 7) == 0)
+    assert(not APM.applyMode(h, 7, 3))
+    assert(not APM.applyMode(h, 999, 1))
+    assert(APM.mode(h, 7) == 0)
 end)
 test("distribution conserves product and weights capacity", function()
     local h = mockHusbandry()
     local a, b = mockStorage(0, 100), mockStorage(0, 300)
     local charged = 0
-    local amount = APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function(_, liters) charged = charged + liters; return liters end)
+    local amount = APMDistribution.distribute(APM.source(h, 7), {target(a), target(b)}, function(_, liters) charged = charged + liters; return liters end)
     near(amount, 100); near(a.amount, 25); near(b.amount, 75)
     near(h.spec_husbandryPallets.pendingLiters[7], 0); near(charged, 100)
 end)
 test("no receiver retains all stock", function()
     local h = mockHusbandry()
-    near(APDDistribution.distribute(APD.source(h, 7), {}, function() error("charged") end), 0)
+    near(APMDistribution.distribute(APM.source(h, 7), {}, function() error("charged") end), 0)
     near(h.spec_husbandryPallets.pendingLiters[7], 100)
 end)
 test("full and capacity limited destinations retain overflow", function()
     local h = mockHusbandry()
     local a, b = mockStorage(10, 10), mockStorage(0, 30)
-    near(APDDistribution.distribute(APD.source(h, 7), {target(a), target(b)}, function(_, n) return n end), 30)
+    near(APMDistribution.distribute(APM.source(h, 7), {target(a), target(b)}, function(_, n) return n end), 30)
     near(h.spec_husbandryPallets.pendingLiters[7], 70)
 end)
 test("partial acceptance refunds unaccepted source", function()
     local h = mockHusbandry()
     local charged = 0
     local t = {free = function() return 100 end, add = function() return 10 end}
-    near(APDDistribution.distribute(APD.source(h, 7), {t}, function(_, n) charged = n; return n end), 10)
+    near(APMDistribution.distribute(APM.source(h, 7), {t}, function(_, n) charged = n; return n end), 10)
     near(h.spec_husbandryPallets.pendingLiters[7], 90); near(charged, 10)
 end)
 test("sale credits once and zero price preserves stock", function()
     local h, money = mockHusbandry(), 0
-    local source = APD.source(h, 7)
-    APDDistribution.sell(source, 0, function() error("credited") end)
+    local source = APM.source(h, 7)
+    APMDistribution.sell(source, 0, function() error("credited") end)
     near(source.available(), 100)
-    APDDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
-    APDDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
+    APMDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
+    APMDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
     near(money, 180); near(source.available(), 0)
 end)
 test("milk adapter handles actual tank amounts", function()
     local h = mockHusbandry()
     h.spec_husbandry = {storage = mockStorage(50, 100)}
     h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
-    local source = APD.source(h, 4)
+    local source = APM.source(h, 4)
     near(source.take(80), 50); source.put(20); near(source.available(), 20)
-    assert(APD.supports(h, 4))
+    assert(APM.supports(h, 4))
 end)
 test("spawning hides only managed output and restores it", function()
     local h = mockHusbandry()
-    APD.applyMode(h, 7, 2)
-    APD.updatePallets(h, function(p)
+    APM.applyMode(h, 7, 2)
+    APM.updatePallets(h, function(p)
         assert(p.spec_husbandryPallets.pendingLiters[7] == 0)
         p.spec_husbandryPallets.pendingLiters[8] = 0
     end)
@@ -83,76 +83,76 @@ test("spawning hides only managed output and restores it", function()
     near(h.spec_husbandryPallets.pendingLiters[8], 0)
 end)
 test("spawner exception restores pending stock", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 1)
-    local ok = pcall(APD.updatePallets, h, function() error("spawn failed") end)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 1)
+    local ok = pcall(APM.updatePallets, h, function() error("spawn failed") end)
     assert(not ok); near(h.spec_husbandryPallets.pendingLiters[7], 100)
 end)
 test("in-flight callback cannot consume managed output", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 2)
-    APD.getPalletCallback(h, function(p, pallet, result, fillType)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 2)
+    APM.getPalletCallback(h, function(p, pallet, result, fillType)
         assert(fillType == 7); near(p.spec_husbandryPallets.pendingLiters[7], 0)
-        APD.updatePallets(p, function() end)
+        APM.updatePallets(p, function() end)
     end, {}, 0, 7)
     near(h.spec_husbandryPallets.pendingLiters[7], 100)
 end)
 test("store mode resumes native spawning", function()
     local h = mockHusbandry(); local calls = 0
     h.updatePallets = function() calls = calls + 1 end
-    APD.applyMode(h, 7, 1); assert(calls == 0)
-    APD.applyMode(h, 7, 0); assert(calls == 1)
+    APM.applyMode(h, 7, 1); assert(calls == 0)
+    APM.applyMode(h, 7, 0); assert(calls == 1)
 end)
 test("save and reload uses fill type names", function()
     local h, xml = mockHusbandry(), mockXML()
-    APD.applyMode(h, 7, 2)
-    APD.saveToXMLFile(h, xml, "barn.apd")
-    assert(xml.values["barn.apd.product(0)#fillType"] == "TYPE_7")
+    APM.applyMode(h, 7, 2)
+    APM.saveToXMLFile(h, xml, "barn.apm")
+    assert(xml.values["barn.apm.product(0)#fillType"] == "TYPE_7")
     local loaded = mockHusbandry()
-    APD.loadFromXMLFile(loaded, xml, "barn.apd", false)
-    assert(APD.mode(loaded, 7) == 2 and APD.mode(loaded, 8) == 0)
-    local reset = mockHusbandry(); APD.loadFromXMLFile(reset, xml, "barn.apd", true)
-    assert(APD.mode(reset, 7) == 0)
+    APM.loadFromXMLFile(loaded, xml, "barn.apm", false)
+    assert(APM.mode(loaded, 7) == 2 and APM.mode(loaded, 8) == 0)
+    local reset = mockHusbandry(); APM.loadFromXMLFile(reset, xml, "barn.apm", true)
+    assert(APM.mode(reset, 7) == 0)
 end)
 test("invalid save values fall back to storing", function()
     local h, xml = mockHusbandry(), mockXML()
     xml:setValue("barn.product(0)#fillType", "TYPE_7"); xml:setValue("barn.product(0)#mode", 999)
     xml:setValue("barn.product(1)#fillType", "UNKNOWN"); xml:setValue("barn.product(1)#mode", 1)
-    APD.loadFromXMLFile(h, xml, "barn", false)
-    assert(APD.mode(h, 7) == 0)
+    APM.loadFromXMLFile(h, xml, "barn", false)
+    assert(APM.mode(h, 7) == 0)
 end)
 test("join stream restores individual product modes", function()
     local h, c, stream = mockHusbandry(), mockHusbandry(), {}
-    c.isServer = false; APD.applyMode(h, 7, 1); APD.applyMode(h, 8, 2)
-    APD.onWriteStream(h, stream, {}); APD.onReadStream(c, stream, {})
-    assert(APD.mode(c, 7) == 1 and APD.mode(c, 8) == 2 and #stream == 0)
+    c.isServer = false; APM.applyMode(h, 7, 1); APM.applyMode(h, 8, 2)
+    APM.onWriteStream(h, stream, {}); APM.onReadStream(c, stream, {})
+    assert(APM.mode(c, 7) == 1 and APM.mode(c, 8) == 2 and #stream == 0)
 end)
 test("server rejects cross-farm requests and bad modes", function()
     local h = mockHusbandry()
     local connection = {farmId = 2, getIsServer = function() return false end}
-    APDModeEvent.new(h, 7, 1):run(connection); assert(APD.mode(h, 7) == 0)
+    APMModeEvent.new(h, 7, 1):run(connection); assert(APM.mode(h, 7) == 0)
     connection.farmId = 1
-    APDModeEvent.new(h, 7, 3):run(connection); assert(APD.mode(h, 7) == 0)
+    APMModeEvent.new(h, 7, 3):run(connection); assert(APM.mode(h, 7) == 0)
     g_currentMission.allowed = false
-    APDModeEvent.new(h, 7, 1):run(connection); assert(APD.mode(h, 7) == 0)
+    APMModeEvent.new(h, 7, 1):run(connection); assert(APM.mode(h, 7) == 0)
     g_currentMission.allowed = true
     local before = g_server.count
-    APDModeEvent.new(h, 7, 1):run(connection)
-    assert(APD.mode(h, 7) == 1 and g_server.count == before + 1)
+    APMModeEvent.new(h, 7, 1):run(connection)
+    assert(APM.mode(h, 7) == 1 and g_server.count == before + 1)
 end)
 test("event serialization and authoritative client application", function()
     local h, stream = mockHusbandry(), {}
     h.isServer = false
-    APDModeEvent.new(h, 7, 2):writeStream(stream, {})
-    APDModeEvent.emptyNew():readStream(stream, {getIsServer = function() return true end})
-    assert(APD.mode(h, 7) == 2 and #stream == 0)
+    APMModeEvent.new(h, 7, 2):writeStream(stream, {})
+    APMModeEvent.emptyNew():readStream(stream, {getIsServer = function() return true end})
+    assert(APM.mode(h, 7) == 2 and #stream == 0)
 end)
 test("deleted and unowned husbandries cannot be managed", function()
-    local h = mockHusbandry(); h.farmId = 0; assert(not APD.canManage(h))
-    h.farmId = 1; APD.onDelete(h); assert(not APD.canManage(h))
-    assert(not APD.applyMode(h, 7, 1))
+    local h = mockHusbandry(); h.farmId = 0; assert(not APM.canManage(h))
+    h.farmId = 1; APM.onDelete(h); assert(not APM.canManage(h))
+    assert(not APM.applyMode(h, 7, 1))
 end)
 test("ownership changes reset modes", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 2); h.farmId = 2; APD.onOwnerChanged(h)
-    assert(APD.mode(h, 7) == 0)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 2); h.farmId = 2; APM.onOwnerChanged(h)
+    assert(APM.mode(h, 7) == 0)
 end)
 test("only same-farm accepting production points receive goods", function()
     local h = mockHusbandry()
@@ -162,20 +162,20 @@ test("only same-farm accepting production points receive goods", function()
     end
     local good, foreign, wrong = point(1, true), point(2, true), point(1, false)
     g_currentMission.productionChainManager = {getProductionPointsForFarmId = function() return {good, foreign, wrong} end}
-    assert(#APD.targets(h, 7) == 1)
-    APD.applyMode(h, 7, 2); g_currentMission.money = 0
-    APD.processHour(h)
+    assert(#APM.targets(h, 7) == 1)
+    APM.applyMode(h, 7, 2); g_currentMission.money = 0
+    APM.processHour(h)
     near(good.storage.amount, 100); near(foreign.storage.amount, 0); near(wrong.storage.amount, 0)
     near(g_currentMission.money, -100 * 100 * 0.000035)
 end)
 test("clients never process balances", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 1); h.isServer = false
-    g_currentMission.money = 0; APD.processHour(h)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 1); h.isServer = false
+    g_currentMission.money = 0; APM.processHour(h)
     near(g_currentMission.money, 0); near(h.spec_husbandryPallets.pendingLiters[7], 100)
 end)
 test("hourly sale preserves other output and uses native factor", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 1)
-    g_currentMission.money = 0; APD.processHour(h); APD.processHour(h)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 1)
+    g_currentMission.money = 0; APM.processHour(h); APM.processHour(h)
     near(g_currentMission.money, 180); near(h.spec_husbandryPallets.pendingLiters[8], 40)
 end)
 test("specialization registration works with a proxy and is idempotent", function()
@@ -197,16 +197,16 @@ test("animal menu edits all products in one dialog and cancel discards drafts", 
     assert(g_gui.shows == shows + 1 and #dialog.rows == 2)
     assert(g_gui.previousGui == "InGameMenu", "lazy GUI loading lost parent focus")
     dialog.rows[1].option:setState(3); dialog.rows[2].option:setState(2)
-    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    assert(APM.mode(h, 7) == 0 and APM.mode(h, 8) == 0)
     dialog:onClickBack()
     assert(FocusManager.currentGui == "InGameMenu")
-    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    assert(APM.mode(h, 7) == 0 and APM.mode(h, 8) == 0)
     frame.menuButtonInfo[1].callback()
     assert(dialog.rows[1].option:getState() == 1)
     dialog.rows[1].option:setState(3); dialog.rows[2].option:setState(2)
     dialog:onClickOk()
     assert(g_gui.shows == shows + 2)
-    assert(APD.mode(h, 7) == 2 and APD.mode(h, 8) == 1)
+    assert(APM.mode(h, 7) == 2 and APM.mode(h, 8) == 1)
 end)
 test("disabled mod leaves native animal menu alone", function()
     g_modIsLoaded[g_currentModName] = false
@@ -217,62 +217,62 @@ test("disabled mod leaves native animal menu alone", function()
 end)
 test("load restores modes before owner assignment without resetting them", function()
     local saved, xml = mockHusbandry(), mockXML()
-    APD.applyMode(saved, 7, 2); APD.saveToXMLFile(saved, xml, "barn")
-    local loaded = mockHusbandry(); APD.onLoad(loaded)
-    APD.loadFromXMLFile(loaded, xml, "barn", false)
-    loaded.farmId = 2; APD.onOwnerChanged(loaded)
-    APD.onLoadFinished(loaded); APD.onPostFinalizePlacement(loaded)
-    assert(APD.mode(loaded, 7) == 2)
-    APD.onOwnerChanged(loaded); assert(APD.mode(loaded, 7) == 2)
-    loaded.farmId = 1; APD.onOwnerChanged(loaded); assert(APD.mode(loaded, 7) == 0)
+    APM.applyMode(saved, 7, 2); APM.saveToXMLFile(saved, xml, "barn")
+    local loaded = mockHusbandry(); APM.onLoad(loaded)
+    APM.loadFromXMLFile(loaded, xml, "barn", false)
+    loaded.farmId = 2; APM.onOwnerChanged(loaded)
+    APM.onLoadFinished(loaded); APM.onPostFinalizePlacement(loaded)
+    assert(APM.mode(loaded, 7) == 2)
+    APM.onOwnerChanged(loaded); assert(APM.mode(loaded, 7) == 2)
+    loaded.farmId = 1; APM.onOwnerChanged(loaded); assert(APM.mode(loaded, 7) == 0)
 end)
 test("unfinished and missing-farm husbandries never settle", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 1)
-    g_currentMission.money = 0; h.apdState.ready = false; APD.processHour(h)
-    h.apdState.ready = true; h.farmId = 99; APD.processHour(h)
-    near(g_currentMission.money, 0); near(APD.source(h, 7).available(), 100)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 1)
+    g_currentMission.money = 0; h.apmState.ready = false; APM.processHour(h)
+    h.apmState.ready = true; h.farmId = 99; APM.processHour(h)
+    near(g_currentMission.money, 0); near(APM.source(h, 7).available(), 100)
 end)
 test("reusing save XML cannot resurrect stale product modes", function()
     local h, xml = mockHusbandry(), mockXML()
-    APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 1); APD.saveToXMLFile(h, xml, "barn")
-    APD.applyMode(h, 7, 0); APD.applyMode(h, 8, 0); APD.saveToXMLFile(h, xml, "barn")
-    APD.loadFromXMLFile(h, xml, "barn", false)
-    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    APM.applyMode(h, 7, 2); APM.applyMode(h, 8, 1); APM.saveToXMLFile(h, xml, "barn")
+    APM.applyMode(h, 7, 0); APM.applyMode(h, 8, 0); APM.saveToXMLFile(h, xml, "barn")
+    APM.loadFromXMLFile(h, xml, "barn", false)
+    assert(APM.mode(h, 7) == 0 and APM.mode(h, 8) == 0)
 end)
 test("credit failure before mutation refunds inventory", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
-    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    APM.applyMode(h, 7, 1); g_currentMission.money = 0
     g_currentMission.addMoney = function() error("rejected before credit") end
-    APD.processHour(h); near(APD.source(h, 7).available(), 100); near(g_currentMission.money, 0)
+    APM.processHour(h); near(APM.source(h, 7).available(), 100); near(g_currentMission.money, 0)
     g_currentMission.addMoney = original
-    APD.processHour(h); near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+    APM.processHour(h); near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 180)
 end)
 test("credit exception after mutation never refunds paid product", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
-    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    APM.applyMode(h, 7, 1); g_currentMission.money = 0
     g_currentMission.addMoney = function(self, amount) self.money = self.money + amount; error("HUD error") end
-    APD.processHour(h); APD.processHour(h)
-    near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+    APM.processHour(h); APM.processHour(h)
+    near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 180)
     g_currentMission.addMoney = original
 end)
 test("silent no-op and partial credit preserve unpaid product", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
-    APD.applyMode(h, 7, 1); g_currentMission.money = 0
+    APM.applyMode(h, 7, 1); g_currentMission.money = 0
     g_currentMission.addMoney = function() end
-    APD.processHour(h); near(APD.source(h, 7).available(), 100)
+    APM.processHour(h); near(APM.source(h, 7).available(), 100)
     g_currentMission.addMoney = function(self, amount) self.money = self.money + amount / 2 end
-    APD.processHour(h); near(APD.source(h, 7).available(), 50); near(g_currentMission.money, 90)
+    APM.processHour(h); near(APM.source(h, 7).available(), 50); near(g_currentMission.money, 90)
     g_currentMission.addMoney = original
 end)
 test("reentrant money notification cannot settle another output twice", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
-    APD.applyMode(h, 7, 1); APD.applyMode(h, 8, 1); g_currentMission.money = 0
+    APM.applyMode(h, 7, 1); APM.applyMode(h, 8, 1); g_currentMission.money = 0
     g_currentMission.addMoney = function(self, amount)
-        self.money = self.money + amount; APD.processHour(h)
+        self.money = self.money + amount; APM.processHour(h)
     end
-    APD.processHour(h); near(g_currentMission.money, 252)
-    near(APD.source(h, 7).available(), 0); near(APD.source(h, 8).available(), 0)
-    assert(not h.apdState.processing)
+    APM.processHour(h); near(g_currentMission.money, 252)
+    near(APM.source(h, 7).available(), 0); near(APM.source(h, 8).available(), 0)
+    assert(not h.apmState.processing)
     g_currentMission.addMoney = original
 end)
 local function receiver(storage)
@@ -285,10 +285,10 @@ end
 test("destination failures before and after mutation conserve product", function()
     for _, accepted in ipairs({0, 20}) do
         local h, storage = mockHusbandry(), mockStorage(0, 500)
-        APD.applyMode(h, 7, 2); g_currentMission.money = 0
+        APM.applyMode(h, 7, 2); g_currentMission.money = 0
         storage.setFillLevel = function(self) self.amount = self.amount + accepted; error("listener error") end
-        receiverList({receiver(storage)}); APD.processHour(h)
-        near(APD.source(h, 7).available() + storage.amount, 100)
+        receiverList({receiver(storage)}); APM.processHour(h)
+        near(APM.source(h, 7).available() + storage.amount, 100)
         near(storage.amount, accepted); near(g_currentMission.money, -accepted * 100 * 0.000035)
     end
 end)
@@ -296,13 +296,13 @@ test("unpaid delivery restores goods and paid callback errors do not duplicate f
     local original = g_currentMission.addMoney
     for _, paid in ipairs({false, true}) do
         local h, storage = mockHusbandry(), mockStorage(0, 500)
-        APD.applyMode(h, 7, 2); g_currentMission.money = 0; receiverList({receiver(storage)})
+        APM.applyMode(h, 7, 2); g_currentMission.money = 0; receiverList({receiver(storage)})
         g_currentMission.addMoney = function(self, amount)
             if paid then self.money = self.money + amount end
             error("money callback error")
         end
-        APD.processHour(h)
-        near(APD.source(h, 7).available() + storage.amount, 100)
+        APM.processHour(h)
+        near(APM.source(h, 7).available() + storage.amount, 100)
         near(storage.amount, paid and 100 or 0)
         near(g_currentMission.money, paid and -0.35 or 0)
     end
@@ -311,9 +311,9 @@ end)
 test("duplicate receiver entries do not bias capacity shares", function()
     local h, a, b = mockHusbandry(), mockStorage(0, 100), mockStorage(0, 100)
     local pa, pb = receiver(a), receiver(b)
-    receiverList({pa, pa, pb}); APD.applyMode(h, 7, 2); APD.processHour(h)
+    receiverList({pa, pa, pb}); APM.applyMode(h, 7, 2); APM.processHour(h)
     near(a.amount, 50); near(b.amount, 50)
-    h.spec_husbandry = {storage = a}; assert(#APD.targets(h, 7) == 1)
+    h.spec_husbandry = {storage = a}; assert(#APM.targets(h, 7) == 1)
 end)
 test("failed refund is saved separately and recovered exactly once", function()
     local h = mockHusbandry()
@@ -325,29 +325,29 @@ test("failed refund is saved separately and recovered exactly once", function()
         if value > self.amount then error("cannot return to tank") end
         set(self, value)
     end
-    local source = APD.source(h, 4)
-    APDDistribution.sell(source, 2, function() return 0 end)
-    near(storage.amount, 0); near(source.available(), 100); near(h.apdState.refunds[4], 100)
-    APD.saveToXMLFile(h, xml, "barn")
+    local source = APM.source(h, 4)
+    APMDistribution.sell(source, 2, function() return 0 end)
+    near(storage.amount, 0); near(source.available(), 100); near(h.apmState.refunds[4], 100)
+    APM.saveToXMLFile(h, xml, "barn")
     local loaded = mockHusbandry()
     loaded.spec_husbandry = {storage = mockStorage(storage.amount, 100)}
     loaded.spec_husbandryMilk = h.spec_husbandryMilk
-    APD.loadFromXMLFile(loaded, xml, "barn", false)
-    APD.processHour(loaded); APD.processHour(loaded)
-    near(loaded.spec_husbandry.storage.amount, 100); near(loaded.apdState.refunds[4], 0)
-    near(APD.source(loaded, 4).available(), 100)
+    APM.loadFromXMLFile(loaded, xml, "barn", false)
+    APM.processHour(loaded); APM.processHour(loaded)
+    near(loaded.spec_husbandry.storage.amount, 100); near(loaded.apmState.refunds[4], 0)
+    near(APM.source(loaded, 4).available(), 100)
 end)
 test("settlement cannot run while native pallet stock is temporarily hidden", function()
-    local h = mockHusbandry(); APD.applyMode(h, 7, 1); APD.applyMode(h, 8, 1)
+    local h = mockHusbandry(); APM.applyMode(h, 7, 1); APM.applyMode(h, 8, 1)
     g_currentMission.money = 0
-    APD.updatePallets(h, function() APD.processHour(h) end)
-    near(APD.source(h, 7).available(), 100); near(g_currentMission.money, 0)
-    assert(h.apdState.palletDepth == 0)
+    APM.updatePallets(h, function() APM.processHour(h) end)
+    near(APM.source(h, 7).available(), 100); near(g_currentMission.money, 0)
+    assert(h.apmState.palletDepth == 0)
 end)
 test("nonfinite prices cannot corrupt balances or stock", function()
-    local source = APD.source(mockHusbandry(), 7)
+    local source = APM.source(mockHusbandry(), 7)
     for _, price in ipairs({math.huge, -math.huge, 0/0}) do
-        near(APDDistribution.sell(source, price, function() error("must not credit") end), 0)
+        near(APMDistribution.sell(source, price, function() error("must not credit") end), 0)
         near(source.available(), 100)
     end
 end)
@@ -378,15 +378,15 @@ test("sale ignores synchronous loan and repayment even when notification throws"
     for _, change in ipairs({-5000, 5000}) do
         for _, fails in ipairs({false, true}) do
             moneyScenario(function(ledger)
-                local h = mockHusbandry(); APD.applyMode(h, 7, 1)
+                local h = mockHusbandry(); APM.applyMode(h, 7, 1)
                 ledger.listener = function()
                     g_currentMission.money = g_currentMission.money + change
                     if fails then error("subscriber failed after separate transaction") end
                 end
-                APD.processHour(h); APD.processHour(h)
-                near(ledger.sales, 180); near(APD.source(h, 7).available(), 0)
+                APM.processHour(h); APM.processHour(h)
+                near(ledger.sales, 180); near(APM.source(h, 7).available(), 0)
                 near(g_currentMission.money, 6000 + 180 + change)
-                assert(ledger.notifications == 1 and not h.apdState.processing)
+                assert(ledger.notifications == 1 and not h.apmState.processing)
             end)
         end
     end
@@ -397,14 +397,14 @@ test("delivery keeps paid goods when a balance subscriber borrows or repays", fu
             moneyScenario(function(ledger)
                 local h, storage = mockHusbandry(), mockStorage(0, 2000)
                 h.spec_husbandryPallets.pendingLiters[7] = 1000
-                APD.applyMode(h, 7, 2); receiverList({receiver(storage)})
+                APM.applyMode(h, 7, 2); receiverList({receiver(storage)})
                 ledger.listener = function()
                     g_currentMission.money = g_currentMission.money + change
                     if fails then error("subscriber failed after separate transaction") end
                 end
-                APD.processHour(h); APD.processHour(h)
+                APM.processHour(h); APM.processHour(h)
                 near(ledger.fees, 3.5); near(storage.amount, 1000)
-                near(APD.source(h, 7).available(), 0); near(g_currentMission.money, 6000 - 3.5 + change)
+                near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 6000 - 3.5 + change)
             end)
         end
     end
@@ -412,31 +412,31 @@ end)
 test("nested notifications and another husbandry settlement are counted once", function()
     moneyScenario(function(ledger)
         local a, b = mockHusbandry(), mockHusbandry()
-        APD.applyMode(a, 7, 1); APD.applyMode(b, 7, 1)
+        APM.applyMode(a, 7, 1); APM.applyMode(b, 7, 1)
         local entered = false
         ledger.listener = function(farmId)
             if entered then return end
             entered = true
             g_currentMission.money = g_currentMission.money - 5000
             g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, g_currentMission.money)
-            APD.processHour(b)
+            APM.processHour(b)
         end
-        APD.processHour(a); APD.processHour(a); APD.processHour(b)
+        APM.processHour(a); APM.processHour(a); APM.processHour(b)
         near(ledger.sales, 360); near(g_currentMission.money, 6000 + 360 - 5000)
-        near(APD.source(a, 7).available(), 0); near(APD.source(b, 7).available(), 0)
+        near(APM.source(a, 7).available(), 0); near(APM.source(b, 7).available(), 0)
     end)
 end)
 test("subscriber side effects do not turn a rejected credit into a sale", function()
     moneyScenario(function(ledger)
-        local h = mockHusbandry(); APD.applyMode(h, 7, 1)
+        local h = mockHusbandry(); APM.applyMode(h, 7, 1)
         local add = g_currentMission.addMoney
         ledger.listener = function() g_currentMission.money = g_currentMission.money + 5000 end
         g_currentMission.addMoney = function(_, _, farmId)
             g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, g_currentMission.money)
             error("rejected before sale credit")
         end
-        APD.processHour(h)
-        near(APD.source(h, 7).available(), 100); near(ledger.sales, 0)
+        APM.processHour(h)
+        near(APM.source(h, 7).available(), 100); near(ledger.sales, 0)
         g_currentMission.addMoney = add
     end)
 end)
@@ -453,7 +453,7 @@ test("nested other-farm settlement and unrelated events remain isolated", functi
         local farmId = select(1, ...)
         if messageType == MessageType.MONEY_CHANGED then
             if farmId == 1 then
-                nested = APD.changeMoney(2, 90, MoneyType.SOLD_PRODUCTS)
+                nested = APM.changeMoney(2, 90, MoneyType.SOLD_PRODUCTS)
             else
                 balances[2] = balances[2] - 1000
             end
@@ -472,7 +472,7 @@ test("nested other-farm settlement and unrelated events remain isolated", functi
         assert(a == "first" and b == "second")
         g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, balances[farmId])
     end
-    near(APD.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+    near(APM.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
     near(nested, 90); near(balances[1], 6180); near(balances[2], 2090)
     assert(custom == 2 and g_messageCenter.publish == notify)
     g_currentMission.addMoney, g_messageCenter.publish, g_farmManager.getFarmById = add, publish, getFarm
@@ -480,31 +480,31 @@ end)
 test("ownership reset restarts pending pallets once on the ready server", function()
     for _, server in ipairs({false, true}) do
         local h, calls = mockHusbandry(), 0
-        h.isServer = server; APD.applyMode(h, 7, 2)
+        h.isServer = server; APM.applyMode(h, 7, 2)
         h.updatePallets = function(self)
             calls = calls + 1
-            assert(APD.mode(self, 7) == 0 and self.apdState.ownerFarmId == 2)
-            APD.onOwnerChanged(self) -- Same-owner notification must not recurse.
+            assert(APM.mode(self, 7) == 0 and self.apmState.ownerFarmId == 2)
+            APM.onOwnerChanged(self) -- Same-owner notification must not recurse.
         end
-        h.farmId = 2; APD.onOwnerChanged(h); APD.onOwnerChanged(h)
-        assert(calls == (server and 1 or 0)); near(APD.source(h, 7).available(), 100)
+        h.farmId = 2; APM.onOwnerChanged(h); APM.onOwnerChanged(h)
+        assert(calls == (server and 1 or 0)); near(APM.source(h, 7).available(), 100)
     end
 end)
 test("loading owner assignment preserves modes without spawning pallets", function()
-    local h = mockHusbandry(); APD.onLoad(h); APD.applyMode(h, 7, 2)
+    local h = mockHusbandry(); APM.onLoad(h); APM.applyMode(h, 7, 2)
     h.updatePallets = function() error("must not spawn during load") end
-    h.farmId = 2; APD.onOwnerChanged(h)
-    assert(APD.mode(h, 7) == 2)
-    APD.onLoadFinished(h); APD.onPostFinalizePlacement(h); APD.onOwnerChanged(h)
+    h.farmId = 2; APM.onOwnerChanged(h)
+    assert(APM.mode(h, 7) == 2)
+    APM.onLoadFinished(h); APM.onPostFinalizePlacement(h); APM.onOwnerChanged(h)
 end)
 test("callback mode or owner changes resume stock after all pallet masks unwind", function()
     for _, ownerChange in ipairs({false, true}) do
         for _, nested in ipairs({false, true}) do
             local h, spawned = mockHusbandry(), {[7] = 0, [8] = 0}
             h.spec_husbandryPallets.pendingLiters[7] = 3000
-            APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 2)
+            APM.applyMode(h, 7, 2); APM.applyMode(h, 8, 2)
             h.updatePallets = function(self)
-                APD.updatePallets(self, function(p)
+                APM.updatePallets(self, function(p)
                     for fillType, amount in pairs(p.spec_husbandryPallets.pendingLiters) do
                         if amount > 5 then
                             spawned[fillType] = spawned[fillType] + amount
@@ -515,21 +515,21 @@ test("callback mode or owner changes resume stock after all pallet masks unwind"
             end
             local callback = function(p)
                 assert(p.spec_husbandryPallets.pendingLiters[7] == 0)
-                if ownerChange then p.farmId = 2; APD.onOwnerChanged(p)
-                else APD.applyMode(p, 7, APDDistribution.KEEP) end
+                if ownerChange then p.farmId = 2; APM.onOwnerChanged(p)
+                else APM.applyMode(p, 7, APMDistribution.KEEP) end
                 near(spawned[7], 0) -- Stock is still masked until the callback returns.
             end
             if nested then
-                APD.updatePallets(h, function(p) APD.getPalletCallback(p, callback, {}, 0, 7) end)
+                APM.updatePallets(h, function(p) APM.getPalletCallback(p, callback, {}, 0, 7) end)
             else
-                APD.getPalletCallback(h, callback, {}, 0, 7)
+                APM.getPalletCallback(h, callback, {}, 0, 7)
             end
             near(spawned[7], 3000) -- Resumed without waiting for another hour/update.
             h:updatePallets() -- No duplicate recovery on a later update.
-            near(spawned[7], 3000); near(APD.source(h, 7).available(), 0)
+            near(spawned[7], 3000); near(APM.source(h, 7).available(), 0)
             near(spawned[8], ownerChange and 40 or 0)
-            near(APD.source(h, 8).available(), ownerChange and 0 or 40)
-            assert(h.apdState.palletDepth == 0)
+            near(APM.source(h, 8).available(), ownerChange and 0 or 40)
+            assert(h.apmState.palletDepth == 0)
         end
     end
 end)
@@ -542,7 +542,7 @@ test("money observer restores inherited publisher without freezing its class", f
             self.money = self.money + amount
             g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, self.money)
         end
-        near(APD.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+        near(APM.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
         assert(rawget(g_messageCenter, "publish") == nil)
         class.publish = function() return "replacement" end
         assert(g_messageCenter:publish("CUSTOM") == "replacement")
@@ -556,7 +556,7 @@ test("each product row uses native production mode translations", function()
             assert(customMod == nil, "native key resolved in mod namespace")
             return "native:" .. key
         end
-        assert(key ~= "apd_store" and key ~= "apd_sell" and key ~= "apd_distribute")
+        assert(key ~= "apm_store" and key ~= "apm_sell" and key ~= "apm_distribute")
         return key
     end
     local frame = {selectedHusbandry = mockHusbandry(), setMenuButtonInfoDirty = function() end}
@@ -576,10 +576,10 @@ test("dialog confirms only edited rows and cannot submit twice", function()
     InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
     local dialog, count = g_gui.dialog, g_server.count
     -- A different player changes an untouched row while this window is open.
-    APD.applyMode(h, 8, 1)
+    APM.applyMode(h, 8, 1)
     dialog.rows[1].option:setState(3)
     dialog:onClickOk(); dialog:onClickOk()
-    assert(APD.mode(h, 7) == 2 and APD.mode(h, 8) == 1)
+    assert(APM.mode(h, 7) == 2 and APM.mode(h, 8) == 1)
     assert(g_server.count == count + 1)
     frame.menuButtonInfo[1].callback()
     assert(dialog.rows[1].option:getState() == 3 and dialog.rows[2].option:getState() == 2)
@@ -595,10 +595,10 @@ test("dialog rechecks permission deletion and original ownership at confirmation
         local dialog, count = g_gui.dialog, g_server.count
         dialog.rows[1].option:setState(3)
         if change == "permission" then g_currentMission.allowed = false end
-        if change == "delete" then h.apdState.deleted = true end
+        if change == "delete" then h.apmState.deleted = true end
         if change == "owner" then h.farmId = 2; g_currentMission.farmId = 2 end
         dialog:onClickOk()
-        assert(APD.mode(h, 7) == 0 and g_server.count == count)
+        assert(APM.mode(h, 7) == 0 and g_server.count == count)
         g_currentMission.allowed, g_currentMission.farmId = true, 1
     end
 end)
@@ -606,7 +606,7 @@ end)
 test("dialog reuse refreshes rows without retaining previous husbandry", function()
     local first, second = mockHusbandry(), mockHusbandry()
     second.spec_husbandryPallets.fillTypes = {8}
-    APD.applyMode(second, 8, 1)
+    APM.applyMode(second, 8, 1)
     local frame = {selectedHusbandry = first, setMenuButtonInfoDirty = function() end}
     InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
     local dialog, loads = g_gui.dialog, g_gui.loads
@@ -619,7 +619,7 @@ test("dialog reuse refreshes rows without retaining previous husbandry", functio
     assert(dialog.rows[1].element.label.text == "Product 8")
     assert(dialog.rows[1].option:getState() == 2)
     dialog.rows[1].option:setState(3); dialog:onClickOk()
-    assert(APD.mode(second, 8) == 2 and APD.mode(first, 8) == 0)
+    assert(APM.mode(second, 8) == 2 and APM.mode(first, 8) == 0)
 end)
 
 test("dialog batches client requests without locally changing modes", function()
@@ -633,7 +633,7 @@ test("dialog batches client requests without locally changing modes", function()
     g_gui.dialog.rows[1].option:setState(2); g_gui.dialog.rows[2].option:setState(3)
     g_gui.dialog:onClickOk()
     assert(#sent == 2 and sent[1].mode == 1 and sent[2].mode == 2)
-    assert(APD.mode(h, 7) == 0 and APD.mode(h, 8) == 0)
+    assert(APM.mode(h, 7) == 0 and APM.mode(h, 8) == 0)
     g_client = previousClient
 end)
 
@@ -649,7 +649,7 @@ test("dialog ignores opening key repeat and supports more than four products", f
     assert(dialog:onClickOk() and dialog:onClickBack() and dialog.isOpen)
     dialog.time = dialog.inputDelay + 1
     dialog:onClickOk()
-    assert(APD.mode(h, 12) == 2)
+    assert(APM.mode(h, 12) == 2)
 end)
 test("product rows fit the clipping viewport and height follows visible products", function()
     local heights = {}
@@ -693,8 +693,8 @@ test("goat and sheep barns show only their own native active products", function
         assert(g_gui.dialog.rows[1].element.label.text == "Product " .. selection[2])
         g_gui.dialog.rows[1].option:setState(3); g_gui.dialog:onClickOk()
     end
-    assert(APD.mode(goats, 7) == 0 and APD.mode(goats, 8) == 2)
-    assert(APD.mode(sheep, 7) == 2 and APD.mode(sheep, 8) == 0)
+    assert(APM.mode(goats, 7) == 0 and APM.mode(goats, 8) == 2)
+    assert(APM.mode(sheep, 7) == 2 and APM.mode(sheep, 8) == 0)
 end)
 
 test("mixed herds show both products and animal changes refresh reopened rows", function()
@@ -715,10 +715,10 @@ test("native milk activity selects subtype output even at zero production", func
     h.spec_husbandryPallets.activeFillTypes = {}
     h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4, 5},
         activeFillTypes = {5}, litersPerHour = {[4] = 0, [5] = 0}}
-    local products = APD.products(h, true)
+    local products = APM.products(h, true)
     assert(#products == 1 and products[1] == 5)
     h.spec_husbandryMilk.hasMilkProduction = false
-    assert(#APD.products(h, true) == 0)
+    assert(#APM.products(h, true) == 0)
 end)
 
 test("empty native activity hides the entry without falling back to all products", function()
@@ -726,48 +726,48 @@ test("empty native activity hides the entry without falling back to all products
     h.spec_husbandryPallets.activeFillTypes = {}
     local frame = {selectedHusbandry = h, setMenuButtonInfoDirty = function() end}
     InGameMenuAnimalsFrame.updateMenuButtons(frame)
-    assert(#frame.menuButtonInfo == 0 and #APD.products(h, true) == 0)
-    assert(#APD.products(h) == 2)
+    assert(#frame.menuButtonInfo == 0 and #APM.products(h, true) == 0)
+    assert(#APM.products(h) == 2)
 end)
 
 test("missing activity metadata falls back to supported products and lists deduplicate", function()
     local h = mockHusbandry()
-    assert(#APD.products(h, true) == 2)
+    assert(#APM.products(h, true) == 2)
     h.spec_husbandryPallets.activeFillTypes = {8, 8, 999}
     h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {8, 8}, activeFillTypes = {8}}
-    local products = APD.products(h, true)
+    local products = APM.products(h, true)
     assert(#products == 1 and products[1] == 8)
 end)
 
 test("hiding inactive outputs preserves modes refunds and the complete join stream", function()
     local h, xml = mockHusbandry(), mockXML()
     h.spec_husbandryPallets.activeFillTypes = {8}
-    APD.applyMode(h, 7, 2); APD.applyMode(h, 8, 1)
-    h.apdState.refunds[7] = 12
-    APD.saveToXMLFile(h, xml, "barn")
+    APM.applyMode(h, 7, 2); APM.applyMode(h, 8, 1)
+    h.apmState.refunds[7] = 12
+    APM.saveToXMLFile(h, xml, "barn")
     local loaded = mockHusbandry()
     loaded.spec_husbandryPallets.activeFillTypes = {}
-    APD.loadFromXMLFile(loaded, xml, "barn", false)
-    assert(APD.mode(loaded, 7) == 2 and APD.mode(loaded, 8) == 1)
-    near(loaded.apdState.refunds[7], 12)
+    APM.loadFromXMLFile(loaded, xml, "barn", false)
+    assert(APM.mode(loaded, 7) == 2 and APM.mode(loaded, 8) == 1)
+    near(loaded.apmState.refunds[7], 12)
     local stream, client = {}, mockHusbandry()
     client.isServer = false
     client.spec_husbandryPallets.activeFillTypes = {}
-    APD.onWriteStream(loaded, stream); APD.onReadStream(client, stream)
-    assert(APD.mode(client, 7) == 2 and APD.mode(client, 8) == 1)
+    APM.onWriteStream(loaded, stream); APM.onReadStream(client, stream)
+    assert(APM.mode(client, 7) == 2 and APM.mode(client, 8) == 1)
     client.spec_husbandryPallets.activeFillTypes = {7}
-    assert(APD.products(client, true)[1] == 7 and APD.mode(client, 7) == 2)
+    assert(APM.products(client, true)[1] == 7 and APM.mode(client, 7) == 2)
 end)
 
 test("inactive leftover inventory still settles once using its saved mode", function()
     local h = mockHusbandry()
     h.spec_husbandryPallets.activeFillTypes = {8}
-    APD.applyMode(h, 7, 1)
+    APM.applyMode(h, 7, 1)
     g_currentMission.money = 0
-    APD.processHour(h); APD.processHour(h)
+    APM.processHour(h); APM.processHour(h)
     near(g_currentMission.money, 180)
     near(h.spec_husbandryPallets.pendingLiters[7], 0)
     near(h.spec_husbandryPallets.pendingLiters[8], 40)
-    assert(APD.products(h, true)[1] == 8)
+    assert(APM.products(h, true)[1] == 8)
 end)
 print(string.format("%d behavioral tests passed", passed))

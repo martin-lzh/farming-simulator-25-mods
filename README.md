@@ -4,7 +4,7 @@
 
 Original Mods for Farming Simulator 25.
 
-- [Animal Products Manager](animal-product-distribution-mod/README.md), version 1.0.0.0: choose whether each husbandry product is stored, sold automatically or delivered to your own production points.
+- [Animal Products Manager](animal-products-manager-mod/README.md), version 1.0.0.0: choose whether each husbandry product is stored, sold automatically or delivered to your own production points.
 
 Each Mod lives in its own `<feature>-mod/` folder, created once the feature is defined.
 
@@ -23,7 +23,7 @@ Development conventions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 模拟农场 25 原创 Mod。
 
-- [动物产品管理](animal-product-distribution-mod/README.md)，版本 1.0.0.0：为每种畜舍产品选择储存、自动出售或送往自己农场的生产点。
+- [动物产品管理](animal-products-manager-mod/README.md)，版本 1.0.0.0：为每种畜舍产品选择储存、自动出售或送往自己农场的生产点。
 
 每项功能使用独立的 `<feature>-mod/` 目录，确定功能后再创建。
 

@@ -4,8 +4,8 @@ FillTypeManager = {SEND_NUM_BITS = 10}
 MoneyType = {SOLD_PRODUCTS = 1, PRODUCTION_COSTS = 2}
 ProductionPoint = {DIRECT_SELL_PRICE_FACTOR = 0.9, DIRECT_DELIVERY_PRICE = 0.000035}
 MessageType = {HOUR_CHANGED = 1, MONEY_CHANGED = 2}
-g_currentModName = "FS25_AnimalProductDistribution"
-g_currentModDirectory = "animal-product-distribution-mod/"
+g_currentModName = "FS25_AnimalProductsManager"
+g_currentModDirectory = "animal-products-manager-mod/"
 g_pixelSizeScaledY = 1 / 1080
 g_modIsLoaded = {[g_currentModName] = true}
 g_messageCenter = {subscribe = function() end, unsubscribe = function() end, publish = function() end}
@@ -54,7 +54,7 @@ TypeManager = {validateTypes = function() end}
 -- Deliberately distinct from the real manager to catch proxy identity mistakes.
 g_placeableTypeManager = {}
 g_placeableSpecializationManager = {getSpecializationByName = function()
-    return {name = "FS25_AnimalProductDistribution.animalProductDistribution"}
+    return {name = "FS25_AnimalProductsManager.animalProductsManager"}
 end}
 InGameMenuAnimalsFrame = {updateMenuButtons = function(frame) frame.menuButtonInfo = {} end}
 InputAction = {MENU_EXTRA_1 = 123}
@@ -140,9 +140,9 @@ function mockHusbandry()
         getName = function() return "Barn" end,
         updatePallets = function() end
     }
-    AnimalProductDistribution.onLoad(h)
-    AnimalProductDistribution.onLoadFinished(h)
-    AnimalProductDistribution.onPostFinalizePlacement(h)
+    AnimalProductsManager.onLoad(h)
+    AnimalProductsManager.onLoadFinished(h)
+    AnimalProductsManager.onPostFinalizePlacement(h)
     return h
 end
 function mockStorage(amount, capacity)

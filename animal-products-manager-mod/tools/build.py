@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT.parent / "outputs/FS25_AnimalProductDistribution.zip"
+OUTPUT = ROOT.parent / "outputs/FS25_AnimalProductsManager.zip"
 
 def build():
     desc = ET.parse(ROOT / "modDesc.xml").getroot()

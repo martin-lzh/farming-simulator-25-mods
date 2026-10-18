@@ -7,7 +7,8 @@
 - 0.1.2.0 核心逻辑：用户于 2026-10-18 实测确认通过。
 - 0.1.3.1 单弹窗显示和修改：用户实测确认通过。
 - 0.1.3.3 按活动产品筛选：维护者安装后反馈“没什么问题了”，未提供逐项记录。
-- 1.0.0.0 英文界面：维护者 2026-10-18 游戏内截图确认入口和弹窗显示正常；其余 26 种语言的游戏内文字和布局未逐一复测。
+- 1.0.0.0 英文界面：维护者 2026-10-18 游戏内截图确认入口和弹窗显示正常（更名前的构建 4c9df07）；其余 26 种语言的游戏内文字和布局未逐一复测。
+- 1.0.0.0 全面更名（ZIP、specialization、存档字段、事件和界面 ID）：离线测试通过，游戏内待复测。
 - 联机：10 组离线模拟通过，真实双机验收待执行（步骤见“同农场经理同时操作”）。
 - 存档回读、联机客户端、第三方畜舍及其他自动出售/分配 Mod 的组合：尚无逐项测试记录。
 
@@ -16,11 +17,11 @@
 从仓库根目录执行：
 
 ```powershell
-uv run animal-product-distribution-mod/tests/run.py
-python animal-product-distribution-mod/tools/build.py
+uv run animal-products-manager-mod/tests/run.py
+python animal-products-manager-mod/tools/build.py
 ```
 
-输出 `outputs/FS25_AnimalProductDistribution.zip`，由维护者放入游戏 mods 目录，或在维护者明确要求时由代理复制进去。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
+输出 `outputs/FS25_AnimalProductsManager.zip`，由维护者放入游戏 mods 目录，或在维护者明确要求时由代理复制进去。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
 
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
 
@@ -30,32 +31,36 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 2026-10-18：维护者表示 1.0.0.0 已在游戏内测过，要求开 dev → main 的 PR。核对 mods 目录时发现当时安装的是 0.1.3.3（英文名仍为 Animal Product Distribution，SHA256 `c35691443b1377559b9c26a2e03c1437f7d59fe08f49db2b8045eb1d66b0b65b`），因此按维护者明确要求，在游戏关闭时把 1.0.0.0 构建（提交 4c9df07，SHA256 `14388f873019d63b6bf2f957e0bfdb0b287b7c40c63e6f1c1512b6b32f53905d`）复制进 mods 目录替换旧 ZIP，再由维护者复测。
 
-维护者随后提供三张英文界面截图：鸡舍的动物页面底栏显示 “Product destinations” 入口；鸡舍弹窗只列出 Eggs（Distributing）；牛棚混养水牛和奶牛时列出 Milk（Distributing）和 Buffalo Milk（Selling）。说明文字在弹窗内换行，挡位箭头未被裁切。另一张截图显示一处生产点的鸡蛋进料为 2,396 / 2,400 L，与分配挡位一致，但没有记录结算前后的数量和余额。这四张截图的原图复制在被忽略的 `outputs/animal-product-distribution/screenshots/1.0.0.0/`，留作上传 Mod 的素材，不提交（含游戏画面）。记录为 1.0.0.0 英文界面实测通过；其余语言、存档回读、结算数量和真实双机联机未在本次截图中覆盖，下方“游戏内验收”清单不据此标为全部通过。
+维护者随后提供三张英文界面截图：鸡舍的动物页面底栏显示 “Product destinations” 入口；鸡舍弹窗只列出 Eggs（Distributing）；牛棚混养水牛和奶牛时列出 Milk（Distributing）和 Buffalo Milk（Selling）。说明文字在弹窗内换行，挡位箭头未被裁切。另一张截图显示一处生产点的鸡蛋进料为 2,396 / 2,400 L，与分配挡位一致，但没有记录结算前后的数量和余额。这四张截图的原图复制在被忽略的 `outputs/animal-products-manager/screenshots/1.0.0.0/`，留作上传 Mod 的素材，不提交（含游戏画面）。记录为 1.0.0.0 英文界面实测通过；其余语言、存档回读、结算数量和真实双机联机未在本次截图中覆盖，下方“游戏内验收”清单不据此标为全部通过。
+
+2026-10-18：维护者要求 Mod 名称、文件名和文档统一为 Manager，并选择连同 ZIP 名和存档内部名称一起改（1.0.0.0 尚未发布，此时代价最小）。改名对照：仓库目录与发布标识 `animal-product-distribution` → `animal-products-manager`（标签 `animal-products-manager-v1.0.0.0`）；ZIP `FS25_AnimalProductDistribution.zip` → `FS25_AnimalProductsManager.zip`；specialization `animalProductDistribution` → `animalProductsManager`，类与脚本 `AnimalProductDistribution(.lua)` → `AnimalProductsManager(.lua)`；Lua 前缀 `APD`/`apd` → `APM`/`apm`（含 `APMModeEvent`、`APMProductDialog`、`apmState`、`apm_title`、`apm_explanation` 和弹窗元素 ID）；`releases/` 开发记录文件同步改名。`Distribution.lua` 指分配挡位，不是 Mod 名，保持不变。
+
+影响：FS25 以 ZIP 名识别 Mod，存档中的设置保存在 Mod 名与 specialization 名下。旧测试存档里的挡位不会带到新 ZIP，全部回到储存；旧 ZIP 名下等待恢复的数量也不会转移。测试者需删除旧的 `FS25_AnimalProductDistribution.zip`，放入新 ZIP 后重新设置；两个 ZIP 同时启用会重复注册。脚本行为未改，60 项行为测试和 10 组联机模拟通过；更名后的构建需维护者重新在游戏内确认加载、入口、弹窗、保存和重载。
 
 ## 0.1.4.0 本地化
 
-`modDesc.xml` 的 title、description、apd_title 和 apd_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
+`modDesc.xml` 的 title、description、apm_title 和 apm_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
 
 挡位继续使用原生 ui_production_output_storing、ui_production_output_selling 和 ui_production_output_distributing；产品名称与确认/返回也沿用游戏翻译。无需新增 Lua 逻辑或翻译文件，ZIP 白名单仍为 8 个文件。沿用弹窗的原生文字测量和自动换行；新增语言的实际字体与布局仍需在游戏里切换检查。
 
 2026-10-18：维护者在安装 0.1.3.3 后反馈“没什么问题了”，并要求补齐其他语言。记录为当前测试反馈，不推定所有语言或全部联机角色已逐项验收。本次改动先记录在 Unreleased；0.1.3.3 从未发布，dev 上的 Release plan 因此报错。维护者随后指定本地化作为新版本 0.1.4.0（beta，release.json 保持 prerelease true），0.1.3.3 不单独发布。发布前需维护者在游戏内测试 0.1.4.0 构建并切换语言检查文字和布局。
 
-同版本内维护者要求更换名称：modDesc 的 en 标题、release.json displayName 和日志前缀改为 Animal Products Manager，其余 26 个语言的标题同步改为“产品管理”含义（简体“动物产品管理”、繁体“動物產品管理”）。ZIP 名 `FS25_AnimalProductDistribution`、目录名、脚本文件名和 specialization 名不变：FS25 以 ZIP 名识别 Mod，改名会让存档中的 Mod 设置和畜舍数据失去对应。
+同版本内维护者要求更换名称：modDesc 的 en 标题、release.json displayName 和日志前缀改为 Animal Products Manager，其余 26 个语言的标题同步改为“产品管理”含义（简体“动物产品管理”、繁体“動物產品管理”）。当时 ZIP 名、目录名、脚本文件名和 specialization 名保持旧名 AnimalProductDistribution，以免存档中的 Mod 设置失去对应；1.0.0.0 发布前已全部改名，见“1.0.0.0 首次发布”。
 
 同版本内按仓库规则重写玩家 README：English 在前、中文在后，各自完整；移除 specialization、pendingLiters 等开发术语和验收状态，改记于本文件“当前验收状态”和“构建”。根 README 同样改为 English 在前。
 
 ## 结构
 
 - `scripts/Distribution.lua`：与引擎分离的容量分配和出售结算。
-- `scripts/AnimalProductDistribution.lua`：畜舍 specialization、原生库存适配、保存、加入同步及按小时处理。
+- `scripts/AnimalProductsManager.lua`：畜舍 specialization、原生库存适配、保存、加入同步及按小时处理。
 - `scripts/ModeEvent.lua`：客户端请求与服务端权威广播，校验所有权、权限、输出类型和挡位。
 - `scripts/ProductDialog.lua`、`gui/ProductDialog.xml`：原生 MessageDialog、ScrollingLayout 和 MultiTextOption 控件组成的单窗口编辑器，暂存选择并统一确认。
 - `scripts/Register.lua`：向支持的 placeable 类型追加 specialization，并在动物页面加入操作按钮。
 - `tests/`：原创引擎替身及行为测试；不会加载或执行反编译文件。
 - `tools/build.py`：白名单打包，不安装。
-- `tools/make_icon.py`：原创图标生成；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon.dds`。使用 Microsoft DirectXTex 的 texconv 生成 BC1/DXT1 压缩纹理及完整 mipmap，运行 `uv run animal-product-distribution-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
+- `tools/make_icon.py`：原创图标生成；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon.dds`。使用 Microsoft DirectXTex 的 texconv 生成 BC1/DXT1 压缩纹理及完整 mipmap，运行 `uv run animal-products-manager-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
 
-本机接口核对材料位于被忽略的 `work/analysis/animal-product-distribution-api.md`，全部游戏参考留在 `work/`。修改前重新核对目标版本和调用时机，反编译文本中的控制流不能直接复制或作为正确性的唯一依据。
+本机接口核对材料位于被忽略的 `work/analysis/animal-products-manager-api.md`，全部游戏参考留在 `work/`。修改前重新核对目标版本和调用时机，反编译文本中的控制流不能直接复制或作为正确性的唯一依据。
 
 正常库存存储在原生字段，自定义存档记录物料名称、模式以及异常返还被拒绝时的恢复数量。初始数据流同步所有模式，后续通过事件更新。只在畜舍完成放置后、原生 onHourChanged 事件中结算；处理中的回调不可再次进入结算。
 
@@ -67,11 +72,11 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 ## 离线验证
 
-运行 `uv run animal-product-distribution-mod/tests/run.py`，使用固定版本 Lupa 执行原创 Lua 测试。当前 60 项测试覆盖容量分配、物料守恒、溢出、空接收列表、价格系数、重复结算、托盘异步回调、异常前后实际变更、入账失败、回调重入、恢复数量持久化、模式保存/读取、加载时所有者赋值、加入同步、事件序列化、跨农场请求、权限、客户端不结算、转移所有权及菜单回调。新增回归覆盖同步还贷/借款及其抛错、嵌套通知、其他畜舍和农场结算、拒绝入账、发布函数恢复、易主后的托盘恢复和原生挡位翻译。单窗口回归另覆盖批量修改、取消草稿、仅提交改动行、避免覆盖其他玩家修改的未编辑行、重复确认、权限变化、窗口复用和客户端请求。活动产品回归覆盖山羊/绵羊独立列表、混养及动物变更、奶类子类型零产量、空列表与字段缺失的区别、去重，以及隐藏行的模式/恢复数量持久化、完整加入同步和遗留库存结算。
+运行 `uv run animal-products-manager-mod/tests/run.py`，使用固定版本 Lupa 执行原创 Lua 测试。当前 60 项测试覆盖容量分配、物料守恒、溢出、空接收列表、价格系数、重复结算、托盘异步回调、异常前后实际变更、入账失败、回调重入、恢复数量持久化、模式保存/读取、加载时所有者赋值、加入同步、事件序列化、跨农场请求、权限、客户端不结算、转移所有权及菜单回调。新增回归覆盖同步还贷/借款及其抛错、嵌套通知、其他畜舍和农场结算、拒绝入账、发布函数恢复、易主后的托盘恢复和原生挡位翻译。单窗口回归另覆盖批量修改、取消草稿、仅提交改动行、避免覆盖其他玩家修改的未编辑行、重复确认、权限变化、窗口复用和客户端请求。活动产品回归覆盖山羊/绵羊独立列表、混养及动物变更、奶类子类型零产量、空列表与字段缺失的区别、去重，以及隐藏行的模式/恢复数量持久化、完整加入同步和遗留库存结算。
 
 本机另有 `uv run work/scripts/check_distribution_native.py`：500 组与原生分配方法的数量/余额对照、官方 SDK 托盘方法的 50 轮保存/重载及异步回调核对。该工具仅在提供本机参考资料的工作区可用，全部结果位于 work/analysis/，不打包或提交原生代码。其引擎对象为替身，仍不能替代真实游戏验收。
 
-`uv run animal-product-distribution-mod/tests/run.py` 还执行 `tests/multiplayer.py` 的 10 组联机模拟。服务器与两位客户端各用独立 Lua 环境，通过对象 ID 序列化实际 Mod 事件，并控制跨客户端请求的到达顺序。覆盖同产品冲突的两种顺序、不同产品草稿并存、旧草稿覆盖、主机与客户端交错修改、请求在途时权限/农场/对象变化、专用服务器无本地玩家时的出售和分配，以及服务器模式保存回读、加入快照与加入后修改。新增山羊畜舍与绵羊畜舍的不同对象 ID 在双经理事件广播后仍保留各自产品和挡位的回归。60 项行为测试及 10 组联机模拟均于 2026-10-18 通过。
+`uv run animal-products-manager-mod/tests/run.py` 还执行 `tests/multiplayer.py` 的 10 组联机模拟。服务器与两位客户端各用独立 Lua 环境，通过对象 ID 序列化实际 Mod 事件，并控制跨客户端请求的到达顺序。覆盖同产品冲突的两种顺序、不同产品草稿并存、旧草稿覆盖、主机与客户端交错修改、请求在途时权限/农场/对象变化、专用服务器无本地玩家时的出售和分配，以及服务器模式保存回读、加入快照与加入后修改。新增山羊畜舍与绵羊畜舍的不同对象 ID 在双经理事件广播后仍保留各自产品和挡位的回归。60 项行为测试及 10 组联机模拟均于 2026-10-18 通过。
 
 模拟传输采用有序消息队列；权限、引擎对象和经济系统使用替身，不覆盖原生库存网络同步。加入测试只验证静止快照，不模拟引擎暂停、对象创建/确认或真实断线恢复，不能作为双机联机验收通过的依据。
 
@@ -94,9 +99,9 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 ## 0.1.3.3 活动产品筛选
 
-原生羊/山羊畜舍的托盘配置可以同时声明 WOOL 和 GOATMILK；`fillTypes` 是建筑支持能力，不代表当前动物的产出。原生 milk/pallets specialization 的 `onHusbandryAnimalsUpdate` 根据本畜舍动物群更新 `activeFillTypes`，原生信息界面也使用活动列表。0.1.3.3 菜单和弹窗调用 `APD.products(placeable, true)` 选择活动产品，不读取其他畜舍或农场的产品。
+原生羊/山羊畜舍的托盘配置可以同时声明 WOOL 和 GOATMILK；`fillTypes` 是建筑支持能力，不代表当前动物的产出。原生 milk/pallets specialization 的 `onHusbandryAnimalsUpdate` 根据本畜舍动物群更新 `activeFillTypes`，原生信息界面也使用活动列表。0.1.3.3 菜单和弹窗调用 `APM.products(placeable, true)` 选择活动产品，不读取其他畜舍或农场的产品。
 
-未传入筛选参数的 `APD.products` 仍返回完整支持列表，继续供保存、初始数据流、支持验证和小时结算使用。活动产品为空时不展示入口；字段缺失时对第三方实现保留原兼容行为。字段存在但为空不能回退成全部产品，也不能按当前每小时产量是否大于零筛选，否则幼龄、缺料时无法设置。
+未传入筛选参数的 `APM.products` 仍返回完整支持列表，继续供保存、初始数据流、支持验证和小时结算使用。活动产品为空时不展示入口；字段缺失时对第三方实现保留原兼容行为。字段存在但为空不能回退成全部产品，也不能按当前每小时产量是否大于零筛选，否则幼龄、缺料时无法设置。
 
 已不存在的动物产出仍保留其旧挡位，遗留库存按该挡位处理；这次没有改变结算、存档格式或网络事件格式。隐藏旧行不代表清空它的数据。游戏内需分别用只养山羊、只养绵羊和混养畜舍复测；双方更换相同 0.1.3.3 ZIP 后再验证联机，不能把离线模拟等同实际双机通过。
 

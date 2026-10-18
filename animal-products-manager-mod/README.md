@@ -40,7 +40,7 @@ The Mod doesn't handle manure, slurry, animal trading or DLC-specific outputs. T
 
 ### Install and update
 
-Put `FS25_AnimalProductDistribution.zip` in `Documents\My Games\FarmingSimulator2025\mods` and activate the Mod when you load a save. To update, replace the old ZIP with the new one; your settings are kept.
+Put `FS25_AnimalProductsManager.zip` in `Documents\My Games\FarmingSimulator2025\mods` and activate the Mod when you load a save. To update, replace the old ZIP with the new one; your settings are kept.
 
 ### Uninstall
 
@@ -86,7 +86,7 @@ Switch every barn back to Storing, let one in-game hour pass so the pallets appe
 
 ### 安装与更新
 
-把 `FS25_AnimalProductDistribution.zip` 放进 `文档\My Games\FarmingSimulator2025\mods`，载入存档时勾选本 Mod。更新时用新 ZIP 替换旧 ZIP，原有设置保留。
+把 `FS25_AnimalProductsManager.zip` 放进 `文档\My Games\FarmingSimulator2025\mods`，载入存档时勾选本 Mod。更新时用新 ZIP 替换旧 ZIP，原有设置保留。
 
 ### 卸载
 
