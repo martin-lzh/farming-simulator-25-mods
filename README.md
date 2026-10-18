@@ -19,6 +19,8 @@ Each Mod lives in its own `<feature>-mod/` folder, created once the feature is d
 
 Development conventions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 
+License: MIT License, see [LICENSE](LICENSE).
+
 ## 中文
 
 模拟农场 25 原创 Mod。
@@ -37,3 +39,5 @@ Development conventions are in [DEVELOPMENT.md](DEVELOPMENT.md).
 | outputs/ | 构建产物和安装包，不提交 |
 
 开发约定见 [DEVELOPMENT.md](DEVELOPMENT.md)。
+
+许可：MIT 许可，见 [LICENSE](LICENSE)。

@@ -1,5 +1,7 @@
 # Animal Products Manager · 动物产品管理
 
+![Animal Products Manager](assets/cover.jpg)
+
 ## English
 
 Version 1.0.0.0 · Farming Simulator 25 1.24 (PC)
@@ -46,6 +48,10 @@ Put `FS25_AnimalProductsManager.zip` in `Documents\My Games\FarmingSimulator2025
 
 Switch every barn back to Storing, let one in-game hour pass so the pallets appear, then save. If the game log contains `retained ... liters ... for recovery`, some product couldn't go back into the barn and the Mod is holding it: keep the Mod active, free up space and let another in-game hour pass before you uninstall, or that product is lost.
 
+### License
+
+MIT License, see [LICENSE](LICENSE).
+
 ## 中文
 
 版本 1.0.0.0 · 模拟农场 25 1.24（PC）
@@ -91,3 +97,7 @@ Switch every barn back to Storing, let one in-game hour pass so the pallets appe
 ### 卸载
 
 先把所有畜舍切回储存，等待一个游戏小时让托盘生成，再保存。如果游戏日志中出现 `retained ... liters ... for recovery`，说明有产品无法退回畜舍，暂由本 Mod 保管：请保持 Mod 启用，腾出空间并再等待一个游戏小时后再卸载，否则这部分产品会丢失。
+
+### 许可
+
+MIT 许可，见 [LICENSE](LICENSE)。
