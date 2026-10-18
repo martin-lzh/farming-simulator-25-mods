@@ -1,10 +1,29 @@
 # Farming Simulator 25 Mods
 
+## English
+
+Original Mods for Farming Simulator 25.
+
+- [Animal Products Manager](animal-products-manager-mod/README.md), version 1.0.0.0: choose whether each husbandry product is stored, sold automatically or delivered to your own production points.
+
+Each Mod lives in its own `<feature>-mod/` folder, created once the feature is defined.
+
+| Folder | Purpose |
+| --- | --- |
+| assets/ | Original promotional art and documentation images |
+| docs/ | Design notes and compatibility records |
+| tools/ | Development, check and packaging tools in use |
+| releases/ | Release notes and test records |
+| work/ | Local game references, third-party tools, analysis and logs; not committed |
+| outputs/ | Build output and packages; not committed |
+
+Development conventions are in [DEVELOPMENT.md](DEVELOPMENT.md).
+
 ## 中文
 
-Farming Simulator 25 原创 Mod 开发目录。
+模拟农场 25 原创 Mod。
 
-- [动物产品分配](animal-product-distribution-mod/README.md)：在动物页面为畜舍产品选择储存、出售或分配；0.1.3.3 按实际动物筛选产品；0.1.2.0 核心逻辑和 0.1.3.1 单弹窗均经用户实测通过。
+- [动物产品管理](animal-products-manager-mod/README.md)，版本 1.0.0.0：为每种畜舍产品选择储存、自动出售或送往自己农场的生产点。
 
 每项功能使用独立的 `<feature>-mod/` 目录，确定功能后再创建。
 
@@ -18,9 +37,3 @@ Farming Simulator 25 原创 Mod 开发目录。
 | outputs/ | 构建产物和安装包，不提交 |
 
 开发约定见 [DEVELOPMENT.md](DEVELOPMENT.md)。
-
-## English
-
-Workspace for original Farming Simulator 25 Mods. [Animal Product Distribution](animal-product-distribution-mod/README.md) adds storing, selling and distribution controls for husbandry outputs; the user has confirmed core behavior in 0.1.2.0; the user has also confirmed the 0.1.3.1 dialog displays and edits correctly.
-
-Create an independent `<feature>-mod/` directory when a feature is defined. Shared folders contain artwork (`assets/`), documentation (`docs/`), development tools (`tools/`) and release records (`releases/`). Local references belong in ignored `work/`; generated packages belong in ignored `outputs/`.

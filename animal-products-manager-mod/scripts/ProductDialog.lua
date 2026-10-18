@@ -1,20 +1,20 @@
-APDProductDialog = {}
-local APDProductDialog_mt = Class(APDProductDialog, MessageDialog)
+APMProductDialog = {}
+local APMProductDialog_mt = Class(APMProductDialog, MessageDialog)
 local dialogName = g_currentModName .. "_ProductDestinations"
 local dialogFile = g_currentModDirectory .. "gui/ProductDialog.xml"
 
-function APDProductDialog.new()
-    local self = MessageDialog.new(nil, APDProductDialog_mt)
+function APMProductDialog.new()
+    local self = MessageDialog.new(nil, APMProductDialog_mt)
     self.rows = {}
     return self
 end
 
-function APDProductDialog.show(title, explanation, entries, callback)
+function APMProductDialog.show(title, explanation, entries, callback)
     -- GUI controllers survive map changes. Only the current request owns farm data.
     local gui = g_gui.guis[dialogName]
     if gui == nil then
         local previousGui = FocusManager.currentGui
-        gui = g_gui:loadGui(dialogFile, dialogName, APDProductDialog.new())
+        gui = g_gui:loadGui(dialogFile, dialogName, APMProductDialog.new())
         if previousGui ~= nil then FocusManager:setGui(previousGui) end
     end
     if gui == nil or gui.target.isOpen then return end
@@ -25,15 +25,15 @@ function APDProductDialog.show(title, explanation, entries, callback)
     g_gui:showDialog(dialogName)
 end
 
-function APDProductDialog:onGuiSetupFinished()
-    APDProductDialog:superClass().onGuiSetupFinished(self)
+function APMProductDialog:onGuiSetupFinished()
+    APMProductDialog:superClass().onGuiSetupFinished(self)
     self.dialogChromeHeight = self.dialogElement.size[2] - self.contentContainer.size[2]
     self.rowTemplate:unlinkElement()
     FocusManager:removeElement(self.rowTemplate)
 end
 
-function APDProductDialog:onOpen()
-    APDProductDialog:superClass().onOpen(self)
+function APMProductDialog:onOpen()
+    APMProductDialog:superClass().onOpen(self)
     self.inputDelay = self.time + 250
     local visibleRows = math.min(math.max(#self.entries, 1), 4)
     local rowsHeight = visibleRows * self.rowTemplate.size[2]
@@ -70,7 +70,7 @@ function APDProductDialog:onOpen()
     end
 end
 
-function APDProductDialog:onClickOk()
+function APMProductDialog:onClickOk()
     if not self.isOpen or self.inputDelay >= self.time then return true end
     local changes = {}
     for _, row in ipairs(self.rows) do
@@ -85,20 +85,20 @@ function APDProductDialog:onClickOk()
     return false
 end
 
-function APDProductDialog:onClickBack()
+function APMProductDialog:onClickBack()
     if not self.isOpen or self.inputDelay >= self.time then return true end
     self:close()
     return false
 end
 
-function APDProductDialog:onClose()
+function APMProductDialog:onClose()
     self.entries, self.confirmCallback = nil, nil
     for _, row in ipairs(self.rows) do row.element:delete() end
     self.rows = {}
-    APDProductDialog:superClass().onClose(self)
+    APMProductDialog:superClass().onClose(self)
 end
 
-function APDProductDialog:delete()
+function APMProductDialog:delete()
     if self.rowTemplate ~= nil then self.rowTemplate:delete() end
-    APDProductDialog:superClass().delete(self)
+    APMProductDialog:superClass().delete(self)
 end

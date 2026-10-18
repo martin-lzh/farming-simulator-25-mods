@@ -14,14 +14,14 @@ class Peer:
         self.lua = LuaRuntime(unpack_returned_tuples=True)
         self.outgoing = deque()
         self.lua.execute((root / "tests/engine_mock.lua").read_text(encoding="utf-8"))
-        for name in ("Distribution", "AnimalProductDistribution", "ModeEvent", "ProductDialog", "Register"):
+        for name in ("Distribution", "AnimalProductsManager", "ModeEvent", "ProductDialog", "Register"):
             self.lua.execute((root / f"scripts/{name}.lua").read_text(encoding="utf-8"))
         self.lua.globals().serverPeer = server
         self.lua.globals().capturePacket = lambda packet: self.outgoing.append(
             tuple(packet[index] for index in range(1, len(packet) + 1))
         )
         self.lua.execute("""
-            APD = AnimalProductDistribution
+            APM = AnimalProductsManager
             barn = mockHusbandry()
             barn.isServer, barn.networkId = serverPeer, 42
             objects = {[42] = barn}
@@ -57,9 +57,9 @@ class Peer:
                 g_client = {getServerConnection = function() return serverConnection end}
             end
             function receive(packet, manager)
-                APDModeEvent.emptyNew():readStream(packet, manager and managers[manager] or serverConnection)
+                APMModeEvent.emptyNew():readStream(packet, manager and managers[manager] or serverConnection)
             end
-            function request(fillType, mode) APD.requestMode(barn, fillType, mode) end
+            function request(fillType, mode) APM.requestMode(barn, fillType, mode) end
             function openDialog(placeable)
                 local frame = {selectedHusbandry = placeable or barn, setMenuButtonInfoDirty = function() end}
                 InGameMenuAnimalsFrame.updateMenuButtons(frame)
@@ -67,10 +67,10 @@ class Peer:
             end
             function snapshot()
                 local stream = {}
-                APD.onWriteStream(barn, stream, managers[1])
+                APM.onWriteStream(barn, stream, managers[1])
                 return stream
             end
-            function loadSnapshot(stream) APD.onReadStream(barn, stream, serverConnection) end
+            function loadSnapshot(stream) APM.onReadStream(barn, stream, serverConnection) end
             function addFactory()
                 factory = mockStorage(0, 500)
                 local point = {storage = factory, inputFillTypeIds = {[7] = true},
@@ -118,8 +118,8 @@ class Session:
 
     def modes(self, first, second=0):
         for peer in [self.server, *self.clients]:
-            assert peer.value("APD.mode(barn, 7)") == first
-            assert peer.value("APD.mode(barn, 8)") == second
+            assert peer.value("APM.mode(barn, 7)") == first
+            assert peer.value("APM.mode(barn, 8)") == second
 
 
 def run_multiplayer(root):
@@ -185,7 +185,7 @@ def run_multiplayer(root):
     passed("host and remote edits converge in either server execution order")
 
     for change in ("managers[1].allowed = false", "managers[1].farmId = 2",
-                   "APD.onDelete(barn)", "objects[42] = nil"):
+                   "APM.onDelete(barn)", "objects[42] = nil"):
         session = Session(root)
         session.clients[0].run("request(7, 1)")
         session.server.run(change)
@@ -207,7 +207,7 @@ def run_multiplayer(root):
         session.modes(mode)
         for _ in range(2):
             for peer in [session.server, *session.clients]:
-                peer.run("APD.onHourChanged(barn)")
+                peer.run("APM.onHourChanged(barn)")
         assert isclose(session.server.value("g_currentMission.money"), expected_money)
         assert isclose(session.server.value("factory.amount"), expected_factory)
         assert session.server.value("barn.spec_husbandryPallets.pendingLiters[7]") == 0
@@ -223,11 +223,11 @@ def run_multiplayer(root):
     session.broadcast()
     session.server.run("""
         saved = mockXML()
-        APD.saveToXMLFile(barn, saved, 'barn.apd')
-        APD.onLoad(barn)
-        APD.loadFromXMLFile(barn, saved, 'barn.apd', false)
-        APD.onLoadFinished(barn)
-        APD.onPostFinalizePlacement(barn)
+        APM.saveToXMLFile(barn, saved, 'barn.apm')
+        APM.onLoad(barn)
+        APM.loadFromXMLFile(barn, saved, 'barn.apm', false)
+        APM.onLoadFinished(barn)
+        APM.onPostFinalizePlacement(barn)
     """)
     # Native join pauses gameplay: take a stationary snapshot, with no edit/hour
     # injected during sync. This checks Mod serialization, not the engine's pause.
@@ -265,7 +265,7 @@ def run_multiplayer(root):
     session.modes(0, 1)
     for peer in [session.server, *session.clients]:
         peer.run("""
-            assert(APD.mode(sheepBarn, 7) == 2 and APD.mode(sheepBarn, 8) == 0)
+            assert(APM.mode(sheepBarn, 7) == 2 and APM.mode(sheepBarn, 8) == 0)
             openDialog(barn)
             assert(#g_gui.dialog.rows == 1 and g_gui.dialog.rows[1].element.label.text == 'Product 8')
             g_gui.dialog:onClickBack()

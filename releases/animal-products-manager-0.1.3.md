@@ -8,4 +8,4 @@
 
 验证：52 项原创行为测试通过，运行时脚本语法和 ZIP 检查通过。0.1.3.0 的真实游戏布局、滚动、手柄和联机操作仍待验收。
 
-安装包：`outputs/FS25_AnimalProductDistribution.zip`。完全退出游戏后替换原安装包；多人玩家使用同一版本。无需修改存档。
+安装包：`outputs/FS25_AnimalProductsManager.zip`。完全退出游戏后替换原安装包；多人玩家使用同一版本。无需修改存档。

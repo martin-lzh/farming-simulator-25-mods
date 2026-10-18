@@ -1,24 +1,24 @@
-AnimalProductDistribution = {}
-local APD = AnimalProductDistribution
+AnimalProductsManager = {}
+local APM = AnimalProductsManager
 
-function APD.prerequisitesPresent(specializations)
+function APM.prerequisitesPresent(specializations)
     return SpecializationUtil.hasSpecialization(PlaceableHusbandryMilk, specializations)
         or SpecializationUtil.hasSpecialization(PlaceableHusbandryPallets, specializations)
 end
 
-function APD.registerEventListeners(placeableType)
+function APM.registerEventListeners(placeableType)
     for _, name in ipairs({"onLoad", "onDelete", "onReadStream", "onWriteStream", "onOwnerChanged", "onLoadFinished", "onPostFinalizePlacement", "onHourChanged"}) do
-        SpecializationUtil.registerEventListener(placeableType, name, APD)
+        SpecializationUtil.registerEventListener(placeableType, name, APM)
     end
 end
 
-function APD:onOwnerChanged()
-    if self.apdState ~= nil then
+function APM:onOwnerChanged()
+    if self.apmState ~= nil then
         local owner = self:getOwnerFarmId()
-        local changed = self.apdState.ready and self.apdState.ownerFarmId ~= owner
-        self.apdState.ownerFarmId = owner
+        local changed = self.apmState.ready and self.apmState.ownerFarmId ~= owner
+        self.apmState.ownerFarmId = owner
         if changed then
-            self.apdState.modes = {}
+            self.apmState.modes = {}
             if self.isServer and self.updatePallets ~= nil then
                 self:updatePallets()
             end
@@ -26,45 +26,45 @@ function APD:onOwnerChanged()
     end
 end
 
-function APD:onLoadFinished()
-    self.apdState.ownerFarmId = self:getOwnerFarmId()
+function APM:onLoadFinished()
+    self.apmState.ownerFarmId = self:getOwnerFarmId()
 end
 
-function APD:onPostFinalizePlacement()
-    self.apdState.ownerFarmId = self:getOwnerFarmId()
-    self.apdState.ready = true
+function APM:onPostFinalizePlacement()
+    self.apmState.ownerFarmId = self:getOwnerFarmId()
+    self.apmState.ready = true
 end
 
-function APD:onHourChanged()
-    APD.processHour(self)
+function APM:onHourChanged()
+    APM.processHour(self)
 end
 
-function APD.registerOverwrittenFunctions(placeableType)
+function APM.registerOverwrittenFunctions(placeableType)
     if SpecializationUtil.hasSpecialization(PlaceableHusbandryPallets, placeableType.specializations) then
-        SpecializationUtil.registerOverwrittenFunction(placeableType, "updatePallets", APD.updatePallets)
-        SpecializationUtil.registerOverwrittenFunction(placeableType, "getPalletCallback", APD.getPalletCallback)
+        SpecializationUtil.registerOverwrittenFunction(placeableType, "updatePallets", APM.updatePallets)
+        SpecializationUtil.registerOverwrittenFunction(placeableType, "getPalletCallback", APM.getPalletCallback)
     end
 end
 
-function APD.registerSavegameXMLPaths(schema, key)
+function APM.registerSavegameXMLPaths(schema, key)
     schema:register(XMLValueType.STRING, key .. ".product(?)#fillType", "Animal output fill type")
     schema:register(XMLValueType.INT, key .. ".product(?)#mode", "0 store, 1 sell, 2 distribute", 0)
     schema:register(XMLValueType.FLOAT, key .. ".product(?)#refundLiters", "Product awaiting return after a rejected transfer", 0)
 end
 
-function APD:onLoad()
-    self.apdState = {modes = {}, refunds = {}, deleted = false, ready = false, processing = false, palletDepth = 0}
+function APM:onLoad()
+    self.apmState = {modes = {}, refunds = {}, deleted = false, ready = false, processing = false, palletDepth = 0}
 end
 
-function APD:onDelete()
-    if self.apdState ~= nil then
-        self.apdState.deleted = true
+function APM:onDelete()
+    if self.apmState ~= nil then
+        self.apmState.deleted = true
     end
 end
 
 -- UI rows follow the native animal-dependent list. Keep the full supported list
 -- for inventory, saved settings and streams, including products no longer active.
-function APD.products(placeable, activeOnly)
+function APM.products(placeable, activeOnly)
     local products, seen = {}, {}
     local function collect(spec)
         if spec == nil then return end
@@ -89,11 +89,11 @@ function APD.products(placeable, activeOnly)
     return products
 end
 
-function APD.supports(placeable, fillType)
-    if placeable == nil or placeable.apdState == nil or placeable.apdState.deleted then
+function APM.supports(placeable, fillType)
+    if placeable == nil or placeable.apmState == nil or placeable.apmState.deleted then
         return false
     end
-    for _, candidate in ipairs(APD.products(placeable)) do
+    for _, candidate in ipairs(APM.products(placeable)) do
         if candidate == fillType then
             return true
         end
@@ -101,12 +101,12 @@ function APD.supports(placeable, fillType)
     return false
 end
 
-function APD.mode(placeable, fillType)
-    return placeable.apdState ~= nil and placeable.apdState.modes[fillType] or APDDistribution.KEEP
+function APM.mode(placeable, fillType)
+    return placeable.apmState ~= nil and placeable.apmState.modes[fillType] or APMDistribution.KEEP
 end
 
-function APD.canManage(placeable, connection)
-    if placeable == nil or placeable.apdState == nil or placeable.apdState.deleted then
+function APM.canManage(placeable, connection)
+    if placeable == nil or placeable.apmState == nil or placeable.apmState.deleted then
         return false
     end
     local farmId = placeable:getOwnerFarmId()
@@ -115,25 +115,25 @@ function APD.canManage(placeable, connection)
         and g_currentMission:getHasPlayerPermission("tradeAnimals", connection, farmId)
 end
 
-function APD.applyMode(placeable, fillType, mode)
-    if not APDDistribution.isMode(mode) or not APD.supports(placeable, fillType) then
+function APM.applyMode(placeable, fillType, mode)
+    if not APMDistribution.isMode(mode) or not APM.supports(placeable, fillType) then
         return false
     end
-    placeable.apdState.modes[fillType] = mode
-    if placeable.isServer and mode == APDDistribution.KEEP and placeable.updatePallets ~= nil then
+    placeable.apmState.modes[fillType] = mode
+    if placeable.isServer and mode == APMDistribution.KEEP and placeable.updatePallets ~= nil then
         placeable:updatePallets()
     end
     return true
 end
 
-function APD.requestMode(placeable, fillType, mode)
-    if not APD.canManage(placeable, nil) or not APD.supports(placeable, fillType)
-        or not APDDistribution.isMode(mode) then
+function APM.requestMode(placeable, fillType, mode)
+    if not APM.canManage(placeable, nil) or not APM.supports(placeable, fillType)
+        or not APMDistribution.isMode(mode) then
         return
     end
-    local event = APDModeEvent.new(placeable, fillType, mode)
+    local event = APMModeEvent.new(placeable, fillType, mode)
     if placeable.isServer then
-        if APD.applyMode(placeable, fillType, mode) then
+        if APM.applyMode(placeable, fillType, mode) then
             g_server:broadcastEvent(event, nil, nil, placeable)
         end
     else
@@ -141,14 +141,14 @@ function APD.requestMode(placeable, fillType, mode)
     end
 end
 
-function APD:saveToXMLFile(xmlFile, key)
+function APM:saveToXMLFile(xmlFile, key)
     -- Remove only this specialization's subtree, including every repeated product.
     xmlFile:removeProperty(key)
     local index = 0
-    for _, fillType in ipairs(APD.products(self)) do
-        local mode = APD.mode(self, fillType)
-        local refund = self.apdState.refunds[fillType] or 0
-        if mode ~= APDDistribution.KEEP or refund > 0 then
+    for _, fillType in ipairs(APM.products(self)) do
+        local mode = APM.mode(self, fillType)
+        local refund = self.apmState.refunds[fillType] or 0
+        if mode ~= APMDistribution.KEEP or refund > 0 then
             local entry = string.format("%s.product(%d)", key, index)
             xmlFile:setValue(entry .. "#fillType", g_fillTypeManager:getFillTypeNameByIndex(fillType))
             xmlFile:setValue(entry .. "#mode", mode)
@@ -158,57 +158,57 @@ function APD:saveToXMLFile(xmlFile, key)
     end
 end
 
-function APD:loadFromXMLFile(xmlFile, key, reset)
-    self.apdState.modes = {}
-    self.apdState.refunds = {}
+function APM:loadFromXMLFile(xmlFile, key, reset)
+    self.apmState.modes = {}
+    self.apmState.refunds = {}
     if reset then
         return
     end
     for _, entry in xmlFile:iterator(key .. ".product") do
         local fillType = g_fillTypeManager:getFillTypeIndexByName(xmlFile:getValue(entry .. "#fillType"))
-        local mode = xmlFile:getValue(entry .. "#mode", APDDistribution.KEEP)
-        if APD.supports(self, fillType) and APDDistribution.isMode(mode) then
-            self.apdState.modes[fillType] = mode
+        local mode = xmlFile:getValue(entry .. "#mode", APMDistribution.KEEP)
+        if APM.supports(self, fillType) and APMDistribution.isMode(mode) then
+            self.apmState.modes[fillType] = mode
             local refund = xmlFile:getValue(entry .. "#refundLiters", 0)
-            if APDDistribution.isFinite(refund) and refund > 0 then
-                self.apdState.refunds[fillType] = refund
+            if APMDistribution.isFinite(refund) and refund > 0 then
+                self.apmState.refunds[fillType] = refund
             end
         end
     end
 end
 
-function APD:onWriteStream(streamId, connection)
-    local products = APD.products(self)
+function APM:onWriteStream(streamId, connection)
+    local products = APM.products(self)
     streamWriteUInt16(streamId, #products)
     for _, fillType in ipairs(products) do
         streamWriteUIntN(streamId, fillType, FillTypeManager.SEND_NUM_BITS)
-        streamWriteUIntN(streamId, APD.mode(self, fillType), 2)
+        streamWriteUIntN(streamId, APM.mode(self, fillType), 2)
     end
 end
 
-function APD:onReadStream(streamId, connection)
+function APM:onReadStream(streamId, connection)
     local count = streamReadUInt16(streamId)
     for _ = 1, count do
         local fillType = streamReadUIntN(streamId, FillTypeManager.SEND_NUM_BITS)
         local mode = streamReadUIntN(streamId, 2)
-        if APD.supports(self, fillType) and APDDistribution.isMode(mode) then
-            self.apdState.modes[fillType] = mode
+        if APM.supports(self, fillType) and APMDistribution.isMode(mode) then
+            self.apmState.modes[fillType] = mode
         end
     end
-    self.apdState.ownerFarmId = self:getOwnerFarmId()
+    self.apmState.ownerFarmId = self:getOwnerFarmId()
 end
 
 -- Keep native spawner bookkeeping and callbacks, hiding only managed pending stock.
 -- Restore on exceptions too; an already requested pallet must not consume routed stock.
-function APD.withStoredPalletsHidden(placeable, superFunc, ...)
-    if placeable.apdState == nil or not placeable.isServer then
+function APM.withStoredPalletsHidden(placeable, superFunc, ...)
+    if placeable.apmState == nil or not placeable.isServer then
         return superFunc(placeable, ...)
     end
     local pending = placeable.spec_husbandryPallets.pendingLiters
-    placeable.apdState.palletDepth = placeable.apdState.palletDepth + 1
+    placeable.apmState.palletDepth = placeable.apmState.palletDepth + 1
     local hidden = {}
     for fillType, amount in pairs(pending) do
-        if APD.mode(placeable, fillType) ~= APDDistribution.KEEP then
+        if APM.mode(placeable, fillType) ~= APMDistribution.KEEP then
             hidden[fillType] = amount
             pending[fillType] = 0
         end
@@ -219,38 +219,38 @@ function APD.withStoredPalletsHidden(placeable, superFunc, ...)
         pending[fillType] = pending[fillType] + amount
         -- Ownership or mode can change inside a synchronous native callback.
         -- Its nested update saw zero stock; retry after the outer mask is gone.
-        if APD.mode(placeable, fillType) == APDDistribution.KEEP and pending[fillType] > 5 then
+        if APM.mode(placeable, fillType) == APMDistribution.KEEP and pending[fillType] > 5 then
             resume = true
         end
     end
-    placeable.apdState.palletDepth = placeable.apdState.palletDepth - 1
+    placeable.apmState.palletDepth = placeable.apmState.palletDepth - 1
     if not ok then
         error(result)
     end
-    if resume and placeable.apdState.palletDepth == 0 then
+    if resume and placeable.apmState.palletDepth == 0 then
         placeable:updatePallets()
     end
     return result
 end
 
-function APD:updatePallets(superFunc)
-    return APD.withStoredPalletsHidden(self, superFunc)
+function APM:updatePallets(superFunc)
+    return APM.withStoredPalletsHidden(self, superFunc)
 end
 
-function APD:getPalletCallback(superFunc, pallet, result, fillType)
-    return APD.withStoredPalletsHidden(self, superFunc, pallet, result, fillType)
+function APM:getPalletCallback(superFunc, pallet, result, fillType)
+    return APM.withStoredPalletsHidden(self, superFunc, pallet, result, fillType)
 end
 
 -- A Storage listener can throw after changing the level. Always observe the result.
-function APD.writeLevel(get, set, value)
+function APM.writeLevel(get, set, value)
     local before = get()
     local ok, err = pcall(set, value)
     local after = get()
-    if not ok then Logging.warning("Animal Product Distribution storage callback failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager storage callback failed: %s", tostring(err)) end
     return after - before
 end
 
-function APD.changeMoney(farmId, amount, moneyType)
+function APM.changeMoney(farmId, amount, moneyType)
     local farm = g_farmManager:getFarmById(farmId)
     if farm == nil then return 0 end
     local before = farm:getBalance()
@@ -276,13 +276,13 @@ function APD.changeMoney(farmId, amount, moneyType)
     local ok, err = pcall(g_currentMission.addMoney, g_currentMission, amount, farmId, moneyType, true)
     center.publish = ownPublish
     local delta = farm:getBalance() - before - listenerDelta
-    if not ok then Logging.warning("Animal Product Distribution money callback failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager money callback failed: %s", tostring(err)) end
     return delta
 end
 
 -- Refunds normally go straight back to native stock. If a third-party storage
 -- refuses that write, retain the remainder in a separately persisted recovery buffer.
-function APD.source(placeable, fillType)
+function APM.source(placeable, fillType)
     local pallets = placeable.spec_husbandryPallets
     local get, set
     if pallets ~= nil and pallets.pendingLiters[fillType] ~= nil then
@@ -296,23 +296,23 @@ function APD.source(placeable, fillType)
         get = function() return storage:getFillLevel(fillType) end
         set = function(value) storage:setFillLevel(value, fillType) end
     end
-    local refunds = placeable.apdState.refunds
+    local refunds = placeable.apmState.refunds
     return {
         available = function() return get() + (refunds[fillType] or 0) end,
         take = function(amount)
             local held = math.min(refunds[fillType] or 0, math.max(amount, 0))
             refunds[fillType] = (refunds[fillType] or 0) - held
             local before = get()
-            local delta = APD.writeLevel(get, set, math.max(before - math.max(amount - held, 0), 0))
+            local delta = APM.writeLevel(get, set, math.max(before - math.max(amount - held, 0), 0))
             return held + math.max(-delta, 0)
         end,
         put = function(amount)
             if amount > 0 then
-                local restored = math.max(APD.writeLevel(get, set, get() + amount), 0)
+                local restored = math.max(APM.writeLevel(get, set, get() + amount), 0)
                 local retained = math.max(amount - restored, 0)
                 refunds[fillType] = (refunds[fillType] or 0) + retained
                 if retained > 0.000001 then
-                    Logging.warning("Animal Product Distribution retained %.3f liters of %s for recovery; keep the mod enabled until restored",
+                    Logging.warning("Animal Products Manager retained %.3f liters of %s for recovery; keep the mod enabled until restored",
                         retained, g_fillTypeManager:getFillTypeNameByIndex(fillType))
                 end
             end
@@ -320,14 +320,14 @@ function APD.source(placeable, fillType)
         restore = function()
             local held = refunds[fillType] or 0
             if held > 0 then
-                local restored = math.max(APD.writeLevel(get, set, get() + held), 0)
+                local restored = math.max(APM.writeLevel(get, set, get() + held), 0)
                 refunds[fillType] = math.max(held - restored, 0)
             end
         end
     }
 end
 
-function APD.targets(placeable, fillType)
+function APM.targets(placeable, fillType)
     local result, seen = {}, {}
     local manager = g_currentMission.productionChainManager
     local farmId = placeable:getOwnerFarmId()
@@ -343,12 +343,12 @@ function APD.targets(placeable, fillType)
             target.add = function(amount)
                 local get = function() return storage:getFillLevel(fillType) end
                 local set = function(value) storage:setFillLevel(value, fillType) end
-                return math.max(APD.writeLevel(get, set, get() + math.min(amount, target.free())), 0)
+                return math.max(APM.writeLevel(get, set, get() + math.min(amount, target.free())), 0)
             end
             target.remove = function(amount)
                 local get = function() return storage:getFillLevel(fillType) end
                 local set = function(value) storage:setFillLevel(value, fillType) end
-                return math.max(-APD.writeLevel(get, set, math.max(get() - amount, 0)), 0)
+                return math.max(-APM.writeLevel(get, set, math.max(get() - amount, 0)), 0)
             end
             table.insert(result, target)
         end
@@ -356,41 +356,41 @@ function APD.targets(placeable, fillType)
     return result
 end
 
-function APD:processHour()
-    local state = self.apdState
+function APM:processHour()
+    local state = self.apmState
     if not self.isServer or state == nil or state.deleted or not state.ready
         or state.processing or state.palletDepth > 0 or self:getOwnerFarmId() == FarmManager.SPECTATOR_FARM_ID
         or g_farmManager:getFarmById(self:getOwnerFarmId()) == nil then
         return
     end
     state.processing = true
-    local ok, err = pcall(APD.processOutputs, self)
+    local ok, err = pcall(APM.processOutputs, self)
     state.processing = false
-    if not ok then Logging.warning("Animal Product Distribution settlement failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager settlement failed: %s", tostring(err)) end
 end
 
-function APD:processOutputs()
+function APM:processOutputs()
     local mission = g_currentMission
     local farmId = self:getOwnerFarmId()
-    for _, fillType in ipairs(APD.products(self)) do
-        local mode = APD.mode(self, fillType)
-        if mode == APDDistribution.KEEP and (self.apdState.refunds[fillType] or 0) > 0 then
-            local source = APD.source(self, fillType)
+    for _, fillType in ipairs(APM.products(self)) do
+        local mode = APM.mode(self, fillType)
+        if mode == APMDistribution.KEEP and (self.apmState.refunds[fillType] or 0) > 0 then
+            local source = APM.source(self, fillType)
             if source ~= nil then source.restore() end
         end
-        if mode ~= APDDistribution.KEEP then
-            local source = APD.source(self, fillType)
+        if mode ~= APMDistribution.KEEP then
+            local source = APM.source(self, fillType)
             if source ~= nil then
-                if mode == APDDistribution.SELL then
-                    APDDistribution.sell(source,
+                if mode == APMDistribution.SELL then
+                    APMDistribution.sell(source,
                         mission.economyManager:getPricePerLiter(fillType) * ProductionPoint.DIRECT_SELL_PRICE_FACTOR,
-                        function(revenue) return APD.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS) end)
-                elseif mode == APDDistribution.DISTRIBUTE then
-                    APDDistribution.distribute(source, APD.targets(self, fillType), function(target, amount)
+                        function(revenue) return APM.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS) end)
+                elseif mode == APMDistribution.DISTRIBUTE then
+                    APMDistribution.distribute(source, APM.targets(self, fillType), function(target, amount)
                         local distance = calcDistanceFrom(self.rootNode, target.point.owningPlaceable.rootNode)
                         local rate = distance * ProductionPoint.DIRECT_DELIVERY_PRICE
                         if rate <= 0 then return amount end
-                        local paid = -APD.changeMoney(farmId, -amount * rate, MoneyType.PRODUCTION_COSTS)
+                        local paid = -APM.changeMoney(farmId, -amount * rate, MoneyType.PRODUCTION_COSTS)
                         return paid / rate
                     end)
                 end

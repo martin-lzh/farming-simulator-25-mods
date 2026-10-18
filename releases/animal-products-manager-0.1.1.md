@@ -8,4 +8,4 @@
 
 验证结果：37 项原创行为测试、4 个脚本的 Luau 语法检查、XML 和 ZIP 白名单检查；本机另以隔离替身执行原生分配方法进行 500 组对照，并用 SDK 托盘方法完成 50 轮保存/重载及回调核对。上述为离线验证。
 
-产物：`outputs/FS25_AnimalProductDistribution.zip`。未自动安装、操作存档或启动游戏；游戏内、联机及第三方 Mod 兼容性仍待验收。若日志记录待恢复数量，应保持 Mod 启用直到产品返还完成，见 Mod README。
+产物：`outputs/FS25_AnimalProductsManager.zip`。未自动安装、操作存档或启动游戏；游戏内、联机及第三方 Mod 兼容性仍待验收。若日志记录待恢复数量，应保持 Mod 启用直到产品返还完成，见 Mod README。

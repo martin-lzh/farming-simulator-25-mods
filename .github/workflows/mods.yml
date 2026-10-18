@@ -1,0 +1,121 @@
+name: Mod CI and releases
+
+# Pull requests into main are version updates. After the maintainer merges one,
+# the release job publishes every new CHANGELOG version and promotes betas
+# whose release.json says "prerelease": false (tools/modrelease.py).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mods-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  syntax:
+    name: Script, data and workflow syntax
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Check repository boundaries and source syntax
+        run: |
+          python tools/check_repository.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python tools/check_syntax.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          git show --format= --check HEAD
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Check GitHub Actions workflows
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'actionlint.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'actionlint'
+          Invoke-WebRequest 'https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip' -OutFile $archive
+          if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne '6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9') {
+            throw 'actionlint archive checksum mismatch'
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath $destination
+          & (Join-Path $destination 'actionlint.exe') -color -shellcheck= -pyflakes=
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+  build:
+    name: Build and test
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.10.7'
+          enable-cache: false
+      - name: Validate versions and test release tooling
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          python tools/ci.py validate
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s tools/tests -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Run Lua tests and build packages
+        env:
+          PYTHONUTF8: '1'
+        run: python tools/ci.py build
+      - name: Release plan (read-only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          PYTHONUTF8: '1'
+        run: python tools/ci.py release-plan --repository "$env:RELEASE_REPOSITORY"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: mod-packages
+          path: outputs/ci/
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish new versions and promote betas
+    needs: [syntax, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: mod-packages
+          path: outputs/ci/
+      - name: Verify packages, publish and promote
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+          PYTHONUTF8: '1'
+        run: python tools/ci.py publish --repository "$RELEASE_REPOSITORY" --commit "$RELEASE_COMMIT"

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modDesc descVersion="114">
+    <author>martin-lzh</author>
+    <version>1.0.0.0</version>
+    <title>
+        <en>Animal Products Manager</en>
+        <de>Tierprodukte-Manager</de>
+        <cs>动物产品管理</cs>
+        <br>Gerenciador de produtos animais</br>
+        <ct>動物產品管理</ct>
+        <cz>Správce živočišných produktů</cz>
+        <da>Styring af dyreprodukter</da>
+        <ea>Administrador de productos animales</ea>
+        <es>Gestor de productos animales</es>
+        <fc>Gestionnaire de produits animaux</fc>
+        <fi>Eläintuotteiden hallinta</fi>
+        <fr>Gestionnaire de produits animaux</fr>
+        <hu>Állati termékek kezelése</hu>
+        <id>Pengelola Produk Ternak</id>
+        <it>Gestore dei prodotti animali</it>
+        <jp>畜産物マネージャー</jp>
+        <kr>축산물 관리자</kr>
+        <nl>Beheer van dierlijke producten</nl>
+        <no>Styring av dyreprodukter</no>
+        <pl>Menedżer produktów zwierzęcych</pl>
+        <pt>Gestor de produtos animais</pt>
+        <ro>Gestionarea produselor animale</ro>
+        <ru>Управление продуктами животноводства</ru>
+        <sv>Hantering av djurprodukter</sv>
+        <tr>Hayvansal Ürün Yöneticisi</tr>
+        <uk>Керування продуктами тваринництва</uk>
+        <vi>Quản lý sản phẩm chăn nuôi</vi>
+    </title>
+    <description>
+        <en>Manage each husbandry's products in the Animals menu: store, sell or distribute to your farm's productions. Existing pallets require manual transport.</en>
+        <de>Im Tiermenü Produkte je Stall lagern, verkaufen oder an eigene Produktionen verteilen. Vorhandene Paletten müssen selbst transportiert werden.</de>
+        <cs>在动物页面按畜舍管理产品：储存、出售或分配给本农场工厂。已有托盘需手动搬运。</cs>
+        <br>Gerencie os produtos de cada criação no menu Animais: armazene, venda ou distribua para as produções da sua fazenda. Paletes existentes precisam ser transportados manualmente.</br>
+        <ct>在動物頁面按畜舍管理產品：儲存、出售或分配給本農場工廠。現有棧板需手動搬運。</ct>
+        <cz>Spravujte produkty jednotlivých chovů v nabídce Zvířata: skladujte je, prodávejte nebo distribuujte do výroben své farmy. Stávající palety je nutné přepravovat ručně.</cz>
+        <da>Administrer produkterne fra hvert dyrehold i menuen Dyr: opbevar, sælg eller fordel dem til din gårds produktioner. Eksisterende paller skal transporteres manuelt.</da>
+        <ea>Administra los productos de cada recinto en el menú Animales: almacénalos, véndelos o distribúyelos a las fábricas de tu granja. Las tarimas existentes se transportan manualmente.</ea>
+        <es>Gestiona los productos de cada recinto en el menú Animales: almacénalos, véndelos o distribúyelos a las fábricas de tu granja. Los palés existentes se transportan manualmente.</es>
+        <fc>Gérez les produits de chaque élevage dans le menu Animaux : stockez, vendez ou distribuez-les aux usines de votre ferme. Les palettes existantes doivent être transportées manuellement.</fc>
+        <fi>Hallitse kunkin eläinsuojan tuotteita Eläimet-valikossa: varastoi, myy tai jaa tilasi tuotantolaitoksille. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
+        <fr>Gérez les produits de chaque élevage dans le menu Animaux : stockez, vendez ou distribuez-les aux usines de votre ferme. Les palettes existantes doivent être transportées manuellement.</fr>
+        <hu>Kezeld az egyes állattartó helyek termékeit az Állatok menüben: tárold, add el vagy oszd el őket a gazdaságod üzemei között. A meglévő raklapokat kézzel kell elszállítani.</hu>
+        <id>Kelola produk setiap kandang di menu Hewan: simpan, jual, atau distribusikan ke fasilitas produksi pertanian Anda. Palet yang sudah ada harus diangkut secara manual.</id>
+        <it>Gestisci i prodotti di ogni allevamento nel menu Animali: immagazzinali, vendili o distribuiscili agli impianti della tua fattoria. I pallet esistenti vanno trasportati manualmente.</it>
+        <jp>動物メニューで畜舎ごとに製品の保管・売却・自分の農場の生産施設への分配を設定できます。既存のパレットは手動で運搬してください。</jp>
+        <kr>동물 메뉴에서 축사별 생산품을 보관, 판매하거나 내 농장의 생산 시설로 분배하도록 설정하세요. 기존 팔레트는 직접 운반해야 합니다.</kr>
+        <nl>Beheer de producten van elk dierenverblijf in het menu Dieren: sla ze op, verkoop ze of verdeel ze over de productielocaties van je boerderij. Bestaande pallets moet je zelf vervoeren.</nl>
+        <no>Administrer produktene fra hvert dyrehold i Dyr-menyen: lagre, selg eller fordel dem til gårdens produksjonsanlegg. Eksisterende paller må transporteres manuelt.</no>
+        <pl>Zarządzaj produktami z każdej zagrody w menu Zwierzęta: magazynuj, sprzedawaj lub dostarczaj je do zakładów swojego gospodarstwa. Istniejące palety trzeba przewozić ręcznie.</pl>
+        <pt>Gere os produtos de cada recinto no menu Animais: armazena, vende ou distribui pelas unidades de produção da tua quinta. As paletes existentes têm de ser transportadas manualmente.</pt>
+        <ro>Gestionează produsele fiecărui adăpost din meniul Animale: depozitează-le, vinde-le sau distribuie-le unităților de producție ale fermei tale. Paleții existenți trebuie transportați manual.</ro>
+        <ru>Управляйте продукцией каждого загона в меню животных: храните, продавайте или распределяйте её по производствам своей фермы. Готовые поддоны нужно перевозить вручную.</ru>
+        <sv>Hantera produkterna från varje djurhållning i menyn Djur: lagra, sälj eller fördela dem till din gårds produktionsanläggningar. Befintliga pallar måste transporteras manuellt.</sv>
+        <tr>Hayvanlar menüsünde her barınağın ürünlerini yönetin: depolayın, satın veya çiftliğinizin üretim tesislerine dağıtın. Mevcut paletler elle taşınmalıdır.</tr>
+        <uk>Керуйте продукцією кожного загону в меню тварин: зберігайте, продавайте або розподіляйте її між виробництвами своєї ферми. Готові піддони потрібно перевозити вручну.</uk>
+        <vi>Quản lý sản phẩm của từng chuồng trong menu Động vật: lưu trữ, bán hoặc phân phối đến cơ sở sản xuất của trang trại bạn. Các pallet có sẵn cần được vận chuyển thủ công.</vi>
+    </description>
+    <iconFilename>icon.dds</iconFilename>
+    <multiplayer supported="true"/>
+    <placeableSpecializations>
+        <specialization name="animalProductsManager" className="AnimalProductsManager" filename="scripts/AnimalProductsManager.lua"/>
+    </placeableSpecializations>
+    <extraSourceFiles>
+        <sourceFile filename="scripts/Distribution.lua"/>
+        <sourceFile filename="scripts/ModeEvent.lua"/>
+        <sourceFile filename="scripts/ProductDialog.lua"/>
+        <sourceFile filename="scripts/Register.lua"/>
+    </extraSourceFiles>
+    <l10n>
+        <text name="apm_title">
+            <en>Product destinations</en>
+            <de>Produktverteilung</de>
+            <cs>产品去向</cs>
+            <br>Destino dos produtos</br>
+            <ct>產品去向</ct>
+            <cz>Určení produktů</cz>
+            <da>Produktdestinationer</da>
+            <ea>Destino de los productos</ea>
+            <es>Destino de los productos</es>
+            <fc>Destination des produits</fc>
+            <fi>Tuotteiden kohteet</fi>
+            <fr>Destination des produits</fr>
+            <hu>Termékek rendeltetése</hu>
+            <id>Tujuan produk</id>
+            <it>Destinazione dei prodotti</it>
+            <jp>製品の行き先</jp>
+            <kr>생산품 목적지</kr>
+            <nl>Productbestemmingen</nl>
+            <no>Produktdestinasjoner</no>
+            <pl>Przeznaczenie produktów</pl>
+            <pt>Destino dos produtos</pt>
+            <ro>Destinația produselor</ro>
+            <ru>Назначение продукции</ru>
+            <sv>Produktdestinationer</sv>
+            <tr>Ürün hedefleri</tr>
+            <uk>Призначення продукції</uk>
+            <vi>Nơi nhận sản phẩm</vi>
+        </text>
+        <text name="apm_explanation">
+            <en>Runs hourly in game. Uses automatic sale prices and delivery fees. Distribution supplies your farm's productions; excess stays here. Existing pallets require manual transport.</en>
+            <de>Abwicklung jede Spielstunde zu automatischen Verkaufspreisen und Lieferkosten. Verteilung an eigene Produktionen; Überschüsse bleiben hier. Vorhandene Paletten selbst transportieren.</de>
+            <cs>每游戏小时结算，使用自动售价和运费。分配送往本农场工厂，余量留存。已有托盘需手动搬运。</cs>
+            <br>Processamento a cada hora do jogo, com preços de venda automática e frete. Distribui para as produções da sua fazenda; o excedente fica aqui. Transporte os paletes existentes manualmente.</br>
+            <ct>每遊戲小時結算，使用自動售價和運費。分配送往本農場工廠，餘量留存。現有棧板需手動搬運。</ct>
+            <cz>Zpracování každou herní hodinu s cenami automatického prodeje a dopravným. Distribuce zásobuje výrobny vaší farmy; přebytky zůstávají zde. Stávající palety přepravujte ručně.</cz>
+            <da>Behandles hver time i spillet med automatiske salgspriser og fragtomkostninger. Fordeling leverer til din gårds produktioner; overskud bliver her. Eksisterende paller flyttes manuelt.</da>
+            <ea>Se procesa cada hora del juego, con precios de venta automática y gastos de envío. Distribuye a las fábricas de tu granja; el excedente queda aquí. Las tarimas existentes se transportan manualmente.</ea>
+            <es>Se procesa cada hora del juego, con precios de venta automática y gastos de transporte. Distribuye a las fábricas de tu granja; el excedente queda aquí. Los palés existentes se transportan manualmente.</es>
+            <fc>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution aux usines de votre ferme; le surplus reste ici. Transportez les palettes existantes manuellement.</fc>
+            <fi>Käsittely pelin jokaisena tuntina automaattisilla myyntihinnoilla ja kuljetusmaksuilla. Jakelu toimittaa tilasi tuotantolaitoksille; ylijäämä jää tänne. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
+            <fr>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution aux usines de votre ferme ; le surplus reste ici. Transportez les palettes existantes manuellement.</fr>
+            <hu>Feldolgozás minden játékórában, automatikus eladási árakkal és szállítási díjakkal. Az elosztás a saját gazdaság üzemeit látja el; a felesleg itt marad. A meglévő raklapokat kézzel kell elszállítani.</hu>
+            <id>Diproses setiap jam dalam game dengan harga jual otomatis dan biaya pengiriman. Distribusi memasok fasilitas produksi pertanian Anda; sisanya tetap di sini. Palet yang sudah ada harus diangkut manual.</id>
+            <it>Elaborazione ogni ora di gioco, con prezzi di vendita automatica e costi di trasporto. La distribuzione rifornisce gli impianti della tua fattoria; le eccedenze restano qui. Trasporta i pallet esistenti manualmente.</it>
+            <jp>ゲーム内の1時間ごとに処理し、自動売却価格と配送料を適用します。分配先は自分の農場の生産施設で、余剰分はここに残ります。既存のパレットは手動で運搬してください。</jp>
+            <kr>게임 시간으로 매시간 처리하며 자동 판매 가격과 운송비를 적용합니다. 내 농장의 생산 시설로 분배하고 남은 물량은 이곳에 보관합니다. 기존 팔레트는 직접 운반해야 합니다.</kr>
+            <nl>Verwerking elk uur in het spel, met automatische verkoopprijzen en transportkosten. Verdeling levert aan de productielocaties van je boerderij; het overschot blijft hier. Bestaande pallets vervoer je zelf.</nl>
+            <no>Behandles hver time i spillet med automatiske salgspriser og fraktkostnader. Fordeling leverer til gårdens produksjonsanlegg; overskuddet blir her. Eksisterende paller flyttes manuelt.</no>
+            <pl>Obsługa co godzinę w grze, z cenami sprzedaży automatycznej i opłatami za transport. Dystrybucja zaopatruje zakłady twojego gospodarstwa; nadwyżka zostaje tutaj. Istniejące palety przewoź ręcznie.</pl>
+            <pt>Processamento a cada hora do jogo, com preços de venda automática e custos de transporte. Distribui pelas unidades de produção da tua quinta; o excedente fica aqui. Transporta as paletes existentes manualmente.</pt>
+            <ro>Procesare în fiecare oră din joc, la prețurile de vânzare automată și cu taxe de transport. Distribuția aprovizionează unitățile fermei tale; surplusul rămâne aici. Transportă manual paleții existenți.</ro>
+            <ru>Обработка каждый игровой час, с ценами автоматической продажи и платой за доставку. Распределение снабжает производства вашей фермы; излишки остаются здесь. Готовые поддоны перевозите вручную.</ru>
+            <sv>Behandlas varje timme i spelet med automatiska försäljningspriser och fraktkostnader. Fördelning levererar till din gårds produktionsanläggningar; överskottet stannar här. Befintliga pallar flyttas manuellt.</sv>
+            <tr>Her oyun saatinde otomatik satış fiyatları ve nakliye ücretleriyle işlenir. Dağıtım, çiftliğinizin üretim tesislerine yapılır; fazlası burada kalır. Mevcut paletler elle taşınmalıdır.</tr>
+            <uk>Обробка щогодини в грі, за цінами автоматичного продажу та з оплатою доставки. Розподіл постачає продукцію виробництвам вашої ферми; надлишок залишається тут. Готові піддони перевозьте вручну.</uk>
+            <vi>Xử lý mỗi giờ trong game, áp dụng giá bán tự động và phí vận chuyển. Phân phối đến cơ sở sản xuất của trang trại bạn; phần dư giữ lại đây. Các pallet có sẵn cần được vận chuyển thủ công.</vi>
+        </text>
+    </l10n>
+</modDesc>
