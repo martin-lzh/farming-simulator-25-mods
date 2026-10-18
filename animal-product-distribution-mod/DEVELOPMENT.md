@@ -1,5 +1,29 @@
 # 开发与验收
 
+## 当前验收状态
+
+面向 PC 版 FS25 1.24.0.0，modDesc descVersion 114。玩家 README 只写功能和操作；验收状态集中记录在这里。
+
+- 0.1.2.0 核心逻辑：用户于 2026-10-18 实测确认通过。
+- 0.1.3.1 单弹窗显示和修改：用户实测确认通过。
+- 0.1.3.3 按活动产品筛选：维护者安装后反馈“没什么问题了”，未提供逐项记录。
+- 0.1.4.0 全部 27 种语言：各语言的游戏内文字和布局待复测。
+- 联机：10 组离线模拟通过，真实双机验收待执行（步骤见“同农场经理同时操作”）。
+- 存档回读、联机客户端、第三方畜舍及其他自动出售/分配 Mod 的组合：尚无逐项测试记录。
+
+## 构建
+
+从仓库根目录执行：
+
+```powershell
+uv run animal-product-distribution-mod/tests/run.py
+python animal-product-distribution-mod/tools/build.py
+```
+
+输出 `outputs/FS25_AnimalProductDistribution.zip`，由维护者手动放入游戏 mods 目录。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
+
+Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
+
 ## 0.1.4.0 本地化
 
 `modDesc.xml` 的 title、description、apd_title 和 apd_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
@@ -9,6 +33,8 @@
 2026-10-18：维护者在安装 0.1.3.3 后反馈“没什么问题了”，并要求补齐其他语言。记录为当前测试反馈，不推定所有语言或全部联机角色已逐项验收。本次改动先记录在 Unreleased；0.1.3.3 从未发布，dev 上的 Release plan 因此报错。维护者随后指定本地化作为新版本 0.1.4.0（beta，release.json 保持 prerelease true），0.1.3.3 不单独发布。发布前需维护者在游戏内测试 0.1.4.0 构建并切换语言检查文字和布局。
 
 同版本内维护者要求更换名称：modDesc 的 en 标题、release.json displayName 和日志前缀改为 Animal Products Manager，其余 26 个语言的标题同步改为“产品管理”含义（简体“动物产品管理”、繁体“動物產品管理”）。ZIP 名 `FS25_AnimalProductDistribution`、目录名、脚本文件名和 specialization 名不变：FS25 以 ZIP 名识别 Mod，改名会让存档中的 Mod 设置和畜舍数据失去对应。
+
+同版本内按仓库规则重写玩家 README：English 在前、中文在后，各自完整；移除 specialization、pendingLiters 等开发术语和验收状态，改记于本文件“当前验收状态”和“构建”。根 README 同样改为 English 在前。
 
 ## 结构
 
