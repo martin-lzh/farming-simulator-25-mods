@@ -12,7 +12,7 @@ Choose what happens to each product of your husbandries, such as milk, goat milk
 
 1. Open the Animals page of the in-game menu and select a husbandry.
 2. Click **Product destinations**.
-3. Pick a mode for each product and confirm. Cancel leaves everything unchanged.
+3. Pick a mode for each product and press **OK**. **Back** leaves everything unchanged.
 
 The list shows what the animals in that barn produce: goats only shows goat milk, sheep only shows wool. Young animals or a pause in production don't hide a product, so you can set it in advance. Reopen the dialog after your animals change. A barn whose animals produce nothing has no button. Settings for products you no longer produce are kept and apply again when you keep those animals again.
 
@@ -62,7 +62,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 1. 打开游戏菜单的“动物”页面，选择畜舍。
 2. 点击“产品去向”。
-3. 为每种产品选择挡位后确认。取消不会修改任何设置。
+3. 为每种产品选择挡位后按“确定”。按“返回”不会修改任何设置。
 
 列表显示该畜舍动物实际产出的产品：只养山羊显示山羊奶，只养绵羊显示羊毛。幼龄动物或暂时停产不会隐藏产品，可以提前设置。动物变化后重新打开弹窗即可刷新。动物没有任何产出的畜舍不显示按钮。不再产出的产品会保留原设置，再次饲养对应动物时重新生效。
 
