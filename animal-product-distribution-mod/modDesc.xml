@@ -4,32 +4,32 @@
     <version>0.1.4.0</version>
     <title>
         <en>Animal Products Manager</en>
-        <de>Tierprodukte verteilen</de>
-        <cs>动物产品分配</cs>
-        <br>Distribuição de produtos animais</br>
-        <ct>動物產品分配</ct>
-        <cz>Distribuce živočišných produktů</cz>
-        <da>Fordeling af dyreprodukter</da>
-        <ea>Distribución de productos animales</ea>
-        <es>Distribución de productos animales</es>
-        <fc>Distribution des produits animaux</fc>
-        <fi>Eläintuotteiden jakelu</fi>
-        <fr>Distribution des produits animaux</fr>
-        <hu>Állati termékek elosztása</hu>
-        <id>Distribusi Produk Ternak</id>
-        <it>Distribuzione dei prodotti animali</it>
-        <jp>畜産物の分配</jp>
-        <kr>축산물 분배</kr>
-        <nl>Dierlijke producten verdelen</nl>
-        <no>Fordeling av dyreprodukter</no>
-        <pl>Dystrybucja produktów zwierzęcych</pl>
-        <pt>Distribuição de produtos animais</pt>
-        <ro>Distribuția produselor animale</ro>
-        <ru>Распределение продуктов животноводства</ru>
-        <sv>Fördelning av djurprodukter</sv>
-        <tr>Hayvansal Ürün Dağıtımı</tr>
-        <uk>Розподіл продуктів тваринництва</uk>
-        <vi>Phân phối sản phẩm chăn nuôi</vi>
+        <de>Tierprodukte-Manager</de>
+        <cs>动物产品管理</cs>
+        <br>Gerenciador de produtos animais</br>
+        <ct>動物產品管理</ct>
+        <cz>Správce živočišných produktů</cz>
+        <da>Styring af dyreprodukter</da>
+        <ea>Administrador de productos animales</ea>
+        <es>Gestor de productos animales</es>
+        <fc>Gestionnaire de produits animaux</fc>
+        <fi>Eläintuotteiden hallinta</fi>
+        <fr>Gestionnaire de produits animaux</fr>
+        <hu>Állati termékek kezelése</hu>
+        <id>Pengelola Produk Ternak</id>
+        <it>Gestore dei prodotti animali</it>
+        <jp>畜産物マネージャー</jp>
+        <kr>축산물 관리자</kr>
+        <nl>Beheer van dierlijke producten</nl>
+        <no>Styring av dyreprodukter</no>
+        <pl>Menedżer produktów zwierzęcych</pl>
+        <pt>Gestor de produtos animais</pt>
+        <ro>Gestionarea produselor animale</ro>
+        <ru>Управление продуктами животноводства</ru>
+        <sv>Hantering av djurprodukter</sv>
+        <tr>Hayvansal Ürün Yöneticisi</tr>
+        <uk>Керування продуктами тваринництва</uk>
+        <vi>Quản lý sản phẩm chăn nuôi</vi>
     </title>
     <description>
         <en>Manage each husbandry's products in the Animals menu: store, sell or distribute to your farm's productions. Existing pallets require manual transport.</en>

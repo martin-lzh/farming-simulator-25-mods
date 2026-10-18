@@ -1,4 +1,4 @@
-# 动物产品分配
+# 动物产品管理 · Animal Products Manager
 
 为已有畜舍的牛奶、山羊奶、鸡蛋、羊毛等产品分别选择储存、出售或分配。识别游戏原生 milk / pallets specialization 声明的产品，不硬编码品种。
 

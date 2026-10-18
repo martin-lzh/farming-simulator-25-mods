@@ -6,8 +6,8 @@
 
 - Adds localized Mod names, descriptions, menu labels and help text for all 27 game languages and regional variants, including Traditional Chinese, French, Spanish, Japanese and Korean.
 - 补齐全部 27 种游戏语言及地区变体的 Mod 名称、简介、菜单入口和说明文字，包括繁体中文、法语、西班牙语、日语和韩语等。
-- The English name is now Animal Products Manager. Saved settings carry over; just replace the old ZIP with the new one.
-- 英文名改为 Animal Products Manager。原有设置保留，直接用新 ZIP 替换旧 ZIP 即可。
+- The Mod is renamed Animal Products Manager in every game language. Saved settings carry over; just replace the old ZIP with the new one.
+- Mod 在所有游戏语言中更名，中文名为“动物产品管理”。原有设置保留，直接用新 ZIP 替换旧 ZIP 即可。
 
 ## 0.1.3.3 — 2026-10-18
 
