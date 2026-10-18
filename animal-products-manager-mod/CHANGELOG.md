@@ -4,6 +4,8 @@
 
 - The Mod is now licensed under the PolyForm Noncommercial License 1.0.0: free to use, share and modify for non-commercial purposes; commercial use is not allowed. Versions released before this stay under MIT.
 - 本 Mod 改用 PolyForm Noncommercial 1.0.0 许可：可免费用于非商业用途的使用、分享和修改，不允许商用。此前已发布的版本仍为 MIT 许可。
+- The Mod list now shows the author's full name, Zhaohan Liu.
+- 游戏 Mod 列表中的作者改为全名 Zhaohan Liu。
 
 ## 1.0.0.1 — 2026-10-18
 
