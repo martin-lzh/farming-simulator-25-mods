@@ -60,7 +60,7 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 - `scripts/Register.lua`：向支持的 placeable 类型追加 specialization，并在动物页面加入操作按钮。
 - `tests/`：原创引擎替身及行为测试；不会加载或执行反编译文件。
 - `tools/build.py`：白名单打包，不安装。
-- `tools/make_icon.py`：原创图标生成；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon.dds`。使用 Microsoft DirectXTex 的 texconv 生成 BC1/DXT1 压缩纹理及完整 mipmap，运行 `uv run animal-products-manager-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
+- `tools/make_icon.py`：用代码绘制原创图标（奶罐、鸡蛋，分叉箭头指向仓库、硬币和工厂三个徽章，对应储存、出售、分配；不使用 AI 生成图像，符合 ModHub 对 AI 图片的禁令）；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon_animalProductsManager.dds`。按 ModHub 指南的 `icon_*.dds` 命名和“BC1 without mipMaps”要求，使用 Microsoft DirectXTex 的 texconv 生成 512×512 BC1/DXT1、只有一级（`-m 1`）的纹理，`tools/build.py` 检查尺寸、无 mipmap 和数据长度。运行 `uv run animal-products-manager-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
 
 本机接口核对材料位于被忽略的 `work/analysis/animal-products-manager-api.md`，全部游戏参考留在 `work/`。修改前重新核对目标版本和调用时机，反编译文本中的控制流不能直接复制或作为正确性的唯一依据。
 

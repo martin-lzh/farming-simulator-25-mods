@@ -60,7 +60,7 @@
         <uk>Керуйте продукцією кожного загону в меню тварин: зберігайте, продавайте або розподіляйте її між виробництвами своєї ферми. Готові піддони потрібно перевозити вручну.</uk>
         <vi>Quản lý sản phẩm của từng chuồng trong menu Động vật: lưu trữ, bán hoặc phân phối đến cơ sở sản xuất của trang trại bạn. Các pallet có sẵn cần được vận chuyển thủ công.</vi>
     </description>
-    <iconFilename>icon.dds</iconFilename>
+    <iconFilename>icon_animalProductsManager.dds</iconFilename>
     <multiplayer supported="true"/>
     <placeableSpecializations>
         <specialization name="animalProductsManager" className="AnimalProductsManager" filename="scripts/AnimalProductsManager.lua"/>

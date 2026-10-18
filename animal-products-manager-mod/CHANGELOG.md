@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- New Mod icon: a milk can and an egg with arrows to the three destinations, store, sell and distribute.
+- 新的 Mod 图标：奶罐和鸡蛋，箭头分别指向储存、出售和分配三种去向。
+
 ## 1.0.0.0 — 2026-10-18
 
 - First release. Choose for each husbandry product, such as milk, goat milk, eggs and wool, whether it is stored, sold automatically every in-game hour, or delivered to your own production points.
