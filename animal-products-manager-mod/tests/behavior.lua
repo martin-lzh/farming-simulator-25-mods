@@ -6,6 +6,13 @@ local function test(name, body)
     print("PASS " .. name)
 end
 local function near(a, b) assert(math.abs(a - b) < 0.00001, tostring(a) .. " ~= " .. tostring(b)) end
+-- Game and Mod errors are not caught by the scripts; the engine logs them.
+local function raises(func, ...)
+    local ok, err = pcall(func, ...)
+    assert(not ok, "expected the error to reach the caller")
+    return err
+end
+local function nextFrame() g_updateLoopIndex = g_updateLoopIndex + 1 end
 local function target(storage)
     return {
         free = function() return storage:getFreeCapacity() end,
@@ -60,8 +67,8 @@ test("sale credits once and zero price preserves stock", function()
     local source = APM.source(h, 7)
     APMDistribution.sell(source, 0, function() error("credited") end)
     near(source.available(), 100)
-    APMDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
-    APMDistribution.sell(source, 1.8, function(value) money = money + value; return value end)
+    APMDistribution.sell(source, 1.8, function(value, onPaid) money = money + value; onPaid(value) end)
+    APMDistribution.sell(source, 1.8, function(value, onPaid) money = money + value; onPaid(value) end)
     near(money, 180); near(source.available(), 0)
 end)
 test("milk adapter handles actual tank amounts", function()
@@ -69,7 +76,8 @@ test("milk adapter handles actual tank amounts", function()
     h.spec_husbandry = {storage = mockStorage(50, 100)}
     h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
     local source = APM.source(h, 4)
-    near(source.take(80), 50); source.put(20); near(source.available(), 20)
+    near(source.take(80), 50); near(h.spec_husbandry.storage.amount, 0); near(source.available(), 50)
+    source.release(30); source.put(20); near(source.available(), 20); near(h.apmState.refunds[4], 0)
     assert(APM.supports(h, 4))
 end)
 test("spawning hides only managed output and restores it", function()
@@ -82,10 +90,22 @@ test("spawning hides only managed output and restores it", function()
     near(h.spec_husbandryPallets.pendingLiters[7], 100)
     near(h.spec_husbandryPallets.pendingLiters[8], 0)
 end)
-test("spawner exception restores pending stock", function()
+test("spawner exception keeps hidden stock and the next frame restores it", function()
     local h = mockHusbandry(); APM.applyMode(h, 7, 1)
-    local ok = pcall(APM.updatePallets, h, function() error("spawn failed") end)
-    assert(not ok); near(h.spec_husbandryPallets.pendingLiters[7], 100)
+    raises(APM.updatePallets, h, function() error("spawn failed") end)
+    near(h.apmState.hidden[7], 100); assert(h.apmState.palletDepth == 1)
+    nextFrame(); APM.updatePallets(h, function(p) near(p.spec_husbandryPallets.pendingLiters[7], 0) end)
+    near(h.spec_husbandryPallets.pendingLiters[7], 100); assert(h.apmState.palletDepth == 0 and next(h.apmState.hidden) == nil)
+    raises(APM.updatePallets, h, function() error("spawn failed") end)
+    nextFrame(); g_currentMission.money = 0; APM.processHour(h)
+    near(g_currentMission.money, 180); near(APM.source(h, 7).available(), 0)
+end)
+test("saving after a spawner exception keeps hidden stock in the refund buffer", function()
+    local h, xml = mockHusbandry(), mockXML(); APM.applyMode(h, 7, 2)
+    raises(APM.updatePallets, h, function() error("spawn failed") end)
+    nextFrame(); APM.saveToXMLFile(h, xml, "barn")
+    near(xml.values["barn.product(0)#refundLiters"], 100); near(APM.source(h, 7).available(), 100)
+    assert(h.apmState.palletDepth == 0)
 end)
 test("in-flight callback cannot consume managed output", function()
     local h = mockHusbandry(); APM.applyMode(h, 7, 2)
@@ -239,19 +259,25 @@ test("reusing save XML cannot resurrect stale product modes", function()
     APM.loadFromXMLFile(h, xml, "barn", false)
     assert(APM.mode(h, 7) == 0 and APM.mode(h, 8) == 0)
 end)
-test("credit failure before mutation refunds inventory", function()
+test("credit failure before mutation keeps inventory and the next hour sells it", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
     APM.applyMode(h, 7, 1); g_currentMission.money = 0
     g_currentMission.addMoney = function() error("rejected before credit") end
-    APM.processHour(h); near(APM.source(h, 7).available(), 100); near(g_currentMission.money, 0)
+    raises(APM.processHour, h); near(APM.source(h, 7).available(), 100); near(g_currentMission.money, 0)
     g_currentMission.addMoney = original
-    APM.processHour(h); near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+    APM.processHour(h); near(g_currentMission.money, 0) -- Same frame: still marked as running.
+    nextFrame(); APM.processHour(h); near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 180)
+    assert(not h.apmState.processing)
 end)
-test("credit exception after mutation never refunds paid product", function()
+test("credit error after the balance notification never refunds paid product", function()
     local h, original = mockHusbandry(), g_currentMission.addMoney
     APM.applyMode(h, 7, 1); g_currentMission.money = 0
-    g_currentMission.addMoney = function(self, amount) self.money = self.money + amount; error("HUD error") end
-    APM.processHour(h); APM.processHour(h)
+    g_currentMission.addMoney = function(self, amount, farmId)
+        self.money = self.money + amount
+        g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, self.money)
+        error("HUD error")
+    end
+    raises(APM.processHour, h); nextFrame(); APM.processHour(h)
     near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 180)
     g_currentMission.addMoney = original
 end)
@@ -282,29 +308,33 @@ end
 local function receiverList(points)
     g_currentMission.productionChainManager = {getProductionPointsForFarmId = function() return points end}
 end
-test("destination failures before and after mutation conserve product", function()
-    for _, accepted in ipairs({0, 20}) do
-        local h, storage = mockHusbandry(), mockStorage(0, 500)
-        APM.applyMode(h, 7, 2); g_currentMission.money = 0
-        storage.setFillLevel = function(self) self.amount = self.amount + accepted; error("listener error") end
-        receiverList({receiver(storage)}); APM.processHour(h)
-        near(APM.source(h, 7).available() + storage.amount, 100)
-        near(storage.amount, accepted); near(g_currentMission.money, -accepted * 100 * 0.000035)
-    end
+-- Like Storage:setFillLevel, the doubles change the level before listeners raise.
+test("destination listener errors keep delivered product exactly once", function()
+    local h, storage = mockHusbandry(), mockStorage(0, 500)
+    local set = storage.setFillLevel
+    APM.applyMode(h, 7, 2); g_currentMission.money = 0
+    storage.setFillLevel = function(self, value) set(self, value); error("listener error") end
+    receiverList({receiver(storage)}); raises(APM.processHour, h)
+    near(APM.source(h, 7).available(), 0); near(storage.amount, 100)
+    storage.setFillLevel = set; nextFrame(); APM.processHour(h)
+    near(APM.source(h, 7).available() + storage.amount, 100); assert(not h.apmState.processing)
 end)
-test("unpaid delivery restores goods and paid callback errors do not duplicate fees", function()
+test("unpaid delivery restores goods and fee errors never charge twice", function()
     local original = g_currentMission.addMoney
     for _, paid in ipairs({false, true}) do
         local h, storage = mockHusbandry(), mockStorage(0, 500)
         APM.applyMode(h, 7, 2); g_currentMission.money = 0; receiverList({receiver(storage)})
+        g_currentMission.addMoney = function() end
+        APM.processHour(h) -- The fee was not booked: the delivery is taken back.
+        near(storage.amount, 0); near(APM.source(h, 7).available(), 100)
         g_currentMission.addMoney = function(self, amount)
             if paid then self.money = self.money + amount end
             error("money callback error")
         end
-        APM.processHour(h)
-        near(APM.source(h, 7).available() + storage.amount, 100)
-        near(storage.amount, paid and 100 or 0)
+        nextFrame(); raises(APM.processHour, h)
+        near(APM.source(h, 7).available() + storage.amount, 100); near(storage.amount, 100)
         near(g_currentMission.money, paid and -0.35 or 0)
+        nextFrame(); APM.processHour(h); near(g_currentMission.money, paid and -0.35 or 0)
     end
     g_currentMission.addMoney = original
 end)
@@ -322,11 +352,10 @@ test("failed refund is saved separately and recovered exactly once", function()
     h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
     local set = storage.setFillLevel
     storage.setFillLevel = function(self, value)
-        if value > self.amount then error("cannot return to tank") end
-        set(self, value)
+        if value <= self.amount then set(self, value) end -- Refuses to take product back.
     end
     local source = APM.source(h, 4)
-    APMDistribution.sell(source, 2, function() return 0 end)
+    APMDistribution.sell(source, 2, function(_, onPaid) onPaid(0) end)
     near(storage.amount, 0); near(source.available(), 100); near(h.apmState.refunds[4], 100)
     APM.saveToXMLFile(h, xml, "barn")
     local loaded = mockHusbandry()
@@ -383,7 +412,8 @@ test("sale ignores synchronous loan and repayment even when notification throws"
                     g_currentMission.money = g_currentMission.money + change
                     if fails then error("subscriber failed after separate transaction") end
                 end
-                APM.processHour(h); APM.processHour(h)
+                if fails then raises(APM.processHour, h); nextFrame() else APM.processHour(h) end
+                APM.processHour(h)
                 near(ledger.sales, 180); near(APM.source(h, 7).available(), 0)
                 near(g_currentMission.money, 6000 + 180 + change)
                 assert(ledger.notifications == 1 and not h.apmState.processing)
@@ -402,7 +432,8 @@ test("delivery keeps paid goods when a balance subscriber borrows or repays", fu
                     g_currentMission.money = g_currentMission.money + change
                     if fails then error("subscriber failed after separate transaction") end
                 end
-                APM.processHour(h); APM.processHour(h)
+                if fails then raises(APM.processHour, h); nextFrame() else APM.processHour(h) end
+                APM.processHour(h)
                 near(ledger.fees, 3.5); near(storage.amount, 1000)
                 near(APM.source(h, 7).available(), 0); near(g_currentMission.money, 6000 - 3.5 + change)
             end)
@@ -435,7 +466,7 @@ test("subscriber side effects do not turn a rejected credit into a sale", functi
             g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, g_currentMission.money)
             error("rejected before sale credit")
         end
-        APM.processHour(h)
+        raises(APM.processHour, h)
         near(APM.source(h, 7).available(), 100); near(ledger.sales, 0)
         g_currentMission.addMoney = add
     end)
@@ -542,12 +573,33 @@ test("money observer restores inherited publisher without freezing its class", f
             self.money = self.money + amount
             g_messageCenter:publish(MessageType.MONEY_CHANGED, farmId, self.money)
         end
-        near(APM.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+        local booked
+        if fails then
+            raises(APM.changeMoney, 1, 180, MoneyType.SOLD_PRODUCTS, function(value) booked = value end)
+        else
+            booked = APM.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS)
+        end
+        near(booked, 180)
         assert(rawget(g_messageCenter, "publish") == nil)
         class.publish = function() return "replacement" end
         assert(g_messageCenter:publish("CUSTOM") == "replacement")
     end
     g_messageCenter, g_currentMission.addMoney, g_currentMission.money = originalCenter, add, balance
+end)
+test("a money hook left by an aborted credit is removed by the next publish or credit", function()
+    local add, publish, balance = g_currentMission.addMoney, g_messageCenter.publish, g_currentMission.money
+    local base = function() return "base" end
+    g_messageCenter.publish = base
+    g_currentMission.addMoney = function() error("rejected before notification") end
+    raises(APM.changeMoney, 1, 180, MoneyType.SOLD_PRODUCTS)
+    assert(g_messageCenter.publish ~= base) -- The error unwound past the cleanup.
+    nextFrame(); assert(g_messageCenter:publish(MessageType.MONEY_CHANGED, 1, 0) == "base")
+    assert(g_messageCenter.publish == base and APM.moneyHook == nil)
+    raises(APM.changeMoney, 1, 180, MoneyType.SOLD_PRODUCTS)
+    g_currentMission.addMoney = add
+    near(APM.changeMoney(1, 180, MoneyType.SOLD_PRODUCTS), 180)
+    assert(g_messageCenter.publish == base and APM.moneyHook == nil)
+    g_currentMission.addMoney, g_messageCenter.publish, g_currentMission.money = add, publish, balance
 end)
 test("each product row uses native production mode translations", function()
     local getText = g_i18n.getText

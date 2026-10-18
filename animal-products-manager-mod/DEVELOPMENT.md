@@ -9,6 +9,7 @@
 - 0.1.3.3 按活动产品筛选：维护者安装后反馈“没什么问题了”，未提供逐项记录。
 - 1.0.0.0 英文界面：维护者 2026-10-18 游戏内截图确认入口和弹窗显示正常（更名前的构建 4c9df07）；其余 26 种语言的游戏内文字和布局未逐一复测。
 - 1.0.0.0 全面更名（ZIP、specialization、存档字段、事件和界面 ID）：维护者 2026-10-18 游戏内测试反馈“没问题”，未提供逐项记录。
+- 1.0.0.1（新图标、ModHub 描述、移除 pcall）：维护者 2026-10-18 游戏内测试反馈没有问题，未提供逐项记录。
 - 联机：10 组离线模拟通过，真实双机验收待执行（步骤见“同农场经理同时操作”）。
 - 存档回读、联机客户端、第三方畜舍及其他自动出售/分配 Mod 的组合：尚无逐项测试记录。
 
@@ -24,6 +25,30 @@ python animal-products-manager-mod/tools/build.py
 输出 `outputs/FS25_AnimalProductsManager.zip`，由维护者放入游戏 mods 目录，或在维护者明确要求时由代理复制进去。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
 
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
+
+## ModHub 提交准备（Unreleased，计划版本 1.0.0.1）
+
+2026-10-18：维护者要求上架 GIANTS ModHub，指定下一版为 1.0.0.1，由主会话改版本号并发布；在此之前改动记在 CHANGELOG 的 Unreleased，modDesc 保持 1.0.0.0。依据：[ModHub Guidelines - Farming Simulator 25](https://forum.giants-software.com/viewtopic.php?t=209169)（2026-03-19 更新）。
+
+- 图标（fad4089）：`icon_animalProductsManager.dds`，512×512 BC1、单级无 mipmap，与本机 mods 目录中 10 个 ModHub DDS 图标的格式一致；build.py 检查尺寸、无 mipmap 和数据长度。
+- modDesc 简介：27 种语言均按 Script Mod 模板写成 CDATA，含“说明 / 快捷键 / GitHub 链接”。入口是动物页面底栏的 MENU_EXTRA_1 按钮（维护者截图显示键盘默认 X）；手柄按键未截图核对，简介写“旁边显示的按键”。挡位、页面和确认按钮名称取自本机 1.24 的 `l10n_*.xml` 原生翻译。
+- 标题：TestRunner 要求标题每个单词首字母大写（本机 ModHub Mod 也这样写，如 “Quantum Und TC816”），19 种语言的标题因此改为逐词大写。
+- 脚本、GUI、存档和网络格式未改。
+
+官方 TestRunner v0.9.22（GDN downloadId 162，GIANTS Software GmbH 签名，SHA256 `eb557ddfc638f7f9c1a06b0cbfa5e2760909e1ee05e7b9c5c3ab058db3667cad`）放在被忽略的 `work/tools/testrunner/`。本机未装 GIANTS Editor，因此用 `--skipGuiPrograms` 并以占位路径满足 `-e` 参数，跳过只检查 i3d 和着色器的 EditorCheck / ShaderCheckEditor（本 Mod 没有 i3d 和着色器）。只对 `work/validation/testrunner/` 下解压的构建运行，不碰游戏目录。
+
+- 1.0.0.0 发布包基线：ModDescCheck 失败（descVersion、19 个标题大小写、27 个简介无 CDATA、图标 10 级 mipmap 且不叫 icon_*.dds），PublicLuaCheck 失败（8 处 pcall）。
+- 7503e25：图标、标题和 CDATA 问题全部消失。
+- 之后维护者要求去掉 PublicLuaCheck 标出的 8 处 pcall（AnimalProductsManager.lua 5 处、Distribution.lua 3 处）。改为“先记账、后调用”并按帧号收尾（见“结构”），存档格式和网络事件不变。PublicLuaCheck 通过；构建 SHA256 `5b4400e357bfc7734911710e7814f97e139b9cfe36c2f98e5911a9f34c0efcf6`（版本号仍为 1.0.0.0）。五个脚本用本机 fs-luau-compile 编译通过。脚本行为改变，发布前需维护者在游戏内复测出售、分配、托盘和保存重载。
+- 仍剩一项：`descVersion '114' outside allowed range`（min/max 113）。本机 1.24.0.0 的 `main.lua` 中 `g_maxModDescVersion = 114`，TestRunner 0.9.22 的更新记录也写着已升到 114，判断为工具范围未同步；保持 114，在提交备注中说明。
+
+## 1.0.0.1 发布准备
+
+2026-10-18：维护者选择按规则发布 1.0.0.1（不替换已发布的 1.0.0.0）。内容：fad4089 无 mipmap 新图标、7503e25 ModHub 详细描述、0f18416 移除 pcall（TestRunner PublicLuaCheck）。descVersion 按维护者决定保持 114。`release.json` 仍为正式版。因脚本行为改变，发布前需维护者在游戏内测试出售、分配、托盘及保存重载。
+
+2026-10-18：按维护者明确要求，在游戏关闭时把 1.0.0.1 构建（提交 d555c5f，SHA256 `0a40347822a35383de7734909ba98528481887f43d50f85b0269aea87924f0be`）复制进 mods 目录，替换此前的图标测试构建（SHA256 `8d287d85…`）。游戏内测试待维护者反馈。
+
+2026-10-18：维护者反馈 1.0.0.1 构建（d555c5f，SHA256 `0a403478…24f0be`）游戏内测试没有问题（此前请其覆盖出售、分配、托盘产品和保存重载，未提供逐项记录）。维护者截图确认：动物页面底栏显示“Product destinations”，牛棚弹窗列出 Milk（Distributing）和 Buffalo Milk（Selling），说明换行正常、箭头未裁切。对应 log.txt 显示载入 Animal Products Manager 1.0.0.1，无本 Mod 的 Lua 错误或调用栈；唯一 Error 为与本 Mod 无关的“Startup with port while already running”。真实双机联机仍未单独验收。
 
 ## 1.0.0.0 首次发布
 
@@ -60,25 +85,29 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 - `scripts/Register.lua`：向支持的 placeable 类型追加 specialization，并在动物页面加入操作按钮。
 - `tests/`：原创引擎替身及行为测试；不会加载或执行反编译文件。
 - `tools/build.py`：白名单打包，不安装。
-- `tools/make_icon.py`：原创图标生成；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon.dds`。使用 Microsoft DirectXTex 的 texconv 生成 BC1/DXT1 压缩纹理及完整 mipmap，运行 `uv run animal-products-manager-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
+- `tools/make_icon.py`：用代码绘制原创图标（奶罐、鸡蛋，分叉箭头指向仓库、硬币和工厂三个徽章，对应储存、出售、分配；不使用 AI 生成图像，符合 ModHub 对 AI 图片的禁令）；PNG 制作源保存在 `assets/icon.png`，运行时使用 `icon_animalProductsManager.dds`。按 ModHub 指南的 `icon_*.dds` 命名和“BC1 without mipMaps”要求，使用 Microsoft DirectXTex 的 texconv 生成 512×512 BC1/DXT1、只有一级（`-m 1`）的纹理，`tools/build.py` 检查尺寸、无 mipmap 和数据长度。运行 `uv run animal-products-manager-mod/tools/make_icon.py --texconv <texconv.exe路径>`。默认查找 PATH 或被忽略的 `work/tools/directxtex/texconv.exe`。工具不纳入仓库及安装包。
 
 本机接口核对材料位于被忽略的 `work/analysis/animal-products-manager-api.md`，全部游戏参考留在 `work/`。修改前重新核对目标版本和调用时机，反编译文本中的控制流不能直接复制或作为正确性的唯一依据。
 
 正常库存存储在原生字段，自定义存档记录物料名称、模式以及异常返还被拒绝时的恢复数量。初始数据流同步所有模式，后续通过事件更新。只在畜舍完成放置后、原生 onHourChanged 事件中结算；处理中的回调不可再次进入结算。
 
-每小时仅服务端修改库存和农场收支，扣取/接收量通过实际库存变化计算。调用原生 addMoney 时临时观察同步 MONEY_CHANGED 发布前后的余额，扣除该农场监听器引起的变化，再计算本次成交量；完成或抛错后恢复原发布函数。嵌套通知只统计最外层监听器变化，嵌套畜舍结算分别计算，避免把还贷或借款当成本次成交。未经过该同步通知边界、直接替换入账实现的第三方逻辑不在这一兼容保证内。
+每小时仅服务端修改库存和农场收支，扣取/接收量通过实际库存变化计算。调用原生 addMoney 时临时替换 `g_messageCenter.publish`：本农场的 MONEY_CHANGED 到达时（原生 `Farm:changeBalance` 已改余额、尚未调用订阅者），先移除替换、记下这次余额变化并完成本次记账，再调用原订阅者；订阅者引起的还贷、借款、嵌套结算及其报错都不计入本次成交。变化小于 1 时原生不发布通知，addMoney 返回后按余额差记账。直接替换入账实现、不经过该通知的第三方逻辑不在这一兼容保证内。
 
-目标仅部分接收时返还差额，未付运费的交付尝试回退。原生写入后的监听器报错不会被当作“完全没有写入”。恢复缓冲按物料名保存，返还后扣除，避免重复恢复；存档所有者赋值和重复的相同所有权通知不会清空模式。已完成加载的畜舍易主后，服务端重置挡位并重新调用原生 updatePallets；客户端和存档加载过程不生成托盘。如果在托盘同步回调中切回储存或易主，在最外层库存隐藏解除后补调原生生成，仍遵守原生大于 5 升的生成阈值。
+脚本不使用 pcall/xpcall（ModHub TestRunner 的 PublicLuaCheck 要求），游戏或其他 Mod 抛出的错误照常进入日志并中断本次调用。守恒靠“先记账、后调用”：原生 `Storage:setFillLevel` 先改库存再调用监听器，`Farm:changeBalance` 先改余额再发布通知，因此每次调用外部代码前，本 Mod 先按调用成功记下结果，正常返回后再按实际变化修正。取出的产品在售出或送达前一直记在畜舍自己的恢复缓冲（`refundLiters`，随存档保存）里；外部代码报错时，未售出的数量仍属于畜舍，下一小时继续出售/分配，切回储存时返还。处理中标记、托盘隐藏层数和临时余额通知替换都记下当前帧号 `g_updateLoopIndex`；错误越过清理代码后，下一帧的调用（托盘更新、小时结算、余额变化、保存）识别出遗留状态并收尾，被隐藏的托盘库存放回原生 `pendingLiters`，保存时则放进恢复缓冲。
+
+已知取舍：第三方代码若在改动库存或余额之前就报错（原生代码不会这样），本次已按成功记下的数量会丢失；运费在送达之后扣，若接收方监听器在送达时报错，这一次不扣运费。
+
+目标仅部分接收时返还差额，未付运费的交付尝试回退。恢复缓冲按物料名保存，返还后扣除，避免重复恢复；存档所有者赋值和重复的相同所有权通知不会清空模式。已完成加载的畜舍易主后，服务端重置挡位并重新调用原生 updatePallets；客户端和存档加载过程不生成托盘。如果在托盘同步回调中切回储存或易主，在最外层库存隐藏解除后补调原生生成，仍遵守原生大于 5 升的生成阈值。
 
 原生 `ProductionChainManager:distributeGoods()` 同时进行全链路分配、库存写入和扣费，不是只返回数量的工具函数。本 Mod 保留针对畜舍的处理器，没有额外调用当前任务的整个生产链管理器；以原生函数做隔离对照，校验容量比例和原生费率。测试工具及原生函数证据仅保留在 work/。
 
 ## 离线验证
 
-运行 `uv run animal-products-manager-mod/tests/run.py`，使用固定版本 Lupa 执行原创 Lua 测试。当前 60 项测试覆盖容量分配、物料守恒、溢出、空接收列表、价格系数、重复结算、托盘异步回调、异常前后实际变更、入账失败、回调重入、恢复数量持久化、模式保存/读取、加载时所有者赋值、加入同步、事件序列化、跨农场请求、权限、客户端不结算、转移所有权及菜单回调。新增回归覆盖同步还贷/借款及其抛错、嵌套通知、其他畜舍和农场结算、拒绝入账、发布函数恢复、易主后的托盘恢复和原生挡位翻译。单窗口回归另覆盖批量修改、取消草稿、仅提交改动行、避免覆盖其他玩家修改的未编辑行、重复确认、权限变化、窗口复用和客户端请求。活动产品回归覆盖山羊/绵羊独立列表、混养及动物变更、奶类子类型零产量、空列表与字段缺失的区别、去重，以及隐藏行的模式/恢复数量持久化、完整加入同步和遗留库存结算。
+运行 `uv run animal-products-manager-mod/tests/run.py`，使用固定版本 Lupa 执行原创 Lua 测试。当前 62 项测试覆盖容量分配、物料守恒、溢出、空接收列表、价格系数、重复结算、托盘异步回调、异常前后实际变更、入账失败、回调重入、恢复数量持久化、模式保存/读取、加载时所有者赋值、加入同步、事件序列化、跨农场请求、权限、客户端不结算、转移所有权及菜单回调。新增回归覆盖同步还贷/借款及其抛错、嵌套通知、其他畜舍和农场结算、拒绝入账、发布函数恢复、易主后的托盘恢复和原生挡位翻译。单窗口回归另覆盖批量修改、取消草稿、仅提交改动行、避免覆盖其他玩家修改的未编辑行、重复确认、权限变化、窗口复用和客户端请求。活动产品回归覆盖山羊/绵羊独立列表、混养及动物变更、奶类子类型零产量、空列表与字段缺失的区别、去重，以及隐藏行的模式/恢复数量持久化、完整加入同步和遗留库存结算。
 
 本机另有 `uv run work/scripts/check_distribution_native.py`：500 组与原生分配方法的数量/余额对照、官方 SDK 托盘方法的 50 轮保存/重载及异步回调核对。该工具仅在提供本机参考资料的工作区可用，全部结果位于 work/analysis/，不打包或提交原生代码。其引擎对象为替身，仍不能替代真实游戏验收。
 
-`uv run animal-products-manager-mod/tests/run.py` 还执行 `tests/multiplayer.py` 的 10 组联机模拟。服务器与两位客户端各用独立 Lua 环境，通过对象 ID 序列化实际 Mod 事件，并控制跨客户端请求的到达顺序。覆盖同产品冲突的两种顺序、不同产品草稿并存、旧草稿覆盖、主机与客户端交错修改、请求在途时权限/农场/对象变化、专用服务器无本地玩家时的出售和分配，以及服务器模式保存回读、加入快照与加入后修改。新增山羊畜舍与绵羊畜舍的不同对象 ID 在双经理事件广播后仍保留各自产品和挡位的回归。60 项行为测试及 10 组联机模拟均于 2026-10-18 通过。
+`uv run animal-products-manager-mod/tests/run.py` 还执行 `tests/multiplayer.py` 的 10 组联机模拟。服务器与两位客户端各用独立 Lua 环境，通过对象 ID 序列化实际 Mod 事件，并控制跨客户端请求的到达顺序。覆盖同产品冲突的两种顺序、不同产品草稿并存、旧草稿覆盖、主机与客户端交错修改、请求在途时权限/农场/对象变化、专用服务器无本地玩家时的出售和分配，以及服务器模式保存回读、加入快照与加入后修改。新增山羊畜舍与绵羊畜舍的不同对象 ID 在双经理事件广播后仍保留各自产品和挡位的回归。去掉 pcall 后，错误路径测试改为让错误传到调用方，并验证下一帧收尾、保存时把隐藏库存放进恢复缓冲、遗留的余额通知替换被移除；62 项行为测试及 10 组联机模拟均于 2026-10-18 通过。
 
 模拟传输采用有序消息队列；权限、引擎对象和经济系统使用替身，不覆盖原生库存网络同步。加入测试只验证静止快照，不模拟引擎暂停、对象创建/确认或真实断线恢复，不能作为双机联机验收通过的依据。
 

@@ -13,8 +13,11 @@ function APMDistribution.isFinite(value)
 end
 
 -- Targets expose free(), add(liters) and remove(liters), returning observed deltas.
--- A source exposes available(), take(liters) and put(liters).
+-- A source exposes available(), take(liters), release(liters), hold(liters) and
+-- put(liters). Taken liters stay in the source's own buffer until released.
 -- charge(target, liters) returns how many delivered liters were actually paid for.
+-- No error is caught here: the game changes a storage or balance before it
+-- notifies listeners, so each delivery is booked before the call that makes it.
 function APMDistribution.distribute(source, targets, charge)
     local available = math.max(source.available(), 0)
     local totalCapacity = 0
@@ -33,17 +36,23 @@ function APMDistribution.distribute(source, targets, charge)
         if requested > 0 then
             local taken = source.take(requested)
             if taken > 0 then
-                local ok, accepted = pcall(target.add, taken)
-                if not ok or not APMDistribution.isFinite(accepted) then accepted = 0 end
+                source.release(taken)
+                local accepted = target.add(taken)
+                if not APMDistribution.isFinite(accepted) then accepted = 0 end
                 accepted = math.max(0, math.min(taken, accepted))
+                source.hold(taken - accepted)
                 source.put(taken - accepted)
                 if accepted > 0 then
-                    local charged, funded = pcall(charge, target, accepted)
-                    if not charged or not APMDistribution.isFinite(funded) then funded = 0 end
+                    local funded = charge(target, accepted)
+                    if not APMDistribution.isFinite(funded) then funded = 0 end
                     local unpaid = accepted - math.max(0, math.min(accepted, funded))
                     if unpaid > 0 then
                         -- Roll back only stock actually removed from the destination.
+                        source.hold(unpaid)
                         local removed = target.remove(unpaid)
+                        if not APMDistribution.isFinite(removed) then removed = 0 end
+                        removed = math.max(0, math.min(unpaid, removed))
+                        source.release(unpaid - removed)
                         source.put(removed)
                         accepted = accepted - removed
                     end
@@ -55,18 +64,20 @@ function APMDistribution.distribute(source, targets, charge)
     return transferred
 end
 
--- credit(revenue) returns the observed money delta, not an assumed success flag.
+-- credit(revenue, onPaid) calls onPaid(observedRevenue) once, as soon as the
+-- balance has changed and before balance listeners run.
 function APMDistribution.sell(source, price, credit)
     if not APMDistribution.isFinite(price) or price <= 0 then
         return 0
     end
     local amount = source.take(source.available())
     if amount > 0 then
-        -- The account adapter returns the observed balance delta, including when
-        -- an engine notification throws after the balance has already changed.
-        local ok, paid = pcall(credit, amount * price)
-        if not ok or not APMDistribution.isFinite(paid) then paid = 0 end
-        local sold = math.max(0, math.min(amount, paid / price))
+        local sold = 0
+        credit(amount * price, function(paid)
+            if not APMDistribution.isFinite(paid) then paid = 0 end
+            sold = math.max(0, math.min(amount, paid / price))
+            source.release(sold)
+        end)
         source.put(amount - sold)
         return sold
     end

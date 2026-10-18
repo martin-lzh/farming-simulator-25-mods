@@ -1,8 +1,10 @@
 # Animal Products Manager · 动物产品管理
 
+![Animal Products Manager](assets/cover.jpg)
+
 ## English
 
-Version 1.0.0.0 · Farming Simulator 25 1.24 (PC)
+Version 1.0.0.1 · Farming Simulator 25 1.24 (PC)
 
 Choose what happens to each product of your husbandries, such as milk, goat milk, eggs and wool: keep storing it, sell it automatically, or deliver it to your own production points. Products are read from each barn, so every animal that produces them is supported.
 
@@ -46,9 +48,13 @@ Put `FS25_AnimalProductsManager.zip` in `Documents\My Games\FarmingSimulator2025
 
 Switch every barn back to Storing, let one in-game hour pass so the pallets appear, then save. If the game log contains `retained ... liters ... for recovery`, some product couldn't go back into the barn and the Mod is holding it: keep the Mod active, free up space and let another in-game hour pass before you uninstall, or that product is lost.
 
+### License
+
+MIT License, see [LICENSE](LICENSE).
+
 ## 中文
 
-版本 1.0.0.0 · 模拟农场 25 1.24（PC）
+版本 1.0.0.1 · 模拟农场 25 1.24（PC）
 
 为畜舍的每种产品（如牛奶、山羊奶、鸡蛋、羊毛）选择去向：继续储存、自动出售，或送往自己农场的生产点。产品按畜舍自动识别，所有产出这些产品的动物都适用。
 
@@ -91,3 +97,7 @@ Switch every barn back to Storing, let one in-game hour pass so the pallets appe
 ### 卸载
 
 先把所有畜舍切回储存，等待一个游戏小时让托盘生成，再保存。如果游戏日志中出现 `retained ... liters ... for recovery`，说明有产品无法退回畜舍，暂由本 Mod 保管：请保持 Mod 启用，腾出空间并再等待一个游戏小时后再卸载，否则这部分产品会丢失。
+
+### 许可
+
+MIT 许可，见 [LICENSE](LICENSE)。
