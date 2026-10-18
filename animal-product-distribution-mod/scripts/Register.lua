@@ -20,7 +20,7 @@ installHook(TypeManager, "validateTypes", true, function(manager)
     if manager.typeName ~= "placeable" then return end
     local registered = g_placeableSpecializationManager:getSpecializationByName("animalProductDistribution")
     if registered == nil then
-        Logging.error("Animal Product Distribution specialization was not registered")
+        Logging.error("Animal Products Manager specialization was not registered")
         return
     end
     local specName = registered.name

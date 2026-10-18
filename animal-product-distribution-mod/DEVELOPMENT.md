@@ -8,6 +8,8 @@
 
 2026-10-18：维护者在安装 0.1.3.3 后反馈“没什么问题了”，并要求补齐其他语言。记录为当前测试反馈，不推定所有语言或全部联机角色已逐项验收。本次改动先记录在 Unreleased；0.1.3.3 从未发布，dev 上的 Release plan 因此报错。维护者随后指定本地化作为新版本 0.1.4.0（beta，release.json 保持 prerelease true），0.1.3.3 不单独发布。发布前需维护者在游戏内测试 0.1.4.0 构建并切换语言检查文字和布局。
 
+同版本内维护者要求更换英文名：modDesc 的 en 标题、release.json displayName 和日志前缀改为 Animal Products Manager。ZIP 名 `FS25_AnimalProductDistribution`、目录名、脚本文件名和 specialization 名不变：FS25 以 ZIP 名识别 Mod，改名会让存档中的 Mod 设置和畜舍数据失去对应。
+
 ## 结构
 
 - `scripts/Distribution.lua`：与引擎分离的容量分配和出售结算。

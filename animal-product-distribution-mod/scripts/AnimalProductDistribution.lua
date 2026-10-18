@@ -246,7 +246,7 @@ function APD.writeLevel(get, set, value)
     local before = get()
     local ok, err = pcall(set, value)
     local after = get()
-    if not ok then Logging.warning("Animal Product Distribution storage callback failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager storage callback failed: %s", tostring(err)) end
     return after - before
 end
 
@@ -276,7 +276,7 @@ function APD.changeMoney(farmId, amount, moneyType)
     local ok, err = pcall(g_currentMission.addMoney, g_currentMission, amount, farmId, moneyType, true)
     center.publish = ownPublish
     local delta = farm:getBalance() - before - listenerDelta
-    if not ok then Logging.warning("Animal Product Distribution money callback failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager money callback failed: %s", tostring(err)) end
     return delta
 end
 
@@ -312,7 +312,7 @@ function APD.source(placeable, fillType)
                 local retained = math.max(amount - restored, 0)
                 refunds[fillType] = (refunds[fillType] or 0) + retained
                 if retained > 0.000001 then
-                    Logging.warning("Animal Product Distribution retained %.3f liters of %s for recovery; keep the mod enabled until restored",
+                    Logging.warning("Animal Products Manager retained %.3f liters of %s for recovery; keep the mod enabled until restored",
                         retained, g_fillTypeManager:getFillTypeNameByIndex(fillType))
                 end
             end
@@ -366,7 +366,7 @@ function APD:processHour()
     state.processing = true
     local ok, err = pcall(APD.processOutputs, self)
     state.processing = false
-    if not ok then Logging.warning("Animal Product Distribution settlement failed: %s", tostring(err)) end
+    if not ok then Logging.warning("Animal Products Manager settlement failed: %s", tostring(err)) end
 end
 
 function APD:processOutputs()

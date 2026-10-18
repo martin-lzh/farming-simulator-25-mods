@@ -21,6 +21,6 @@ Farming Simulator 25 原创 Mod 开发目录。
 
 ## English
 
-Workspace for original Farming Simulator 25 Mods. [Animal Product Distribution](animal-product-distribution-mod/README.md) adds storing, selling and distribution controls for husbandry outputs; the user has confirmed core behavior in 0.1.2.0; the user has also confirmed the 0.1.3.1 dialog displays and edits correctly. The 0.1.4.0 beta adds all 27 game languages.
+Workspace for original Farming Simulator 25 Mods. [Animal Products Manager](animal-product-distribution-mod/README.md) adds storing, selling and distribution controls for husbandry outputs; the user has confirmed core behavior in 0.1.2.0; the user has also confirmed the 0.1.3.1 dialog displays and edits correctly. The 0.1.4.0 beta adds all 27 game languages.
 
 Create an independent `<feature>-mod/` directory when a feature is defined. Shared folders contain artwork (`assets/`), documentation (`docs/`), development tools (`tools/`) and release records (`releases/`). Local references belong in ignored `work/`; generated packages belong in ignored `outputs/`.
