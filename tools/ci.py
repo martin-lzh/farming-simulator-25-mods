@@ -12,12 +12,21 @@ import sys
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
+import changes
 import modrelease
 
 ROOT = Path(__file__).resolve().parents[1]
 MODS = {"animal-products-manager": "AnimalProductsManager"}
 VERSION = r"(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){3}"
 GAME = "Farming Simulator 25 1.24 (PC)"
+# Files that never enter a package and never affect validation or tests; CI skips
+# build and test when a change touches only these (tools/changes.py). Packages hold
+# only .lua, .xml and .dds files, so Mod images can never be packaged. The Mod
+# README and CHANGELOG are validated, so they stay core.
+NON_CORE = (
+    "README.md", "AGENTS.md", "DEVELOPMENT.md", "docs/**", "assets/**", "releases/**",
+    "*-mod/DEVELOPMENT.md", "*-mod/assets/**/*.png", "*-mod/assets/**/*.jpg",
+)
 
 
 def run(*args) -> None:
@@ -134,18 +143,24 @@ def publish(repository: str, commit: str, api=None) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["validate", "build", "release-plan", "publish"])
+    parser.add_argument("command", choices=["validate", "build", "changes", "release-plan", "publish"])
     parser.add_argument("--repository")
     parser.add_argument("--commit")
+    parser.add_argument("--base", help="changes: commit to compare from (omit to treat everything as changed)")
+    parser.add_argument("--head", help="changes: commit to compare to")
+    parser.add_argument("--merge-base", action="store_true", help="changes: compare from the merge base (pull requests)")
     args = parser.parse_args()
     if args.command == "validate":
         validate()
     elif args.command == "build":
         build()
+    elif args.command == "changes":
+        changes.main(ROOT, NON_CORE, args.base, args.head, args.merge_base)
     elif args.command == "release-plan":
         if not args.repository:
             parser.error("release-plan requires --repository")
-        modrelease.check(modrelease.GitHub(args.repository), release_mods(args.repository))
+        decisions = modrelease.check(modrelease.GitHub(args.repository), release_mods(args.repository))
+        changes.write_outputs({"release": any(d.action in ("publish", "promote") for d in decisions)})
     else:
         if not args.repository or not args.commit:
             parser.error("publish requires --repository and --commit")

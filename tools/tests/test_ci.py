@@ -2,7 +2,8 @@
 
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -84,6 +85,36 @@ class AdapterTests(unittest.TestCase):
                 self.package(**kwargs)
                 with self.assertRaises(ValueError):
                     ci.verify_artifacts(ci.config("demo"), "a" * 40)
+
+
+class ChangeTests(unittest.TestCase):
+    """CI skips build and test only for files that never reach a package, validation or tests."""
+
+    def test_examples(self):
+        mod = "animal-products-manager-mod"
+        core = [f"{mod}/modDesc.xml", f"{mod}/scripts/Main.lua", f"{mod}/gui/ProductDialog.xml",
+                f"{mod}/icon_animalProductsManager.dds", f"{mod}/README.md", f"{mod}/CHANGELOG.md",
+                f"{mod}/release.json", f"{mod}/LICENSE", f"{mod}/tests/run.py", f"{mod}/tools/build.py",
+                f"{mod}/assets/icon.dds", f"{mod}/assets/layout.xml", "tools/ci.py", "tools/README.md",
+                "tools/tests/test_ci.py", ".github/workflows/mods.yml", ".github/pull_request_template.md",
+                ".gitattributes", ".gitignore", "LICENSE", "new-mod/scripts/Main.lua"]
+        non_core = ["README.md", "AGENTS.md", "DEVELOPMENT.md", "docs/README.md", "assets/cover.jpg",
+                    "releases/README.md", f"{mod}/DEVELOPMENT.md", f"{mod}/assets/cover.jpg",
+                    f"{mod}/assets/icon.png", f"{mod}/assets/screenshots/01-animals.jpg"]
+        for path in core:
+            with self.subTest(core=path):
+                self.assertTrue(ci.changes.is_core(path, ci.NON_CORE))
+        for path in non_core:
+            with self.subTest(non_core=path):
+                self.assertFalse(ci.changes.is_core(path, ci.NON_CORE))
+
+    def test_packageable_tracked_files_are_core(self):
+        root = Path(__file__).resolve().parents[2]
+        names = subprocess.check_output(["git", "ls-files", "-z"], cwd=root).decode("utf-8").split("\0")
+        for name in filter(None, names):
+            if PurePosixPath(name).suffix in {".lua", ".xml", ".dds", ".py", ".json", ".toml"}:
+                with self.subTest(name=name):
+                    self.assertTrue(ci.changes.is_core(name, ci.NON_CORE))
 
 
 if __name__ == "__main__":
