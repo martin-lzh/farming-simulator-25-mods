@@ -4,6 +4,10 @@
 
 - New Mod icon: a milk can and an egg with arrows to the three destinations, store, sell and distribute.
 - 新的 Mod 图标：奶罐和鸡蛋，箭头分别指向储存、出售和分配三种去向。
+- The description in the in-game Mods list now explains, in all 27 languages, what each mode does and how to open the dialog (Animals page, **Product destinations**, default key X).
+- 游戏内 Mod 列表中的简介改为全部 27 种语言的详细说明，介绍各挡位的作用和打开弹窗的方法（“动物”页面，“产品去向”，默认按键 X）。
+- Mod names in other languages now start every word with a capital letter, as in the English name.
+- 其他语言的 Mod 名称改为每个单词首字母大写，与英文名称一致。
 
 ## 1.0.0.0 — 2026-10-18
 

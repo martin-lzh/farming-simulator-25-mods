@@ -25,6 +25,22 @@ python animal-products-manager-mod/tools/build.py
 
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
 
+## ModHub 提交准备（Unreleased，计划版本 1.0.0.1）
+
+2026-10-18：维护者要求上架 GIANTS ModHub，指定下一版为 1.0.0.1，由主会话改版本号并发布；在此之前改动记在 CHANGELOG 的 Unreleased，modDesc 保持 1.0.0.0。依据：[ModHub Guidelines - Farming Simulator 25](https://forum.giants-software.com/viewtopic.php?t=209169)（2026-03-19 更新）。
+
+- 图标（fad4089）：`icon_animalProductsManager.dds`，512×512 BC1、单级无 mipmap，与本机 mods 目录中 10 个 ModHub DDS 图标的格式一致；build.py 检查尺寸、无 mipmap 和数据长度。
+- modDesc 简介：27 种语言均按 Script Mod 模板写成 CDATA，含“说明 / 快捷键 / GitHub 链接”。入口是动物页面底栏的 MENU_EXTRA_1 按钮（维护者截图显示键盘默认 X）；手柄按键未截图核对，简介写“旁边显示的按键”。挡位、页面和确认按钮名称取自本机 1.24 的 `l10n_*.xml` 原生翻译。
+- 标题：TestRunner 要求标题每个单词首字母大写（本机 ModHub Mod 也这样写，如 “Quantum Und TC816”），19 种语言的标题因此改为逐词大写。
+- 脚本、GUI、存档和网络格式未改。
+
+官方 TestRunner v0.9.22（GDN downloadId 162，GIANTS Software GmbH 签名，SHA256 `eb557ddfc638f7f9c1a06b0cbfa5e2760909e1ee05e7b9c5c3ab058db3667cad`）放在被忽略的 `work/tools/testrunner/`。本机未装 GIANTS Editor，因此用 `--skipGuiPrograms` 并以占位路径满足 `-e` 参数，跳过只检查 i3d 和着色器的 EditorCheck / ShaderCheckEditor（本 Mod 没有 i3d 和着色器）。只对 `work/validation/testrunner/` 下解压的构建运行，不碰游戏目录。
+
+- 1.0.0.0 发布包基线：ModDescCheck 失败（descVersion、19 个标题大小写、27 个简介无 CDATA、图标 10 级 mipmap 且不叫 icon_*.dds），PublicLuaCheck 失败（8 处 pcall）。
+- 当前构建：图标、标题和 CDATA 问题全部消失。剩余两项待维护者决定：
+  1. `descVersion '114' outside allowed range`（min/max 113）。本机 1.24.0.0 的 `main.lua` 中 `g_maxModDescVersion = 114`，TestRunner 0.9.22 的更新记录也写着已升到 114，判断为工具范围未同步；保持 114，在提交备注中说明。
+  2. PublicLuaCheck 将 8 处 pcall 判为“吞掉错误”。其中 5 处在 AnimalProductsManager.lua，出错时重新抛出或写 `Logging.warning`；Distribution.lua 的 3 处在适配器外层兜底，不写日志。它们保证监听器报错时库存与余额守恒（见“结构”），删除需要改测试并重新游戏内验收，本次未改。
+
 ## 1.0.0.0 首次发布
 
 2026-10-18：维护者表示 Mod 可以进入发布流程，指定首个发布版本为 1.0.0.0。`release.json` 改为 `prerelease: false`，以正式版发布；0.1.x 均未在 GitHub 发布，CHANGELOG 中保留为开发历史。相对 dev 上 00d5dc5（含更名后的 0.1.4.0），1.0.0.0 只改版本号、`release.json` 和文档，不改脚本或界面。合并到 `main` 前，维护者需确认已在游戏内测试此构建（以提交和 SHA256 标识）。
