@@ -8,7 +8,7 @@
 - 0.1.3.1 单弹窗显示和修改：用户实测确认通过。
 - 0.1.3.3 按活动产品筛选：维护者安装后反馈“没什么问题了”，未提供逐项记录。
 - 1.0.0.0 英文界面：维护者 2026-10-18 游戏内截图确认入口和弹窗显示正常（更名前的构建 4c9df07）；其余 26 种语言的游戏内文字和布局未逐一复测。
-- 1.0.0.0 全面更名（ZIP、specialization、存档字段、事件和界面 ID）：离线测试通过，游戏内待复测。
+- 1.0.0.0 全面更名（ZIP、specialization、存档字段、事件和界面 ID）：维护者 2026-10-18 游戏内测试反馈“没问题”，未提供逐项记录。
 - 联机：10 组离线模拟通过，真实双机验收待执行（步骤见“同农场经理同时操作”）。
 - 存档回读、联机客户端、第三方畜舍及其他自动出售/分配 Mod 的组合：尚无逐项测试记录。
 
@@ -36,6 +36,8 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 2026-10-18：维护者要求 Mod 名称、文件名和文档统一为 Manager，并选择连同 ZIP 名和存档内部名称一起改（1.0.0.0 尚未发布，此时代价最小）。改名对照：仓库目录与发布标识 `animal-product-distribution` → `animal-products-manager`（标签 `animal-products-manager-v1.0.0.0`）；ZIP `FS25_AnimalProductDistribution.zip` → `FS25_AnimalProductsManager.zip`；specialization `animalProductDistribution` → `animalProductsManager`，类与脚本 `AnimalProductDistribution(.lua)` → `AnimalProductsManager(.lua)`；Lua 前缀 `APD`/`apd` → `APM`/`apm`（含 `APMModeEvent`、`APMProductDialog`、`apmState`、`apm_title`、`apm_explanation` 和弹窗元素 ID）；`releases/` 开发记录文件同步改名。`Distribution.lua` 指分配挡位，不是 Mod 名，保持不变。
 
 影响：FS25 以 ZIP 名识别 Mod，存档中的设置保存在 Mod 名与 specialization 名下。旧测试存档里的挡位不会带到新 ZIP，全部回到储存；旧 ZIP 名下等待恢复的数量也不会转移。测试者需删除旧的 `FS25_AnimalProductDistribution.zip`，放入新 ZIP 后重新设置；两个 ZIP 同时启用会重复注册。脚本行为未改，60 项行为测试和 10 组联机模拟通过；更名后的构建需维护者重新在游戏内确认加载、入口、弹窗、保存和重载。
+
+2026-10-18：按维护者明确要求，在游戏关闭时把更名后的构建（提交 5568b6a，`FS25_AnimalProductsManager.zip`，SHA256 `6fce8dc8eec46bd06657445fcacc2b97d352f973683ec500787f61f5cce9c80c`）复制进 mods 目录；旧的 `FS25_AnimalProductDistribution.zip` 已不在目录中，无需删除。维护者随后反馈已进游戏测试，没有问题。测试那次的 log.txt 已被之后的启动覆盖；之后的日志列出该 Mod（1.0.0.0），没有本 Mod 的错误。逐项结果（单人以外的主机/客户端、保存重载数量）未单独记录。
 
 ## 0.1.4.0 本地化
 
