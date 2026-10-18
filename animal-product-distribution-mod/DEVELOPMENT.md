@@ -28,6 +28,8 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 2026-10-18：维护者表示 Mod 可以进入发布流程，指定首个发布版本为 1.0.0.0。`release.json` 改为 `prerelease: false`，以正式版发布；0.1.x 均未在 GitHub 发布，CHANGELOG 中保留为开发历史。相对 dev 上 00d5dc5（含更名后的 0.1.4.0），1.0.0.0 只改版本号、`release.json` 和文档，不改脚本或界面。合并到 `main` 前，维护者需确认已在游戏内测试此构建（以提交和 SHA256 标识）。
 
+2026-10-18：维护者确认 1.0.0.0（提交 4c9df07，本机构建 SHA256 `14388f873019d63b6bf2f957e0bfdb0b287b7c40c63e6f1c1512b6b32f53905d`）已在游戏内测试，要求开 dev → main 的 PR。未提供逐项记录，下方“游戏内验收”清单和真实双机验收不据此标为全部通过。
+
 ## 0.1.4.0 本地化
 
 `modDesc.xml` 的 title、description、apd_title 和 apd_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
