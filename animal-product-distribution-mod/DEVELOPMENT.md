@@ -30,7 +30,7 @@ Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，
 
 2026-10-18：维护者表示 1.0.0.0 已在游戏内测过，要求开 dev → main 的 PR。核对 mods 目录时发现当时安装的是 0.1.3.3（英文名仍为 Animal Product Distribution，SHA256 `c35691443b1377559b9c26a2e03c1437f7d59fe08f49db2b8045eb1d66b0b65b`），因此按维护者明确要求，在游戏关闭时把 1.0.0.0 构建（提交 4c9df07，SHA256 `14388f873019d63b6bf2f957e0bfdb0b287b7c40c63e6f1c1512b6b32f53905d`）复制进 mods 目录替换旧 ZIP，再由维护者复测。
 
-维护者随后提供三张英文界面截图：鸡舍的动物页面底栏显示 “Product destinations” 入口；鸡舍弹窗只列出 Eggs（Distributing）；牛棚混养水牛和奶牛时列出 Milk（Distributing）和 Buffalo Milk（Selling）。说明文字在弹窗内换行，挡位箭头未被裁切。记录为 1.0.0.0 英文界面实测通过；其余语言、存档回读、结算数量和真实双机联机未在本次截图中覆盖，下方“游戏内验收”清单不据此标为全部通过。
+维护者随后提供三张英文界面截图：鸡舍的动物页面底栏显示 “Product destinations” 入口；鸡舍弹窗只列出 Eggs（Distributing）；牛棚混养水牛和奶牛时列出 Milk（Distributing）和 Buffalo Milk（Selling）。说明文字在弹窗内换行，挡位箭头未被裁切。另一张截图显示一处生产点的鸡蛋进料为 2,396 / 2,400 L，与分配挡位一致，但没有记录结算前后的数量和余额。这四张截图的原图复制在被忽略的 `outputs/animal-product-distribution/screenshots/1.0.0.0/`，留作上传 Mod 的素材，不提交（含游戏画面）。记录为 1.0.0.0 英文界面实测通过；其余语言、存档回读、结算数量和真实双机联机未在本次截图中覆盖，下方“游戏内验收”清单不据此标为全部通过。
 
 ## 0.1.4.0 本地化
 
