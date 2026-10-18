@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 1.0.0.0 — 2026-10-18
+
+- First release. Choose for each husbandry product, such as milk, goat milk, eggs and wool, whether it is stored, sold automatically every in-game hour, or delivered to your own production points.
+- 首个正式版本。为每种畜舍产品（如牛奶、山羊奶、鸡蛋、羊毛）选择继续储存、每游戏小时自动出售，或送往自己农场的生产点。
+- Open the Animals page, select a husbandry and click **Product destinations** to set all of its products in one dialog.
+- 在“动物”页面选择畜舍，点击“产品去向”，在一个弹窗中设置该畜舍的全部产品。
+- Works in multiplayer: farm members allowed to trade animals can change the settings, and the server handles sales and deliveries once per hour.
+- 支持多人游戏：有动物交易权限的农场成员可以修改设置，出售和分配由服务器每小时统一处理。
+- Available in all 27 game languages.
+- 支持全部 27 种游戏语言。
+- If you played a test version, replace the old ZIP with this one; your settings are kept.
+- 如果玩过测试版，用本版 ZIP 替换旧文件即可，原有设置保留。
+
 ## 0.1.4.0 — 2026-10-18
 
 - Adds localized Mod names, descriptions, menu labels and help text for all 27 game languages and regional variants, including Traditional Chinese, French, Spanish, Japanese and Korean.

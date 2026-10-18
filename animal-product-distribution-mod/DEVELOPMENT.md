@@ -24,6 +24,10 @@ python animal-product-distribution-mod/tools/build.py
 
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
 
+## 1.0.0.0 首次发布
+
+2026-10-18：维护者表示 Mod 可以进入发布流程，指定首个发布版本为 1.0.0.0。`release.json` 改为 `prerelease: false`，以正式版发布；0.1.x 均未在 GitHub 发布，CHANGELOG 中保留为开发历史。相对 dev 上 00d5dc5（含更名后的 0.1.4.0），1.0.0.0 只改版本号、`release.json` 和文档，不改脚本或界面。合并到 `main` 前，维护者需确认已在游戏内测试此构建（以提交和 SHA256 标识）。
+
 ## 0.1.4.0 本地化
 
 `modDesc.xml` 的 title、description、apd_title 和 apd_explanation 均覆盖本机 FS25 1.24 游戏资源中的 27 个语言代码：en、de、cs、br、ct、cz、da、ea、es、fc、fi、fr、hu、id、it、jp、kr、nl、no、pl、pt、ro、ru、sv、tr、uk、vi。注意 cs 是简体中文，ct 是繁体中文，cz 是捷克语；jp、kr 使用游戏自身代码。地区变体分别保留独立文案。
