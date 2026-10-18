@@ -9,3 +9,7 @@
 - Python 依赖优先使用 uv，前端依赖使用 npm。
 - 离线检查与游戏内验收分别记录。
 - 确定远程仓库后再配置 Git 同步；不得将本项目推送到其他游戏的仓库。
+
+## 许可
+
+2026-10-18：维护者决定把本仓库自己的代码从 MIT 改为 PolyForm Noncommercial License 1.0.0（可免费用于非商业用途，不允许商用），从下一个版本起生效；已发布的 1.0.0.0 和 1.0.0.1 仍为 MIT。`LICENSE` 第一行是 PolyForm 要求的 `Required Notice:` 版权行，其后是 polyformproject/polyform-licenses 1.0.0 标签下的原文，不改写。GitHub 不会把它识别为标准开源许可，会显示为 Other。第三方文件保留各自的许可。

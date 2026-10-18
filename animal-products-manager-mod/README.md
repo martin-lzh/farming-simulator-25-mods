@@ -4,7 +4,7 @@
 
 ## English
 
-Version 1.0.0.1 · Farming Simulator 25 1.24 (PC)
+Version 1.0.0.2 · Farming Simulator 25 1.24 (PC)
 
 Choose what happens to each product of your husbandries, such as milk, goat milk, eggs and wool: keep storing it, sell it automatically, or deliver it to your own production points. Products are read from each barn, so every animal that produces them is supported.
 
@@ -12,7 +12,7 @@ Choose what happens to each product of your husbandries, such as milk, goat milk
 
 1. Open the Animals page of the in-game menu and select a husbandry.
 2. Click **Product destinations**.
-3. Pick a mode for each product and confirm. Cancel leaves everything unchanged.
+3. Pick a mode for each product and press **OK**. **Back** leaves everything unchanged.
 
 The list shows what the animals in that barn produce: goats only shows goat milk, sheep only shows wool. Young animals or a pause in production don't hide a product, so you can set it in advance. Reopen the dialog after your animals change. A barn whose animals produce nothing has no button. Settings for products you no longer produce are kept and apply again when you keep those animals again.
 
@@ -50,11 +50,11 @@ Switch every barn back to Storing, let one in-game hour pass so the pallets appe
 
 ### License
 
-MIT License, see [LICENSE](LICENSE).
+PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-commercial use; commercial use is not allowed.
 
 ## 中文
 
-版本 1.0.0.1 · 模拟农场 25 1.24（PC）
+版本 1.0.0.2 · 模拟农场 25 1.24（PC）
 
 为畜舍的每种产品（如牛奶、山羊奶、鸡蛋、羊毛）选择去向：继续储存、自动出售，或送往自己农场的生产点。产品按畜舍自动识别，所有产出这些产品的动物都适用。
 
@@ -62,7 +62,7 @@ MIT License, see [LICENSE](LICENSE).
 
 1. 打开游戏菜单的“动物”页面，选择畜舍。
 2. 点击“产品去向”。
-3. 为每种产品选择挡位后确认。取消不会修改任何设置。
+3. 为每种产品选择挡位后按“确定”。按“返回”不会修改任何设置。
 
 列表显示该畜舍动物实际产出的产品：只养山羊显示山羊奶，只养绵羊显示羊毛。幼龄动物或暂时停产不会隐藏产品，可以提前设置。动物变化后重新打开弹窗即可刷新。动物没有任何产出的畜舍不显示按钮。不再产出的产品会保留原设置，再次饲养对应动物时重新生效。
 
@@ -100,4 +100,4 @@ MIT License, see [LICENSE](LICENSE).
 
 ### 许可
 
-MIT 许可，见 [LICENSE](LICENSE)。
+PolyForm Noncommercial 1.0.0 许可，见 [LICENSE](LICENSE)。可免费用于非商业用途，不允许商用。
