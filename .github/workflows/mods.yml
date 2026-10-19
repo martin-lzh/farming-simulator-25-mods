@@ -3,12 +3,16 @@ name: Mod CI and releases
 # Pull requests into main are version updates. After the maintainer merges one,
 # the release job publishes every new CHANGELOG version and promotes betas
 # whose release.json says "prerelease": false (tools/modrelease.py).
+#
+# Build and test run only when a change touches core files (tools/ci.py NON_CORE
+# lists the exceptions), when a Mod would be published or promoted, or on a
+# manual run. "CI result" sums up every job as one check.
 
 on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, dev]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -19,9 +23,51 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  changes:
+    name: Changes and release plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      core: ${{ steps.changes.outputs.core }}
+      workflows: ${{ steps.changes.outputs.workflows }}
+      release: ${{ steps.plan.outputs.release }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Classify changed files
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+          PYTHONUTF8: '1'
+        run: |
+          case "$EVENT_NAME" in
+            pull_request) python tools/ci.py changes --base "$PR_BASE" --head "$PR_HEAD" --merge-base ;;
+            push) python tools/ci.py changes --base "$PUSH_BEFORE" --head "$PUSH_HEAD" ;;
+            *) python tools/ci.py changes ;;
+          esac
+      - name: Release plan (read-only)
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          PYTHONUTF8: '1'
+        run: python tools/ci.py release-plan --repository "$RELEASE_REPOSITORY"
+
   syntax:
     name: Script, data and workflow syntax
-    runs-on: windows-latest
+    needs: changes
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -33,26 +79,25 @@ jobs:
       - name: Check repository boundaries and source syntax
         run: |
           python tools/check_repository.py
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python tools/check_syntax.py
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           git show --format= --check HEAD
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Check GitHub Actions workflows
-        shell: pwsh
+        if: needs.changes.outputs.workflows != 'false'
         run: |
-          $archive = Join-Path $env:RUNNER_TEMP 'actionlint.zip'
-          $destination = Join-Path $env:RUNNER_TEMP 'actionlint'
-          Invoke-WebRequest 'https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip' -OutFile $archive
-          if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne '6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9') {
-            throw 'actionlint archive checksum mismatch'
-          }
-          Expand-Archive -LiteralPath $archive -DestinationPath $destination
-          & (Join-Path $destination 'actionlint.exe') -color -shellcheck= -pyflakes=
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          destination="$RUNNER_TEMP/actionlint"
+          curl -fsSL --retry 3 -o "$archive" 'https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz'
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $archive" | sha256sum --check --strict -
+          mkdir -p "$destination"
+          tar -xzf "$archive" -C "$destination" actionlint
+          "$destination/actionlint" -color -shellcheck= -pyflakes=
 
   build:
     name: Build and test
+    needs: changes
+    if: >-
+      ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || needs.changes.result != 'success'
+      || needs.changes.outputs.core == 'true' || needs.changes.outputs.release == 'true') }}
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
@@ -63,6 +108,13 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
+      - name: Release plan (read-only, when the changes job failed)
+        if: needs.changes.result != 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          PYTHONUTF8: '1'
+        run: python tools/ci.py release-plan --repository "$env:RELEASE_REPOSITORY"
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           version: '0.10.7'
@@ -79,12 +131,6 @@ jobs:
         env:
           PYTHONUTF8: '1'
         run: python tools/ci.py build
-      - name: Release plan (read-only)
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_REPOSITORY: ${{ github.repository }}
-          PYTHONUTF8: '1'
-        run: python tools/ci.py release-plan --repository "$env:RELEASE_REPOSITORY"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: mod-packages
@@ -94,8 +140,8 @@ jobs:
 
   release:
     name: Publish new versions and promote betas
-    needs: [syntax, build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [changes, syntax, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.changes.outputs.release == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -119,3 +165,38 @@ jobs:
           RELEASE_COMMIT: ${{ github.sha }}
           PYTHONUTF8: '1'
         run: python tools/ci.py publish --repository "$RELEASE_REPOSITORY" --commit "$RELEASE_COMMIT"
+
+  result:
+    name: CI result
+    needs: [changes, syntax, build, release]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every needed job to pass
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          SYNTAX: ${{ needs.syntax.result }}
+          BUILD: ${{ needs.build.result }}
+          RELEASE: ${{ needs.release.result }}
+          BUILD_NEEDED: >-
+            ${{ github.event_name == 'workflow_dispatch' || needs.changes.result != 'success'
+            || needs.changes.outputs.core == 'true' || needs.changes.outputs.release == 'true' }}
+          RELEASE_NEEDED: >-
+            ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'
+            && needs.changes.outputs.release == 'true' }}
+        run: |
+          failed=0
+          check() {
+            if [ "$2" = success ] || { [ "$2" = skipped ] && [ "$3" = false ]; }; then
+              echo "$1: $2"
+            else
+              echo "::error title=$1::$1 is $2"
+              failed=1
+            fi
+          }
+          check 'Changes and release plan' "$CHANGES" true
+          check 'Script, data and workflow syntax' "$SYNTAX" true
+          check 'Build and test' "$BUILD" "$BUILD_NEEDED"
+          check 'Publish new versions and promote betas' "$RELEASE" "$RELEASE_NEEDED"
+          exit "$failed"

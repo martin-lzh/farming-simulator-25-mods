@@ -24,6 +24,8 @@ python animal-products-manager-mod/tools/build.py
 
 输出 `outputs/FS25_AnimalProductsManager.zip`，由维护者放入游戏 mods 目录，或在维护者明确要求时由代理复制进去。构建不安装、不修改存档，也不启动游戏。ZIP 只含白名单内的 8 个原创文件（modDesc、脚本、GUI 和图标），不含反编译文件、第三方代码、测试依赖或分析材料。
 
+README 截图在 `assets/screenshots/`：维护者 2026-10-18 的游戏内截图（英文界面，FS25 1.24 PC；01 和 03 为 1.0.0.1 构建 d555c5f，02 为 1.0.0.0 构建 4c9df07，顶部性能叠加层已裁掉），原图在被忽略的 `outputs/animal-products-manager/screenshots/1.0.0.0/`，仅缩放到 1600 px 宽并转为 JPEG，未改内容。它们不在 build.py 白名单内，不进 ZIP。
+
 Mod 识别产品依靠原生 milk / pallets specialization 声明的 fillType，不硬编码动物品种。未生成托盘的产量沿用原生 `pendingLiters` 缓冲和存档。
 
 ## ModHub 提交准备（Unreleased，计划版本 1.0.0.1）

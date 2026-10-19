@@ -16,7 +16,7 @@
 
 ## Release plan
 
-<!-- Paste the "Release plan" table from this PR's CI run (build job summary).
+<!-- Paste the "Release plan" table from this PR's CI run ("Changes and release plan" job summary).
      Merging publishes every row marked "publish" and promotes every row marked "promote". -->
 
 ## Validation
