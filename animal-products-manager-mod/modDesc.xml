@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modDesc descVersion="114">
     <author>Zhaohan Liu</author>
-    <version>1.0.0.2</version>
+    <version>1.0.0.3</version>
     <title>
         <en>Animal Products Manager</en>
         <de>Tierprodukte-Manager</de>
@@ -43,7 +43,7 @@ The dialog only lists what the animals in that barn produce. Pallets already on 
 Multiplayer: farm members allowed to trade animals can change the settings. Only the server sells and delivers, so nothing is counted twice.
 
 Hotkeys:
-Open the in-game menu, go to the Animals page and select a husbandry. Press X or click "Product destinations" in the bottom bar (controller: the button shown next to it). Choose a mode for each product and confirm with OK.
+Open the in-game menu, go to the Animals page and select a husbandry. Click "Product destinations" in the bottom bar (controller: the button shown next to it). Choose a mode for each product and confirm with OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
         <de><![CDATA[Beschreibung:
@@ -57,7 +57,7 @@ Der Dialog zeigt nur, was die Tiere in diesem Stall produzieren. Paletten, die b
 Mehrspieler: Hofmitglieder mit dem Recht zum Tierhandel können die Einstellungen ändern. Nur der Server verkauft und liefert, daher wird nichts doppelt gezählt.
 
 Tastenbelegung:
-Öffne das Spielmenü, wechsle zur Seite Tiere und wähle einen Stall. Drücke X oder klicke unten in der Leiste auf „Produktverteilung“ (Controller: die daneben angezeigte Taste). Wähle für jedes Produkt einen Modus und bestätige mit OK.
+Öffne das Spielmenü, wechsle zur Seite Tiere und wähle einen Stall. Klicke unten in der Leiste auf „Produktverteilung“ (Controller: die daneben angezeigte Taste). Wähle für jedes Produkt einen Modus und bestätige mit OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
         <cs><![CDATA[说明：
@@ -71,7 +71,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
 多人游戏：有动物交易权限的农场成员可以修改设置。只有服务器执行出售和分配，不会重复结算。
 
 快捷键：
-打开游戏菜单，进入“牲畜”页面并选择畜舍。按 X 或点击底栏的“产品去向”（手柄：按旁边显示的按键）。为每种产品选择挡位后点“好”确认。
+打开游戏菜单，进入“牲畜”页面并选择畜舍。点击底栏的“产品去向”（手柄：按旁边显示的按键）。为每种产品选择挡位后点“好”确认。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
         <br><![CDATA[Descrição:
@@ -85,7 +85,7 @@ A janela mostra apenas o que os animais daquela criação produzem. Paletes que 
 Multijogador: membros da fazenda com permissão para negociar animais podem alterar as configurações. Só o servidor vende e entrega, então nada é contado duas vezes.
 
 Teclas de atalho:
-Abra o menu do jogo, vá para a página Animais e selecione uma criação. Pressione X ou clique em "Destino dos produtos" na barra inferior (controle: o botão mostrado ao lado). Escolha um modo para cada produto e confirme com OK.
+Abra o menu do jogo, vá para a página Animais e selecione uma criação. Clique em "Destino dos produtos" na barra inferior (controle: o botão mostrado ao lado). Escolha um modo para cada produto e confirme com OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
         <ct><![CDATA[說明：
@@ -99,7 +99,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
 多人遊戲：有動物交易權限的農場成員可以修改設定。只有伺服器執行出售和分配，不會重複結算。
 
 快捷鍵：
-開啟遊戲選單，進入「牲畜」頁面並選擇畜舍。按 X 或點擊底列的「產品去向」（手把：按旁邊顯示的按鍵）。為每種產品選擇模式後按「確定」。
+開啟遊戲選單，進入「牲畜」頁面並選擇畜舍。點擊底列的「產品去向」（手把：按旁邊顯示的按鍵）。為每種產品選擇模式後按「確定」。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
         <cz><![CDATA[Popis:
@@ -113,7 +113,7 @@ Okno zobrazuje jen to, co zvířata v daném chovu produkují. Palety, které u�
 Hra více hráčů: členové farmy s oprávněním obchodovat se zvířaty mohou nastavení měnit. Prodej a dodávky provádí jen server, takže se nic nezapočítá dvakrát.
 
 Klávesové zkratky:
-Otevřete herní nabídku, přejděte na stránku Zvířata a vyberte chov. Stiskněte X nebo klikněte na „Určení produktů“ v dolní liště (ovladač: tlačítko zobrazené vedle). Vyberte režim pro každý produkt a potvrďte tlačítkem OK.
+Otevřete herní nabídku, přejděte na stránku Zvířata a vyberte chov. Klikněte na „Určení produktů“ v dolní liště (ovladač: tlačítko zobrazené vedle). Vyberte režim pro každý produkt a potvrďte tlačítkem OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
         <da><![CDATA[Beskrivelse:
@@ -127,7 +127,7 @@ Vinduet viser kun, hvad dyrene i det pågældende dyrehold producerer. Paller, d
 Multiplayer: gårdmedlemmer med tilladelse til at handle dyr kan ændre indstillingerne. Kun serveren sælger og leverer, så intet tælles dobbelt.
 
 Genvejstaster:
-Åbn spilmenuen, gå til siden Dyr, og vælg et dyrehold. Tryk på X, eller klik på "Produktdestinationer" i den nederste bjælke (controller: knappen, der vises ved siden af). Vælg en tilstand for hvert produkt, og bekræft med OK.
+Åbn spilmenuen, gå til siden Dyr, og vælg et dyrehold. Klik på "Produktdestinationer" i den nederste bjælke (controller: knappen, der vises ved siden af). Vælg en tilstand for hvert produkt, og bekræft med OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
         <ea><![CDATA[Descripción:
@@ -141,7 +141,7 @@ La ventana solo muestra lo que producen los animales de ese recinto. Las tarimas
 Multijugador: los miembros de la granja con permiso para comerciar animales pueden cambiar la configuración. Solo el servidor vende y entrega, así que nada se cuenta dos veces.
 
 Teclas de acceso rápido:
-Abre el menú del juego, ve a la página Animales y selecciona un recinto. Presiona X o haz clic en "Destino de los productos" en la barra inferior (control: el botón que aparece al lado). Elige un modo para cada producto y confirma con Aceptar.
+Abre el menú del juego, ve a la página Animales y selecciona un recinto. Haz clic en "Destino de los productos" en la barra inferior (control: el botón que aparece al lado). Elige un modo para cada producto y confirma con Aceptar.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
         <es><![CDATA[Descripción:
@@ -155,7 +155,7 @@ La ventana solo muestra lo que producen los animales de ese recinto. Los palés 
 Multijugador: los miembros de la granja con permiso para comerciar con animales pueden cambiar los ajustes. Solo el servidor vende y entrega, así que nada se cuenta dos veces.
 
 Teclas de acceso rápido:
-Abre el menú del juego, ve a la página Animales y selecciona un recinto. Pulsa X o haz clic en "Destino de los productos" en la barra inferior (mando: el botón que aparece al lado). Elige un modo para cada producto y confirma con Vale.
+Abre el menú del juego, ve a la página Animales y selecciona un recinto. Haz clic en "Destino de los productos" en la barra inferior (mando: el botón que aparece al lado). Elige un modo para cada producto y confirma con Vale.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
         <fc><![CDATA[Description :
@@ -169,7 +169,7 @@ La fenêtre n'affiche que ce que produisent les animaux de cet élevage. Les pal
 Multijoueur : les membres de la ferme autorisés à échanger des animaux peuvent modifier les réglages. Seul le serveur vend et livre, rien n'est donc compté deux fois.
 
 Raccourcis :
-Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Appuyez sur X ou cliquez sur « Destination des produits » dans la barre du bas (manette : le bouton affiché à côté). Choisissez un mode pour chaque produit et confirmez avec OK.
+Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Cliquez sur « Destination des produits » dans la barre du bas (manette : le bouton affiché à côté). Choisissez un mode pour chaque produit et confirmez avec OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
         <fi><![CDATA[Kuvaus:
@@ -183,7 +183,7 @@ Ikkuna näyttää vain sen, mitä kyseisen eläinsuojan eläimet tuottavat. Maas
 Moninpeli: tilan jäsenet, joilla on oikeus käydä kauppaa eläimillä, voivat muuttaa asetuksia. Vain palvelin myy ja toimittaa, joten mitään ei lasketa kahdesti.
 
 Pikanäppäimet:
-Avaa pelivalikko, siirry Eläimet-sivulle ja valitse eläinsuoja. Paina X tai napsauta alapalkin "Tuotteiden kohteet" (ohjain: vieressä näkyvä painike). Valitse jokaiselle tuotteelle tila ja vahvista OK:lla.
+Avaa pelivalikko, siirry Eläimet-sivulle ja valitse eläinsuoja. Napsauta alapalkin "Tuotteiden kohteet" (ohjain: vieressä näkyvä painike). Valitse jokaiselle tuotteelle tila ja vahvista OK:lla.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
         <fr><![CDATA[Description :
@@ -197,7 +197,7 @@ La fenêtre n'affiche que ce que produisent les animaux de cet élevage. Les pal
 Multijoueur : les membres de la ferme autorisés à échanger des animaux peuvent modifier les réglages. Seul le serveur vend et livre, rien n'est donc compté deux fois.
 
 Raccourcis :
-Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Appuyez sur X ou cliquez sur « Destination des produits » dans la barre du bas (manette : le bouton affiché à côté). Choisissez un mode pour chaque produit et confirmez avec OK.
+Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Cliquez sur « Destination des produits » dans la barre du bas (manette : le bouton affiché à côté). Choisissez un mode pour chaque produit et confirmez avec OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
         <hu><![CDATA[Leírás:
@@ -211,7 +211,7 @@ Az ablak csak azt mutatja, amit az adott hely állatai termelnek. A földön vag
 Többjátékos mód: a gazdaság állatkereskedelmi joggal rendelkező tagjai módosíthatják a beállításokat. Csak a szerver ad el és szállít, így semmi sem számolódik kétszer.
 
 Gyorsbillentyűk:
-Nyisd meg a játékmenüt, lépj az Állatok oldalra, és válassz egy állattartó helyet. Nyomd meg az X-et, vagy kattints az alsó sávban a „Termékek rendeltetése” gombra (kontroller: a mellette látható gomb). Válassz módot minden termékhez, és erősítsd meg az OK-val.
+Nyisd meg a játékmenüt, lépj az Állatok oldalra, és válassz egy állattartó helyet. Kattints az alsó sávban a „Termékek rendeltetése” gombra (kontroller: a mellette látható gomb). Válassz módot minden termékhez, és erősítsd meg az OK-val.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
         <id><![CDATA[Deskripsi:
@@ -225,7 +225,7 @@ Jendela hanya menampilkan apa yang diproduksi hewan di kandang tersebut. Palet y
 Multipemain: anggota pertanian yang boleh memperdagangkan hewan dapat mengubah pengaturan. Hanya server yang menjual dan mengirim, jadi tidak ada yang dihitung dua kali.
 
 Tombol pintas:
-Buka menu game, masuk ke halaman Ternak, lalu pilih kandang. Tekan X atau klik "Tujuan produk" di bilah bawah (kontroler: tombol yang ditampilkan di sebelahnya). Pilih mode untuk setiap produk lalu konfirmasi dengan OK.
+Buka menu game, masuk ke halaman Ternak, lalu pilih kandang. Klik "Tujuan produk" di bilah bawah (kontroler: tombol yang ditampilkan di sebelahnya). Pilih mode untuk setiap produk lalu konfirmasi dengan OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
         <it><![CDATA[Descrizione:
@@ -239,7 +239,7 @@ La finestra mostra solo ciò che producono gli animali di quell'allevamento. I p
 Multigiocatore: i membri della fattoria autorizzati a commerciare animali possono modificare le impostazioni. Solo il server vende e consegna, quindi nulla viene conteggiato due volte.
 
 Tasti di scelta rapida:
-Apri il menu di gioco, vai alla pagina Animali e seleziona un allevamento. Premi X o fai clic su "Destinazione dei prodotti" nella barra in basso (controller: il pulsante mostrato accanto). Scegli una modalità per ogni prodotto e conferma con OK.
+Apri il menu di gioco, vai alla pagina Animali e seleziona un allevamento. Fai clic su "Destinazione dei prodotti" nella barra in basso (controller: il pulsante mostrato accanto). Scegli una modalità per ogni prodotto e conferma con OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
         <jp><![CDATA[説明：
@@ -253,7 +253,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
 マルチプレイ：動物の取引権限を持つ農場メンバーが設定を変更できます。売却と配送はサーバーだけが行うため、二重に計算されることはありません。
 
 ホットキー：
-ゲームメニューを開き、家畜ページで畜舎を選択します。Xキーを押すか、下部バーの「製品の行き先」をクリックします（コントローラー：その横に表示されるボタン）。各製品のモードを選び、OKで確定します。
+ゲームメニューを開き、家畜ページで畜舎を選択します。下部バーの「製品の行き先」をクリックします（コントローラー：その横に表示されるボタン）。各製品のモードを選び、OKで確定します。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
         <kr><![CDATA[설명:
@@ -267,7 +267,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 멀티플레이: 동물 거래 권한이 있는 농장 구성원이 설정을 변경할 수 있습니다. 판매와 배송은 서버만 처리하므로 중복 계산되지 않습니다.
 
 단축키:
-게임 메뉴를 열고 동물 페이지에서 축사를 선택합니다. X 키를 누르거나 하단 바의 "생산품 목적지"를 클릭합니다(컨트롤러: 옆에 표시된 버튼). 생산품별로 모드를 고르고 확인으로 확정합니다.
+게임 메뉴를 열고 동물 페이지에서 축사를 선택합니다. 하단 바의 "생산품 목적지"를 클릭합니다(컨트롤러: 옆에 표시된 버튼). 생산품별로 모드를 고르고 확인으로 확정합니다.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
         <nl><![CDATA[Beschrijving:
@@ -281,7 +281,7 @@ Het venster toont alleen wat de dieren in dat verblijf produceren. Pallets die a
 Multiplayer: boerderijleden die dieren mogen verhandelen, kunnen de instellingen wijzigen. Alleen de server verkoopt en levert, dus niets wordt dubbel geteld.
 
 Sneltoetsen:
-Open het spelmenu, ga naar de pagina Dieren en selecteer een verblijf. Druk op X of klik op "Productbestemmingen" in de onderste balk (controller: de knop die ernaast staat). Kies een modus per product en bevestig met OK.
+Open het spelmenu, ga naar de pagina Dieren en selecteer een verblijf. Klik op "Productbestemmingen" in de onderste balk (controller: de knop die ernaast staat). Kies een modus per product en bevestig met OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
         <no><![CDATA[Beskrivelse:
@@ -295,7 +295,7 @@ Vinduet viser bare det dyrene i dette dyreholdet produserer. Paller som allerede
 Flerspiller: gårdsmedlemmer med tillatelse til å handle dyr kan endre innstillingene. Bare serveren selger og leverer, så ingenting telles to ganger.
 
 Hurtigtaster:
-Åpne spillmenyen, gå til siden Dyr og velg et dyrehold. Trykk X eller klikk på «Produktdestinasjoner» i den nederste linjen (kontroller: knappen som vises ved siden av). Velg en modus for hvert produkt og bekreft med OK.
+Åpne spillmenyen, gå til siden Dyr og velg et dyrehold. Klikk på «Produktdestinasjoner» i den nederste linjen (kontroller: knappen som vises ved siden av). Velg en modus for hvert produkt og bekreft med OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
         <pl><![CDATA[Opis:
@@ -309,7 +309,7 @@ Okno pokazuje tylko to, co produkują zwierzęta w tej zagrodzie. Palety leżąc
 Tryb wieloosobowy: członkowie gospodarstwa z uprawnieniem do handlu zwierzętami mogą zmieniać ustawienia. Tylko serwer sprzedaje i dostarcza, więc nic nie jest liczone podwójnie.
 
 Skróty klawiszowe:
-Otwórz menu gry, przejdź na stronę Zwierzęta i wybierz zagrodę. Naciśnij X lub kliknij „Przeznaczenie produktów” na dolnym pasku (kontroler: przycisk pokazany obok). Wybierz tryb dla każdego produktu i potwierdź przyciskiem OK.
+Otwórz menu gry, przejdź na stronę Zwierzęta i wybierz zagrodę. Kliknij „Przeznaczenie produktów” na dolnym pasku (kontroler: przycisk pokazany obok). Wybierz tryb dla każdego produktu i potwierdź przyciskiem OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
         <pt><![CDATA[Descrição:
@@ -323,7 +323,7 @@ A janela mostra apenas o que os animais desse recinto produzem. As paletes que j
 Multijogador: os membros da quinta com permissão para negociar animais podem alterar as definições. Só o servidor vende e entrega, por isso nada é contado duas vezes.
 
 Teclas de atalho:
-Abre o menu do jogo, vai à página Animais e seleciona um recinto. Prime X ou clica em "Destino dos produtos" na barra inferior (comando: o botão mostrado ao lado). Escolhe um modo para cada produto e confirma com OK.
+Abre o menu do jogo, vai à página Animais e seleciona um recinto. Clica em "Destino dos produtos" na barra inferior (comando: o botão mostrado ao lado). Escolhe um modo para cada produto e confirma com OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
         <ro><![CDATA[Descriere:
@@ -337,7 +337,7 @@ Fereastra arată doar ce produc animalele din acel adăpost. Paleții aflați de
 Multiplayer: membrii fermei cu drept de a face comerț cu animale pot modifica setările. Doar serverul vinde și livrează, deci nimic nu se numără de două ori.
 
 Taste rapide:
-Deschide meniul jocului, mergi la pagina Animale și selectează un adăpost. Apasă X sau fă clic pe „Destinația produselor” în bara de jos (controler: butonul afișat alături). Alege un mod pentru fiecare produs și confirmă cu OK.
+Deschide meniul jocului, mergi la pagina Animale și selectează un adăpost. Fă clic pe „Destinația produselor” în bara de jos (controler: butonul afișat alături). Alege un mod pentru fiecare produs și confirmă cu OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
         <ru><![CDATA[Описание:
@@ -351,7 +351,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 Мультиплеер: участники фермы с правом торговли животными могут менять настройки. Продаёт и доставляет только сервер, поэтому ничего не учитывается дважды.
 
 Горячие клавиши:
-Откройте игровое меню, перейдите на страницу «Животные» и выберите загон. Нажмите X или кнопку «Назначение продукции» на нижней панели (геймпад: кнопка, показанная рядом). Выберите режим для каждого продукта и подтвердите кнопкой «ОК».
+Откройте игровое меню, перейдите на страницу «Животные» и выберите загон. Нажмите кнопку «Назначение продукции» на нижней панели (геймпад: кнопка, показанная рядом). Выберите режим для каждого продукта и подтвердите кнопкой «ОК».
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
         <sv><![CDATA[Beskrivning:
@@ -365,7 +365,7 @@ Fönstret visar bara vad djuren i den djurhållningen producerar. Pallar som red
 Flerspelarläge: gårdsmedlemmar som får handla med djur kan ändra inställningarna. Endast servern säljer och levererar, så inget räknas två gånger.
 
 Snabbtangenter:
-Öppna spelmenyn, gå till sidan Djur och välj en djurhållning. Tryck på X eller klicka på "Produktdestinationer" i den nedre raden (handkontroll: knappen som visas bredvid). Välj ett läge för varje produkt och bekräfta med OK.
+Öppna spelmenyn, gå till sidan Djur och välj en djurhållning. Klicka på "Produktdestinationer" i den nedre raden (handkontroll: knappen som visas bredvid). Välj ett läge för varje produkt och bekräfta med OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
         <tr><![CDATA[Açıklama:
@@ -379,7 +379,7 @@ Pencere yalnızca o barınaktaki hayvanların ürettiklerini gösterir. Yerde ve
 Çok oyunculu: hayvan ticareti yetkisi olan çiftlik üyeleri ayarları değiştirebilir. Satış ve teslimatı yalnızca sunucu yapar, bu yüzden hiçbir şey iki kez sayılmaz.
 
 Kısayol tuşları:
-Oyun menüsünü açın, Hayvanlar sayfasına gidin ve bir barınak seçin. X tuşuna basın veya alt çubuktaki "Ürün hedefleri" düğmesine tıklayın (oyun kumandası: yanında gösterilen düğme). Her ürün için bir mod seçip Tamam ile onaylayın.
+Oyun menüsünü açın, Hayvanlar sayfasına gidin ve bir barınak seçin. Alt çubuktaki "Ürün hedefleri" düğmesine tıklayın (oyun kumandası: yanında gösterilen düğme). Her ürün için bir mod seçip Tamam ile onaylayın.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
         <uk><![CDATA[Опис:
@@ -393,7 +393,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 Мультиплеєр: учасники ферми з правом торгівлі тваринами можуть змінювати налаштування. Продає й доставляє лише сервер, тому нічого не враховується двічі.
 
 Гарячі клавіші:
-Відкрийте ігрове меню, перейдіть на сторінку «Тварини» й оберіть загін. Натисніть X або кнопку «Призначення продукції» на нижній панелі (геймпад: кнопка, показана поруч). Оберіть режим для кожного продукту й підтвердьте кнопкою «ОК».
+Відкрийте ігрове меню, перейдіть на сторінку «Тварини» й оберіть загін. Натисніть кнопку «Призначення продукції» на нижній панелі (геймпад: кнопка, показана поруч). Оберіть режим для кожного продукту й підтвердьте кнопкою «ОК».
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
         <vi><![CDATA[Mô tả:
@@ -407,7 +407,7 @@ Cửa sổ chỉ hiển thị những gì vật nuôi trong chuồng đó sản 
 Chơi mạng: thành viên trang trại có quyền mua bán vật nuôi có thể thay đổi cài đặt. Chỉ máy chủ thực hiện bán và giao hàng, nên không có gì bị tính hai lần.
 
 Phím tắt:
-Mở menu trò chơi, vào trang Gia súc và chọn một chuồng. Nhấn X hoặc bấm "Nơi nhận sản phẩm" ở thanh dưới cùng (tay cầm: nút hiển thị bên cạnh). Chọn chế độ cho từng sản phẩm rồi xác nhận bằng OK.
+Mở menu trò chơi, vào trang Gia súc và chọn một chuồng. Bấm "Nơi nhận sản phẩm" ở thanh dưới cùng (tay cầm: nút hiển thị bên cạnh). Chọn chế độ cho từng sản phẩm rồi xác nhận bằng OK.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
     </description>

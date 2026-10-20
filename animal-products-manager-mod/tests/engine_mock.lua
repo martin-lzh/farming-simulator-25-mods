@@ -57,8 +57,11 @@ g_placeableTypeManager = {}
 g_placeableSpecializationManager = {getSpecializationByName = function()
     return {name = "FS25_AnimalProductsManager.animalProductsManager"}
 end}
-InGameMenuAnimalsFrame = {updateMenuButtons = function(frame) frame.menuButtonInfo = {} end}
-InputAction = {MENU_EXTRA_1 = 123}
+InGameMenuAnimalsFrame = {updateMenuButtons = function(frame)
+    frame.menuButtonInfo = {}
+    for _, button in ipairs(frame.nativeButtons or {}) do table.insert(frame.menuButtonInfo, button) end
+end}
+InputAction = {MENU_EXTRA_1 = 123, MENU_EXTRA_2 = 124}
 g_i18n = {getText = function(_, key) return key end}
 MessageDialog = {
     new = function(_, mt) return setmetatable({time = 0}, mt) end,
