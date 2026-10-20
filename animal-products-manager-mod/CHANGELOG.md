@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Avoids a shortcut conflict with the new animal worker button in Farming Simulator 25 1.25. Use the key shown next to Product destinations.
+- 避免与模拟农场 25 1.25 新增的动物雇工按钮发生快捷键冲突。请使用“产品去向”旁显示的按键。
+- The in-game Mod description now directs players to the menu button instead of a fixed keyboard key.
+- 游戏内 Mod 简介改为指引玩家点击菜单按钮，不再指定固定键盘按键。
+
 ## 1.0.0.2 — 2026-10-18
 
 - The Mod is now licensed under the PolyForm Noncommercial License 1.0.0: free to use, share and modify for non-commercial purposes; commercial use is not allowed. Versions released before this stay under MIT.

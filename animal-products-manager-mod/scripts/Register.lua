@@ -58,8 +58,16 @@ end
 installHook(InGameMenuAnimalsFrame, "updateMenuButtons", false, function(frame)
     local placeable = frame.selectedHusbandry
     if AnimalProductsManager.canManage(placeable, nil) and #AnimalProductsManager.products(placeable, true) > 0 then
+        -- FS25 1.25 uses EXTRA_1 for animal workers when that action is available.
+        local inputAction = InputAction.MENU_EXTRA_1
+        for _, button in ipairs(frame.menuButtonInfo) do
+            if button.inputAction == InputAction.MENU_EXTRA_1 then
+                inputAction = InputAction.MENU_EXTRA_2
+                break
+            end
+        end
         table.insert(frame.menuButtonInfo, {
-            inputAction = InputAction.MENU_EXTRA_1,
+            inputAction = inputAction,
             text = text("apm_title"),
             callback = function() showProducts(frame.selectedHusbandry) end
         })

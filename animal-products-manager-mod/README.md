@@ -25,7 +25,7 @@ Choose what happens to each product of your husbandries, such as milk, goat milk
 ### How to use
 
 1. Open the Animals page of the in-game menu and select a husbandry.
-2. Click **Product destinations** in the bottom bar.
+2. Click **Product destinations** in the bottom bar, or press the key shown next to it. When the animal worker button is available in FS25 1.25, Product destinations uses a different shortcut.
 
    ![Animals page with a chicken coop selected and Product destinations in the bottom bar](assets/screenshots/01-animals-page-product-destinations-button.jpg)
 
@@ -84,7 +84,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 ### 使用方法
 
 1. 打开游戏菜单的“动物”页面，选择畜舍。
-2. 点击底栏的“产品去向”。
+2. 点击底栏的“产品去向”，或按旁边显示的按键。FS25 1.25 中出现动物雇工按钮时，“产品去向”会使用另一个快捷键。
 
    ![“动物”页面选中鸡舍，底栏显示“产品去向”](assets/screenshots/01-animals-page-product-destinations-button.jpg)
 

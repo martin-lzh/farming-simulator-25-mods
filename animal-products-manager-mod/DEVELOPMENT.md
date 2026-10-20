@@ -13,6 +13,23 @@
 - 联机：10 组离线模拟通过，真实双机验收待执行（步骤见“同农场经理同时操作”）。
 - 存档回读、联机客户端、第三方畜舍及其他自动出售/分配 Mod 的组合：尚无逐项测试记录。
 
+## FS25 1.25 接口检查（2026-10-20）
+
+本机日志确认游戏为 1.25.0.0，Steam build 25879111。对照 2026-10-17 留存的 1.24 参考与更新后的安装包，只读游戏目录。官方在线 LuaDoc 此时仍为 1.20，版本差异以随游戏 SDK 和本机脚本为准。完整清单、哈希、差异及反编译材料保存在被忽略的 `work/analysis/update-1.25.0.0/`，新版参考在 `work/reference/1.25.0.0/`，旧版参考保留。
+
+- 官方 SDK Lua：952 → 961 个文件，新增 9、变化 82、删除 0；核心脚本字节码：1,842 → 1,879 个文件，新增 37、变化 173、删除 0。文件变化数不等于接口破坏数。SDK `scriptBinding.xml` 与 `scriptBindingChanges.txt` 均未变。
+- `PlaceableHusbandry`、Milk/Pallets、`Storage`、`Farm`、`ProductionChainManager`、经济价格、类型注册、网络节点序列化及主要弹窗控件的字节码未变。`ProductionPoint` 新增输出 XML 的 `isPrimary` 标记，不改变本 Mod 使用的库存、出售比例和运费接口。
+- `FSBaseMission` 新增动物雇工系统；`Placeable` 新增删除前消息；`MessageCenter` 修正一次性订阅移除；`FocusManager:removeElement` 改为先清理子元素。未发现这些变化破坏本 Mod 的调用方式。`FocusManager`、`InputBinding` 的反编译全文未通过语法检查，前者以 SDK 完整实现交叉核对；后者的可见差异为手柄方向键常量调整，不能据此声称已验证真实手柄行为。
+- 发现菜单冲突：新版 `InGameMenuAnimalsFrame` 在可用时插入 `animalWorkerButtonInfo`，使用 `MENU_EXTRA_1`。原 Mod 固定使用相同 action；在同时支持产品与雇工的畜舍会重复绑定。`Register.lua` 现在检查原生按钮列表：已有 `MENU_EXTRA_1` 时使用 `MENU_EXTRA_2`，否则保持原快捷键。两个 action 均在本机 SDK 中声明。常规无产品马厩不出现本 Mod 按钮；羊驼及第三方混合畜舍的实际行为未验收。
+- Mod 版本保持 1.0.0.2，`descVersion` 保持 114；新版接受 90–115，无需仅因上限升高而提高本 Mod 的最低格式要求。27 种简介移除固定 X 键指引，README 指引使用按钮旁显示的键。
+- 验证：仓库检查、Python/JSON/XML 语法、CI validate/build、35 项工具单元测试、63 项 Lua 行为测试、10 组多人模拟均通过；5 个 Mod 脚本通过本机 Luau 编译器。新增菜单回归覆盖雇工/产品各自回调、重复刷新、在有无雇工按钮之间切换；存档与网络格式未改。构建仍为白名单内的 8 个文件，SHA256 `b42be60e9027b48086a815f7d499f497ce16dc9944d121e300cd416c481dcb9b`。
+- 环境处理：工具单元测试的 TEMP/TMP 指向 `work/validation/tmp`。标准 `uv run animal-products-manager-mod/tests/run.py` 先受缓存写权限及 PyPI DNS 限制；以已有 Lupa 2.6 环境运行 `uv run --offline --no-project --active python animal-products-manager-mod/tests/run.py` 通过，再将已缓存的 Lupa 2.6 复制到工作目录的脚本环境，使标准 uv 命令及完整 `python tools/ci.py build` 也通过。UV_CACHE_DIR 指向 `work/uv-cache`，构建设置 UV_OFFLINE=true。日志在 `work/validation/update-125-*.log`。
+- 游戏内验收待维护者执行：1.25 中的菜单、键鼠/手柄、整点出售/分配、保存回读，以及有动物雇工的畜舍两按钮共存。未安装构建、未修改存档、未启动或关闭游戏。
+
+2026-10-20：维护者随后明确要求安装测试包。确认没有 FarmingSimulator 进程后，将原 1.0.0.1 ZIP（SHA256 `0a40347822a35383de7734909ba98528481887f43d50f85b0269aea87924f0be`）备份到 `work/backups/FS25_AnimalProductsManager-before-1.25-test.zip`。写入用户 mods 目录被当前执行环境拒绝，复查原 ZIP 哈希未变，因此安装未完成。Git 暂存同样因 `.git/index.lock` 写权限被拒绝，尚未提交或推送；测试包基于 `e4d5505` 加本次未提交修改，以以上包 SHA256 区分。
+
+2026-10-20 接手复核：维护者确认已自行安装；只读核对 mods 目录中的 ZIP，其 SHA256 与上述测试包及重新构建的包一致。游戏正在运行，未替换文件或操作游戏。重新执行全部六条仓库验证命令均通过（35 项工具测试、63 项行为测试、10 组多人模拟），本次执行无需之前的环境绕行。修复保留在 Unreleased，版本仍为 1.0.0.2，游戏内验收结果待维护者反馈。
+
 ## 构建
 
 从仓库根目录执行：

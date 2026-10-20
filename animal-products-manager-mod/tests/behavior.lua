@@ -601,6 +601,30 @@ test("a money hook left by an aborted credit is removed by the next publish or c
     assert(g_messageCenter.publish == base and APM.moneyHook == nil)
     g_currentMission.addMoney, g_messageCenter.publish, g_currentMission.money = add, publish, balance
 end)
+test("animal worker and product destinations keep independent menu actions", function()
+    local h, workerCalls = mockHusbandry(), 0
+    local worker = {inputAction = InputAction.MENU_EXTRA_1,
+        callback = function() workerCalls = workerCalls + 1 end}
+    local frame = {selectedHusbandry = h, nativeButtons = {worker}, setMenuButtonInfoDirty = function() end}
+    for _, hasWorker in ipairs({true, false, true}) do
+        frame.nativeButtons = hasWorker and {worker} or {}
+        InGameMenuAnimalsFrame.updateMenuButtons(frame)
+        assert(#frame.menuButtonInfo == (hasWorker and 2 or 1))
+        local actions = {}
+        for _, button in ipairs(frame.menuButtonInfo) do
+            assert(actions[button.inputAction] == nil, "duplicate menu input action")
+            actions[button.inputAction] = button.callback
+        end
+        if hasWorker then
+            assert(frame.menuButtonInfo[1] == worker)
+            actions[InputAction.MENU_EXTRA_1]()
+        end
+        actions[hasWorker and InputAction.MENU_EXTRA_2 or InputAction.MENU_EXTRA_1]()
+        assert(g_gui.dialog.isOpen and #g_gui.dialog.rows > 0)
+        g_gui.dialog:onClickBack()
+    end
+    assert(workerCalls == 2)
+end)
 test("each product row uses native production mode translations", function()
     local getText = g_i18n.getText
     g_i18n.getText = function(_, key, customMod)
