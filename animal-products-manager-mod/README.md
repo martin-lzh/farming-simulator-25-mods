@@ -6,7 +6,7 @@
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=animal-products-manager&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=animal-products-manager-v%2A&amp;label=latest%20release"></a>
   <a href="https://www.nexusmods.com/farmingsimulator25/mods/220"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
-  <img alt="Farming Simulator 25 1.24" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.24-5c8a1f">
+  <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
 </p>
 
@@ -16,9 +16,9 @@
 
 ## English
 
-Version 1.0.0.2 · Farming Simulator 25 1.24 (PC)
+Version 1.0.0.3 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub release 1.0.0.2](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2) (`FS25_AnimalProductsManager.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
+**Download:** [GitHub release 1.0.0.3](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3) (`FS25_AnimalProductsManager.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
 
 Choose what happens to each product of your husbandries, such as milk, goat milk, eggs and wool: keep storing it, sell it automatically, or deliver it to your own production points. Products are read from each barn, so every animal that produces them is supported.
 
@@ -75,9 +75,9 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ## 中文
 
-版本 1.0.0.2 · 模拟农场 25 1.24（PC）
+版本 1.0.0.3 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页 1.0.0.2](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2)（在 **Assets** 下载 `FS25_AnimalProductsManager.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
+**下载：**[GitHub 发布页 1.0.0.3](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3)（在 **Assets** 下载 `FS25_AnimalProductsManager.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/220)
 
 为畜舍的每种产品（如牛奶、山羊奶、鸡蛋、羊毛）选择去向：继续储存、自动出售，或送往自己农场的生产点。产品按畜舍自动识别，所有产出这些产品的动物都适用。
 

@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=animal-products-manager&amp;expanded=true"><img alt="Latest release of Animal Products Manager" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=animal-products-manager-v%2A&amp;label=latest%20release"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
-  <img alt="Farming Simulator 25 1.24" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.24-5c8a1f">
+  <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
 </p>
 
@@ -27,7 +27,7 @@ Original Mods for **Farming Simulator 25** on PC, made by Zhaohan Liu.
 
 | Mod | What it does | Version | Download |
 | --- | --- | --- | --- |
-| [Animal Products Manager](animal-products-manager-mod/README.md#english) | Choose whether each husbandry product is stored, sold automatically or delivered to your own production points | 1.0.0.2 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [Changes](animal-products-manager-mod/CHANGELOG.md) |
+| [Animal Products Manager](animal-products-manager-mod/README.md#english) | Choose whether each husbandry product is stored, sold automatically or delivered to your own production points | 1.0.0.3 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [Changes](animal-products-manager-mod/CHANGELOG.md) |
 
 Click the Mod name for how to use it, multiplayer notes and removal steps.
 
@@ -72,7 +72,7 @@ License: PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for 
 
 | Mod | 功能 | 版本 | 下载 |
 | --- | --- | --- | --- |
-| [动物产品管理（Animal Products Manager）](animal-products-manager-mod/README.md#中文) | 为每种畜舍产品选择储存、自动出售或送往自己农场的生产点 | 1.0.0.2 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.2) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [更新记录](animal-products-manager-mod/CHANGELOG.md) |
+| [动物产品管理（Animal Products Manager）](animal-products-manager-mod/README.md#中文) | 为每种畜舍产品选择储存、自动出售或送往自己农场的生产点 | 1.0.0.3 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [更新记录](animal-products-manager-mod/CHANGELOG.md) |
 
 点击 Mod 名称可查看使用方法、多人游戏说明和卸载步骤。
 
