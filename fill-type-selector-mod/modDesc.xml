@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modDesc descVersion="114">
+    <author>Zhaohan Liu</author>
+    <version>0.1.0.0</version>
+    <title>
+        <en>Fill Type Selector</en>
+        <de>Düngerauswahl</de>
+        <cs>肥料选择</cs>
+        <br>Seletor De Fertilizante</br>
+        <ct>肥料選擇</ct>
+        <cz>Výběr Hnojiva</cz>
+        <da>Gødningsvalg</da>
+        <ea>Selector De Abono</ea>
+        <es>Selector De Abono</es>
+        <fc>Sélecteur D'Engrais</fc>
+        <fi>Lannoitteen Valinta</fi>
+        <fr>Sélecteur D'Engrais</fr>
+        <hu>Műtrágyaválasztó</hu>
+        <id>Pemilih Pupuk</id>
+        <it>Selettore Di Fertilizzante</it>
+        <jp>肥料選択</jp>
+        <kr>비료 선택</kr>
+        <nl>Meststofkeuze</nl>
+        <no>Gjødselvalg</no>
+        <pl>Wybór Nawozu</pl>
+        <pt>Seletor De Fertilizante</pt>
+        <ro>Selector De Îngrășământ</ro>
+        <ru>Выбор Удобрения</ru>
+        <sv>Gödselval</sv>
+        <tr>Gübre Seçici</tr>
+        <uk>Вибір Добрива</uk>
+        <vi>Chọn Phân Bón</vi>
+    </title>
+    <description>
+        <en><![CDATA[Description:
+Choose what an empty fertilizer spreader, sprayer or lime spreader will apply, the same way you choose seeds on a seeder. You no longer have to put some lime or fertilizer in the tank first.
+- The chosen type is shown on the empty tank.
+- AI workers use it: with "AI Worker Refill - Fertilizer" on in the game settings, they buy the chosen type, lime and herbicide included, and work the parts of the field that still need it.
+- When the tank holds something, its content is used and the choice is locked until the tank is empty again.
+- Implements with only one possible type don't get the key.
+
+Multiplayer: everyone needs the Mod. The choice is synchronized and saved with the vehicle; only the server pays for what is bought.
+
+Hotkeys:
+Y: select fertilizer (Shift+Y goes back). If the implement or combination already uses Y, for example a seeder with several seeds or Precision Farming, the key is Alt+Y. The F1 help shows the current key.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
+        <de><![CDATA[Beschreibung:
+Wähle, was ein leerer Düngerstreuer, eine Feldspritze oder ein Kalkstreuer ausbringen soll, so wie du an einer Sämaschine das Saatgut wählst. Du musst nicht mehr erst etwas Kalk oder Dünger einfüllen.
+- Die gewählte Sorte wird am leeren Tank angezeigt.
+- KI-Helfer nutzen sie: Ist in den Spieleinstellungen „KI-Helfer-Nachfüllung – Dünger“ aktiv, kaufen sie die gewählte Sorte, auch Kalk und Herbizid, und bearbeiten die Bereiche des Felds, die sie noch brauchen.
+- Ist etwas im Tank, wird der Inhalt verwendet und die Auswahl ist gesperrt, bis der Tank wieder leer ist.
+- Geräte mit nur einer möglichen Sorte erhalten die Taste nicht.
+
+Mehrspieler: Alle brauchen den Mod. Die Auswahl wird synchronisiert und mit dem Fahrzeug gespeichert; nur der Server bezahlt, was gekauft wird.
+
+Tastenbelegung:
+Y: Dünger wählen (Umschalt+Y rückwärts). Belegt das Gerät oder Gespann Y bereits, etwa eine Sämaschine mit mehreren Saatgutsorten oder Precision Farming, gilt Alt+Y. Die F1-Hilfe zeigt die aktuelle Taste.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
+        <cs><![CDATA[说明：
+像在播种机上选择种子一样，为空的撒肥机、喷雾机或石灰撒布机选择要施用的类型，不必再先往料箱里装一点石灰或肥料。
+- 选中的类型显示在空料箱上。
+- AI 帮手会按选择工作：在游戏设置中开启“AI 帮手补充 - 肥料”后，帮手会购买所选类型（包括石灰和除草剂），并处理田地中仍需要它的区域。
+- 料箱里有东西时按实际内容施用，选择被锁定，直到料箱再次清空。
+- 只能装一种类型的机具不会出现此按键。
+
+多人游戏：所有玩家都需要安装本 Mod。选择会同步并随车辆保存；购买费用只由服务器结算。
+
+快捷键：
+Y：选择肥料（Shift+Y 反向）。如果机具或组合已经使用 Y（例如可选多种种子的播种机，或精准农业），则改用 Alt+Y。F1 帮助中显示当前按键。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
+        <br><![CDATA[Descrição:
+Escolha o que uma adubadeira, pulverizador ou distribuidor de cal vazio vai aplicar, do mesmo jeito que você escolhe a semente numa semeadora. Não é mais preciso colocar um pouco de cal ou fertilizante no tanque antes.
+- O tipo escolhido aparece no tanque vazio.
+- Funcionários IA usam a escolha: com "Refil de Funcionário IA - Fertilizante" ativado nas configurações do jogo, eles compram o tipo escolhido, inclusive cal e herbicida, e trabalham as partes do campo que ainda precisam dele.
+- Quando o tanque tem algo dentro, o conteúdo é usado e a escolha fica travada até o tanque esvaziar de novo.
+- Implementos com um só tipo possível não recebem a tecla.
+
+Multijogador: todos precisam do Mod. A escolha é sincronizada e salva com o veículo; só o servidor paga o que é comprado.
+
+Teclas de atalho:
+Y: selecionar fertilizante (Shift+Y volta). Se o implemento ou a combinação já usa Y, por exemplo uma semeadora com várias sementes ou a Agricultura de Precisão, a tecla é Alt+Y. A ajuda F1 mostra a tecla atual.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
+        <ct><![CDATA[說明：
+像在播種機上選擇種子一樣，為空的肥料撒佈機、噴灑機或石灰撒佈機選擇要施用的類型，不必再先往料箱裡裝一點石灰或肥料。
+- 選擇的類型會顯示在空料箱上。
+- 人工智慧幫手會依選擇工作：在遊戲設定中開啟「人工智慧幫手裝填：肥料」後，幫手會購買所選類型（包括石灰和除草劑），並處理田地中仍需要它的區域。
+- 料箱裡有東西時依實際內容施用，選擇會鎖定，直到料箱再次清空。
+- 只能裝一種類型的機具不會出現此按鍵。
+
+多人遊戲：所有玩家都需要安裝本 Mod。選擇會同步並隨車輛儲存；購買費用只由伺服器結算。
+
+快捷鍵：
+Y：選擇肥料（Shift+Y 反向）。如果機具或組合已經使用 Y（例如可選多種種子的播種機，或精準農業），則改用 Alt+Y。F1 說明會顯示目前按鍵。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
+        <cz><![CDATA[Popis:
+Zvolte, co bude prázdné rozmetadlo hnojiva, postřikovač nebo rozmetadlo vápna aplikovat, stejně jako volíte osivo u secího stroje. Už nemusíte nejdřív nasypat do nádrže trochu vápna nebo hnojiva.
+- Zvolený druh se zobrazí u prázdné nádrže.
+- Pracovníci AI ho používají: když je v nastavení hry zapnutá „Náplň pro pracovníka – hnojivo“, nakupují zvolený druh včetně vápna a herbicidu a obdělávají části pole, které ho ještě potřebují.
+- Když je v nádrži náplň, použije se obsah a volba je zamčená, dokud se nádrž znovu nevyprázdní.
+- Stroje s jediným možným druhem klávesu nemají.
+
+Hra více hráčů: Mod potřebují všichni. Volba se synchronizuje a ukládá s vozidlem; za nakoupenou náplň platí jen server.
+
+Klávesové zkratky:
+Y: vybrat hnojivo (Shift+Y zpět). Pokud stroj nebo souprava už Y používá, například secí stroj s více druhy osiva nebo Precision Farming, platí Alt+Y. Nápověda F1 ukazuje aktuální klávesu.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
+        <da><![CDATA[Beskrivelse:
+Vælg, hvad en tom gødningsspreder, marksprøjte eller kalkspreder skal udbringe, på samme måde som du vælger frø på en såmaskine. Du behøver ikke længere fylde lidt kalk eller gødning i tanken først.
+- Den valgte type vises på den tomme tank.
+- AI-hjælpere bruger den: Når "AI-hjælpergenopfyldning – kunstgødning" er slået til i spilindstillingerne, køber de den valgte type, også kalk og ukrudtsmiddel, og behandler de dele af marken, der stadig mangler den.
+- Når der er noget i tanken, bruges indholdet, og valget er låst, til tanken er tom igen.
+- Redskaber med kun én mulig type får ikke tasten.
+
+Multiplayer: alle skal have modden. Valget synkroniseres og gemmes med køretøjet; kun serveren betaler for det, der købes.
+
+Genvejstaster:
+Y: vælg gødning (Shift+Y tilbage). Hvis redskabet eller kombinationen allerede bruger Y, f.eks. en såmaskine med flere frøtyper eller Precision Farming, er tasten Alt+Y. F1-hjælpen viser den aktuelle tast.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
+        <ea><![CDATA[Descripción:
+Elige qué aplicará una abonadora, pulverizadora o encaladora vacía, igual que eliges la semilla en una sembradora. Ya no hace falta poner primero un poco de cal o abono en el tanque.
+- El tipo elegido se muestra en el tanque vacío.
+- Los ayudantes de IA lo usan: con "Recarga con ayudante de IA: Abono" activada en la configuración del juego, compran el tipo elegido, incluidos la cal y el herbicida, y trabajan las partes del campo que todavía lo necesitan.
+- Cuando el tanque tiene algo, se usa su contenido y la elección queda bloqueada hasta que el tanque vuelva a estar vacío.
+- Los implementos con un solo tipo posible no reciben la tecla.
+
+Multijugador: todos necesitan el Mod. La elección se sincroniza y se guarda con el vehículo; solo el servidor paga lo que se compra.
+
+Teclas de acceso rápido:
+Y: seleccionar abono (Mayús+Y hacia atrás). Si el implemento o la combinación ya usa Y, por ejemplo una sembradora con varias semillas o la Agricultura de precisión, la tecla es Alt+Y. La ayuda F1 muestra la tecla actual.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
+        <es><![CDATA[Descripción:
+Elige qué aplicará una abonadora, pulverizadora o encaladora vacía, igual que eliges la semilla en una sembradora. Ya no hace falta echar primero un poco de cal o abono en el depósito.
+- El tipo elegido se muestra en el depósito vacío.
+- Los ayudantes lo usan: con "Recarga del ayudante: Abono" activada en la configuración del juego, compran el tipo elegido, incluidos la cal y el herbicida, y trabajan las partes del campo que aún lo necesitan.
+- Cuando el depósito tiene algo, se usa su contenido y la elección queda bloqueada hasta que vuelva a estar vacío.
+- Los aperos con un solo tipo posible no reciben la tecla.
+
+Multijugador: todos necesitan el Mod. La elección se sincroniza y se guarda con el vehículo; solo el servidor paga lo que se compra.
+
+Teclas de acceso rápido:
+Y: seleccionar abono (Mayús+Y hacia atrás). Si el apero o la combinación ya usa Y, por ejemplo una sembradora con varias semillas o la Agricultura de precisión, la tecla es Alt+Y. La ayuda F1 muestra la tecla actual.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
+        <fc><![CDATA[Description :
+Choisissez ce qu'un épandeur d'engrais, un pulvérisateur ou un épandeur de chaux vide va épandre, comme vous choisissez la semence sur un semoir. Plus besoin de verser d'abord un peu de chaux ou d'engrais dans la trémie.
+- Le type choisi s'affiche sur la trémie vide.
+- Les ouvriers IA l'utilisent : avec « Réapprovisionnement des ouvriers IA – engrais » activé dans les paramètres du jeu, ils achètent le type choisi, chaux et herbicide compris, et traitent les parties du champ qui en ont encore besoin.
+- Quand la trémie contient quelque chose, ce contenu est utilisé et le choix est verrouillé jusqu'à ce qu'elle soit de nouveau vide.
+- Les outils qui n'acceptent qu'un seul type n'ont pas la touche.
+
+Multijoueur : tout le monde a besoin du Mod. Le choix est synchronisé et enregistré avec le véhicule ; seul le serveur paie ce qui est acheté.
+
+Raccourcis :
+Y : sélectionner l'engrais (Maj+Y en arrière). Si l'outil ou l'attelage utilise déjà Y, par exemple un semoir avec plusieurs semences ou l'agriculture de précision, la touche est Alt+Y. L'aide F1 indique la touche actuelle.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
+        <fi><![CDATA[Kuvaus:
+Valitse, mitä tyhjä lannoitteenlevitin, ruisku tai kalkinlevitin levittää, samaan tapaan kuin valitset siemenet kylvökoneeseen. Säiliöön ei enää tarvitse ensin lisätä vähän kalkkia tai lannoitetta.
+- Valittu tyyppi näkyy tyhjän säiliön kohdalla.
+- AI-työntekijät käyttävät sitä: kun pelin asetuksissa on päällä "AI-työntekijän täyttö - lannoite", he ostavat valitun tyypin, myös kalkin ja kasvimyrkyn, ja käsittelevät pellon osat, jotka sitä vielä tarvitsevat.
+- Kun säiliössä on jotain, käytetään sen sisältöä ja valinta on lukittu, kunnes säiliö on taas tyhjä.
+- Työkoneet, joihin sopii vain yksi tyyppi, eivät saa näppäintä.
+
+Moninpeli: kaikki tarvitsevat modin. Valinta synkronoidaan ja tallennetaan ajoneuvon mukana; vain palvelin maksaa ostetun täytön.
+
+Pikanäppäimet:
+Y: valitse lannoite (Vaihto+Y taaksepäin). Jos työkone tai yhdistelmä käyttää jo Y-näppäintä, esimerkiksi kylvökone, jossa on useita siemeniä, tai Precision Farming, näppäin on Alt+Y. F1-ohje näyttää nykyisen näppäimen.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
+        <fr><![CDATA[Description :
+Choisissez ce qu'un épandeur d'engrais, un pulvérisateur ou un épandeur de chaux vide va épandre, comme vous choisissez la semence sur un semoir. Plus besoin de verser d'abord un peu de chaux ou d'engrais dans la trémie.
+- Le type choisi s'affiche sur la trémie vide.
+- Les ouvriers IA l'utilisent : avec « Ravitaillement ouvrier - Engrais » activé dans les paramètres du jeu, ils achètent le type choisi, chaux et herbicide compris, et traitent les parties du champ qui en ont encore besoin.
+- Quand la trémie contient quelque chose, ce contenu est utilisé et le choix est verrouillé jusqu'à ce qu'elle soit de nouveau vide.
+- Les outils qui n'acceptent qu'un seul type n'ont pas la touche.
+
+Multijoueur : tout le monde a besoin du Mod. Le choix est synchronisé et enregistré avec le véhicule ; seul le serveur paie ce qui est acheté.
+
+Raccourcis :
+Y : sélectionner l'engrais (Maj+Y en arrière). Si l'outil ou l'attelage utilise déjà Y, par exemple un semoir avec plusieurs semences ou l'agriculture de précision, la touche est Alt+Y. L'aide F1 indique la touche actuelle.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
+        <hu><![CDATA[Leírás:
+Válaszd ki, mit szórjon ki egy üres műtrágyaszóró, permetező vagy mészszóró, ugyanúgy, ahogy a vetőgépen a vetőmagot választod. Már nem kell előbb egy kevés meszet vagy műtrágyát tölteni a tartályba.
+- A kiválasztott típus az üres tartálynál látszik.
+- A gépi segítők ezt használják: ha a játékbeállításokban be van kapcsolva a „Gépi segítő – Utántöltés – Műtrágya”, megveszik a kiválasztott típust, a meszet és a gyomirtót is, és a tábla azon részeit kezelik, amelyeknek még szükségük van rá.
+- Ha van valami a tartályban, annak tartalmát használják, és a választás zárolva van, amíg a tartály újra ki nem ürül.
+- Az egyetlen lehetséges típusú munkagépek nem kapják meg a billentyűt.
+
+Többjátékos mód: mindenkinek kell a Mod. A választás szinkronizálódik és a járművel együtt mentődik; a vásárolt anyagot csak a szerver fizeti.
+
+Gyorsbillentyűk:
+Y: műtrágya kiválasztása (Shift+Y visszafelé). Ha a munkagép vagy a szerelvény már használja az Y-t, például egy több vetőmagos vetőgép vagy a Precision Farming, a billentyű Alt+Y. Az F1 súgó mutatja az aktuális billentyűt.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
+        <id><![CDATA[Deskripsi:
+Pilih apa yang akan ditebar oleh penyebar pupuk, penyemprot, atau penyebar kapur yang kosong, sama seperti memilih biji pada mesin tanam. Tidak perlu lagi mengisi sedikit kapur atau pupuk ke tangki terlebih dahulu.
+- Jenis yang dipilih ditampilkan pada tangki yang kosong.
+- Pekerja AI memakainya: jika "Pekerja AI Pengisian Ulang - Pupuk" aktif di pengaturan permainan, mereka membeli jenis yang dipilih, termasuk kapur dan herbisida, dan menggarap bagian ladang yang masih membutuhkannya.
+- Jika tangki berisi sesuatu, isinya yang dipakai dan pilihan terkunci sampai tangki kosong lagi.
+- Alat yang hanya bisa memakai satu jenis tidak mendapat tombol ini.
+
+Multipemain: semua pemain memerlukan Mod ini. Pilihan disinkronkan dan disimpan bersama kendaraan; hanya server yang membayar isi yang dibeli.
+
+Tombol pintas:
+Y: pilih pupuk (Shift+Y mundur). Jika alat atau rangkaian sudah memakai Y, misalnya mesin tanam dengan beberapa biji atau Precision Farming, tombolnya Alt+Y. Bantuan F1 menampilkan tombol yang berlaku.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
+        <it><![CDATA[Descrizione:
+Scegli cosa distribuirà uno spandiconcime, un'irroratrice o uno spandicalce vuoto, proprio come scegli il seme su una seminatrice. Non serve più mettere prima un po' di calce o fertilizzante nel serbatoio.
+- Il tipo scelto viene mostrato sul serbatoio vuoto.
+- Gli aiutanti IA lo usano: con "Rifornimento aiutante IA - Fertilizzante" attivo nelle impostazioni di gioco, comprano il tipo scelto, calce ed erbicida compresi, e lavorano le parti del campo che ne hanno ancora bisogno.
+- Quando il serbatoio contiene qualcosa, si usa il contenuto e la scelta resta bloccata finché il serbatoio non è di nuovo vuoto.
+- Gli attrezzi con un solo tipo possibile non ricevono il tasto.
+
+Multigiocatore: tutti hanno bisogno della Mod. La scelta viene sincronizzata e salvata con il veicolo; solo il server paga ciò che viene acquistato.
+
+Tasti di scelta rapida:
+Y: seleziona fertilizzante (Maiusc+Y indietro). Se l'attrezzo o la combinazione usa già Y, per esempio una seminatrice con più semi o l'Agricoltura di precisione, il tasto è Alt+Y. L'aiuto F1 mostra il tasto attuale.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
+        <jp><![CDATA[説明：
+播種機で種を選ぶのと同じように、空の肥料散布機・噴霧機・石灰散布機で散布する種類を選べます。先にタンクへ石灰や肥料を少し入れておく必要はもうありません。
+- 選んだ種類は空のタンクに表示されます。
+- AIヘルパーもこの選択を使います。ゲーム設定で「AIヘルパー自動補充 - 肥料」をオンにすると、石灰や除草剤も含めて選んだ種類を購入し、まだ必要な畑の部分を作業します。
+- タンクに中身があるときはその中身が使われ、タンクが空になるまで選択はロックされます。
+- 1種類しか使えない作業機にはこのキーは表示されません。
+
+マルチプレイ：全員にこのModが必要です。選択は同期され、車両と一緒に保存されます。購入費用はサーバーだけが支払います。
+
+ホットキー：
+Y：肥料の選択（Shift+Yで逆順）。作業機や連結した組み合わせがすでにYを使っている場合（複数の種を選べる播種機やプレシジョン・ファーミングなど）は Alt+Y です。現在のキーはF1ヘルプに表示されます。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
+        <kr><![CDATA[설명:
+파종기에서 씨앗을 고르듯이, 빈 비료 살포기·분무기·석회 살포기가 뿌릴 종류를 선택합니다. 이제 탱크에 석회나 비료를 먼저 조금 넣어 둘 필요가 없습니다.
+- 선택한 종류가 빈 탱크에 표시됩니다.
+- AI 작업자도 이 선택을 사용합니다. 게임 설정에서 "AI 작업자 채우기 - 비료"를 켜면 석회와 제초제를 포함해 선택한 종류를 구매하고, 아직 필요한 밭 구역을 작업합니다.
+- 탱크에 내용물이 있으면 그 내용물을 사용하며, 탱크가 다시 빌 때까지 선택이 잠깁니다.
+- 한 종류만 쓸 수 있는 작업기에는 이 키가 나타나지 않습니다.
+
+멀티플레이: 모든 플레이어가 이 모드를 설치해야 합니다. 선택은 동기화되고 차량과 함께 저장되며, 구매 비용은 서버만 지불합니다.
+
+단축키:
+Y: 비료 선택 (Shift+Y 역순). 작업기나 연결된 조합이 이미 Y를 사용하면(예: 여러 씨앗을 고를 수 있는 파종기 또는 정밀 농업) Alt+Y를 사용합니다. 현재 키는 F1 도움말에 표시됩니다.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
+        <nl><![CDATA[Beschrijving:
+Kies wat een lege kunstmeststrooier, veldspuit of kalkstrooier gaat uitbrengen, net zoals je op een zaaimachine het zaad kiest. Je hoeft niet meer eerst wat kalk of meststof in de tank te doen.
+- Het gekozen type staat bij de lege tank.
+- AI-helpers gebruiken het: met "AI-helper bijvullen - Meststof" aan in de spelinstellingen kopen ze het gekozen type, ook kalk en onkruidverdelger, en bewerken ze de delen van het veld die het nog nodig hebben.
+- Zit er iets in de tank, dan wordt die inhoud gebruikt en is de keuze vergrendeld tot de tank weer leeg is.
+- Werktuigen met maar één mogelijk type krijgen de toets niet.
+
+Multiplayer: iedereen heeft de mod nodig. De keuze wordt gesynchroniseerd en met het voertuig opgeslagen; alleen de server betaalt wat er gekocht wordt.
+
+Sneltoetsen:
+Y: meststof selecteren (Shift+Y terug). Gebruikt het werktuig of de combinatie Y al, bijvoorbeeld een zaaimachine met meerdere zaden of Precision Farming, dan is de toets Alt+Y. De F1-hulp toont de huidige toets.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
+        <no><![CDATA[Beskrivelse:
+Velg hva en tom gjødselspreder, åkersprøyte eller kalkspreder skal spre, på samme måte som du velger frø på en såmaskin. Du trenger ikke lenger fylle litt kalk eller gjødsel i tanken først.
+- Den valgte typen vises på den tomme tanken.
+- AI-arbeidere bruker den: Når "Arbeider-påfylling – gjødsel" er slått på i spillinnstillingene, kjøper de den valgte typen, også kalk og ugressmiddel, og behandler de delene av åkeren som fortsatt trenger den.
+- Når det er noe i tanken, brukes innholdet, og valget er låst til tanken er tom igjen.
+- Redskaper med bare én mulig type får ikke tasten.
+
+Flerspiller: alle trenger moden. Valget synkroniseres og lagres med kjøretøyet; bare serveren betaler for det som kjøpes.
+
+Hurtigtaster:
+Y: velg gjødsel (Shift+Y bakover). Hvis redskapet eller kombinasjonen allerede bruker Y, for eksempel en såmaskin med flere frøtyper eller Precision Farming, er tasten Alt+Y. F1-hjelpen viser gjeldende tast.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
+        <pl><![CDATA[Opis:
+Wybierz, co ma rozsiewać pusty rozsiewacz nawozu, opryskiwacz lub rozsiewacz wapna, tak jak wybierasz nasiona w siewniku. Nie trzeba już najpierw wsypywać do zbiornika odrobiny wapna lub nawozu.
+- Wybrany rodzaj jest widoczny przy pustym zbiorniku.
+- Pracownicy SI z niego korzystają: gdy w ustawieniach gry włączone jest „Pracownik SI – uzupełnianie nawozu”, kupują wybrany rodzaj, także wapno i herbicyd, i obrabiają te części pola, które go jeszcze potrzebują.
+- Gdy w zbiorniku coś jest, używana jest jego zawartość, a wybór jest zablokowany, dopóki zbiornik znów nie będzie pusty.
+- Maszyny z tylko jednym możliwym rodzajem nie dostają tego klawisza.
+
+Tryb wieloosobowy: wszyscy potrzebują moda. Wybór jest synchronizowany i zapisywany z pojazdem; za kupiony materiał płaci tylko serwer.
+
+Skróty klawiszowe:
+Y: wybierz nawóz (Shift+Y wstecz). Jeśli maszyna lub zestaw już używa Y, na przykład siewnik z kilkoma rodzajami nasion lub Rolnictwo precyzyjne, klawiszem jest Alt+Y. Pomoc F1 pokazuje aktualny klawisz.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
+        <pt><![CDATA[Descrição:
+Escolha o que um distribuidor de fertilizante, pulverizador ou distribuidor de cal vazio vai aplicar, tal como escolhe a semente num semeador. Já não é preciso pôr primeiro um pouco de cal ou fertilizante no depósito.
+- O tipo escolhido é mostrado no depósito vazio.
+- Os trabalhadores IA usam-no: com "Reabastecer Trabalhador IA - Fertilizante" ativo nas definições do jogo, compram o tipo escolhido, incluindo cal e herbicida, e trabalham as partes do campo que ainda precisam dele.
+- Quando o depósito tem alguma coisa, é usado o conteúdo e a escolha fica bloqueada até o depósito voltar a estar vazio.
+- As alfaias com um só tipo possível não recebem a tecla.
+
+Multijogador: todos precisam do Mod. A escolha é sincronizada e guardada com o veículo; só o servidor paga o que é comprado.
+
+Teclas de atalho:
+Y: selecionar fertilizante (Shift+Y para trás). Se a alfaia ou a combinação já usa Y, por exemplo um semeador com várias sementes ou a Agricultura de Precisão, a tecla é Alt+Y. A ajuda F1 mostra a tecla atual.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
+        <ro><![CDATA[Descriere:
+Alege ce va împrăștia un distribuitor de îngrășământ, o mașină de stropit sau un distribuitor de var gol, la fel cum alegi sămânța la o semănătoare. Nu mai trebuie să pui mai întâi puțin var sau îngrășământ în rezervor.
+- Tipul ales este afișat la rezervorul gol.
+- Lucrătorii IA îl folosesc: cu „Realimentare lucrător IA – Fertilizator” activat în setările jocului, cumpără tipul ales, inclusiv var și erbicid, și lucrează părțile câmpului care încă au nevoie de el.
+- Când rezervorul conține ceva, se folosește conținutul, iar alegerea este blocată până când rezervorul se golește din nou.
+- Utilajele cu un singur tip posibil nu primesc tasta.
+
+Multiplayer: toți au nevoie de Mod. Alegerea este sincronizată și salvată odată cu vehiculul; doar serverul plătește ce se cumpără.
+
+Taste rapide:
+Y: selectează îngrășământul (Shift+Y înapoi). Dacă utilajul sau combinația folosește deja Y, de exemplu o semănătoare cu mai multe semințe sau Agricultura de precizie, tasta este Alt+Y. Ajutorul F1 arată tasta curentă.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
+        <ru><![CDATA[Описание:
+Выбирайте, что будет вносить пустой разбрасыватель удобрений, опрыскиватель или разбрасыватель извести, так же как вы выбираете семена на сеялке. Больше не нужно сначала засыпать в бак немного извести или удобрения.
+- Выбранный тип показывается у пустого бака.
+- ИИ-работники используют его: если в настройках игры включено «ИИ-работник пополняет удобрения», они покупают выбранный тип, включая известь и гербицид, и обрабатывают те части поля, которым он ещё нужен.
+- Когда в баке что-то есть, используется его содержимое, а выбор заблокирован, пока бак снова не опустеет.
+- У орудий с единственным возможным типом этой клавиши нет.
+
+Мультиплеер: мод нужен всем. Выбор синхронизируется и сохраняется вместе с техникой; за купленное платит только сервер.
+
+Горячие клавиши:
+Y: выбрать удобрение (Shift+Y — в обратном порядке). Если орудие или сцепка уже использует Y, например сеялка с несколькими видами семян или точное земледелие, используется Alt+Y. Текущая клавиша видна в справке F1.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
+        <sv><![CDATA[Beskrivning:
+Välj vad en tom gödselspridare, lantbruksspruta eller kalkspridare ska sprida, på samma sätt som du väljer utsäde på en såmaskin. Du behöver inte längre fylla på lite kalk eller gödsel i tanken först.
+- Den valda typen visas på den tomma tanken.
+- AI-arbetare använder den: när "Påfyllning av AI-arbetare – gödsel" är på i spelinställningarna köper de den valda typen, även kalk och ogräsmedel, och bearbetar de delar av fältet som fortfarande behöver den.
+- När det finns något i tanken används innehållet och valet är låst tills tanken är tom igen.
+- Redskap med bara en möjlig typ får inte tangenten.
+
+Flerspelarläge: alla behöver modden. Valet synkroniseras och sparas med fordonet; bara servern betalar för det som köps.
+
+Snabbtangenter:
+Y: välj gödsel (Shift+Y bakåt). Om redskapet eller ekipaget redan använder Y, till exempel en såmaskin med flera utsäden eller Precision Farming, är tangenten Alt+Y. F1-hjälpen visar aktuell tangent.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
+        <tr><![CDATA[Açıklama:
+Boş bir gübre serpici, ilaçlama makinesi veya kireç serpicinin ne serpeceğini, ekim makinesinde tohum seçer gibi seçin. Artık önce depoya biraz kireç ya da gübre koymanız gerekmez.
+- Seçilen tür boş deponun üzerinde gösterilir.
+- Yapay zekâ yardımcıları bunu kullanır: oyun ayarlarında "Yardımcıyla Yeniden Doldurma - Gübre" açıksa kireç ve herbisit dahil seçilen türü satın alır ve tarlanın hâlâ ihtiyaç duyan kısımlarında çalışırlar.
+- Depoda bir şey varsa içeriği kullanılır ve depo yeniden boşalana kadar seçim kilitli kalır.
+- Yalnızca tek türü olan ekipmanlarda bu tuş görünmez.
+
+Çok oyunculu: herkesin Mod'a ihtiyacı vardır. Seçim eşitlenir ve araçla birlikte kaydedilir; satın alınanı yalnızca sunucu öder.
+
+Kısayol tuşları:
+Y: gübre seç (Shift+Y geri). Ekipman veya kombinasyon Y'yi zaten kullanıyorsa, örneğin birden fazla tohumlu bir ekim makinesi veya Hassas Tarım, tuş Alt+Y olur. F1 yardımı geçerli tuşu gösterir.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
+        <uk><![CDATA[Опис:
+Обирайте, що вноситиме порожній розкидач добрив, обприскувач або розкидач вапна, так само як ви обираєте насіння на сівалці. Більше не потрібно спершу засипати в бак трохи вапна чи добрива.
+- Обраний тип показано біля порожнього бака.
+- Працівники ШІ використовують його: якщо в налаштуваннях гри увімкнено «Наповнення працівником ШІ — Добриво», вони купують обраний тип, зокрема вапно й гербіцид, і обробляють ті частини поля, яким він ще потрібен.
+- Коли в баку щось є, використовується його вміст, а вибір заблоковано, доки бак знову не спорожніє.
+- Знаряддя з єдиним можливим типом цієї клавіші не мають.
+
+Мультиплеєр: мод потрібен усім. Вибір синхронізується та зберігається разом із технікою; за куплене платить лише сервер.
+
+Гарячі клавіші:
+Y: обрати добриво (Shift+Y — у зворотному порядку). Якщо знаряддя або зчіпка вже використовує Y, наприклад сівалка з кількома видами насіння або точне землеробство, клавіша — Alt+Y. Поточну клавішу видно в довідці F1.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
+        <vi><![CDATA[Mô tả:
+Chọn thứ mà máy rải phân, máy phun hoặc máy rải vôi đang trống sẽ rải, giống như chọn hạt giống trên máy gieo. Không cần đổ trước một ít vôi hay phân bón vào thùng nữa.
+- Loại đã chọn hiển thị trên thùng trống.
+- Công nhân ảo dùng lựa chọn này: khi bật "Thêm lại Công nhân ảo - Phân bón" trong cài đặt trò chơi, họ mua loại đã chọn, kể cả vôi và thuốc diệt cỏ, và làm những phần ruộng còn cần đến nó.
+- Khi thùng đang chứa gì đó, thứ trong thùng sẽ được dùng và lựa chọn bị khóa cho đến khi thùng trống lại.
+- Nông cụ chỉ dùng được một loại sẽ không có phím này.
+
+Chơi mạng: mọi người đều cần Mod. Lựa chọn được đồng bộ và lưu cùng phương tiện; chỉ máy chủ trả tiền cho phần được mua.
+
+Phím tắt:
+Y: chọn phân bón (Shift+Y để lùi). Nếu nông cụ hoặc tổ hợp đã dùng Y, ví dụ máy gieo có nhiều loại hạt hoặc Nông nghiệp chính xác, phím sẽ là Alt+Y. Trợ giúp F1 hiển thị phím hiện tại.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
+    </description>
+    <iconFilename>icon_fillTypeSelector.dds</iconFilename>
+    <multiplayer supported="true"/>
+    <extraSourceFiles>
+        <sourceFile filename="scripts/SelectFillTypeEvent.lua"/>
+        <sourceFile filename="scripts/Register.lua"/>
+    </extraSourceFiles>
+    <specializations>
+        <specialization name="fillTypeSelector" className="FillTypeSelector" filename="scripts/FillTypeSelector.lua"/>
+    </specializations>
+    <actions>
+        <action name="FTS_SELECT_FILL_TYPE" category="VEHICLE" axisType="HALF"/>
+    </actions>
+    <inputBinding>
+        <actionBinding action="FTS_SELECT_FILL_TYPE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_y"/>
+        </actionBinding>
+    </inputBinding>
+    <l10n>
+        <text name="fts_selectFillType">
+            <en>Select fertilizer</en>
+            <de>Dünger wählen</de>
+            <cs>选择肥料</cs>
+            <br>Selecionar fertilizante</br>
+            <ct>選擇肥料</ct>
+            <cz>Vybrat hnojivo</cz>
+            <da>Vælg gødning</da>
+            <ea>Seleccionar abono</ea>
+            <es>Seleccionar abono</es>
+            <fc>Sélectionner l'engrais</fc>
+            <fi>Valitse lannoite</fi>
+            <fr>Sélectionner l'engrais</fr>
+            <hu>Műtrágya kiválasztása</hu>
+            <id>Pilih pupuk</id>
+            <it>Seleziona fertilizzante</it>
+            <jp>肥料の選択</jp>
+            <kr>비료 선택</kr>
+            <nl>Meststof selecteren</nl>
+            <no>Velg gjødsel</no>
+            <pl>Wybierz nawóz</pl>
+            <pt>Selecionar fertilizante</pt>
+            <ro>Selectează îngrășământul</ro>
+            <ru>Выбрать удобрение</ru>
+            <sv>Välj gödsel</sv>
+            <tr>Gübre seç</tr>
+            <uk>Обрати добриво</uk>
+            <vi>Chọn phân bón</vi>
+        </text>
+        <text name="input_FTS_SELECT_FILL_TYPE">
+            <en>Select fertilizer (when Y is in use)</en>
+            <de>Dünger wählen (wenn Y belegt ist)</de>
+            <cs>选择肥料（Y 已被占用时）</cs>
+            <br>Selecionar fertilizante (quando Y está em uso)</br>
+            <ct>選擇肥料（Y 已被占用時）</ct>
+            <cz>Vybrat hnojivo (když je Y obsazené)</cz>
+            <da>Vælg gødning (når Y er optaget)</da>
+            <ea>Seleccionar abono (cuando Y está en uso)</ea>
+            <es>Seleccionar abono (cuando Y está en uso)</es>
+            <fc>Sélectionner l'engrais (si Y est déjà utilisée)</fc>
+            <fi>Valitse lannoite (kun Y on käytössä)</fi>
+            <fr>Sélectionner l'engrais (si Y est déjà utilisée)</fr>
+            <hu>Műtrágya kiválasztása (ha az Y foglalt)</hu>
+            <id>Pilih pupuk (saat Y sudah dipakai)</id>
+            <it>Seleziona fertilizzante (quando Y è già in uso)</it>
+            <jp>肥料の選択（Yが使用中のとき）</jp>
+            <kr>비료 선택 (Y가 사용 중일 때)</kr>
+            <nl>Meststof selecteren (als Y al bezet is)</nl>
+            <no>Velg gjødsel (når Y er i bruk)</no>
+            <pl>Wybierz nawóz (gdy Y jest zajęty)</pl>
+            <pt>Selecionar fertilizante (quando Y está em uso)</pt>
+            <ro>Selectează îngrășământul (când Y este ocupat)</ro>
+            <ru>Выбрать удобрение (если Y занята)</ru>
+            <sv>Välj gödsel (när Y används)</sv>
+            <tr>Gübre seç (Y kullanılıyorsa)</tr>
+            <uk>Обрати добриво (якщо Y зайнята)</uk>
+            <vi>Chọn phân bón (khi phím Y đã được dùng)</vi>
+        </text>
+    </l10n>
+</modDesc>

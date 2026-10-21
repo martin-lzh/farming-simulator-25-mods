@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Added to the map page header, below the farm balance. Styled like the map page's own buttons. -->
+<GUI>
+    <GuiElement profile="mh_toggleContainer">
+        <ThreePartBitmap profile="mh_toggleBg"/>
+        <Text profile="mh_toggleText" name="text" textOffset="15px 0px"/>
+        <Button profile="mh_toggleButton" name="button" onClick="onClickToggle"/>
+    </GuiElement>
+    <GUIProfiles>
+        <Profile name="mh_toggleContainer" extends="emptyPanel">
+            <anchors value="1 1 0 0"/>
+            <pivot value="1 1"/>
+            <size value="300px 30px"/>
+            <position value="-45px -10px"/>
+        </Profile>
+        <Profile name="mh_toggleBg" extends="fs25_mapButtonBg"/>
+        <Profile name="mh_toggleText" extends="fs25_mapButtonText"/>
+        <Profile name="mh_toggleButton" extends="fs25_mapButton">
+            <inputAction value="MH_TOGGLE_DRAWER"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>

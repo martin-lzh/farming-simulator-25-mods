@@ -1,0 +1,1102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modDesc descVersion="114">
+    <author>Zhaohan Liu</author>
+    <version>0.1.0.0</version>
+    <title>
+        <en>Map Helper</en>
+        <de>Kartenassistent</de>
+        <cs>地图助手</cs>
+        <br>Assistente De Mapa</br>
+        <ct>地圖助手</ct>
+        <cz>Pomocník Mapy</cz>
+        <da>Kortassistent</da>
+        <ea>Asistente De Mapa</ea>
+        <es>Asistente De Mapa</es>
+        <fc>Assistant De Carte</fc>
+        <fi>Kartta-Avustaja</fi>
+        <fr>Assistant De Carte</fr>
+        <hu>Térképsegéd</hu>
+        <id>Asisten Peta</id>
+        <it>Assistente Mappa</it>
+        <jp>マップヘルパー</jp>
+        <kr>지도 도우미</kr>
+        <nl>Kaarthulp</nl>
+        <no>Kartassistent</no>
+        <pl>Pomocnik Mapy</pl>
+        <pt>Assistente De Mapa</pt>
+        <ro>Asistent De Hartă</ro>
+        <ru>Помощник Карты</ru>
+        <sv>Kartassistent</sv>
+        <tr>Harita Yardımcısı</tr>
+        <uk>Помічник Мапи</uk>
+        <vi>Trợ Lý Bản Đồ</vi>
+    </title>
+    <description>
+        <en><![CDATA[Description:
+Adds a Map Helper drawer to the map page of the in-game menu. It works with the vehicle you are sitting in, so you don't have to find it on the map first:
+- Center on me: moves the map to you or your vehicle.
+- Create job and Set destination: open the game's own worker menus for your vehicle.
+- Start queue or Cancel job: start the queued jobs or stop the current worker.
+- Command queue: plan several jobs in a row, for example drive to a field, work it and drive back to the farm. In the job menu, click Add to queue instead of Start job. When a job is done, the next one starts by itself. If a job is stopped or can't be finished, the queue pauses and you get a message.
+
+Plan the queue while the vehicle is parked: the game only offers new jobs for vehicles without a worker.
+
+Multiplayer: farm members allowed to hire workers can use the queue. The server runs it, and it is saved with the game.
+
+Hotkeys:
+Open the map page and click Map Helper below your balance in the top-right corner (default key: Left Alt + H). In the job menu, Add to queue has the default key Left Alt + J. You can change both keys in the controls settings.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
+        <de><![CDATA[Beschreibung:
+Fügt der Kartenseite des Spielmenüs eine Kartenassistent-Leiste hinzu. Sie wirkt auf das Fahrzeug, in dem du sitzt, sodass du es nicht erst auf der Karte suchen musst:
+- Auf mich zentrieren: verschiebt die Karte zu dir oder deinem Fahrzeug.
+- Job erstellen und Ziel setzen: öffnen die Helfermenüs des Spiels für dein Fahrzeug.
+- Warteschlange starten oder Job abbrechen: startet die vorgemerkten Jobs oder hält den aktuellen KI-Helfer an.
+- Befehlswarteschlange: plane mehrere Jobs nacheinander, zum Beispiel zum Feld fahren, es bearbeiten und zurück zum Hof fahren. Klicke im Jobmenü auf „Zur Warteschlange“ statt auf „Job starten“. Ist ein Job erledigt, startet der nächste von selbst. Wird ein Job abgebrochen oder kann er nicht beendet werden, hält die Warteschlange an und du erhältst eine Meldung.
+
+Plane die Warteschlange, solange das Fahrzeug steht: Das Spiel bietet neue Jobs nur für Fahrzeuge ohne KI-Helfer an.
+
+Mehrspieler: Hofmitglieder mit dem Recht, KI-Helfer einzustellen, können die Warteschlange nutzen. Der Server führt sie aus, und sie wird mit dem Spielstand gespeichert.
+
+Tastenbelegung:
+Öffne die Kartenseite und klicke oben rechts unter deinem Kontostand auf „Kartenassistent“ (Standardtaste: Alt links + H). Im Jobmenü hat „Zur Warteschlange“ die Standardtaste Alt links + J. Beide Tasten kannst du in der Steuerung ändern.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
+        <cs><![CDATA[说明：
+在游戏菜单的地图页面加入“地图助手”抽屉。它直接作用于你当前驾驶的车辆，无需先在地图上找到它：
+- 定位到我：将地图移动到你或你的车辆。
+- 创建作业、设置目的地：为你的车辆打开游戏自带的帮手菜单。
+- 开始队列、取消作业：开始排队的作业，或停止当前帮手。
+- 指令队列：连续安排多个作业，例如前往田地、作业，再返回农场。在作业菜单中点击“加入队列”代替“开始作业”。一个作业完成后，下一个会自动开始；作业被取消或无法完成时，队列暂停并提示你。
+
+请在车辆停着时安排队列：游戏只为没有帮手的车辆提供新作业。
+
+多人游戏：有雇佣帮手权限的农场成员可以使用队列。队列由服务器执行，并随存档保存。
+
+快捷键：
+打开地图页面，点击右上角余额下方的“地图助手”（默认按键：左 Alt + H）。在作业菜单中，“加入队列”的默认按键为左 Alt + J。两个按键都可以在控制设置中修改。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
+        <br><![CDATA[Descrição:
+Adiciona uma gaveta Assistente de mapa à página do mapa no menu do jogo. Ela age sobre o veículo em que você está, sem precisar procurá-lo no mapa:
+- Centralizar em mim: move o mapa até você ou seu veículo.
+- Criar tarefa e Definir destino: abrem os menus de funcionários do próprio jogo para o seu veículo.
+- Iniciar fila ou Cancelar tarefa: inicia as tarefas da fila ou para o funcionário atual.
+- Fila de comandos: planeje várias tarefas em sequência, por exemplo ir até um campo, trabalhá-lo e voltar para a fazenda. No menu de tarefas, clique em Adicionar à fila em vez de Iniciar tarefa. Quando uma tarefa termina, a próxima começa sozinha. Se uma tarefa for interrompida ou não puder ser concluída, a fila é pausada e você recebe uma mensagem.
+
+Planeje a fila com o veículo parado: o jogo só oferece novas tarefas para veículos sem funcionário.
+
+Multijogador: membros da fazenda com permissão para contratar funcionários podem usar a fila. O servidor a executa, e ela é salva com o jogo.
+
+Teclas de atalho:
+Abra a página do mapa e clique em Assistente de mapa abaixo do seu saldo, no canto superior direito (tecla padrão: Alt esquerdo + H). No menu de tarefas, Adicionar à fila tem a tecla padrão Alt esquerdo + J. As duas teclas podem ser alteradas nas configurações de controles.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
+        <ct><![CDATA[說明：
+在遊戲選單的地圖頁面加入「地圖助手」抽屜。它直接作用於你目前駕駛的車輛，無需先在地圖上找到它：
+- 定位到我：將地圖移動到你或你的車輛。
+- 建立工作、設定目的地：為你的車輛開啟遊戲內建的幫手選單。
+- 開始佇列、取消工作：開始排入佇列的工作，或停止目前的幫手。
+- 指令佇列：連續安排多個工作，例如前往田地、作業，再返回農場。在工作選單中點擊「加入佇列」代替「開始工作」。一個工作完成後，下一個會自動開始；工作被取消或無法完成時，佇列暫停並提示你。
+
+請在車輛停著時安排佇列：遊戲只為沒有幫手的車輛提供新工作。
+
+多人遊戲：有僱用幫手權限的農場成員可以使用佇列。佇列由伺服器執行，並隨存檔儲存。
+
+快捷鍵：
+開啟地圖頁面，點擊右上角餘額下方的「地圖助手」（預設按鍵：左 Alt + H）。在工作選單中，「加入佇列」的預設按鍵為左 Alt + J。兩個按鍵都可以在控制設定中修改。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
+        <cz><![CDATA[Popis:
+Přidá na stránku mapy v herní nabídce panel Pomocník mapy. Pracuje s vozidlem, ve kterém sedíte, takže ho nemusíte nejdřív hledat na mapě:
+- Vycentrovat na mě: posune mapu na vás nebo vaše vozidlo.
+- Vytvořit úkol a Přejít: otevřou herní nabídky pracovníků pro vaše vozidlo.
+- Spustit frontu nebo Zrušit úkol: spustí úkoly ve frontě nebo zastaví aktuálního pracovníka.
+- Fronta příkazů: naplánujte několik úkolů za sebou, například jet na pole, obdělat ho a vrátit se na farmu. V nabídce úkolů klikněte místo Zahájit úkol na Přidat do fronty. Když je úkol hotový, další se spustí sám. Pokud je úkol zastaven nebo ho nelze dokončit, fronta se pozastaví a zobrazí se zpráva.
+
+Frontu plánujte, když vozidlo stojí: hra nabízí nové úkoly jen vozidlům bez pracovníka.
+
+Hra více hráčů: členové farmy s oprávněním najímat pracovníky mohou frontu používat. Spouští ji server a ukládá se spolu s hrou.
+
+Klávesové zkratky:
+Otevřete stránku mapy a klikněte vpravo nahoře pod zůstatkem na Pomocník mapy (výchozí klávesa: levý Alt + H). V nabídce úkolů má Přidat do fronty výchozí klávesu levý Alt + J. Obě klávesy lze změnit v nastavení ovládání.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
+        <da><![CDATA[Beskrivelse:
+Tilføjer en kortassistent-skuffe på kortsiden i spilmenuen. Den virker på det køretøj, du sidder i, så du ikke først skal finde det på kortet:
+- Centrér på mig: flytter kortet hen til dig eller dit køretøj.
+- Opret job og Gå til: åbner spillets egne arbejdermenuer for dit køretøj.
+- Start kø eller Annuller job: starter jobbene i køen eller stopper den nuværende arbejder.
+- Kommandokø: planlæg flere job i træk, for eksempel køre til en mark, bearbejde den og køre tilbage til gården. Klik på Føj til kø i jobmenuen i stedet for Start job. Når et job er færdigt, starter det næste af sig selv. Hvis et job stoppes eller ikke kan gøres færdigt, sættes køen på pause, og du får en besked.
+
+Planlæg køen, mens køretøjet holder stille: spillet tilbyder kun nye job til køretøjer uden arbejder.
+
+Multiplayer: gårdmedlemmer, der må ansætte arbejdere, kan bruge køen. Serveren kører den, og den gemmes med spillet.
+
+Genvejstaster:
+Åbn kortsiden, og klik på Kortassistent under din saldo i øverste højre hjørne (standardtast: venstre Alt + H). I jobmenuen har Føj til kø standardtasten venstre Alt + J. Begge taster kan ændres i styringsindstillingerne.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
+        <ea><![CDATA[Descripción:
+Agrega un panel Asistente de mapa a la página del mapa del menú del juego. Actúa sobre el vehículo en el que estás, así que no tienes que buscarlo primero en el mapa:
+- Centrar en mí: mueve el mapa hacia ti o tu vehículo.
+- Crear trabajo y Establecer destino: abren los menús de ayudantes del propio juego para tu vehículo.
+- Iniciar cola o Cancelar trabajo: inicia los trabajos de la cola o detiene al ayudante actual.
+- Cola de órdenes: planea varios trabajos seguidos, por ejemplo ir a un campo, trabajarlo y volver a la granja. En el menú de trabajos, haz clic en Agregar a la cola en lugar de Iniciar trabajo. Cuando un trabajo termina, el siguiente empieza solo. Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje.
+
+Planea la cola con el vehículo detenido: el juego solo ofrece trabajos nuevos para vehículos sin ayudante.
+
+Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
+
+Teclas de acceso rápido:
+Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha (tecla predeterminada: Alt izquierdo + H). En el menú de trabajos, Agregar a la cola tiene la tecla predeterminada Alt izquierdo + J. Puedes cambiar ambas teclas en la configuración de controles.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
+        <es><![CDATA[Descripción:
+Añade un panel Asistente de mapa a la página del mapa del menú del juego. Actúa sobre el vehículo en el que estás, así que no tienes que buscarlo antes en el mapa:
+- Centrar en mí: mueve el mapa hacia ti o tu vehículo.
+- Crear trabajo e Ir: abren los menús de ayudantes del propio juego para tu vehículo.
+- Iniciar cola o Cancelar trabajo: inicia los trabajos de la cola o detiene al ayudante actual.
+- Cola de órdenes: planifica varios trabajos seguidos, por ejemplo ir a un campo, trabajarlo y volver a la granja. En el menú de trabajos, haz clic en Añadir a la cola en lugar de Iniciar trabajo. Cuando un trabajo termina, el siguiente empieza solo. Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje.
+
+Planifica la cola con el vehículo parado: el juego solo ofrece trabajos nuevos para vehículos sin ayudante.
+
+Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
+
+Teclas de acceso rápido:
+Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha (tecla predeterminada: Alt izquierdo + H). En el menú de trabajos, Añadir a la cola tiene la tecla predeterminada Alt izquierdo + J. Puedes cambiar ambas teclas en los ajustes de controles.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
+        <fc><![CDATA[Description :
+Ajoute un tiroir Assistant de carte à la page de la carte du menu du jeu. Il agit sur le véhicule dans lequel vous êtes assis, sans devoir le chercher d'abord sur la carte :
+- Centrer sur moi : déplace la carte vers vous ou votre véhicule.
+- Créer un travail et Choisir la destination : ouvrent les menus d'ouvriers du jeu pour votre véhicule.
+- Lancer la file ou Annuler le travail : lance les travaux en attente ou arrête l'ouvrier actuel.
+- File de commandes : planifiez plusieurs travaux à la suite, par exemple aller à un champ, le travailler puis revenir à la ferme. Dans le menu des travaux, cliquez sur Ajouter à la file au lieu de Commencer le travail. Quand un travail est terminé, le suivant démarre tout seul. Si un travail est arrêté ou ne peut pas être terminé, la file se met en pause et un message s'affiche.
+
+Planifiez la file pendant que le véhicule est à l'arrêt : le jeu ne propose de nouveaux travaux qu'aux véhicules sans ouvrier.
+
+Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
+
+Raccourcis :
+Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite (touche par défaut : Alt gauche + H). Dans le menu des travaux, Ajouter à la file a la touche par défaut Alt gauche + J. Vous pouvez modifier les deux touches dans les réglages des commandes.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
+        <fi><![CDATA[Kuvaus:
+Lisää pelivalikon karttasivulle Kartta-avustaja-paneelin. Se toimii ajoneuvolle, jossa istut, joten sitä ei tarvitse ensin etsiä kartalta:
+- Keskitä minuun: siirtää kartan sinun tai ajoneuvosi kohdalle.
+- Luo työ ja Mene kohteeseen: avaavat pelin omat työntekijävalikot ajoneuvollesi.
+- Aloita jono tai Peruuta työ: aloittaa jonossa olevat työt tai pysäyttää nykyisen työntekijän.
+- Komentojono: suunnittele useita töitä peräkkäin, esimerkiksi aja pellolle, käsittele se ja aja takaisin tilalle. Valitse työvalikossa Lisää jonoon Aloita työ -painikkeen sijaan. Kun työ on valmis, seuraava alkaa itsestään. Jos työ keskeytetään tai sitä ei voi suorittaa loppuun, jono pysähtyy ja saat ilmoituksen.
+
+Suunnittele jono, kun ajoneuvo on paikallaan: peli tarjoaa uusia töitä vain ajoneuvoille, joilla ei ole työntekijää.
+
+Moninpeli: tilan jäsenet, joilla on oikeus palkata työntekijöitä, voivat käyttää jonoa. Palvelin suorittaa sen, ja se tallennetaan pelin mukana.
+
+Pikanäppäimet:
+Avaa karttasivu ja napsauta oikeassa yläkulmassa saldosi alla olevaa Kartta-avustaja-painiketta (oletusnäppäin: vasen Alt + H). Työvalikossa Lisää jonoon -toiminnon oletusnäppäin on vasen Alt + J. Molemmat näppäimet voi vaihtaa ohjausasetuksista.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
+        <fr><![CDATA[Description :
+Ajoute un tiroir Assistant de carte à la page de la carte du menu du jeu. Il agit sur le véhicule dans lequel vous êtes assis, sans devoir le chercher d'abord sur la carte :
+- Centrer sur moi : déplace la carte vers vous ou votre véhicule.
+- Créer une tâche et Aller vers : ouvrent les menus d'ouvriers du jeu pour votre véhicule.
+- Lancer la file ou Annuler la tâche : lance les tâches en attente ou arrête l'ouvrier actuel.
+- File de commandes : planifiez plusieurs tâches à la suite, par exemple aller à un champ, le travailler puis revenir à la ferme. Dans le menu des tâches, cliquez sur Ajouter à la file au lieu de Démarrer la tâche. Quand une tâche est terminée, la suivante démarre toute seule. Si une tâche est arrêtée ou ne peut pas être terminée, la file se met en pause et un message s'affiche.
+
+Planifiez la file pendant que le véhicule est à l'arrêt : le jeu ne propose de nouvelles tâches qu'aux véhicules sans ouvrier.
+
+Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
+
+Raccourcis :
+Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite (touche par défaut : Alt gauche + H). Dans le menu des tâches, Ajouter à la file a la touche par défaut Alt gauche + J. Vous pouvez modifier les deux touches dans les paramètres des commandes.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
+        <hu><![CDATA[Leírás:
+Térképsegéd fiókot ad a játékmenü térképoldalához. Azzal a járművel dolgozik, amelyben ülsz, így nem kell előbb megkeresned a térképen:
+- Saját helyzetem középre: a térképet hozzád vagy a járművedhez viszi.
+- Feladat létrehozása és Cél beállítása: megnyitja a játék saját segítőmenüit a járművedhez.
+- Sor indítása vagy Feladat törlése: elindítja a sorban álló feladatokat, vagy leállítja az aktuális segítőt.
+- Parancssor: tervezz meg több feladatot egymás után, például menj ki egy táblára, dolgozd meg, majd térj vissza a gazdaságba. A feladatmenüben a Feladat elindítása helyett kattints a Sorhoz adás gombra. Ha egy feladat elkészült, a következő magától indul. Ha egy feladatot leállítanak vagy nem fejezhető be, a sor szünetel, és üzenetet kapsz.
+
+A sort álló járművel tervezd meg: a játék csak segítő nélküli járműveknek kínál új feladatot.
+
+Többjátékos mód: a gazdaság segítőfelvételi joggal rendelkező tagjai használhatják a sort. A szerver futtatja, és a játékkal együtt mentődik.
+
+Gyorsbillentyűk:
+Nyisd meg a térképoldalt, és kattints a jobb felső sarokban, az egyenleged alatt a Térképsegéd gombra (alapértelmezett billentyű: bal Alt + H). A feladatmenüben a Sorhoz adás alapértelmezett billentyűje a bal Alt + J. Mindkét billentyű módosítható az irányítási beállításokban.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
+        <id><![CDATA[Deskripsi:
+Menambahkan laci Asisten Peta ke halaman peta di menu game. Laci ini bekerja pada kendaraan yang sedang Anda kendarai, jadi Anda tidak perlu mencarinya dulu di peta:
+- Pusatkan ke saya: menggeser peta ke posisi Anda atau kendaraan Anda.
+- Buat pekerjaan dan Atur destinasi: membuka menu pekerja bawaan game untuk kendaraan Anda.
+- Mulai antrean atau Batalkan Pekerjaan: memulai pekerjaan dalam antrean atau menghentikan pekerja saat ini.
+- Antrean perintah: rencanakan beberapa pekerjaan berurutan, misalnya pergi ke ladang, mengerjakannya, lalu kembali ke peternakan. Di menu pekerjaan, klik Tambah ke antrean alih-alih Mulai pekerjaan. Setelah satu pekerjaan selesai, pekerjaan berikutnya dimulai sendiri. Jika pekerjaan dihentikan atau tidak dapat diselesaikan, antrean dijeda dan Anda mendapat pesan.
+
+Rencanakan antrean saat kendaraan berhenti: game hanya menawarkan pekerjaan baru untuk kendaraan tanpa pekerja.
+
+Multipemain: anggota peternakan yang boleh mempekerjakan pekerja dapat menggunakan antrean. Server yang menjalankannya, dan antrean disimpan bersama game.
+
+Tombol pintas:
+Buka halaman peta lalu klik Asisten Peta di bawah saldo Anda di pojok kanan atas (tombol bawaan: Alt kiri + H). Di menu pekerjaan, Tambah ke antrean memiliki tombol bawaan Alt kiri + J. Kedua tombol dapat diubah di pengaturan kontrol.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
+        <it><![CDATA[Descrizione:
+Aggiunge un pannello Assistente mappa alla pagina della mappa del menu di gioco. Agisce sul veicolo in cui ti trovi, così non devi prima cercarlo sulla mappa:
+- Centra su di me: sposta la mappa su di te o sul tuo veicolo.
+- Crea lavoro e Imposta destinazione: aprono i menu degli aiutanti del gioco per il tuo veicolo.
+- Avvia coda o Annulla lavoro: avvia i lavori in coda o ferma l'aiutante attuale.
+- Coda di comandi: pianifica più lavori di fila, per esempio andare in un campo, lavorarlo e tornare alla fattoria. Nel menu dei lavori, fai clic su Aggiungi alla coda invece di Inizia lavoro. Quando un lavoro è finito, il successivo parte da solo. Se un lavoro viene fermato o non può essere completato, la coda va in pausa e ricevi un messaggio.
+
+Pianifica la coda a veicolo fermo: il gioco offre nuovi lavori solo ai veicoli senza aiutante.
+
+Multigiocatore: i membri della fattoria autorizzati ad assumere aiutanti possono usare la coda. La esegue il server e viene salvata con la partita.
+
+Tasti di scelta rapida:
+Apri la pagina della mappa e fai clic su Assistente mappa sotto il tuo saldo, in alto a destra (tasto predefinito: Alt sinistro + H). Nel menu dei lavori, Aggiungi alla coda ha il tasto predefinito Alt sinistro + J. Puoi cambiare entrambi i tasti nelle impostazioni dei comandi.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
+        <jp><![CDATA[説明：
+ゲームメニューのマップページに「マップヘルパー」パネルを追加します。乗っている車両に対して使えるので、先にマップ上で探す必要はありません：
+- 自分を中央に表示：自分または車両の位置にマップを移動します。
+- 仕事を作成する・目標を設定：車両用のゲーム標準のヘルパーメニューを開きます。
+- キューを開始・仕事をキャンセル：キューの仕事を開始するか、現在のヘルパーを停止します。
+- コマンドキュー：複数の仕事を続けて計画できます。例えば畑へ移動し、作業し、農場へ戻る、といった流れです。仕事メニューで「仕事を開始」の代わりに「キューに追加」をクリックします。仕事が完了すると次の仕事が自動で始まります。仕事が中止されたり完了できなかったりすると、キューは一時停止し、メッセージが表示されます。
+
+キューは車両が停まっている間に計画してください。ゲームはヘルパーのいない車両にのみ新しい仕事を提示します。
+
+マルチプレイ：ヘルパーを雇う権限のある農場メンバーがキューを使えます。キューはサーバーが実行し、セーブデータに保存されます。
+
+ホットキー：
+マップページを開き、右上の所持金の下にある「マップヘルパー」をクリックします（初期キー：左 Alt + H）。仕事メニューの「キューに追加」の初期キーは左 Alt + J です。どちらのキーも操作設定で変更できます。
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
+        <kr><![CDATA[설명:
+게임 메뉴의 맵 페이지에 '지도 도우미' 패널을 추가합니다. 현재 탑승한 차량에 바로 적용되므로 지도에서 먼저 찾을 필요가 없습니다:
+- 내 위치로 이동: 지도를 나 또는 내 차량 위치로 옮깁니다.
+- 작업 만들기, 목적지 설정: 내 차량에 대한 게임 기본 작업자 메뉴를 엽니다.
+- 대기열 시작, 작업 취소: 대기열의 작업을 시작하거나 현재 작업자를 멈춥니다.
+- 명령 대기열: 여러 작업을 연속으로 계획합니다. 예를 들어 밭으로 이동해 작업한 뒤 농장으로 돌아올 수 있습니다. 작업 메뉴에서 '작업 시작' 대신 '대기열에 추가'를 클릭하세요. 작업이 끝나면 다음 작업이 자동으로 시작됩니다. 작업이 중지되거나 완료되지 못하면 대기열이 일시 정지되고 메시지가 표시됩니다.
+
+대기열은 차량이 멈춰 있을 때 계획하세요. 게임은 작업자가 없는 차량에만 새 작업을 제공합니다.
+
+멀티플레이: 작업자 고용 권한이 있는 농장 구성원이 대기열을 사용할 수 있습니다. 서버가 대기열을 실행하며 게임과 함께 저장됩니다.
+
+단축키:
+맵 페이지를 열고 오른쪽 위 잔액 아래의 '지도 도우미'를 클릭하세요(기본 키: 왼쪽 Alt + H). 작업 메뉴에서 '대기열에 추가'의 기본 키는 왼쪽 Alt + J입니다. 두 키 모두 조작 설정에서 바꿀 수 있습니다.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
+        <nl><![CDATA[Beschrijving:
+Voegt een Kaarthulp-lade toe aan de kaartpagina van het spelmenu. Die werkt met het voertuig waarin je zit, zodat je het niet eerst op de kaart hoeft te zoeken:
+- Op mij centreren: verplaatst de kaart naar jou of je voertuig.
+- Klus maken en Bestemming instellen: openen de eigen helpermenu's van het spel voor je voertuig.
+- Wachtrij starten of Taak annuleren: start de klussen in de wachtrij of stopt de huidige helper.
+- Opdrachtenwachtrij: plan meerdere klussen achter elkaar, bijvoorbeeld naar een veld rijden, het bewerken en terugrijden naar de boerderij. Klik in het klusmenu op Aan wachtrij toevoegen in plaats van Klus starten. Is een klus klaar, dan start de volgende vanzelf. Wordt een klus gestopt of kan hij niet worden afgerond, dan pauzeert de wachtrij en krijg je een melding.
+
+Plan de wachtrij terwijl het voertuig stilstaat: het spel biedt alleen nieuwe klussen aan voor voertuigen zonder helper.
+
+Multiplayer: boerderijleden die helpers mogen inhuren, kunnen de wachtrij gebruiken. De server voert hem uit en hij wordt met het spel opgeslagen.
+
+Sneltoetsen:
+Open de kaartpagina en klik rechtsboven onder je saldo op Kaarthulp (standaardtoets: linker Alt + H). In het klusmenu heeft Aan wachtrij toevoegen de standaardtoets linker Alt + J. Beide toetsen kun je wijzigen in de besturingsinstellingen.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
+        <no><![CDATA[Beskrivelse:
+Legger til en kartassistent-skuff på kartsiden i spillmenyen. Den virker på kjøretøyet du sitter i, så du slipper å lete det opp på kartet først:
+- Sentrer på meg: flytter kartet til deg eller kjøretøyet ditt.
+- Opprett jobb og Gå til: åpner spillets egne arbeidermenyer for kjøretøyet ditt.
+- Start kø eller Avbryt jobb: starter jobbene i køen eller stopper den nåværende arbeideren.
+- Kommandokø: planlegg flere jobber etter hverandre, for eksempel kjøre til et jorde, bearbeide det og kjøre tilbake til gården. Klikk på Legg i kø i jobbmenyen i stedet for Start jobb. Når en jobb er ferdig, starter den neste av seg selv. Hvis en jobb stoppes eller ikke kan fullføres, settes køen på pause, og du får en melding.
+
+Planlegg køen mens kjøretøyet står stille: spillet tilbyr bare nye jobber til kjøretøy uten arbeider.
+
+Flerspiller: gårdsmedlemmer som har lov til å ansette arbeidere, kan bruke køen. Serveren kjører den, og den lagres med spillet.
+
+Hurtigtaster:
+Åpne kartsiden og klikk på Kartassistent under saldoen din øverst til høyre (standardtast: venstre Alt + H). I jobbmenyen har Legg i kø standardtasten venstre Alt + J. Begge tastene kan endres i kontrollinnstillingene.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
+        <pl><![CDATA[Opis:
+Dodaje szufladę Pomocnik mapy do strony mapy w menu gry. Działa na pojazd, w którym siedzisz, więc nie musisz go najpierw szukać na mapie:
+- Wyśrodkuj na mnie: przesuwa mapę na ciebie lub twój pojazd.
+- Utwórz pracę i Określ miejsce docelowe: otwierają wbudowane menu pracowników dla twojego pojazdu.
+- Uruchom kolejkę lub Anuluj pracę: uruchamia prace z kolejki albo zatrzymuje obecnego pracownika.
+- Kolejka poleceń: zaplanuj kilka prac po kolei, na przykład dojazd na pole, jego obróbkę i powrót do gospodarstwa. W menu prac kliknij Dodaj do kolejki zamiast Rozpocznij pracę. Gdy praca się skończy, następna rusza sama. Jeśli praca zostanie przerwana lub nie da się jej ukończyć, kolejka zostaje wstrzymana i pojawia się komunikat.
+
+Planuj kolejkę, gdy pojazd stoi: gra oferuje nowe prace tylko pojazdom bez pracownika.
+
+Gra wieloosobowa: członkowie gospodarstwa z prawem zatrudniania pracowników mogą korzystać z kolejki. Uruchamia ją serwer, a zapisuje się razem z grą.
+
+Skróty klawiszowe:
+Otwórz stronę mapy i kliknij Pomocnik mapy pod saldem w prawym górnym rogu (domyślny klawisz: lewy Alt + H). W menu prac Dodaj do kolejki ma domyślny klawisz lewy Alt + J. Oba klawisze można zmienić w ustawieniach sterowania.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
+        <pt><![CDATA[Descrição:
+Adiciona uma gaveta Assistente de mapa à página do mapa no menu do jogo. Atua sobre o veículo em que estás sentado, sem teres de o procurar primeiro no mapa:
+- Centrar em mim: move o mapa até ti ou ao teu veículo.
+- Criar tarefa e Ir para: abrem os menus de trabalhadores do próprio jogo para o teu veículo.
+- Iniciar fila ou Cancelar trabalho: inicia as tarefas da fila ou para o trabalhador atual.
+- Fila de comandos: planeia várias tarefas seguidas, por exemplo ir até um campo, trabalhá-lo e voltar à quinta. No menu de tarefas, clica em Adicionar à fila em vez de Iniciar tarefa. Quando uma tarefa termina, a seguinte começa sozinha. Se uma tarefa for parada ou não puder ser concluída, a fila fica em pausa e recebes uma mensagem.
+
+Planeia a fila com o veículo parado: o jogo só oferece novas tarefas a veículos sem trabalhador.
+
+Multijogador: os membros da quinta com permissão para contratar trabalhadores podem usar a fila. O servidor executa-a e ela é guardada com o jogo.
+
+Teclas de atalho:
+Abre a página do mapa e clica em Assistente de mapa por baixo do teu saldo, no canto superior direito (tecla predefinida: Alt esquerdo + H). No menu de tarefas, Adicionar à fila tem a tecla predefinida Alt esquerdo + J. Podes alterar as duas teclas nas definições de controlos.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
+        <ro><![CDATA[Descriere:
+Adaugă un sertar Asistent de hartă pe pagina hărții din meniul jocului. Acționează asupra vehiculului în care stai, așa că nu mai trebuie să-l cauți întâi pe hartă:
+- Centrează pe mine: mută harta la tine sau la vehiculul tău.
+- Creează loc de muncă și Setează destinația: deschid meniurile de lucrători ale jocului pentru vehiculul tău.
+- Pornește coada sau Anulează sarcina: pornește sarcinile din coadă sau oprește lucrătorul actual.
+- Coadă de comenzi: planifică mai multe sarcini una după alta, de exemplu mergi la un câmp, lucrează-l și întoarce-te la fermă. În meniul sarcinilor, apasă Adaugă în coadă în loc de Începe munca. Când o sarcină se termină, următoarea pornește singură. Dacă o sarcină este oprită sau nu poate fi terminată, coada intră în pauză și primești un mesaj.
+
+Planifică coada cât timp vehiculul stă pe loc: jocul oferă sarcini noi doar vehiculelor fără lucrător.
+
+Multiplayer: membrii fermei care au voie să angajeze lucrători pot folosi coada. Serverul o execută și se salvează odată cu jocul.
+
+Taste rapide:
+Deschide pagina hărții și apasă Asistent de hartă sub soldul tău, în colțul din dreapta sus (tasta implicită: Alt stânga + H). În meniul sarcinilor, Adaugă în coadă are tasta implicită Alt stânga + J. Poți schimba ambele taste în setările de control.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
+        <ru><![CDATA[Описание:
+Добавляет на страницу карты в игровом меню панель «Помощник карты». Она работает с техникой, в которой вы сидите, поэтому её не нужно сначала искать на карте:
+- Центрировать на мне: перемещает карту к вам или вашей технике.
+- Дать работу и Указать местоположение: открывают встроенные меню работников для вашей техники.
+- Запустить очередь или Отменить работу: запускает работы из очереди или останавливает текущего работника.
+- Очередь команд: запланируйте несколько работ подряд, например доехать до поля, обработать его и вернуться на ферму. В меню работ нажмите «В очередь» вместо «Начать работу». Когда работа выполнена, следующая начинается сама. Если работу остановили или её не удалось завершить, очередь приостанавливается и появляется сообщение.
+
+Планируйте очередь, пока техника стоит: игра предлагает новые работы только технике без работника.
+
+Мультиплеер: участники фермы с правом нанимать работников могут пользоваться очередью. Её выполняет сервер, и она сохраняется вместе с игрой.
+
+Горячие клавиши:
+Откройте страницу карты и нажмите «Помощник карты» под балансом в правом верхнем углу (клавиша по умолчанию: левый Alt + H). В меню работ у «В очередь» клавиша по умолчанию — левый Alt + J. Обе клавиши можно изменить в настройках управления.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
+        <sv><![CDATA[Beskrivning:
+Lägger till en kartassistent-låda på kartsidan i spelmenyn. Den fungerar med fordonet du sitter i, så du behöver inte leta upp det på kartan först:
+- Centrera på mig: flyttar kartan till dig eller ditt fordon.
+- Skapa jobb och Gå till: öppnar spelets egna arbetarmenyer för ditt fordon.
+- Starta kö eller Avbryt jobb: startar jobben i kön eller stoppar den nuvarande arbetaren.
+- Kommandokö: planera flera jobb i rad, till exempel köra till ett fält, bearbeta det och köra tillbaka till gården. Klicka på Lägg i kö i jobbmenyn i stället för Starta jobb. När ett jobb är klart startar nästa av sig själv. Om ett jobb stoppas eller inte kan slutföras pausas kön och du får ett meddelande.
+
+Planera kön medan fordonet står still: spelet erbjuder bara nya jobb till fordon utan arbetare.
+
+Flerspelarläge: gårdsmedlemmar som får anlita arbetare kan använda kön. Servern kör den och den sparas med spelet.
+
+Snabbtangenter:
+Öppna kartsidan och klicka på Kartassistent under ditt saldo uppe till höger (standardtangent: vänster Alt + H). I jobbmenyn har Lägg i kö standardtangenten vänster Alt + J. Båda tangenterna kan ändras i kontrollinställningarna.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
+        <tr><![CDATA[Açıklama:
+Oyun menüsünün harita sayfasına bir Harita Yardımcısı çekmecesi ekler. Oturduğunuz araçla çalışır, böylece önce haritada aramanız gerekmez:
+- Beni ortala: haritayı size veya aracınıza taşır.
+- İş oluştur ve Hedef konum belirle: aracınız için oyunun kendi yardımcı menülerini açar.
+- Sırayı başlat veya İşi iptal et: sıradaki işleri başlatır ya da mevcut yardımcıyı durdurur.
+- Komut sırası: birkaç işi art arda planlayın; örneğin bir tarlaya gidin, orayı işleyin ve çiftliğe dönün. İş menüsünde İşe başla yerine Sıraya ekle'ye tıklayın. Bir iş bittiğinde sıradaki kendiliğinden başlar. Bir iş durdurulursa veya tamamlanamazsa sıra duraklatılır ve bir mesaj alırsınız.
+
+Sırayı araç dururken planlayın: oyun yeni işleri yalnızca yardımcısı olmayan araçlara sunar.
+
+Çok oyunculu: yardımcı kiralama izni olan çiftlik üyeleri sırayı kullanabilir. Sırayı sunucu yürütür ve oyunla birlikte kaydedilir.
+
+Kısayol tuşları:
+Harita sayfasını açın ve sağ üstte bakiyenizin altındaki Harita Yardımcısı'na tıklayın (varsayılan tuş: Sol Alt + H). İş menüsünde Sıraya ekle'nin varsayılan tuşu Sol Alt + J'dir. İki tuşu da kontrol ayarlarından değiştirebilirsiniz.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
+        <uk><![CDATA[Опис:
+Додає на сторінку мапи в ігровому меню панель «Помічник мапи». Вона працює з технікою, у якій ви сидите, тож її не треба спершу шукати на мапі:
+- Центрувати на мені: переміщує мапу до вас або вашої техніки.
+- Створити завдання та Встановити пункт призначення: відкривають вбудовані меню працівників для вашої техніки.
+- Запустити чергу або Скасувати завдання: запускає завдання з черги або зупиняє поточного працівника.
+- Черга команд: заплануйте кілька завдань поспіль, наприклад доїхати до поля, обробити його й повернутися на ферму. У меню завдань натисніть «Додати до черги» замість «Почати виконувати завдання». Коли завдання виконано, наступне починається саме. Якщо завдання зупинили або його не вдалося завершити, черга призупиняється і з'являється повідомлення.
+
+Плануйте чергу, поки техніка стоїть: гра пропонує нові завдання лише техніці без працівника.
+
+Мультиплеєр: учасники ферми з правом наймати працівників можуть користуватися чергою. Її виконує сервер, і вона зберігається разом із грою.
+
+Гарячі клавіші:
+Відкрийте сторінку мапи й натисніть «Помічник мапи» під балансом у правому верхньому куті (клавіша за замовчуванням: лівий Alt + H). У меню завдань «Додати до черги» має клавішу за замовчуванням лівий Alt + J. Обидві клавіші можна змінити в налаштуваннях керування.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
+        <vi><![CDATA[Mô tả:
+Thêm ngăn Trợ lý bản đồ vào trang bản đồ trong menu trò chơi. Ngăn này làm việc với phương tiện bạn đang ngồi, nên bạn không cần tìm nó trên bản đồ trước:
+- Căn giữa vào tôi: di chuyển bản đồ đến vị trí của bạn hoặc phương tiện.
+- Tạo công việc và Thiết lập điểm đến: mở các menu công nhân có sẵn của trò chơi cho phương tiện của bạn.
+- Bắt đầu hàng đợi hoặc Hủy công việc: bắt đầu các công việc trong hàng đợi hoặc dừng công nhân hiện tại.
+- Hàng đợi lệnh: lên kế hoạch nhiều công việc liên tiếp, ví dụ lái đến cánh đồng, làm việc ở đó rồi quay về trang trại. Trong menu công việc, nhấn Thêm vào hàng đợi thay cho Bắt đầu công việc. Khi một công việc xong, công việc tiếp theo tự bắt đầu. Nếu một công việc bị dừng hoặc không thể hoàn thành, hàng đợi tạm dừng và bạn nhận được thông báo.
+
+Hãy lên kế hoạch hàng đợi khi phương tiện đang đứng yên: trò chơi chỉ đề xuất công việc mới cho phương tiện chưa có công nhân.
+
+Nhiều người chơi: thành viên trang trại được phép thuê công nhân có thể dùng hàng đợi. Máy chủ thực hiện hàng đợi và lưu cùng với trò chơi.
+
+Phím tắt:
+Mở trang bản đồ và nhấn Trợ lý bản đồ bên dưới số dư ở góc trên bên phải (phím mặc định: Alt trái + H). Trong menu công việc, Thêm vào hàng đợi có phím mặc định Alt trái + J. Bạn có thể đổi cả hai phím trong phần cài đặt điều khiển.
+
+GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
+    </description>
+    <iconFilename>icon_mapHelper.dds</iconFilename>
+    <multiplayer supported="true"/>
+    <extraSourceFiles>
+        <sourceFile filename="scripts/MapHelper.lua"/>
+        <sourceFile filename="scripts/QueueEvents.lua"/>
+        <sourceFile filename="scripts/DrawerDialog.lua"/>
+        <sourceFile filename="scripts/MapFrameExtension.lua"/>
+        <sourceFile filename="scripts/Register.lua"/>
+    </extraSourceFiles>
+    <actions>
+        <action name="MH_TOGGLE_DRAWER" category="SYSTEM" axisType="HALF"/>
+        <action name="MH_ADD_TO_QUEUE" category="SYSTEM" axisType="HALF"/>
+    </actions>
+    <inputBinding>
+        <actionBinding action="MH_TOGGLE_DRAWER">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_h"/>
+        </actionBinding>
+        <actionBinding action="MH_ADD_TO_QUEUE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_j"/>
+        </actionBinding>
+    </inputBinding>
+    <l10n>
+        <text name="input_MH_TOGGLE_DRAWER">
+            <en>Open Map Helper</en>
+            <de>Kartenassistent öffnen</de>
+            <cs>打开地图助手</cs>
+            <br>Abrir assistente de mapa</br>
+            <ct>開啟地圖助手</ct>
+            <cz>Otevřít pomocníka mapy</cz>
+            <da>Åbn kortassistent</da>
+            <ea>Abrir asistente de mapa</ea>
+            <es>Abrir asistente de mapa</es>
+            <fc>Ouvrir l'assistant de carte</fc>
+            <fi>Avaa kartta-avustaja</fi>
+            <fr>Ouvrir l'assistant de carte</fr>
+            <hu>Térképsegéd megnyitása</hu>
+            <id>Buka asisten peta</id>
+            <it>Apri assistente mappa</it>
+            <jp>マップヘルパーを開く</jp>
+            <kr>지도 도우미 열기</kr>
+            <nl>Kaarthulp openen</nl>
+            <no>Åpne kartassistent</no>
+            <pl>Otwórz pomocnika mapy</pl>
+            <pt>Abrir assistente de mapa</pt>
+            <ro>Deschide asistentul de hartă</ro>
+            <ru>Открыть помощник карты</ru>
+            <sv>Öppna kartassistent</sv>
+            <tr>Harita yardımcısını aç</tr>
+            <uk>Відкрити помічника мапи</uk>
+            <vi>Mở trợ lý bản đồ</vi>
+        </text>
+        <text name="input_MH_ADD_TO_QUEUE">
+            <en>Add job to queue</en>
+            <de>Job zur Warteschlange hinzufügen</de>
+            <cs>将作业加入队列</cs>
+            <br>Adicionar tarefa à fila</br>
+            <ct>將工作加入佇列</ct>
+            <cz>Přidat úkol do fronty</cz>
+            <da>Føj job til køen</da>
+            <ea>Agregar trabajo a la cola</ea>
+            <es>Añadir trabajo a la cola</es>
+            <fc>Ajouter le travail à la file</fc>
+            <fi>Lisää työ jonoon</fi>
+            <fr>Ajouter la tâche à la file</fr>
+            <hu>Feladat hozzáadása a sorhoz</hu>
+            <id>Tambahkan pekerjaan ke antrean</id>
+            <it>Aggiungi lavoro alla coda</it>
+            <jp>仕事をキューに追加</jp>
+            <kr>작업을 대기열에 추가</kr>
+            <nl>Klus aan wachtrij toevoegen</nl>
+            <no>Legg jobb i køen</no>
+            <pl>Dodaj pracę do kolejki</pl>
+            <pt>Adicionar tarefa à fila</pt>
+            <ro>Adaugă sarcina în coadă</ro>
+            <ru>Добавить работу в очередь</ru>
+            <sv>Lägg till jobb i kön</sv>
+            <tr>İşi sıraya ekle</tr>
+            <uk>Додати завдання до черги</uk>
+            <vi>Thêm công việc vào hàng đợi</vi>
+        </text>
+        <text name="mh_toggle">
+            <en>Map Helper</en>
+            <de>Kartenassistent</de>
+            <cs>地图助手</cs>
+            <br>Assistente De Mapa</br>
+            <ct>地圖助手</ct>
+            <cz>Pomocník Mapy</cz>
+            <da>Kortassistent</da>
+            <ea>Asistente De Mapa</ea>
+            <es>Asistente De Mapa</es>
+            <fc>Assistant De Carte</fc>
+            <fi>Kartta-Avustaja</fi>
+            <fr>Assistant De Carte</fr>
+            <hu>Térképsegéd</hu>
+            <id>Asisten Peta</id>
+            <it>Assistente Mappa</it>
+            <jp>マップヘルパー</jp>
+            <kr>지도 도우미</kr>
+            <nl>Kaarthulp</nl>
+            <no>Kartassistent</no>
+            <pl>Pomocnik Mapy</pl>
+            <pt>Assistente De Mapa</pt>
+            <ro>Asistent De Hartă</ro>
+            <ru>Помощник Карты</ru>
+            <sv>Kartassistent</sv>
+            <tr>Harita Yardımcısı</tr>
+            <uk>Помічник Мапи</uk>
+            <vi>Trợ Lý Bản Đồ</vi>
+        </text>
+        <text name="mh_centerOnMe">
+            <en>Center on me</en>
+            <de>Auf mich zentrieren</de>
+            <cs>定位到我</cs>
+            <br>Centralizar em mim</br>
+            <ct>定位到我</ct>
+            <cz>Vycentrovat na mě</cz>
+            <da>Centrér på mig</da>
+            <ea>Centrar en mí</ea>
+            <es>Centrar en mí</es>
+            <fc>Centrer sur moi</fc>
+            <fi>Keskitä minuun</fi>
+            <fr>Centrer sur moi</fr>
+            <hu>Saját helyzetem középre</hu>
+            <id>Pusatkan ke saya</id>
+            <it>Centra su di me</it>
+            <jp>自分を中央に表示</jp>
+            <kr>내 위치로 이동</kr>
+            <nl>Op mij centreren</nl>
+            <no>Sentrer på meg</no>
+            <pl>Wyśrodkuj na mnie</pl>
+            <pt>Centrar em mim</pt>
+            <ro>Centrează pe mine</ro>
+            <ru>Центрировать на мне</ru>
+            <sv>Centrera på mig</sv>
+            <tr>Beni ortala</tr>
+            <uk>Центрувати на мені</uk>
+            <vi>Căn giữa vào tôi</vi>
+        </text>
+        <text name="mh_addToQueue">
+            <en>Add to queue</en>
+            <de>Zur Warteschlange</de>
+            <cs>加入队列</cs>
+            <br>Adicionar à fila</br>
+            <ct>加入佇列</ct>
+            <cz>Přidat do fronty</cz>
+            <da>Føj til kø</da>
+            <ea>Agregar a la cola</ea>
+            <es>Añadir a la cola</es>
+            <fc>Ajouter à la file</fc>
+            <fi>Lisää jonoon</fi>
+            <fr>Ajouter à la file</fr>
+            <hu>Sorhoz adás</hu>
+            <id>Tambah ke antrean</id>
+            <it>Aggiungi alla coda</it>
+            <jp>キューに追加</jp>
+            <kr>대기열에 추가</kr>
+            <nl>Aan wachtrij toevoegen</nl>
+            <no>Legg i kø</no>
+            <pl>Dodaj do kolejki</pl>
+            <pt>Adicionar à fila</pt>
+            <ro>Adaugă în coadă</ro>
+            <ru>В очередь</ru>
+            <sv>Lägg i kö</sv>
+            <tr>Sıraya ekle</tr>
+            <uk>Додати до черги</uk>
+            <vi>Thêm vào hàng đợi</vi>
+        </text>
+        <text name="mh_startQueue">
+            <en>Start queue</en>
+            <de>Warteschlange starten</de>
+            <cs>开始队列</cs>
+            <br>Iniciar fila</br>
+            <ct>開始佇列</ct>
+            <cz>Spustit frontu</cz>
+            <da>Start kø</da>
+            <ea>Iniciar cola</ea>
+            <es>Iniciar cola</es>
+            <fc>Lancer la file</fc>
+            <fi>Aloita jono</fi>
+            <fr>Lancer la file</fr>
+            <hu>Sor indítása</hu>
+            <id>Mulai antrean</id>
+            <it>Avvia coda</it>
+            <jp>キューを開始</jp>
+            <kr>대기열 시작</kr>
+            <nl>Wachtrij starten</nl>
+            <no>Start kø</no>
+            <pl>Uruchom kolejkę</pl>
+            <pt>Iniciar fila</pt>
+            <ro>Pornește coada</ro>
+            <ru>Запустить очередь</ru>
+            <sv>Starta kö</sv>
+            <tr>Sırayı başlat</tr>
+            <uk>Запустити чергу</uk>
+            <vi>Bắt đầu hàng đợi</vi>
+        </text>
+        <text name="mh_clearQueue">
+            <en>Clear queue</en>
+            <de>Warteschlange leeren</de>
+            <cs>清空队列</cs>
+            <br>Limpar fila</br>
+            <ct>清空佇列</ct>
+            <cz>Vyprázdnit frontu</cz>
+            <da>Ryd kø</da>
+            <ea>Vaciar cola</ea>
+            <es>Vaciar cola</es>
+            <fc>Vider la file</fc>
+            <fi>Tyhjennä jono</fi>
+            <fr>Vider la file</fr>
+            <hu>Sor törlése</hu>
+            <id>Kosongkan antrean</id>
+            <it>Svuota coda</it>
+            <jp>キューを空にする</jp>
+            <kr>대기열 비우기</kr>
+            <nl>Wachtrij legen</nl>
+            <no>Tøm kø</no>
+            <pl>Wyczyść kolejkę</pl>
+            <pt>Limpar fila</pt>
+            <ro>Golește coada</ro>
+            <ru>Очистить очередь</ru>
+            <sv>Töm kö</sv>
+            <tr>Sırayı temizle</tr>
+            <uk>Очистити чергу</uk>
+            <vi>Xóa hàng đợi</vi>
+        </text>
+        <text name="mh_queueTitle">
+            <en>Command queue</en>
+            <de>Befehlswarteschlange</de>
+            <cs>指令队列</cs>
+            <br>Fila de comandos</br>
+            <ct>指令佇列</ct>
+            <cz>Fronta příkazů</cz>
+            <da>Kommandokø</da>
+            <ea>Cola de órdenes</ea>
+            <es>Cola de órdenes</es>
+            <fc>File de commandes</fc>
+            <fi>Komentojono</fi>
+            <fr>File de commandes</fr>
+            <hu>Parancssor</hu>
+            <id>Antrean perintah</id>
+            <it>Coda di comandi</it>
+            <jp>コマンドキュー</jp>
+            <kr>명령 대기열</kr>
+            <nl>Opdrachtenwachtrij</nl>
+            <no>Kommandokø</no>
+            <pl>Kolejka poleceń</pl>
+            <pt>Fila de comandos</pt>
+            <ro>Coadă de comenzi</ro>
+            <ru>Очередь команд</ru>
+            <sv>Kommandokö</sv>
+            <tr>Komut sırası</tr>
+            <uk>Черга команд</uk>
+            <vi>Hàng đợi lệnh</vi>
+        </text>
+        <text name="mh_queueEmpty">
+            <en>No jobs queued. Create a job and choose Add to queue.</en>
+            <de>Keine Jobs in der Warteschlange. Erstelle einen Job und wähle „Zur Warteschlange“.</de>
+            <cs>队列中没有作业。创建作业后选择“加入队列”。</cs>
+            <br>Nenhuma tarefa na fila. Crie uma tarefa e escolha “Adicionar à fila”.</br>
+            <ct>佇列中沒有工作。建立工作後選擇「加入佇列」。</ct>
+            <cz>Ve frontě nejsou žádné úkoly. Vytvořte úkol a zvolte „Přidat do fronty“.</cz>
+            <da>Ingen job i køen. Opret et job, og vælg “Føj til kø”.</da>
+            <ea>No hay trabajos en la cola. Crea un trabajo y elige “Agregar a la cola”.</ea>
+            <es>No hay trabajos en la cola. Crea un trabajo y elige «Añadir a la cola».</es>
+            <fc>Aucun travail dans la file. Créez un travail et choisissez « Ajouter à la file ».</fc>
+            <fi>Jonossa ei ole töitä. Luo työ ja valitse ”Lisää jonoon”.</fi>
+            <fr>Aucune tâche dans la file. Créez une tâche et choisissez « Ajouter à la file ».</fr>
+            <hu>Nincs feladat a sorban. Hozz létre egy feladatot, és válaszd a „Sorhoz adás” lehetőséget.</hu>
+            <id>Tidak ada pekerjaan dalam antrean. Buat pekerjaan lalu pilih “Tambah ke antrean”.</id>
+            <it>Nessun lavoro in coda. Crea un lavoro e scegli “Aggiungi alla coda”.</it>
+            <jp>キューに仕事がありません。仕事を作成して「キューに追加」を選んでください。</jp>
+            <kr>대기열에 작업이 없습니다. 작업을 만든 뒤 ‘대기열에 추가’를 선택하세요.</kr>
+            <nl>Geen klussen in de wachtrij. Maak een klus en kies ‘Aan wachtrij toevoegen’.</nl>
+            <no>Ingen jobber i køen. Opprett en jobb og velg «Legg i kø».</no>
+            <pl>Brak prac w kolejce. Utwórz pracę i wybierz „Dodaj do kolejki”.</pl>
+            <pt>Não há tarefas na fila. Cria uma tarefa e escolhe “Adicionar à fila”.</pt>
+            <ro>Nu există sarcini în coadă. Creează o sarcină și alege „Adaugă în coadă”.</ro>
+            <ru>В очереди нет работ. Дайте работу и выберите «В очередь».</ru>
+            <sv>Inga jobb i kön. Skapa ett jobb och välj ”Lägg i kö”.</sv>
+            <tr>Sırada iş yok. Bir iş oluşturun ve “Sıraya ekle”yi seçin.</tr>
+            <uk>У черзі немає завдань. Створіть завдання й виберіть «Додати до черги».</uk>
+            <vi>Chưa có công việc nào trong hàng đợi. Hãy tạo công việc rồi chọn “Thêm vào hàng đợi”.</vi>
+        </text>
+        <text name="mh_onFoot">
+            <en>On foot</en>
+            <de>Zu Fuß</de>
+            <cs>步行中</cs>
+            <br>A pé</br>
+            <ct>步行中</ct>
+            <cz>Pěšky</cz>
+            <da>Til fods</da>
+            <ea>A pie</ea>
+            <es>A pie</es>
+            <fc>À pied</fc>
+            <fi>Jalan</fi>
+            <fr>À pied</fr>
+            <hu>Gyalog</hu>
+            <id>Berjalan kaki</id>
+            <it>A piedi</it>
+            <jp>徒歩</jp>
+            <kr>도보</kr>
+            <nl>Te voet</nl>
+            <no>Til fots</no>
+            <pl>Pieszo</pl>
+            <pt>A pé</pt>
+            <ro>Pe jos</ro>
+            <ru>Пешком</ru>
+            <sv>Till fots</sv>
+            <tr>Yaya</tr>
+            <uk>Пішки</uk>
+            <vi>Đi bộ</vi>
+        </text>
+        <text name="mh_statusOnFoot">
+            <en>Get into a vehicle to give it orders.</en>
+            <de>Steig in ein Fahrzeug, um ihm Befehle zu geben.</de>
+            <cs>进入车辆后即可向其下达指令。</cs>
+            <br>Entre em um veículo para dar ordens a ele.</br>
+            <ct>進入車輛後即可對其下達指令。</ct>
+            <cz>Nastupte do vozidla, abyste mu mohli zadávat příkazy.</cz>
+            <da>Sæt dig i et køretøj for at give det ordrer.</da>
+            <ea>Sube a un vehículo para darle órdenes.</ea>
+            <es>Sube a un vehículo para darle órdenes.</es>
+            <fc>Montez dans un véhicule pour lui donner des ordres.</fc>
+            <fi>Nouse ajoneuvoon antaaksesi sille käskyjä.</fi>
+            <fr>Montez dans un véhicule pour lui donner des ordres.</fr>
+            <hu>Szállj be egy járműbe, hogy utasításokat adhass neki.</hu>
+            <id>Masuk ke kendaraan untuk memberinya perintah.</id>
+            <it>Sali su un veicolo per dargli ordini.</it>
+            <jp>車両に乗ると指示を出せます。</jp>
+            <kr>차량에 탑승하면 명령을 내릴 수 있습니다.</kr>
+            <nl>Stap in een voertuig om het opdrachten te geven.</nl>
+            <no>Sett deg i et kjøretøy for å gi det ordre.</no>
+            <pl>Wsiądź do pojazdu, aby wydawać mu polecenia.</pl>
+            <pt>Entra num veículo para lhe dar ordens.</pt>
+            <ro>Urcă într-un vehicul pentru a-i da comenzi.</ro>
+            <ru>Сядьте в технику, чтобы отдавать ей команды.</ru>
+            <sv>Sätt dig i ett fordon för att ge det order.</sv>
+            <tr>Komut vermek için bir araca binin.</tr>
+            <uk>Сядьте в техніку, щоб віддавати їй команди.</uk>
+            <vi>Hãy lên một phương tiện để ra lệnh cho nó.</vi>
+        </text>
+        <text name="mh_statusNoAI">
+            <en>Workers can't drive this vehicle.</en>
+            <de>KI-Helfer können dieses Fahrzeug nicht fahren.</de>
+            <cs>帮手无法驾驶此车辆。</cs>
+            <br>Funcionários não podem dirigir este veículo.</br>
+            <ct>幫手無法駕駛此車輛。</ct>
+            <cz>Pracovníci toto vozidlo nemohou řídit.</cz>
+            <da>Arbejdere kan ikke køre dette køretøj.</da>
+            <ea>Los ayudantes no pueden manejar este vehículo.</ea>
+            <es>Los ayudantes no pueden conducir este vehículo.</es>
+            <fc>Les ouvriers ne peuvent pas conduire ce véhicule.</fc>
+            <fi>Työntekijät eivät voi ajaa tätä ajoneuvoa.</fi>
+            <fr>Les ouvriers ne peuvent pas conduire ce véhicule.</fr>
+            <hu>Segítők nem vezethetik ezt a járművet.</hu>
+            <id>Pekerja tidak dapat mengemudikan kendaraan ini.</id>
+            <it>Gli aiutanti non possono guidare questo veicolo.</it>
+            <jp>この車両はヘルパーが運転できません。</jp>
+            <kr>작업자가 이 차량을 운전할 수 없습니다.</kr>
+            <nl>Helpers kunnen dit voertuig niet besturen.</nl>
+            <no>Arbeidere kan ikke kjøre dette kjøretøyet.</no>
+            <pl>Pracownicy nie mogą prowadzić tego pojazdu.</pl>
+            <pt>Os trabalhadores não podem conduzir este veículo.</pt>
+            <ro>Lucrătorii nu pot conduce acest vehicul.</ro>
+            <ru>Работники не могут управлять этой техникой.</ru>
+            <sv>Arbetare kan inte köra det här fordonet.</sv>
+            <tr>Yardımcılar bu aracı kullanamaz.</tr>
+            <uk>Працівники не можуть керувати цією технікою.</uk>
+            <vi>Công nhân không thể lái phương tiện này.</vi>
+        </text>
+        <text name="mh_statusNoPermission">
+            <en>You aren't allowed to hire workers.</en>
+            <de>Du darfst keine KI-Helfer einstellen.</de>
+            <cs>你没有雇佣帮手的权限。</cs>
+            <br>Você não tem permissão para contratar funcionários.</br>
+            <ct>你沒有僱用幫手的權限。</ct>
+            <cz>Nemáte oprávnění najímat pracovníky.</cz>
+            <da>Du har ikke tilladelse til at ansætte arbejdere.</da>
+            <ea>No tienes permiso para contratar ayudantes.</ea>
+            <es>No tienes permiso para contratar ayudantes.</es>
+            <fc>Vous n'avez pas l'autorisation d'engager des ouvriers.</fc>
+            <fi>Sinulla ei ole oikeutta palkata työntekijöitä.</fi>
+            <fr>Vous n'avez pas l'autorisation d'engager des ouvriers.</fr>
+            <hu>Nincs jogosultságod segítőt felvenni.</hu>
+            <id>Anda tidak diizinkan mempekerjakan pekerja.</id>
+            <it>Non hai il permesso di assumere aiutanti.</it>
+            <jp>ヘルパーを雇う権限がありません。</jp>
+            <kr>작업자를 고용할 권한이 없습니다.</kr>
+            <nl>Je mag geen helpers inhuren.</nl>
+            <no>Du har ikke tillatelse til å ansette arbeidere.</no>
+            <pl>Nie masz uprawnień do zatrudniania pracowników.</pl>
+            <pt>Não tens permissão para contratar trabalhadores.</pt>
+            <ro>Nu ai permisiunea de a angaja lucrători.</ro>
+            <ru>У вас нет права нанимать работников.</ru>
+            <sv>Du har inte behörighet att anlita arbetare.</sv>
+            <tr>Yardımcı kiralama izniniz yok.</tr>
+            <uk>У вас немає дозволу наймати працівників.</uk>
+            <vi>Bạn không có quyền thuê công nhân.</vi>
+        </text>
+        <text name="mh_statusWorking">
+            <en>A worker is driving this vehicle.</en>
+            <de>Ein KI-Helfer fährt dieses Fahrzeug.</de>
+            <cs>帮手正在驾驶此车辆。</cs>
+            <br>Um funcionário está dirigindo este veículo.</br>
+            <ct>幫手正在駕駛此車輛。</ct>
+            <cz>Vozidlo řídí pracovník.</cz>
+            <da>En arbejder kører dette køretøj.</da>
+            <ea>Un ayudante está manejando este vehículo.</ea>
+            <es>Un ayudante está conduciendo este vehículo.</es>
+            <fc>Un ouvrier conduit ce véhicule.</fc>
+            <fi>Työntekijä ajaa tätä ajoneuvoa.</fi>
+            <fr>Un ouvrier conduit ce véhicule.</fr>
+            <hu>Egy segítő vezeti ezt a járművet.</hu>
+            <id>Seorang pekerja sedang mengemudikan kendaraan ini.</id>
+            <it>Un aiutante sta guidando questo veicolo.</it>
+            <jp>ヘルパーがこの車両を運転しています。</jp>
+            <kr>작업자가 이 차량을 운전하고 있습니다.</kr>
+            <nl>Een helper bestuurt dit voertuig.</nl>
+            <no>En arbeider kjører dette kjøretøyet.</no>
+            <pl>Ten pojazd prowadzi pracownik.</pl>
+            <pt>Um trabalhador está a conduzir este veículo.</pt>
+            <ro>Un lucrător conduce acest vehicul.</ro>
+            <ru>Технику ведёт работник.</ru>
+            <sv>En arbetare kör det här fordonet.</sv>
+            <tr>Bu aracı bir yardımcı kullanıyor.</tr>
+            <uk>Техніку веде працівник.</uk>
+            <vi>Một công nhân đang lái phương tiện này.</vi>
+        </text>
+        <text name="mh_statusIdle">
+            <en>No worker is driving this vehicle.</en>
+            <de>Kein KI-Helfer fährt dieses Fahrzeug.</de>
+            <cs>当前没有帮手驾驶此车辆。</cs>
+            <br>Nenhum funcionário está dirigindo este veículo.</br>
+            <ct>目前沒有幫手駕駛此車輛。</ct>
+            <cz>Vozidlo neřídí žádný pracovník.</cz>
+            <da>Ingen arbejder kører dette køretøj.</da>
+            <ea>Ningún ayudante está manejando este vehículo.</ea>
+            <es>Ningún ayudante está conduciendo este vehículo.</es>
+            <fc>Aucun ouvrier ne conduit ce véhicule.</fc>
+            <fi>Kukaan työntekijä ei aja tätä ajoneuvoa.</fi>
+            <fr>Aucun ouvrier ne conduit ce véhicule.</fr>
+            <hu>Egy segítő sem vezeti ezt a járművet.</hu>
+            <id>Tidak ada pekerja yang mengemudikan kendaraan ini.</id>
+            <it>Nessun aiutante sta guidando questo veicolo.</it>
+            <jp>この車両を運転しているヘルパーはいません。</jp>
+            <kr>이 차량을 운전하는 작업자가 없습니다.</kr>
+            <nl>Geen helper bestuurt dit voertuig.</nl>
+            <no>Ingen arbeider kjører dette kjøretøyet.</no>
+            <pl>Żaden pracownik nie prowadzi tego pojazdu.</pl>
+            <pt>Nenhum trabalhador está a conduzir este veículo.</pt>
+            <ro>Niciun lucrător nu conduce acest vehicul.</ro>
+            <ru>Технику не ведёт ни один работник.</ru>
+            <sv>Ingen arbetare kör det här fordonet.</sv>
+            <tr>Bu aracı kullanan bir yardımcı yok.</tr>
+            <uk>Техніку не веде жоден працівник.</uk>
+            <vi>Không có công nhân nào đang lái phương tiện này.</vi>
+        </text>
+        <text name="mh_statusWaiting">
+            <en>Jobs waiting: %d</en>
+            <de>Wartende Jobs: %d</de>
+            <cs>等待中的作业：%d</cs>
+            <br>Tarefas na espera: %d</br>
+            <ct>等待中的工作：%d</ct>
+            <cz>Čekající úkoly: %d</cz>
+            <da>Ventende job: %d</da>
+            <ea>Trabajos en espera: %d</ea>
+            <es>Trabajos en espera: %d</es>
+            <fc>Travaux en attente : %d</fc>
+            <fi>Odottavia töitä: %d</fi>
+            <fr>Tâches en attente : %d</fr>
+            <hu>Várakozó feladatok: %d</hu>
+            <id>Pekerjaan menunggu: %d</id>
+            <it>Lavori in attesa: %d</it>
+            <jp>待機中の仕事: %d</jp>
+            <kr>대기 중인 작업: %d</kr>
+            <nl>Wachtende klussen: %d</nl>
+            <no>Ventende jobber: %d</no>
+            <pl>Oczekujące prace: %d</pl>
+            <pt>Tarefas em espera: %d</pt>
+            <ro>Sarcini în așteptare: %d</ro>
+            <ru>Работ в очереди: %d</ru>
+            <sv>Väntande jobb: %d</sv>
+            <tr>Bekleyen işler: %d</tr>
+            <uk>Завдань у черзі: %d</uk>
+            <vi>Công việc đang chờ: %d</vi>
+        </text>
+        <text name="mh_statusPaused">
+            <en>Queue paused. %s</en>
+            <de>Warteschlange angehalten. %s</de>
+            <cs>队列已暂停。%s</cs>
+            <br>Fila pausada. %s</br>
+            <ct>佇列已暫停。%s</ct>
+            <cz>Fronta pozastavena. %s</cz>
+            <da>Køen er sat på pause. %s</da>
+            <ea>Cola en pausa. %s</ea>
+            <es>Cola en pausa. %s</es>
+            <fc>File en pause. %s</fc>
+            <fi>Jono on keskeytetty. %s</fi>
+            <fr>File en pause. %s</fr>
+            <hu>A sor szünetel. %s</hu>
+            <id>Antrean dijeda. %s</id>
+            <it>Coda in pausa. %s</it>
+            <jp>キューを一時停止しました。%s</jp>
+            <kr>대기열이 일시 정지되었습니다. %s</kr>
+            <nl>Wachtrij gepauzeerd. %s</nl>
+            <no>Køen er satt på pause. %s</no>
+            <pl>Kolejka wstrzymana. %s</pl>
+            <pt>Fila em pausa. %s</pt>
+            <ro>Coada este în pauză. %s</ro>
+            <ru>Очередь приостановлена. %s</ru>
+            <sv>Kön är pausad. %s</sv>
+            <tr>Sıra duraklatıldı. %s</tr>
+            <uk>Чергу призупинено. %s</uk>
+            <vi>Hàng đợi đã tạm dừng. %s</vi>
+        </text>
+        <text name="mh_reasonStopped">
+            <en>The last job was stopped or couldn't be finished.</en>
+            <de>Der letzte Job wurde abgebrochen oder konnte nicht beendet werden.</de>
+            <cs>上一个作业被取消或未能完成。</cs>
+            <br>A última tarefa foi interrompida ou não pôde ser concluída.</br>
+            <ct>上一個工作被取消或未能完成。</ct>
+            <cz>Poslední úkol byl zastaven nebo jej nebylo možné dokončit.</cz>
+            <da>Det sidste job blev stoppet eller kunne ikke gøres færdigt.</da>
+            <ea>El último trabajo se detuvo o no pudo terminarse.</ea>
+            <es>El último trabajo se detuvo o no pudo terminarse.</es>
+            <fc>Le dernier travail a été arrêté ou n'a pas pu être terminé.</fc>
+            <fi>Viimeisin työ keskeytettiin tai sitä ei voitu suorittaa loppuun.</fi>
+            <fr>La dernière tâche a été arrêtée ou n'a pas pu être terminée.</fr>
+            <hu>Az utolsó feladat leállt, vagy nem sikerült befejezni.</hu>
+            <id>Pekerjaan terakhir dihentikan atau tidak dapat diselesaikan.</id>
+            <it>L'ultimo lavoro è stato interrotto o non è stato possibile completarlo.</it>
+            <jp>最後の仕事が中止されたか、完了できませんでした。</jp>
+            <kr>마지막 작업이 중지되었거나 완료되지 못했습니다.</kr>
+            <nl>De laatste klus is gestopt of kon niet worden afgerond.</nl>
+            <no>Den siste jobben ble stoppet eller kunne ikke fullføres.</no>
+            <pl>Ostatnia praca została przerwana lub nie mogła zostać ukończona.</pl>
+            <pt>A última tarefa foi parada ou não pôde ser concluída.</pt>
+            <ro>Ultima sarcină a fost oprită sau nu a putut fi terminată.</ro>
+            <ru>Последняя работа была остановлена или не смогла завершиться.</ru>
+            <sv>Det senaste jobbet stoppades eller kunde inte slutföras.</sv>
+            <tr>Son iş durduruldu veya tamamlanamadı.</tr>
+            <uk>Останнє завдання зупинено або його не вдалося завершити.</uk>
+            <vi>Công việc trước đã bị dừng hoặc không thể hoàn thành.</vi>
+        </text>
+        <text name="mh_reasonInvalid">
+            <en>The next job can't be started as planned. Remove it or try again.</en>
+            <de>Der nächste Job kann nicht wie geplant gestartet werden. Entferne ihn oder versuche es erneut.</de>
+            <cs>下一个作业无法按计划开始。请删除它或重试。</cs>
+            <br>A próxima tarefa não pode ser iniciada como planejado. Remova-a ou tente novamente.</br>
+            <ct>下一個工作無法按計畫開始。請刪除它或重試。</ct>
+            <cz>Další úkol nelze zahájit podle plánu. Odstraňte jej nebo to zkuste znovu.</cz>
+            <da>Det næste job kan ikke startes som planlagt. Fjern det, eller prøv igen.</da>
+            <ea>El siguiente trabajo no puede iniciarse como estaba previsto. Quítalo o inténtalo de nuevo.</ea>
+            <es>El siguiente trabajo no puede iniciarse como estaba previsto. Quítalo o inténtalo de nuevo.</es>
+            <fc>Le prochain travail ne peut pas démarrer comme prévu. Retirez-le ou réessayez.</fc>
+            <fi>Seuraavaa työtä ei voi aloittaa suunnitellusti. Poista se tai yritä uudelleen.</fi>
+            <fr>La tâche suivante ne peut pas démarrer comme prévu. Retirez-la ou réessayez.</fr>
+            <hu>A következő feladat nem indítható el a terv szerint. Töröld, vagy próbáld újra.</hu>
+            <id>Pekerjaan berikutnya tidak dapat dimulai sesuai rencana. Hapus atau coba lagi.</id>
+            <it>Il prossimo lavoro non può iniziare come previsto. Rimuovilo o riprova.</it>
+            <jp>次の仕事を予定どおり開始できません。削除するか、もう一度お試しください。</jp>
+            <kr>다음 작업을 계획대로 시작할 수 없습니다. 삭제하거나 다시 시도하세요.</kr>
+            <nl>De volgende klus kan niet zoals gepland starten. Verwijder hem of probeer het opnieuw.</nl>
+            <no>Neste jobb kan ikke startes som planlagt. Fjern den eller prøv igjen.</no>
+            <pl>Następnej pracy nie można rozpocząć zgodnie z planem. Usuń ją lub spróbuj ponownie.</pl>
+            <pt>A próxima tarefa não pode começar como planeado. Remove-a ou tenta novamente.</pt>
+            <ro>Următoarea sarcină nu poate începe conform planului. Elimin-o sau încearcă din nou.</ro>
+            <ru>Следующую работу нельзя начать как запланировано. Удалите её или попробуйте снова.</ru>
+            <sv>Nästa jobb kan inte startas som planerat. Ta bort det eller försök igen.</sv>
+            <tr>Sıradaki iş planlandığı gibi başlatılamıyor. Kaldırın veya tekrar deneyin.</tr>
+            <uk>Наступне завдання не вдається почати, як заплановано. Видаліть його або спробуйте ще раз.</uk>
+            <vi>Không thể bắt đầu công việc tiếp theo như dự kiến. Hãy xóa nó hoặc thử lại.</vi>
+        </text>
+        <text name="mh_notifyPaused">
+            <en>%s: command queue paused. Jobs waiting: %d</en>
+            <de>%s: Befehlswarteschlange angehalten. Wartende Jobs: %d</de>
+            <cs>%s：指令队列已暂停。等待中的作业：%d</cs>
+            <br>%s: fila de comandos pausada. Tarefas na espera: %d</br>
+            <ct>%s：指令佇列已暫停。等待中的工作：%d</ct>
+            <cz>%s: fronta příkazů pozastavena. Čekající úkoly: %d</cz>
+            <da>%s: kommandokøen er sat på pause. Ventende job: %d</da>
+            <ea>%s: cola de órdenes en pausa. Trabajos en espera: %d</ea>
+            <es>%s: cola de órdenes en pausa. Trabajos en espera: %d</es>
+            <fc>%s : file de commandes en pause. Travaux en attente : %d</fc>
+            <fi>%s: komentojono on keskeytetty. Odottavia töitä: %d</fi>
+            <fr>%s : file de commandes en pause. Tâches en attente : %d</fr>
+            <hu>%s: a parancssor szünetel. Várakozó feladatok: %d</hu>
+            <id>%s: antrean perintah dijeda. Pekerjaan menunggu: %d</id>
+            <it>%s: coda di comandi in pausa. Lavori in attesa: %d</it>
+            <jp>%s: コマンドキューを一時停止しました。待機中の仕事: %d</jp>
+            <kr>%s: 명령 대기열이 일시 정지되었습니다. 대기 중인 작업: %d</kr>
+            <nl>%s: opdrachtenwachtrij gepauzeerd. Wachtende klussen: %d</nl>
+            <no>%s: kommandokøen er satt på pause. Ventende jobber: %d</no>
+            <pl>%s: kolejka poleceń wstrzymana. Oczekujące prace: %d</pl>
+            <pt>%s: fila de comandos em pausa. Tarefas em espera: %d</pt>
+            <ro>%s: coada de comenzi este în pauză. Sarcini în așteptare: %d</ro>
+            <ru>%s: очередь команд приостановлена. Работ в очереди: %d</ru>
+            <sv>%s: kommandokön är pausad. Väntande jobb: %d</sv>
+            <tr>%s: komut sırası duraklatıldı. Bekleyen işler: %d</tr>
+            <uk>%s: чергу команд призупинено. Завдань у черзі: %d</uk>
+            <vi>%s: hàng đợi lệnh đã tạm dừng. Công việc đang chờ: %d</vi>
+        </text>
+        <text name="mh_notifyFinished">
+            <en>%s: all queued jobs are done.</en>
+            <de>%s: Alle Jobs der Warteschlange sind erledigt.</de>
+            <cs>%s：队列中的所有作业已完成。</cs>
+            <br>%s: todas as tarefas da fila foram concluídas.</br>
+            <ct>%s：佇列中的所有工作已完成。</ct>
+            <cz>%s: všechny úkoly ve frontě jsou hotové.</cz>
+            <da>%s: alle job i køen er udført.</da>
+            <ea>%s: todos los trabajos de la cola están terminados.</ea>
+            <es>%s: todos los trabajos de la cola están terminados.</es>
+            <fc>%s : tous les travaux de la file sont terminés.</fc>
+            <fi>%s: kaikki jonon työt on tehty.</fi>
+            <fr>%s : toutes les tâches de la file sont terminées.</fr>
+            <hu>%s: a sor összes feladata elkészült.</hu>
+            <id>%s: semua pekerjaan dalam antrean selesai.</id>
+            <it>%s: tutti i lavori in coda sono stati completati.</it>
+            <jp>%s: キューの仕事がすべて完了しました。</jp>
+            <kr>%s: 대기열의 모든 작업이 완료되었습니다.</kr>
+            <nl>%s: alle klussen in de wachtrij zijn klaar.</nl>
+            <no>%s: alle jobber i køen er utført.</no>
+            <pl>%s: wszystkie prace z kolejki zostały wykonane.</pl>
+            <pt>%s: todas as tarefas da fila estão concluídas.</pt>
+            <ro>%s: toate sarcinile din coadă sunt gata.</ro>
+            <ru>%s: все работы из очереди выполнены.</ru>
+            <sv>%s: alla jobb i kön är klara.</sv>
+            <tr>%s: sıradaki tüm işler tamamlandı.</tr>
+            <uk>%s: усі завдання з черги виконано.</uk>
+            <vi>%s: đã hoàn thành mọi công việc trong hàng đợi.</vi>
+        </text>
+        <text name="mh_queueFull">
+            <en>The queue is full. A vehicle can have up to %d queued jobs.</en>
+            <de>Die Warteschlange ist voll. Ein Fahrzeug kann bis zu %d Jobs vormerken.</de>
+            <cs>队列已满。每台车辆最多可排队 %d 个作业。</cs>
+            <br>A fila está cheia. Um veículo pode ter até %d tarefas na fila.</br>
+            <ct>佇列已滿。每台車輛最多可排入 %d 個工作。</ct>
+            <cz>Fronta je plná. Vozidlo může mít ve frontě až %d úkolů.</cz>
+            <da>Køen er fuld. Et køretøj kan have op til %d job i køen.</da>
+            <ea>La cola está llena. Un vehículo puede tener hasta %d trabajos en cola.</ea>
+            <es>La cola está llena. Un vehículo puede tener hasta %d trabajos en cola.</es>
+            <fc>La file est pleine. Un véhicule peut avoir jusqu'à %d travaux en attente.</fc>
+            <fi>Jono on täynnä. Ajoneuvolla voi olla enintään %d työtä jonossa.</fi>
+            <fr>La file est pleine. Un véhicule peut avoir jusqu'à %d tâches en attente.</fr>
+            <hu>A sor megtelt. Egy járműhöz legfeljebb %d feladat várakozhat.</hu>
+            <id>Antrean penuh. Satu kendaraan dapat memiliki hingga %d pekerjaan dalam antrean.</id>
+            <it>La coda è piena. Un veicolo può avere fino a %d lavori in coda.</it>
+            <jp>キューがいっぱいです。1台の車両につき最大 %d 件の仕事を登録できます。</jp>
+            <kr>대기열이 가득 찼습니다. 차량당 최대 %d개의 작업을 대기시킬 수 있습니다.</kr>
+            <nl>De wachtrij is vol. Een voertuig kan maximaal %d klussen in de wachtrij hebben.</nl>
+            <no>Køen er full. Et kjøretøy kan ha opptil %d jobber i køen.</no>
+            <pl>Kolejka jest pełna. Pojazd może mieć w kolejce maksymalnie %d prac.</pl>
+            <pt>A fila está cheia. Um veículo pode ter até %d tarefas em fila.</pt>
+            <ro>Coada este plină. Un vehicul poate avea cel mult %d sarcini în coadă.</ro>
+            <ru>Очередь заполнена. У одной техники может быть до %d работ в очереди.</ru>
+            <sv>Kön är full. Ett fordon kan ha upp till %d jobb i kön.</sv>
+            <tr>Sıra dolu. Bir araç için en fazla %d iş sıraya alınabilir.</tr>
+            <uk>Черга заповнена. Одна техніка може мати до %d завдань у черзі.</uk>
+            <vi>Hàng đợi đã đầy. Mỗi phương tiện có thể có tối đa %d công việc trong hàng đợi.</vi>
+        </text>
+    </l10n>
+</modDesc>

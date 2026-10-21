@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Added to the job menu (createJobContainer), directly above the native Start job button. -->
+<GUI>
+    <GuiElement profile="mh_queueContainer" width="340px" position="-10px 32px">
+        <ThreePartBitmap profile="mh_queueBg"/>
+        <Text profile="mh_queueText" name="text" textOffset="15px 0px"/>
+        <Button profile="mh_queueButton" name="button" onClick="onClickAddToQueue"/>
+    </GuiElement>
+    <GUIProfiles>
+        <Profile name="mh_queueContainer" extends="fs25_mapButtonContainer"/>
+        <Profile name="mh_queueBg" extends="fs25_mapButtonBgLight"/>
+        <Profile name="mh_queueText" extends="fs25_mapButtonText"/>
+        <Profile name="mh_queueButton" extends="fs25_mapButton">
+            <inputAction value="MH_ADD_TO_QUEUE"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>
