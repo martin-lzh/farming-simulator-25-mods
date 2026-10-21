@@ -826,4 +826,11 @@ test("buttons follow pause and permission changes on the periodic refresh", func
     assert(not page.mhClearButton.disabled)
 end)
 
+test("vehicles that never take a worker are recognised up front", function()
+    local reel = mockVehicle(7)
+    assert(MH.getSupportsAI(reel))
+    reel.spec_aiJobVehicle.supportsAIJobs = false
+    assert(not MH.getSupportsAI(reel), "e.g. the Emergency pack's hose reel")
+end)
+
 print(string.format("%d behavioral tests passed", passed))

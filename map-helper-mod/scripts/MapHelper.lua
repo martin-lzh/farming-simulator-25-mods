@@ -83,8 +83,11 @@ function MH.getVehicleExists(vehicle)
     return vehicle ~= nil and not vehicle.isDeleted and not vehicle.isDeleting
 end
 
+-- Vehicles with <ai supportsAIJobs="false"> (AIJobVehicle.lua:124, e.g. the Emergency pack's
+-- hose reel and traffic cart) can never take a worker.
 function MH.getSupportsAI(vehicle)
     return MH.getVehicleExists(vehicle) and vehicle.spec_aiJobVehicle ~= nil
+        and vehicle.spec_aiJobVehicle.supportsAIJobs ~= false
 end
 
 -- Same permission as the vanilla job start (AIJobGoTo/AIJobFieldWork:getIsStartable):

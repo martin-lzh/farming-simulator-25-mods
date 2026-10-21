@@ -8,6 +8,10 @@
 - 2026-10-21 之后（未提交）：界面重做。删除右侧抽屉（`DrawerDialog`）和作业菜单里的“加入队列”按钮，改为地图左侧边栏 `mapOverviewSelector` 的新页面“地图助手”（下文“页面”）；新增全局热键左 Alt + M；服务器新增 MOVE、EDIT 和“插入为下一个”；修复退出存档失败（下文“退出存档时的清理”）。本机 `uv run map-helper-mod/tests/run.py`：l10n（24 个键）、GUI 引用核对、36 项行为测试、降级检查、8 组多人模拟通过；5 个脚本用 `work/tools/fs-utils-bin/fs-luau-compile.exe` 编译通过（输出在被忽略的 `work/validation/map-helper-luau/`，只说明可解析）；`python map-helper-mod/tools/build.py` 9 个文件，SHA256 见最终报告。**尚未在游戏内运行过**，下方 MAP-xx 清单全部待维护者执行。
 - 仓库级接入（`tools/ci.py` 的 `MODS` 已有 `map-helper`）。`tools/check_syntax.py` 用 `git ls-files` 列文件，删除的抽屉文件在暂存前会报“文件不存在”，暂存删除后即正常。
 
+
+## 扩展包兼容（2026-10-21，8 个已安装 DLC 解包核对）
+
+解包位置 `work/reference/1.25.0.0/dlc/`。没有 DLC 修改 `InGameMenuMapFrame`/`InGameMenu`、`mapOverviewSelector`、`createJobContainer` 或地图页的 `MENU_EXTRA_1`/`MENU_MAP_ACTION_1`；Pumps n' Hoses 的 `MENU_EXTRA_1` 按钮只在生产页面和设施信息对话框中（`inGameMenuProductionFrameExtension.lua:71`、`placeableInfoDialogExtension.lua:22,87`）。没有 DLC 注册 AI 作业类型、AI 参数或合同类型；Pumps n' Hoses 的拖管作业是原版 FIELDWORK，缺料时以 `AIMessageErrorOutOfFill` 停止（`ToolCarrier.lua:404-405`、`UmbilicalSprayer.lua:319-346`），队列按“出错”暂停。Highlands 地图的非田地合同（枯木、运木、岩石）没有田地，地点列表跳过。没有 DLC 绑定左 Alt + M。Emergency、Straw Harvest、Highlands 追加 `FSBaseMission.delete`，与本 Mod 的标记式前置/追加互不依赖顺序。`MH.getSupportsAI` 额外要求 `spec_aiJobVehicle.supportsAIJobs ~= false`（AIJobVehicle.lua:124），Emergency 的软管卷盘、交通锥车和 NEXAT 宽幅车这类不能派帮手的车辆直接显示为不支持。
 ## 结构
 
 - `scripts/MapHelper.lua`：队列模型与服务端逻辑（请求处理、启动下一个作业、完成/取消判断、暂停原因、存档读写、加入同步、任务生命周期、全局热键注册）。
