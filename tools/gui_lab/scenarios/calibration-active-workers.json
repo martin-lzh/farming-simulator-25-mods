@@ -1,0 +1,51 @@
+{
+  "name": "calibration-active-workers",
+  "title": "Map page, active workers (calibration)",
+  "screen": [2000, 1250],
+  "language": "cs",
+  "background": "#000000",
+  "map": {"color": "#33502c"},
+  "base": "$ref/gui/InGameMenu.xml",
+  "injections": [
+    {"file": "$ref/gui/InGameMenuMapFrame.xml", "parent": "pagingElement"}
+  ],
+  "overrides": {
+    "buttonsPanel": {"visible": false},
+    "ingameMap": {"absolute": {"x": 130, "y": 0, "width": 1870, "height": 1208}},
+    "filterListContainer": {"visible": false},
+    "createJobContainer": {"visible": false},
+    "createJobEmptyText": {"visible": false},
+    "workerListContainer": {"visible": true},
+    "limitReachedWarning": {"visible": false},
+    "mapOverviewSelector": {
+      "texts": ["$l10n_ui_mapOverviewFruitTypes", "$l10n_ui_mapOverviewGrowth", "$l10n_ui_mapOverviewSoil",
+                "$l10n_ui_mapOverviewHotspots", "$l10n_ui_farmlandScreen", "$l10n_button_createJob",
+                "$l10n_ui_activeAIJobs"],
+      "state": 7
+    },
+    "subCategoryDotBox[7]": {"selected": true},
+    "currentBalanceText": {"text": "437,370 €"},
+    "mapMoveGlyphText": {"text": "$l10n_ui_ingameMenuMapPan"},
+    "mapMoveGlyph": {"key": "RMB"},
+    "mapZoomGlyphText": {"text": "$l10n_ui_ingameMenuMapZoom"},
+    "mapZoomGlyph": {"key": "Wheel"}
+  },
+  "lists": {
+    "activeWorkerList": [
+      {"title": "FASTRAC 2135 4WS", "text": "田地工作 - 进行田地作业", "helper": "1"}
+    ],
+    "pagingTabList": [
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_map"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_calendar"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_prices"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_finances"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_animals"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_contracts"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_productionChains"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_statistics"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_handToolsOverview"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_options"}}
+    ]
+  },
+  "listSelection": {"activeWorkerList": 1, "pagingTabList": 1}
+}

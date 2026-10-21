@@ -1,0 +1,32 @@
+{
+  "name": "example-injection",
+  "title": "Map page with an injected sidebar page",
+  "screen": [1920, 1080],
+  "language": "en",
+  "background": "#000000",
+  "map": {"color": "#33502c"},
+  "base": "$ref/gui/InGameMenu.xml",
+  "injections": [
+    {"file": "$ref/gui/InGameMenuMapFrame.xml", "parent": "pagingElement"},
+    {"file": "tools/gui_lab/scenarios/example-panel.xml", "parent": "filterBox"}
+  ],
+  "overrides": {
+    "buttonsPanel": {"visible": false},
+    "ingameMap": {"absolute": {"x": 125, "y": 0, "width": 1795, "height": 1040}},
+    "mapOverviewSelector": {"texts": ["Sample page"], "state": 1},
+    "subCategoryDotBox": {"visible": false},
+    "filterListContainer": {"visible": false},
+    "createJobContainer": {"visible": false},
+    "createJobEmptyText": {"visible": false},
+    "workerListContainer": {"visible": false},
+    "currentBalanceText": {"text": "437,370 €"}
+  },
+  "lists": {
+    "pagingTabList": [
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_map"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_calendar"}},
+      {"tabButton": {"iconSliceId": "gui.icon_ingameMenu_prices"}}
+    ]
+  },
+  "outline": true
+}
