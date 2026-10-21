@@ -8,6 +8,10 @@
 - 如果机具或组合已经使用 Y（例如可选多种种子的播种机或精准农业），按键改为 Alt+Y。
 - AI workers buy the chosen type, lime and herbicide included, when "AI Worker Refill - Fertilizer" is on, and work the parts of the field that need it. Lime-only spreaders get lime without any key.
 - 开启“AI 帮手补充 - 肥料”后，AI 帮手会购买所选类型（包括石灰和除草剂），并处理需要它的田地区域。只能装石灰的撒布机无需按键即可购买石灰。
+- Slurry tankers can choose between slurry and digestate; the worker buys or fetches the chosen type under "AI Worker Refill - Slurry".
+- 粪浆罐车可以在粪浆和沼渣之间选择，帮手按“AI 帮手补充 - 粪浆”购买或调取所选类型。
+- Only what the implement is built to spread can be chosen: a universal trailer with a manure spreader offers manure, not lime.
+- 只能选择机具本身能施撒的类型：带粪肥撒布装置的通用拖车只提供粪肥，不提供石灰。
 - When the tank holds something, its content is used and the choice is locked until the tank is empty again.
 - 料箱里有东西时按实际内容施用，选择被锁定，直到料箱再次清空。
 - Works in multiplayer: the choice is synchronized and saved with the vehicle, and only the server pays for bought fill.

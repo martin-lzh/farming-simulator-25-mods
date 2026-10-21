@@ -38,8 +38,9 @@ function FillTypeSelector.registerEventListeners(vehicleType)
     end
 end
 
--- The game picks slurry and digestate itself (Sprayer:getExternalFill), so they are not offered.
-local function isGameManaged(fillType)
+-- Slurry tankers: the game refills an empty tank itself, always with slurry first
+-- (Sprayer:getExternalFill), so a choice only decides between slurry and digestate.
+function FillTypeSelector.isSlurry(fillType)
     return fillType == FillType.LIQUIDMANURE or fillType == FillType.DIGESTATE
 end
 
@@ -53,6 +54,7 @@ end
 function FillTypeSelector.isChosenByGame(fillType)
     return fillType == FillType.MANURE or fillType == FillType.LIQUIDFERTILIZER
         or fillType == FillType.FERTILIZER or fillType == FillType.HERBICIDE
+        or FillTypeSelector.isSlurry(fillType)
 end
 
 -- Fill types the implement is built to spread, or nil when every spray type of its tank
@@ -92,7 +94,7 @@ function FillTypeSelector.findCandidates(vehicle, fillUnitIndex)
     local spreads = getSpreadFillTypes(vehicle)
     if supported ~= nil then
         for fillType, isSupported in pairs(supported) do
-            if isSupported and fillType ~= FillType.UNKNOWN and not isGameManaged(fillType)
+            if isSupported and fillType ~= FillType.UNKNOWN
                 and (spreads == nil or spreads[fillType])
                 and g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType) ~= nil then
                 table.insert(candidates, fillType)
@@ -409,11 +411,50 @@ end
 function FillTypeSelector:getExternalFill(superFunc, fillType, dt)
     if fillType == FillType.UNKNOWN then
         local selected = FillTypeSelector.getEffectiveFillType(self)
-        if selected ~= nil then
+        if selected ~= nil and FillTypeSelector.isSlurry(selected) then
+            return FillTypeSelector.getExternalSlurry(self, superFunc, selected, dt)
+        elseif selected ~= nil then
             return superFunc(self, selected, dt)
         end
     end
     return superFunc(self, fillType, dt)
+end
+
+-- The slurry branch of Sprayer:getExternalFill (GS Sprayer.lua:505-530) for the selected type:
+-- under "AI Worker Refill - Slurry" it buys that type at the game's price, or takes it from the
+-- chosen slurry pit before the other type, like the game does with slurry before digestate.
+-- When the selected type can't be bought, or the setting is off, the game decides.
+function FillTypeSelector:getExternalSlurry(superFunc, selected, dt)
+    local mission = g_currentMission
+    local source = mission.missionInfo.helperSlurrySource
+    local farmId = self:getActiveFarm()
+    if source == 2 then
+        local cost = mission.economyManager:getCostPerLiter(selected, false)
+        if not cost then
+            return superFunc(self, FillType.UNKNOWN, dt)
+        end
+        local usage = self:getSprayerUsage(selected, dt)
+        if self.isServer then
+            local price = usage * cost * 1.5
+            g_farmManager:updateFarmStats(self:getLastTouchedFarmlandFarmId(), "expenses", price)
+            mission:addMoney(-price, farmId, MoneyType.PURCHASE_FERTILIZER)
+        end
+        return selected, usage
+    elseif source ~= nil and source > 2 then
+        local loadingStation = mission.liquidManureLoadingStations ~= nil and mission.liquidManureLoadingStations[source - 2] or nil
+        if self.isServer and loadingStation ~= nil then
+            local other = selected == FillType.LIQUIDMANURE and FillType.DIGESTATE or FillType.LIQUIDMANURE
+            for _, fillType in ipairs({selected, other}) do
+                local usage = self:getSprayerUsage(fillType, dt)
+                local remainingDelta = loadingStation:removeFillLevel(fillType, usage, farmId or self:getOwnerFarmId())
+                if usage - remainingDelta > 0.000001 then
+                    return fillType, usage
+                end
+            end
+        end
+        return FillType.UNKNOWN, 0
+    end
+    return superFunc(self, FillType.UNKNOWN, dt)
 end
 
 -- A manure spreader that also spreads lime is only externally filled under the manure setting.

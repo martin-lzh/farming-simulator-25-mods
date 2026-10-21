@@ -39,16 +39,21 @@ test("candidates are the spray fill types of the own tank", function()
     -- A setup without fill types covers every spray type of the tank.
     local generic = mockSprayer({fillTypes = {"FERTILIZER", "LIME"}, sprayTypes = {{}, {fillTypes = {"lime"}}}})
     same(spec(generic).candidates, {FillType.FERTILIZER, FillType.LIME})
-    -- The game always picks slurry or digestate itself; seeds are not a spray type.
-    same(spec(mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true})).candidates, {})
+    -- Slurry tankers (category slurryTank, e.g. Oxbo AT5105) choose between slurry and digestate.
+    same(spec(mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true})).candidates,
+        {FillType.LIQUIDMANURE, FillType.DIGESTATE})
+    -- Seeds are not a spray type.
     same(spec(mockSprayer({fillTypes = {"SEEDS", "FERTILIZER"}})).candidates, {FillType.FERTILIZER})
 end)
 
 test("implements with one possible type get no key", function()
-    for _, types in ipairs({{"FERTILIZER"}, {"LIME"}, {"LIQUIDMANURE", "DIGESTATE"}}) do
+    for _, types in ipairs({{"FERTILIZER"}, {"LIME"}, {"LIQUIDMANURE"}}) do
         local events = registerInput(mockSprayer({fillTypes = types}))
         assert(next(events) == nil)
     end
+    -- A slurry tanker that takes slurry and digestate gets the key.
+    local tanker = registerInput(mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true}))
+    assert(tanker[InputAction.TOGGLE_SEEDS] ~= nil)
 end)
 
 test("Y and Shift+Y are used when nothing else needs them", function()
@@ -380,6 +385,40 @@ test("missing game functions disable the Mod with one warning", function()
     TypeManager.validateTypes(manager)
     assert(calls == 0 and #warnings == 1 and warnings[1]:find("Sprayer.getExternalFill", 1, true))
     Sprayer.getExternalFill = original
+end)
+
+test("slurry tankers buy or fetch the selected slurry type", function()
+    local tanker = mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true})
+    startAI(tanker)
+    local mission, info = g_currentMission, g_currentMission.missionInfo
+    mission.prices = {[FillType.LIQUIDMANURE] = 1, [FillType.DIGESTATE] = 3}
+    info.helperSlurrySource = 2
+    -- Without a choice the game buys slurry, and an empty tank needs no marker.
+    assert(FTS.getTargetFillType(tanker) == nil and tanker:getIsSprayerExternallyFilled())
+    assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.LIQUIDMANURE)
+    mission.money = 0
+    FTS.setSelectedFillType(tanker, FillType.DIGESTATE)
+    local fillType, usage = tanker:getExternalFill(FillType.UNKNOWN, 1000)
+    assert(fillType == FillType.DIGESTATE and usage == 1)
+    assert(mission.money == -4.5 and mission.lastMoneyType == MoneyType.PURCHASE_FERTILIZER, "game price times 1.5")
+    -- A type without a price can't be bought: the game decides.
+    mission.prices[FillType.DIGESTATE] = nil
+    assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.LIQUIDMANURE)
+    -- From a slurry pit the selected type comes first, the other one when it runs out.
+    local levels = {[FillType.LIQUIDMANURE] = 100, [FillType.DIGESTATE] = 100}
+    mission.liquidManureLoadingStations = {{removeFillLevel = function(_, fillType, delta)
+        local taken = math.min(levels[fillType], delta)
+        levels[fillType] = levels[fillType] - taken
+        return delta - taken
+    end}}
+    info.helperSlurrySource = 3
+    assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.DIGESTATE and levels[FillType.DIGESTATE] == 99)
+    levels[FillType.DIGESTATE] = 0
+    assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.LIQUIDMANURE)
+    -- Off: nothing is bought, as in the game.
+    info.helperSlurrySource = 1
+    assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.UNKNOWN and not tanker:getIsSprayerExternallyFilled())
+    info.helperSlurrySource, mission.liquidManureLoadingStations, mission.prices = 1, {}, {}
 end)
 
 print(string.format("%d behavioral tests passed", passed))

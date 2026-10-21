@@ -105,12 +105,21 @@ end}
 g_currentMission = {
     money = 0,
     missionInfo = {helperBuyFertilizer = true, helperManureSource = 1, helperSlurrySource = 1},
-    addMoney = function(self, value) self.money = self.money + value end,
+    addMoney = function(self, value, farmId, moneyType)
+        self.money = self.money + value
+        self.lastMoneyType = moneyType
+    end,
+    -- Prices per liter; a fill type without a price can't be bought (EconomyManager:getCostPerLiter).
+    prices = {},
+    economyManager = {getCostPerLiter = function(_, fillType) return g_currentMission.prices[fillType] end},
+    liquidManureLoadingStations = {},
     getFarmId = function(_, connection) return connection and connection.farmId end,
     -- AccessHandler double: own farm only (the game also allows contracted farms).
     accessHandler = {canFarmAccess = function(_, farmId, object) return farmId == object:getOwnerFarmId() end}
 }
 PRICE = 2
+MoneyType = {PURCHASE_FERTILIZER = "purchaseFertilizer"}
+g_farmManager = {stats = {}, updateFarmStats = function(self, farmId, name, value) table.insert(self.stats, {farmId, name, value}) end}
 local isSprayType = function(fillType) return sprayTypes[names[fillType]] == true end
 
 -- Sprayer double: the vanilla decisions this Mod depends on.
@@ -120,7 +129,27 @@ local function vanillaExternalFill(self, fillType, dt)
     local info = g_currentMission.missionInfo
     local unknown = fillType == FillType.UNKNOWN
     local found = false
-    if fillType == FillType.MANURE or (unknown and allows(FillType.MANURE)) then
+    if fillType == FillType.LIQUIDMANURE or fillType == FillType.DIGESTATE
+        or (unknown and (allows(FillType.LIQUIDMANURE) or allows(FillType.DIGESTATE))) then
+        -- Sprayer.lua:505-530: buying always takes slurry while it has a price; a pit gives
+        -- slurry before digestate.
+        if info.helperSlurrySource == 2 then
+            found = true
+            fillType = g_currentMission.economyManager:getCostPerLiter(FillType.LIQUIDMANURE, false)
+                and FillType.LIQUIDMANURE or FillType.DIGESTATE
+        elseif info.helperSlurrySource > 2 then
+            local station = g_currentMission.liquidManureLoadingStations[info.helperSlurrySource - 2]
+            if self.isServer and station ~= nil then
+                for _, candidate in ipairs({FillType.LIQUIDMANURE, FillType.DIGESTATE}) do
+                    local usage = self:getSprayerUsage(candidate, dt)
+                    if usage - station:removeFillLevel(candidate, usage, 1) > 0.000001 then
+                        return candidate, usage
+                    end
+                end
+            end
+            return FillType.UNKNOWN, 0
+        end
+    elseif fillType == FillType.MANURE or (unknown and allows(FillType.MANURE)) then
         if info.helperManureSource == 2 then found, fillType = true, FillType.MANURE end
     elseif fillType == FillType.FERTILIZER or fillType == FillType.LIQUIDFERTILIZER or fillType == FillType.HERBICIDE
         or fillType == FillType.LIME or (unknown and (allows(FillType.LIQUIDFERTILIZER) or allows(FillType.FERTILIZER)
@@ -227,6 +256,9 @@ function mockSprayer(options)
         self.fillUnits[i].fillTypeToDisplayIsPersistent = isPersistent == true
     end
     function vehicle:getSprayerFillUnitIndex() return self.spec_sprayer.fillUnitIndex end
+    function vehicle:getSprayerUsage(_, dt) return dt / 1000 end
+    function vehicle:getActiveFarm() return self.ownerFarmId end
+    function vehicle:getLastTouchedFarmlandFarmId() return self.ownerFarmId end
     function vehicle:setSprayerAITerrainDetailProhibitedRange(fillType) table.insert(self.aiRanges, fillType) end
     function vehicle:getIsSynchronized() return self.synchronized end
     function vehicle:getIsAIActive() return self.aiActive end
