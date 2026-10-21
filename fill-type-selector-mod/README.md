@@ -40,7 +40,8 @@ Implements that can only take one type don't get the key. With two choosable imp
 
 - When the tank holds something, that content is used and the choice is locked; the key is hidden. Once the tank is empty again, your choice applies again.
 - An attached tank with content, such as a front tank, is used before your choice, as in the base game.
-- Choices cover fertilizer, liquid fertilizer, lime, herbicide and manure, as far as the implement takes them. Slurry and digestate tankers are not changed.
+- You can only choose what the implement is built to spread: fertilizer, liquid fertilizer, lime, herbicide or manure. A trailer that only carries lime in its tank, such as a universal trailer with a manure spreader, offers manure only.
+- Slurry and digestate tankers are not changed: with an empty tank, the game already buys or fetches slurry for the worker under **AI Worker Refill - Slurry**.
 - Spreaders with a separate lime setup switch to it when you choose lime, so the worker uses the same working width as with lime in the tank.
 
 ### Multiplayer
@@ -91,7 +92,8 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 - 料箱里有东西时按实际内容施用，选择被锁定，按键隐藏；料箱再次清空后，你的选择重新生效。
 - 与原版相同，连接的储箱（例如前置料箱）里有内容时优先使用它，而不是你的选择。
-- 可选类型包括固态肥料、液态肥料、石灰、除草剂和粪肥，以机具实际能装的为准。粪浆罐车和沼渣罐车不受影响。
+- 只能选择机具本身能施撒的类型：固态肥料、液态肥料、石灰、除草剂或粪肥。只是料箱能装石灰的拖车（例如带粪肥撒布装置的通用拖车）只提供粪肥。
+- 粪浆罐车和沼渣罐车不受影响：料箱为空时，游戏本身就会按“AI 帮手补充 - 粪浆”为帮手购买或调取粪浆。
 - 带有单独石灰配置的撒肥机，选择石灰后会切换到该配置，帮手使用与装着石灰时相同的作业宽度。
 
 ### 多人游戏

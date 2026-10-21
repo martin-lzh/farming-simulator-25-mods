@@ -55,13 +55,45 @@ function FillTypeSelector.isChosenByGame(fillType)
         or fillType == FillType.FERTILIZER or fillType == FillType.HERBICIDE
 end
 
--- Spray fill types of the sprayer's own tank, sorted by fill type index.
+-- Fill types the implement is built to spread, or nil when every spray type of its tank
+-- counts. Spray setups (vehicle.sprayer.sprayTypes.sprayType#fillTypes, read by
+-- Sprayer:loadSprayTypeFromXML) name them, e.g. Bredal K105 "fertilizer unknown" and
+-- "lime". A setup without fill types covers everything. Without setups a manure spreader
+-- spreads manure only: universal trailers such as the Annaburger AW2217 take any bulk
+-- good, lime included, into the same tank.
+local function getSpreadFillTypes(vehicle)
+    local sprayer = vehicle.spec_sprayer
+    if sprayer == nil then
+        return nil
+    end
+    local declared = nil
+    for _, sprayType in ipairs(sprayer.sprayTypes or {}) do
+        if sprayType.fillTypes == nil then
+            return nil
+        end
+        for _, name in ipairs(sprayType.fillTypes) do
+            local fillType = g_fillTypeManager:getFillTypeIndexByName(name)
+            if fillType ~= nil then
+                declared = declared or {}
+                declared[fillType] = true
+            end
+        end
+    end
+    if declared == nil and sprayer.isManureSpreader and FillType.MANURE ~= nil then
+        declared = {[FillType.MANURE] = true}
+    end
+    return declared
+end
+
+-- Spray fill types of the sprayer's own tank that it is built to spread, sorted by index.
 function FillTypeSelector.findCandidates(vehicle, fillUnitIndex)
     local candidates = {}
     local supported = vehicle:getFillUnitSupportedFillTypes(fillUnitIndex)
+    local spreads = getSpreadFillTypes(vehicle)
     if supported ~= nil then
         for fillType, isSupported in pairs(supported) do
             if isSupported and fillType ~= FillType.UNKNOWN and not isGameManaged(fillType)
+                and (spreads == nil or spreads[fillType])
                 and g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType) ~= nil then
                 table.insert(candidates, fillType)
             end

@@ -24,7 +24,21 @@ test("candidates are the spray fill types of the own tank", function()
     same(spec(mockSprayer({fillTypes = {"LIME", "FERTILIZER"}})).candidates, {FillType.FERTILIZER, FillType.LIME})
     same(spec(mockSprayer({fillTypes = {"HERBICIDE", "LIQUIDFERTILIZER"}})).candidates,
         {FillType.LIQUIDFERTILIZER, FillType.HERBICIDE})
-    same(spec(mockSprayer({fillTypes = {"MANURE", "LIME"}, manure = true})).candidates, {FillType.LIME, FillType.MANURE})
+    -- Farmtech Variofex 750: spray setups for manure and for lime.
+    local variofex = mockSprayer({fillTypes = {"MANURE", "LIME"}, manure = true,
+        sprayTypes = {{fillTypes = {"manure"}}, {fillTypes = {"lime"}}}})
+    same(spec(variofex).candidates, {FillType.LIME, FillType.MANURE})
+    -- Annaburger AW2217 / Fliegl ASW271: bulk trailers with a manure spreader and no spray
+    -- setups. Lime fits in the tank, but the implement spreads manure only.
+    local universal = mockSprayer({fillTypes = {"MANURE", "LIME", "FERTILIZER", "SEEDS"}, manure = true})
+    same(spec(universal).candidates, {FillType.MANURE})
+    -- Bredal K105 / Streumaster FW212: "fertilizer unknown" and "lime" setups.
+    local k105 = mockSprayer({fillTypes = {"FERTILIZER", "LIME"},
+        sprayTypes = {{fillTypes = {"fertilizer", "unknown"}}, {fillTypes = {"lime"}}}})
+    same(spec(k105).candidates, {FillType.FERTILIZER, FillType.LIME})
+    -- A setup without fill types covers every spray type of the tank.
+    local generic = mockSprayer({fillTypes = {"FERTILIZER", "LIME"}, sprayTypes = {{}, {fillTypes = {"lime"}}}})
+    same(spec(generic).candidates, {FillType.FERTILIZER, FillType.LIME})
     -- The game always picks slurry or digestate itself; seeds are not a spray type.
     same(spec(mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true})).candidates, {})
     same(spec(mockSprayer({fillTypes = {"SEEDS", "FERTILIZER"}})).candidates, {FillType.FERTILIZER})
@@ -192,7 +206,9 @@ test("the fertilizer refill setting is respected", function()
 end)
 
 test("manure spreader with lime: lime follows the fertilizer setting", function()
-    local spreader = mockSprayer({fillTypes = {"MANURE", "LIME"}, manure = true})
+    -- Like the Farmtech Variofex 750, which has a spray setup for each.
+    local spreader = mockSprayer({fillTypes = {"MANURE", "LIME"}, manure = true,
+        sprayTypes = {{fillTypes = {"manure"}}, {fillTypes = {"lime"}}}})
     startAI(spreader)
     local info = g_currentMission.missionInfo
     assert(not spreader:getIsSprayerExternallyFilled(), "base game: manure setting off")
