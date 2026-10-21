@@ -1,13 +1,14 @@
--- Map page integration: a Map Helper button under the balance in the top-right
--- corner, an "Add to queue" button next to "Start job" in the job menu, and the
--- actions of the drawer. Every action calls the native InGameMenuMapFrame flow.
+-- Map page integration: the Map Helper page of the map overview sidebar (a new state of
+-- mapOverviewSelector, next to the filter pages and Active Workers), the Map Helper button
+-- under the balance that switches to it, the page keys and the global hotkey. The page
+-- content lives in MHPage (MapHelperPage.lua).
 MHMapFrame = {}
 local MF = MHMapFrame
 local MF_mt = {__index = MF}
 
 MF.TOGGLE_XML = "gui/DrawerToggle.xml"
 MF.INPUT_ACTION = "MENU_EXTRA_1"
-MF.QUEUE_BUTTON_XML = "gui/QueueButton.xml"
+MF.TOGGLE_GAP = 10
 -- Frames this Mod added controls to; the in-game menu keeps its frames between missions.
 MF.injected = {}
 
@@ -17,7 +18,7 @@ MF.injected = {}
 function MF.loadElements(filename, parent, target, profileName)
     local xmlFile = loadXMLFile("mapHelperGui", MapHelper.MOD_DIRECTORY .. filename)
     if xmlFile == nil or xmlFile == 0 then
-        MapHelper.warnOnce("gui_" .. filename, "Could not open %s; the map page button is not available", filename)
+        MapHelper.warnOnce("gui_" .. filename, "Could not open %s; the map page controls are not available", filename)
         return nil
     end
     if g_gui.profiles == nil or g_gui.profiles[profileName] == nil then
@@ -49,12 +50,13 @@ function MF.inject(frame)
     local ext = setmetatable({frame = frame}, MF_mt)
     frame.mapHelper = ext
     table.insert(MF.injected, frame)
+
     -- The header holds the farm balance (shopMoneyBox) in the top-right corner.
     local header = frame.shopMoneyBox ~= nil and frame.shopMoneyBox.parent or nil
     if header ~= nil then
         ext.toggle = MF.loadElements(MF.TOGGLE_XML, header, ext, "mh_toggleContainer")
     else
-        MapHelper.warnOnce("noHeader", "Map page header not found; open Map Helper with its key instead")
+        MapHelper.warnOnce("noHeader", "Map page header not found; open Map Helper with its key or the sidebar instead")
     end
     if ext.toggle ~= nil then
         ext.toggleText = ext.toggle:getDescendantByName("text")
@@ -63,14 +65,26 @@ function MF.inject(frame)
         end
         MF.placeToggle(ext)
     end
-    if frame.createJobContainer ~= nil and MapHelper.features.queue then
-        ext.queueButton = MF.loadElements(MF.QUEUE_BUTTON_XML, frame.createJobContainer, ext, "mh_queueContainer")
-        if ext.queueButton ~= nil then
-            local text = ext.queueButton:getDescendantByName("text")
-            if text ~= nil then
-                text:setText(MapHelper.text("mh_addToQueue"))
-            end
-            ext.queueButton:setVisible(false)
+
+    if frame.filterBox ~= nil and MHPage ~= nil then
+        ext.page = MHPage.new(frame, ext)
+        if not ext.page:load() then
+            ext.page = nil
+        end
+    end
+
+    -- The selector's onClick was bound to the original function when the map page was
+    -- loaded. Call through the frame instead, like Precision Farming does, so that the
+    -- hooked InGameMenuMapFrame:onClickMapOverviewSelector runs. Restored on removal.
+    local selector = frame.mapOverviewSelector
+    if ext.page ~= nil and selector ~= nil then
+        ext.selectorCallback = selector.onClickCallback
+        selector.onClickCallback = function(_, state)
+            frame:onClickMapOverviewSelector(state)
+        end
+        -- The overview may already be set up when the Mod's frame code runs late.
+        if frame.isMapOverviewInitialized then
+            MF.addSelectorPage(frame)
         end
     end
 end
@@ -79,8 +93,122 @@ function MF.getExtension(frame)
     return frame ~= nil and frame.mapHelper or nil
 end
 
-MF.TOGGLE_GAP = 10
+-- Controls are removed on mission delete; this also covers any callback that is still
+-- reachable after that, for example while the next mission loads without the Mod.
+function MF:getIsActive()
+    return self.frame ~= nil and self.frame.mapHelper == self and MapHelper.missionActive
+        and g_modIsLoaded ~= nil and g_modIsLoaded[MapHelper.MOD_NAME] == true
+end
 
+function MF.getActiveExtension(frame)
+    local ext = MF.getExtension(frame)
+    if ext ~= nil and getmetatable(ext) == MF_mt and ext:getIsActive() then
+        return ext
+    end
+    return nil
+end
+
+-- Selector page -------------------------------------------------------------------
+-- Appended to InGameMenuMapFrame:setupMapOverview, which rebuilds mapSelectorTexts once per
+-- mission when the map page opens. Same steps as Precision Farming's page: one more text
+-- and one more dot; the page index is wherever the text ends up.
+function MF.addSelectorPage(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext == nil or ext.page == nil or frame.mapSelectorTexts == nil then
+        return
+    end
+    local texts = frame.mapSelectorTexts
+    local title = MapHelper.text("mh_toggle")
+    local index = nil
+    for i, text in ipairs(texts) do
+        if text == title and i == ext.pageIndex then
+            index = i
+        end
+    end
+    if index == nil then
+        table.insert(texts, title)
+        index = #texts
+        frame.mapOverviewSelector:setTexts(texts)
+    end
+    ext.pageIndex = index
+    ext.pageTitle = title
+    -- Keep the native per-state tables consistent for the new state, like Precision Farming.
+    if frame.dataTables ~= nil then
+        frame.dataTables[index] = {}
+    end
+    if frame.filterStates ~= nil then
+        frame.filterStates[index] = {}
+    end
+    if frame.numSelectedFilters ~= nil then
+        frame.numSelectedFilters[index] = 0
+    end
+    local dotBox = frame.subCategoryDotBox
+    if ext.dot == nil and dotBox ~= nil and dotBox.elements[1] ~= nil then
+        ext.dot = dotBox.elements[1]:clone(dotBox)
+        dotBox:invalidateLayout()
+    end
+    if ext.dot ~= nil then
+        local selector = frame.mapOverviewSelector
+        ext.dot.getIsSelected = function()
+            return ext.pageIndex ~= nil and selector:getState() == ext.pageIndex
+        end
+    end
+end
+
+function MF.getIsPageState(frame, state)
+    local ext = MF.getActiveExtension(frame)
+    return ext ~= nil and ext.page ~= nil and ext.pageIndex ~= nil and state == ext.pageIndex
+end
+
+-- Appended to InGameMenuMapFrame:onClickMapOverviewSelector. The native part has already
+-- hidden its own containers for an unknown state.
+function MF.onSelectorChanged(frame, state)
+    local ext = MF.getActiveExtension(frame)
+    if ext == nil or ext.page == nil then
+        return
+    end
+    if MF.getIsPageState(frame, state) then
+        ext.page:show()
+    else
+        ext.page:hide()
+    end
+    MF.updateToggle(frame)
+end
+
+function MF.openPage(frame)
+    local ext = MF.getActiveExtension(frame)
+    local selector = frame ~= nil and frame.mapOverviewSelector or nil
+    if ext == nil or ext.pageIndex == nil or selector == nil or selector:getIsDisabled()
+        or frame.mode ~= InGameMenuMapFrame.AI_MODE_OVERVIEW or frame:getIsPicking() then
+        return false
+    end
+    if selector:getState() ~= ext.pageIndex then
+        selector:setState(ext.pageIndex, true)
+    end
+    return true
+end
+
+-- Global hotkey: open the in-game menu on the map page, like the native map key
+-- (PlayerInputComponent:onInputToggleMap), then select the page like
+-- InGameMenu:openFarmlandsScreen selects the farmland state.
+function MF.openFromHotkey()
+    local menu = g_inGameMenu
+    local mission = g_currentMission
+    if menu == nil or menu.pageMapOverview == nil or mission == nil or mission.isSynchronizingWithPlayers then
+        return false
+    end
+    local component = MapHelper.inputComponent
+    if component ~= nil and component.locked then
+        return false
+    end
+    if g_guidedTourManager ~= nil and g_guidedTourManager:getIsTourRunning() then
+        return false
+    end
+    menu:openMapOverview()
+    return MF.openPage(menu.pageMapOverview)
+end
+
+-- Header button ----------------------------------------------------------------------
 -- Right-aligns the button with the balance box (shopMoneyBoxBg) and puts it below the box
 -- and the AI status line (statusMessage), so it never covers either. Works on absolute
 -- positions: GuiElement:setPosition shifts absPosition by the same amount.
@@ -103,53 +231,40 @@ function MF.placeToggle(ext)
     toggle:setPosition(toggle.position[1] + dx, toggle.position[2] + dy)
 end
 
--- Removes the button, the job menu button and the key events from one frame.
-function MF.remove(frame)
-    local ext = frame.mapHelper
-    frame.mapHelper = nil
-    if ext == nil then
+-- The header button is shown where it can switch to the page: not on the page itself
+-- (its key adds jobs there) and not in the native job menu, which locks the selector.
+function MF.updateToggle(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext == nil or ext.toggle == nil then
         return
     end
-    if g_inputBinding ~= nil then
-        g_inputBinding:removeActionEventsByTarget(ext)
-    end
-    for _, key in ipairs({"toggle", "queueButton"}) do
-        if ext[key] ~= nil then
-            ext[key]:delete()
-            ext[key] = nil
-        end
-    end
-    ext.frame = nil
+    local onPage = ext.page ~= nil and ext.page:getIsShown()
+    local inJobMenu = frame.mode == InGameMenuMapFrame.AI_MODE_CREATE
+    ext.toggle:setVisible(ext.page ~= nil and not onPage and not inJobMenu)
 end
 
--- Mission teardown: nothing of this Mod stays on the shared map frame.
-function MF.removeAll()
-    for _, frame in ipairs(MF.injected) do
-        MF.remove(frame)
-    end
-    MF.injected = {}
+-- Appended to InGameMenuMapFrame:setJobMenuVisible (native job menu opened or closed).
+function MF.onJobMenuVisible(frame, isVisible)
+    MF.updateToggle(frame)
 end
 
--- Controls are removed on mission delete; this also covers any callback that is still
--- reachable after that, for example while the next mission loads without the Mod.
-function MF:getIsActive()
-    return self.frame ~= nil and self.frame.mapHelper == self and MapHelper.missionActive
-        and g_modIsLoaded ~= nil and g_modIsLoaded[MapHelper.MOD_NAME] == true
-end
-
+-- Keys --------------------------------------------------------------------------------
 -- Appended to InGameMenuMapFrame:registerInput, which runs inside the map page's own
 -- input context (MENU_MAP_OVERVIEW) every time the page opens.
 function MF.registerInput(frame)
-    local ext = MF.getExtension(frame)
+    local ext = MF.getActiveExtension(frame)
     if ext == nil or g_inputBinding == nil then
         return
     end
     -- The page layout can change between visits (resolution, UI scale).
     MF.placeToggle(ext)
+    if ext.page ~= nil then
+        ext.page.name = frame.name
+    end
     g_inputBinding:removeActionEventsByTarget(ext)
-    -- One key for both buttons: the native menu action MENU_EXTRA_1, which the PC map page
-    -- does not use. Its button glyph shows a single key, unlike a key combination, and it
-    -- has a controller default. Only one of the two buttons is visible at a time.
+    -- MENU_EXTRA_1, which the PC map page does not use: switches to the page, and on the
+    -- page inserts the job as the next entry. Its glyph shows a single key and it has a
+    -- controller default.
     local action = InputAction[MF.INPUT_ACTION]
     if action ~= nil then
         local _, eventId = g_inputBinding:registerActionEvent(action, ext, MF.onKeyAction, false, true, false, true)
@@ -157,6 +272,7 @@ function MF.registerInput(frame)
             g_inputBinding:setActionEventTextVisibility(eventId, false)
         end
     end
+    MF.updateToggle(frame)
 end
 
 -- Another visible button on the map page that shows the same key, such as the Help button
@@ -164,7 +280,7 @@ end
 -- that one, so the key leaves it alone. This Mod's own buttons are not triggerable that way.
 function MF.getHasOtherKeyButton(elements, ext)
     for _, element in ipairs(elements or {}) do
-        if element ~= ext.toggle and element ~= ext.queueButton then
+        if element ~= ext.toggle and (ext.page == nil or element ~= ext.page.root) then
             if element.inputActionName == MF.INPUT_ACTION and element.getIsVisible ~= nil and element:getIsVisible()
                 and not (element.getIsDisabled ~= nil and element:getIsDisabled()) then
                 return true
@@ -177,38 +293,134 @@ function MF.getHasOtherKeyButton(elements, ext)
     return false
 end
 
--- In the job menu the key adds the job to the queue; otherwise it opens the drawer.
 function MF:onKeyAction()
-    if not self:getIsActive() or MF.getHasOtherKeyButton(self.frame.elements, self) then
+    if not self:getIsActive() then
         return
     end
-    if self.queueButton ~= nil and self.queueButton:getIsVisible() then
-        MF.addToQueue(self.frame)
-    elseif self.frame.mode == InGameMenuMapFrame.AI_MODE_OVERVIEW then
-        MF.openDrawer(self.frame)
+    if self.page ~= nil and self.page:getIsShown() then
+        self.page:onClickInsertNext()
+    elseif not MF.getHasOtherKeyButton(self.frame.elements, self) then
+        MF.openPage(self.frame)
+    end
+end
+
+-- Appended to InGameMenuMapFrame:onMenuMapAction1 (the native Start job key). On the page
+-- the native Start job button is hidden, so the native handler does nothing there.
+function MF.onMenuMapAction1(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.page ~= nil and ext.page:getIsShown() then
+        ext.page:onClickAdd()
     end
 end
 
 -- Button callbacks return nothing, so ButtonElement:sendAction treats the click as used.
 function MF:onClickToggle()
     if self:getIsActive() then
-        MF.openDrawer(self.frame)
+        MF.openPage(self.frame)
     end
 end
 
-function MF:onClickAddToQueue()
-    if self:getIsActive() then
-        MF.addToQueue(self.frame)
+-- Other native hooks ----------------------------------------------------------------
+-- Appended to InGameMenuMapFrame:setMapSelectionItem: a vehicle selected on the map while
+-- the page is shown becomes the page's vehicle.
+function MF.onMapSelectionChanged(frame, hotspot)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.page ~= nil and ext.page:getIsShown() then
+        ext.page:onMapSelectionChanged(hotspot)
     end
 end
 
-function MF.openDrawer(frame)
-    if frame == nil or not MapHelper.features.drawer or g_gui:getIsDialogVisible() then
-        return false
+-- Appended to InGameMenuMapFrame:setActiveJobTypeSelection (form built or job type changed).
+function MF.onJobTypeSelected(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.page ~= nil and ext.page:getIsShown() then
+        ext.page:onFormBuilt()
     end
-    return MHDrawerDialog.show(frame)
 end
 
+-- Appended to InGameMenuMapFrame:onFrameClose: give the native form back while the menu is
+-- closed; onFrameOpen selects the page again through onClickMapOverviewSelector.
+function MF.onFrameClose(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.page ~= nil then
+        ext.page:hide()
+    end
+end
+
+-- Appended to InGameMenuMapFrame:update (runs while the map page is open).
+function MF.update(frame, dt)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.page ~= nil and ext.page:getIsShown() then
+        ext.page:update(dt)
+    end
+end
+
+-- Teardown ------------------------------------------------------------------------------
+-- Removes the page, the header button, the extra selector state and the key events from
+-- one frame and gives the native job form back.
+function MF.remove(frame)
+    local ext = frame.mapHelper
+    frame.mapHelper = nil
+    if ext == nil then
+        return
+    end
+    if g_inputBinding ~= nil then
+        g_inputBinding:removeActionEventsByTarget(ext)
+    end
+    if ext.page ~= nil and ext.page.release ~= nil then
+        ext.page:release()
+    end
+    local selector = frame.mapOverviewSelector
+    if ext.selectorCallback ~= nil and selector ~= nil then
+        selector.onClickCallback = ext.selectorCallback
+    end
+    if ext.pageIndex ~= nil and selector ~= nil then
+        -- Before the text goes: MultiTextOption:setTexts clamps the state to the new count.
+        local onPage = selector.getState ~= nil and selector:getState() == ext.pageIndex
+        local texts = frame.mapSelectorTexts
+        if texts ~= nil and texts[ext.pageIndex] == ext.pageTitle then
+            table.remove(texts, ext.pageIndex)
+            selector:setTexts(texts)
+        end
+        if frame.dataTables ~= nil then
+            frame.dataTables[ext.pageIndex] = nil
+        end
+        if frame.filterStates ~= nil then
+            frame.filterStates[ext.pageIndex] = nil
+        end
+        if frame.numSelectedFilters ~= nil then
+            frame.numSelectedFilters[ext.pageIndex] = nil
+        end
+        if onPage then
+            selector:setState(1)
+        end
+    end
+    if ext.dot ~= nil then
+        local dotBox = ext.dot.parent
+        ext.dot:delete()
+        if dotBox ~= nil then
+            dotBox:invalidateLayout()
+        end
+        ext.dot = nil
+    end
+    if ext.toggle ~= nil then
+        ext.toggle:delete()
+        ext.toggle = nil
+    end
+    ext.page = nil
+    ext.frame = nil
+end
+
+-- Mission teardown: nothing of this Mod stays on the shared map frame.
+function MF.removeAll()
+    for _, frame in ipairs(MF.injected) do
+        MF.remove(frame)
+    end
+    MF.injected = {}
+    MF.restorePlanning()
+end
+
+-- Shared helpers ------------------------------------------------------------------------
 function MF.getControlledVehicle()
     if g_localPlayer == nil or g_localPlayer.getCurrentVehicle == nil then
         return nil
@@ -216,116 +428,20 @@ function MF.getControlledVehicle()
     return g_localPlayer:getCurrentVehicle()
 end
 
--- The vanilla context buttons are only offered in the overview mode, outside a
--- position pick, while the game runs and no guided tour is active (getCanCreateJob).
-function MF.getIsFrameIdle(frame)
-    if frame.mode ~= InGameMenuMapFrame.AI_MODE_OVERVIEW or frame:getIsPicking() or g_currentMission.paused then
-        return false
-    end
-    return g_guidedTourManager == nil or not g_guidedTourManager:getIsTourRunning()
-end
-
--- Same check as InGameMenuMapFrame:refreshContextInput and createJob.
-function MF.getHasAvailableJob(frame, vehicle, goToOnly)
-    local instances = frame.jobTypeInstances or {}
-    if goToOnly then
-        local job = AIJobType ~= nil and instances[AIJobType.GOTO] or nil
-        return job ~= nil and job:getIsAvailableForVehicle(vehicle)
-    end
-    for _, job in pairs(instances) do
-        if job:getIsAvailableForVehicle(vehicle) then
-            return true
-        end
-    end
-    return false
-end
-
 function MF.getHasAccess(vehicle)
     local accessHandler = g_currentMission.accessHandler
     return accessHandler == nil or accessHandler:canPlayerAccess(vehicle)
 end
 
--- Everything the drawer shows, computed from the native vehicle and frame state.
-function MF.getDrawerState(frame)
+-- Vehicles the local player may plan for: AI-capable, accessible, own farm, hireAssistant.
+function MF.getCanPlanFor(vehicle)
     local MH = MapHelper
-    local mission = g_currentMission
-    local vehicle = MF.getControlledVehicle()
-    local state = {vehicle = vehicle, entries = {}, canCenter = true, startStop = "start"}
-    if vehicle == nil then
-        state.onFoot = true
-        state.title = MH.text("mh_onFoot")
-        state.status = MH.text("mh_statusOnFoot")
-        return state
-    end
-    state.title = vehicle:getName()
-    if not MH.getSupportsAI(vehicle) then
-        state.status = MH.text("mh_statusNoAI")
-        return state
-    end
-    local queue = MH.queues[vehicle]
-    for _, entry in ipairs(MH.getEntries(vehicle)) do
-        table.insert(state.entries, {id = entry.id, label = MH.getJobLabel(entry.job)})
-    end
-    local permitted = MF.getHasAccess(vehicle) and MH.getCanManage(vehicle, nil)
-    local aiActive = vehicle:getIsAIActive()
-    local idle = MF.getIsFrameIdle(frame)
-    local running = queue ~= nil and queue.running
-    state.permitted = permitted
-    if not permitted then
-        state.status = MH.text("mh_statusNoPermission")
-    elseif queue ~= nil and queue.pause ~= MH.PAUSE.NONE then
-        state.status = string.format(MH.text("mh_statusPaused"), MH.getPauseReason(queue))
-    elseif aiActive or running then
-        state.status = MH.text("mh_statusWorking")
-    else
-        state.status = MH.text("mh_statusIdle")
-    end
-    if #state.entries > 0 then
-        state.status = state.status .. "\n" .. string.format(MH.text("mh_statusWaiting"), #state.entries)
-    end
-    -- While the vehicle works, Create job plans the next entries like a to-do list.
-    state.planning = (aiActive or running) and MH.features.queue
-    state.canCreate = permitted and idle and MF.withPlanning(vehicle, state.planning, function()
-        return MF.getHasAvailableJob(frame, vehicle, false)
-    end)
-    state.canGoTo = permitted and idle and not state.planning and MF.getHasAvailableJob(frame, vehicle, true)
-    if aiActive then
-        state.startStop = "cancel"
-        state.canStartStop = permitted and not mission.paused
-    elseif #state.entries > 0 and MH.features.queue then
-        state.startStop = "queue"
-        state.canStartStop = permitted and not running and not mission.paused
-    elseif frame.mode == InGameMenuMapFrame.AI_MODE_CREATE and frame.currentJobVehicle == vehicle then
-        state.startStop = "start"
-        state.canStartStop = frame:getCanStartJob() and not mission.paused
-    end
-    state.canClear = permitted and #state.entries > 0 and MH.features.queue
-    state.canRemove = state.canClear
-    return state
-end
-
--- Drawer actions ---------------------------------------------------------------
-function MF.centerOnMe(frame)
-    local vehicle = MF.getControlledVehicle()
-    local hotspot = vehicle ~= nil and vehicle.getMapHotspot ~= nil and vehicle:getMapHotspot() or nil
-    if hotspot ~= nil then
-        if MF.getIsFrameIdle(frame) then
-            frame:setMapSelectionItem(hotspot)
-        end
-        frame.ingameMap:panToHotspot(hotspot)
-        return true
-    elseif g_localPlayer ~= nil then
-        -- InGameMenuMapFrame:onFrameOpen centers the map on the player the same way.
-        local x, _, z = g_localPlayer:getPosition()
-        frame.ingameMap:setCenterToWorldPosition(x, z)
-        return true
-    end
-    return false
+    return MH.features.queue and MH.getSupportsAI(vehicle) and MF.getHasAccess(vehicle) and MH.getCanManage(vehicle, nil)
 end
 
 -- The native job types only offer themselves for a vehicle without a worker
 -- (AIJobVehicle:getCanStartAIVehicle checks getIsAIActive). To plan entries for a vehicle
--- that is working, the job menu is built while the vehicle reads as idle: an instance field
+-- that is working, the job form is built while the vehicle reads as idle: an instance field
 -- shadows the vehicle's function for the duration of the call. Scripts catch no errors
 -- (ModHub TestRunner), so if the call raises, MapHelper:update removes the shadow on the
 -- next frame through MF.restorePlanning.
@@ -351,147 +467,4 @@ function MF.restorePlanning()
         MF.planningShadow = nil
         shadow.vehicle.getIsAIActive = shadow.previous
     end
-end
-
-function MF.createJob(frame)
-    local state = MF.getDrawerState(frame)
-    if not state.canCreate then
-        return false
-    end
-    local vehicle = state.vehicle
-    if not state.planning then
-        -- Selects the hotspot, pans to it and opens the job menu after getCanCreateJob.
-        frame:setAIVehicle(vehicle)
-        return true
-    end
-    -- Same steps as InGameMenuMapFrame:setAIVehicle, minus the getCanCreateJob check that
-    -- refuses a working vehicle; the job menu then only offers Add to queue.
-    local hotspot = vehicle:getMapHotspot()
-    frame:setMapSelectionItem(hotspot)
-    frame.ingameMap:panToHotspot(hotspot)
-    local ext = MF.getExtension(frame)
-    if ext ~= nil then
-        ext.planningVehicle = vehicle
-    end
-    MF.withPlanning(vehicle, true, function()
-        frame:createJob()
-    end)
-    if frame.createJobEmptyText ~= nil then
-        frame.createJobEmptyText:setVisible(false)
-    end
-    return frame.mode == InGameMenuMapFrame.AI_MODE_CREATE
-end
-
-function MF.goTo(frame)
-    local state = MF.getDrawerState(frame)
-    if not state.canGoTo then
-        return false
-    end
-    local hotspot = state.vehicle:getMapHotspot()
-    frame:setMapSelectionItem(hotspot)
-    frame.ingameMap:panToHotspot(hotspot)
-    -- Starts the native position and direction pick, then InGameMenuMapFrame:startGoToJob.
-    frame:onStartGoToJob()
-    return true
-end
-
-function MF.startStop(frame)
-    local state = MF.getDrawerState(frame)
-    if not state.canStartStop then
-        return false
-    end
-    if state.startStop == "cancel" then
-        -- Same call as InGameMenuMapFrame:cancelJob.
-        state.vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
-    elseif state.startStop == "queue" then
-        MapHelper.requestStart(state.vehicle)
-    else
-        frame:onStartCancelJob()
-    end
-    return true
-end
-
-function MF.removeEntry(frame, entryId)
-    local state = MF.getDrawerState(frame)
-    if not state.canRemove then
-        return false
-    end
-    return MapHelper.requestRemove(state.vehicle, entryId)
-end
-
-function MF.clearQueue(frame)
-    local state = MF.getDrawerState(frame)
-    if not state.canClear then
-        return false
-    end
-    return MapHelper.requestClear(state.vehicle)
-end
-
--- Job menu ----------------------------------------------------------------------
--- Queues are planned for the vehicle the player is sitting in, the one the drawer shows.
-function MF.getCanQueueFor(frame, vehicle)
-    return MapHelper.features.queue and vehicle ~= nil and vehicle == MF.getControlledVehicle()
-        and MapHelper.getCanManage(vehicle, nil)
-end
-
--- Appended to InGameMenuMapFrame:setJobMenuVisible. InGameMenuMapFrame:createJob sets the
--- mode and currentJobVehicle before it shows the menu, and creates currentJob afterwards.
-function MF.updateQueueButton(frame, isVisible)
-    local ext = MF.getExtension(frame)
-    if ext == nil or ext.queueButton == nil then
-        return
-    end
-    local inJobMenu = isVisible and frame.mode == InGameMenuMapFrame.AI_MODE_CREATE
-    local visible = inJobMenu and MF.getCanQueueFor(frame, frame.currentJobVehicle)
-    ext.queueButton:setVisible(visible and true or false)
-    -- The header button shares the key with Add to queue, so it steps aside in the job menu.
-    if ext.toggle ~= nil then
-        ext.toggle:setVisible(not inJobMenu)
-    end
-    -- Planning for a working vehicle: the native Start job would be refused, so only
-    -- Add to queue is offered. Leaving the job menu shows Start job again.
-    local planning = inJobMenu and ext.planningVehicle ~= nil and ext.planningVehicle == frame.currentJobVehicle
-    if not inJobMenu then
-        ext.planningVehicle = nil
-    end
-    if frame.buttonStartJobContainer ~= nil then
-        frame.buttonStartJobContainer:setVisible(not planning)
-    end
-end
-
--- Instead of InGameMenuMapFrame:startJob: validate like startJob, send the job to the
--- server queue and leave the job menu like the native Back button does.
-function MF.addToQueue(frame)
-    local MH = MapHelper
-    if frame == nil or frame.mode ~= InGameMenuMapFrame.AI_MODE_CREATE or frame:getIsPicking()
-        or frame.currentJob == nil or g_currentMission.paused or not frame:getCanStartJob() then
-        return false
-    end
-    local vehicle = frame.currentJobVehicle
-    if not MF.getCanQueueFor(frame, vehicle) then
-        return false
-    end
-    local job = frame.currentJob
-    job:setValues()
-    local valid, errorMessage = job:validate(g_localPlayer.farmId)
-    if not valid then
-        InfoDialog.show(tostring(errorMessage), nil, nil, DialogElement.TYPE_WARNING)
-        frame:updateWarnings()
-        return false
-    end
-    if #MH.getEntries(vehicle) >= MH.MAX_ENTRIES then
-        InfoDialog.show(string.format(MH.text("mh_queueFull"), MH.MAX_ENTRIES), nil, nil, DialogElement.TYPE_WARNING)
-        return false
-    end
-    MH.requestAdd(vehicle, job)
-    -- Leave the job menu the way a successful InGameMenuMapFrame:startJob does. Not
-    -- onClickBack: it calls resetTasks on currentJob, which the queue owns now (on the
-    -- host the request event passed it by reference).
-    frame.mode = InGameMenuMapFrame.AI_MODE_OVERVIEW
-    frame.currentJob = nil
-    frame:setJobMenuVisible(false)
-    frame:refreshContextInput()
-    -- Show the queue with the new entry, like ticking off a to-do list.
-    MF.openDrawer(frame)
-    return true
 end

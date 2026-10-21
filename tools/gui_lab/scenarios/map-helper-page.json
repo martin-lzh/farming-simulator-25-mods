@@ -1,0 +1,251 @@
+{
+  "name": "map-helper-page",
+  "title": "Map page, Map Helper page (map-helper-mod)",
+  "screen": [
+    2000,
+    1250
+  ],
+  "language": "cs",
+  "background": "#000000",
+  "map": {
+    "color": "#33502c"
+  },
+  "base": "$ref/gui/InGameMenu.xml",
+  "injections": [
+    {
+      "file": "$ref/gui/InGameMenuMapFrame.xml",
+      "parent": "pagingElement"
+    },
+    {
+      "file": "map-helper-mod/gui/MapHelperPage.xml",
+      "parent": "filterBox"
+    }
+  ],
+  "overrides": {
+    "mhPage": {
+      "visible": true
+    },
+    "buttonsPanel": {
+      "visible": false
+    },
+    "ingameMap": {
+      "absolute": {
+        "x": 130,
+        "y": 0,
+        "width": 1870,
+        "height": 1208
+      }
+    },
+    "filterListContainer": {
+      "visible": false
+    },
+    "createJobEmptyText": {
+      "visible": false
+    },
+    "workerListContainer": {
+      "visible": false
+    },
+    "limitReachedWarning": {
+      "visible": false
+    },
+    "mapOverviewSelector": {
+      "texts": [
+        "$l10n_ui_mapOverviewFruitTypes",
+        "$l10n_ui_mapOverviewGrowth",
+        "$l10n_ui_mapOverviewSoil",
+        "$l10n_ui_mapOverviewHotspots",
+        "$l10n_ui_farmlandScreen",
+        "$l10n_button_createJob",
+        "$l10n_ui_activeAIJobs",
+        "地图助手"
+      ],
+      "state": 8
+    },
+    "currentBalanceText": {
+      "text": "437,370 €"
+    },
+    "mapMoveGlyphText": {
+      "text": "$l10n_ui_ingameMenuMapPan"
+    },
+    "mapMoveGlyph": {
+      "key": "RMB"
+    },
+    "mapZoomGlyphText": {
+      "text": "$l10n_ui_ingameMenuMapZoom"
+    },
+    "mapZoomGlyph": {
+      "key": "Wheel"
+    },
+    "mhVehicleTitle": "FASTRAC 2135 4WS",
+    "mhVehicleStatus": "工作中：田地工作 - 进行田地作业",
+    "mhVehicleInfo": "距目标 120 m · 合同完成 72% · 队列 2 项",
+    "mhMineText": "我的车辆",
+    "mhStartStopText": "取消作业",
+    "mhAddText": "加入队列",
+    "mhNextText": "插入为下一项",
+    "mhQueueTitle": "指令队列",
+    "mhClearText": "清空队列",
+    "mhEditText": "编辑",
+    "mhRemoveText": "删除",
+    "mhQueueEmpty": {
+      "visible": false
+    },
+    "mhFormEmptyText": {
+      "visible": false
+    },
+    "createJobContainer": {
+      "visible": true,
+      "absolute": {
+        "x": 154,
+        "y": 440,
+        "width": 373,
+        "height": 333
+      }
+    },
+    "buttonStartJobContainer": {
+      "visible": false
+    },
+    "jobTypeElement": {
+      "texts": [
+        "田地工作"
+      ],
+      "state": 1
+    },
+    "createMultiOptionTemplate": {
+      "visible": false
+    },
+    "createPositionTemplate": {
+      "visible": false
+    },
+    "createTextTemplate": {
+      "visible": true
+    },
+    "createTitleTemplate": {
+      "text": "位置"
+    },
+    "createPositionRotationTemplate": {
+      "text": "< 812 , 433 | 90° >"
+    }
+  },
+  "lists": {
+    "mhPlacesList": [
+      {
+        "section": "已接合同"
+      },
+      {
+        "name": "田地 84 · 草捆打包",
+        "info": "72%"
+      },
+      {
+        "name": "田地 44 · 草捆打包",
+        "info": "0%"
+      },
+      {
+        "section": "自己的田地"
+      },
+      {
+        "name": "田地 3",
+        "info": "2.4 ha"
+      },
+      {
+        "name": "田地 4",
+        "info": "1.9 ha"
+      },
+      {
+        "section": "作业类型"
+      },
+      {
+        "name": "田地工作",
+        "info": ""
+      },
+      {
+        "name": "前往",
+        "info": ""
+      }
+    ],
+    "mhQueueList": [
+      {
+        "index": "▶",
+        "title": "田地工作 · 田地 84",
+        "text": "进行中 · 距目标 120 m"
+      },
+      {
+        "index": "1",
+        "title": "前往 · 农场",
+        "text": "等待中"
+      },
+      {
+        "index": "2",
+        "title": "运送 · 谷物仓库",
+        "text": "等待中"
+      },
+      {
+        "index": "3",
+        "title": "田地工作 · 田地 3",
+        "text": "等待中"
+      },
+      {
+        "index": "4",
+        "title": "前往 · 农场",
+        "text": "等待中"
+      }
+    ],
+    "pagingTabList": [
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_map"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_calendar"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_prices"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_finances"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_animals"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_contracts"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_productionChains"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_statistics"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_handToolsOverview"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_options"
+        }
+      }
+    ]
+  },
+  "listSelection": {
+    "mhPlacesList": 2,
+    "mhQueueList": 2,
+    "pagingTabList": 1
+  }
+}

@@ -3,7 +3,7 @@ local MH = MapHelper
 
 -- Engine class tables survive map changes. Refresh callbacks without stacking hooks.
 local function installHook(class, method, prepend, callback)
-    local key = "mh_" .. modName .. "_" .. method
+    local key = "mh_" .. modName .. "_" .. method .. (prepend and "_before" or "")
     if class[key] == nil then
         local dispatch = function(...)
             if g_modIsLoaded[modName] then
@@ -49,34 +49,49 @@ local queueMissing = findMissing({
     {AIMessageSuccessFinishedJob, "AIMessageSuccessFinishedJob", {"new"}},
     {MessageType, "MessageType", {"AI_JOB_STOPPED"}},
     {XMLFile, "XMLFile", {"create", "loadIfExists"}},
-    {AIParameterType, "AIParameterType", {"POSITION", "POSITION_ANGLE", "LOADING_STATION", "UNLOADING_STATION"}}
+    {AIParameterType, "AIParameterType", {"POSITION", "POSITION_ANGLE", "LOADING_STATION", "UNLOADING_STATION", "TEXT"}}
 })
 MH.features.queue = queueMissing == nil
 if queueMissing ~= nil then
     MH.warnOnce("queue", "%s not found in this game version; the command queue is disabled", queueMissing)
 end
 
-local drawerMissing = findMissing({
-    {InGameMenuMapFrame, "InGameMenuMapFrame", {"onLoadMapFinished", "registerInput", "setJobMenuVisible", "setAIVehicle",
-        "setMapSelectionItem", "createJob", "refreshContextInput", "onStartGoToJob", "onStartCancelJob", "getCanStartJob", "getIsPicking", "onClickBack",
-        "updateWarnings", "AI_MODE_OVERVIEW", "AI_MODE_CREATE"}},
+local pageMissing = findMissing({
+    {InGameMenuMapFrame, "InGameMenuMapFrame", {"onLoadMapFinished", "setupMapOverview", "onClickMapOverviewSelector",
+        "registerInput", "setJobMenuVisible", "setMapSelectionItem", "setActiveJobTypeSelection", "updateParameterValueTexts",
+        "validateParameters", "updateWarnings", "refreshContextInput", "executePickingCallback", "getIsPicking",
+        "onMenuMapAction1", "onFrameClose", "update", "AI_MODE_OVERVIEW", "AI_MODE_CREATE"}},
     {IngameMapElement, "IngameMapElement", {"panToHotspot", "setCenterToWorldPosition"}},
-    {g_gui, "g_gui", {"loadGui", "loadGuiRec", "loadProfileSet", "showDialog", "getIsDialogVisible"}},
-    {MessageDialog, "MessageDialog", {"new"}},
+    {g_gui, "g_gui", {"loadGuiRec", "loadProfileSet"}},
     {InfoDialog, "InfoDialog", {"show"}},
     {AIMessageSuccessStoppedByUser, "AIMessageSuccessStoppedByUser", {"new"}},
     {InputAction, "InputAction", {"MENU_EXTRA_1"}}
 })
-MH.features.drawer = drawerMissing == nil
-if drawerMissing ~= nil then
-    MH.warnOnce("drawer", "%s not found in this game version; the map page drawer is disabled", drawerMissing)
+MH.features.page = pageMissing == nil and MH.features.queue
+if pageMissing ~= nil then
+    MH.warnOnce("page", "%s not found in this game version; the Map Helper page is disabled", pageMissing)
+end
+
+local hotkeyMissing = findMissing({
+    {PlayerInputComponent, "PlayerInputComponent", {"registerGlobalPlayerActionEvents"}},
+    {InGameMenu, "InGameMenu", {"openMapOverview"}},
+    {InputAction, "InputAction", {MH.HOTKEY_ACTION}}
+})
+MH.features.hotkey = hotkeyMissing == nil and MH.features.page
+if hotkeyMissing ~= nil and MH.features.page then
+    MH.warnOnce("hotkey", "%s not found in this game version; the Map Helper hotkey is disabled", hotkeyMissing)
 end
 
 installHook(FSBaseMission, "onStartMission", false, function(mission)
     MH.onMissionStarted(mission)
 end)
 
-installHook(FSBaseMission, "delete", true, function(mission)
+-- FSBaseMission:delete: before the game's teardown only a flag is set (MH.onMissionDeleting),
+-- so nothing of this Mod can stop it; everything else runs after it.
+installHook(FSBaseMission, "delete", true, function()
+    MH.onMissionDeleting()
+end)
+installHook(FSBaseMission, "delete", false, function(mission)
     MH.onMissionDeleted(mission)
 end)
 
@@ -91,20 +106,35 @@ if MH.features.queue then
     end)
 end
 
-if MH.features.drawer then
-    installHook(InGameMenuMapFrame, "onLoadMapFinished", false, function(frame)
-        if MapHelper.features.drawer then
-            MHMapFrame.inject(frame)
-        end
-    end)
-    installHook(InGameMenuMapFrame, "registerInput", false, function(frame)
-        if MapHelper.features.drawer then
-            MHMapFrame.registerInput(frame)
-        end
-    end)
-    installHook(InGameMenuMapFrame, "setJobMenuVisible", false, function(frame, isVisible)
-        if MapHelper.features.drawer then
-            MHMapFrame.updateQueueButton(frame, isVisible)
+if MH.features.page then
+    local frameHooks = {
+        onLoadMapFinished = function(frame) MHMapFrame.inject(frame) end,
+        setupMapOverview = function(frame) MHMapFrame.addSelectorPage(frame) end,
+        onClickMapOverviewSelector = function(frame, state) MHMapFrame.onSelectorChanged(frame, state) end,
+        registerInput = function(frame) MHMapFrame.registerInput(frame) end,
+        setJobMenuVisible = function(frame, isVisible) MHMapFrame.onJobMenuVisible(frame, isVisible) end,
+        setMapSelectionItem = function(frame, hotspot) MHMapFrame.onMapSelectionChanged(frame, hotspot) end,
+        setActiveJobTypeSelection = function(frame) MHMapFrame.onJobTypeSelected(frame) end,
+        onMenuMapAction1 = function(frame) MHMapFrame.onMenuMapAction1(frame) end,
+        onFrameClose = function(frame) MHMapFrame.onFrameClose(frame) end,
+        update = function(frame, dt) MHMapFrame.update(frame, dt) end
+    }
+    for method, callback in pairs(frameHooks) do
+        installHook(InGameMenuMapFrame, method, false, function(...)
+            if MapHelper.features.page then
+                callback(...)
+            end
+        end)
+    end
+end
+
+-- The hotkey is registered together with the game's own global actions (menu, map, shop),
+-- which PlayerInputComponent registers on foot (PLAYER) and Enterable in every vehicle
+-- (VEHICLE). Same context handling as the game's function.
+if MH.features.hotkey then
+    installHook(PlayerInputComponent, "registerGlobalPlayerActionEvents", false, function(component, context)
+        if MapHelper.features.hotkey then
+            MapHelper.registerHotkey(component, context)
         end
     end)
 end

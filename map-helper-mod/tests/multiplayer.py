@@ -6,8 +6,9 @@ emulate GIANTS object creation, native AI events, ghosting or connection loss.
 from collections import deque
 
 from lupa import LuaRuntime
+from guixml import install
 
-SCRIPTS = ("MapHelper", "QueueEvents", "DrawerDialog", "MapFrameExtension", "Register")
+SCRIPTS = ("MapHelper", "QueueEvents", "MapHelperPage", "MapFrameExtension", "Register")
 
 
 class Peer:
@@ -15,6 +16,7 @@ class Peer:
         self.lua = LuaRuntime(unpack_returned_tuples=True)
         self.outgoing = deque()
         self.lua.execute((root / "tests/engine_mock.lua").read_text(encoding="utf-8"))
+        install(self.lua, root)
         for name in SCRIPTS:
             self.lua.execute((root / f"scripts/{name}.lua").read_text(encoding="utf-8"))
         g = self.lua.globals()
@@ -73,7 +75,10 @@ class Peer:
                 job.positionParameter:setPosition(x, z)
                 return job
             end
-            function add(vehicle, x, z) return MH.requestAdd(vehicle or tractor, newJob(vehicle or tractor, x, z)) end
+            function add(vehicle, x, z, insertNext)
+                return MH.requestAdd(vehicle or tractor, newJob(vehicle or tractor, x, z), insertNext)
+            end
+            function idAt(index) return MH.getEntries(tractor)[index].id end
             function labels(vehicle)
                 local result = {}
                 for _, entry in ipairs(MH.getEntries(vehicle or tractor)) do table.insert(result, MH.getJobLabel(entry.job)) end
@@ -247,4 +252,35 @@ def run_multiplayer(root):
     assert session.server.value("notes()") == "", "no local player on a dedicated server"
     assert manager.value("notes()") == "info:Tractor 42 paused, 1 waiting" and manager.value("labels()") == "Go to - 5, 5"
     passed("dedicated server runs remote requests and pauses after an error without a local player")
+
+    session = Session(root)
+    a, worker, foreign = session.clients
+    a.run("add(nil, 1, 1); add(nil, 2, 2); add(nil, 3, 3, true)")
+    session.deliver(0)
+    session.broadcast()
+    assert session.labels() == ["Go to - 3, 3;Go to - 1, 1;Go to - 2, 2"] * 4, session.labels()
+    last = a.value("idAt(3)")
+    a.run(f"MH.requestMove(tractor, {last}, true)")
+    a.run(f"MH.requestEdit(tractor, {last}, newJob(tractor, 9, 9))")
+    session.deliver(0)
+    session.broadcast()
+    assert session.labels() == ["Go to - 3, 3;Go to - 9, 9;Go to - 1, 1"] * 4, session.labels()
+    assert a.value("idAt(2)") == last, "an edited entry keeps its id"
+    worker.run(f"MH.requestMove(tractor, {last}, true); MH.requestEdit(tractor, {last}, newJob(tractor, 5, 5))")
+    foreign.run(f"MH.requestEdit(tractor, {last}, newJob(tractor, 6, 6))")
+    session.deliver(1)
+    session.deliver(2)
+    assert not session.server.outgoing and session.labels()[0] == "Go to - 3, 3;Go to - 9, 9;Go to - 1, 1"
+    a.run(f"MH.requestMove(tractor, {a.value('idAt(1)')}, true)")
+    session.deliver(0)
+    assert not session.server.outgoing, "moving the first entry up changes nothing"
+    a.run("MH.requestStart(tractor)")
+    session.deliver(0)
+    session.broadcast()
+    first = session.server.value("g_currentMission.aiSystem.started[1].positionAngleParameter.x")
+    assert first == 3, first
+    a.run(f"MH.requestEdit(tractor, 999, newJob(tractor, 7, 7))")
+    session.deliver(0)
+    assert not session.server.outgoing, "an entry that is gone can't be edited"
+    passed("insert as next, move and edit are applied by the server for managers only")
     print(f"{count} multiplayer scenarios passed")

@@ -1,6 +1,13 @@
--- Client -> server: add, remove, clear or start the command queue of one vehicle.
+-- Client -> server: add, edit, move, remove, clear or start the command queue of one vehicle.
 -- Queued jobs travel with the native AIJob:writeStream/readStream, the same way
 -- AIJobStartRequestEvent sends a job the player created in the job menu.
+--
+-- Stream: action (UIntN 3), vehicle (node object), then per action
+--   ADD:    insertNext (bool), job type index (UInt16), job stream
+--   EDIT:   entry id (Int32), job type index (UInt16), job stream
+--   MOVE:   entry id (Int32), up (bool)
+--   REMOVE: entry id (Int32)
+--   CLEAR, START: nothing
 MHQueueRequestEvent = {}
 local MHQueueRequestEvent_mt = Class(MHQueueRequestEvent, Event)
 InitEventClass(MHQueueRequestEvent, "MHQueueRequestEvent")
@@ -9,29 +16,42 @@ function MHQueueRequestEvent.emptyNew()
     return Event.new(MHQueueRequestEvent_mt)
 end
 
-function MHQueueRequestEvent.new(action, vehicle, job, entryId)
+-- flag: ADD = insert as the next entry; MOVE = move up. Ignored by the other actions.
+function MHQueueRequestEvent.new(action, vehicle, job, entryId, flag)
     local self = MHQueueRequestEvent.emptyNew()
-    self.action, self.vehicle, self.job, self.entryId = action, vehicle, job, entryId
+    self.action, self.vehicle, self.job, self.entryId, self.flag = action, vehicle, job, entryId, flag == true
     return self
 end
 
 function MHQueueRequestEvent:writeStream(streamId, connection)
     local MH = MapHelper
-    streamWriteUIntN(streamId, self.action, MH.ACTION_NUM_BITS)
+    local action = self.action
+    streamWriteUIntN(streamId, action, MH.ACTION_NUM_BITS)
     NetworkUtil.writeNodeObject(streamId, self.vehicle)
-    if self.action == MH.ACTION.ADD then
+    if action == MH.ACTION.ADD then
+        streamWriteBool(streamId, self.flag)
+    elseif action == MH.ACTION.EDIT or action == MH.ACTION.MOVE or action == MH.ACTION.REMOVE then
+        streamWriteInt32(streamId, self.entryId)
+    end
+    if action == MH.ACTION.ADD or action == MH.ACTION.EDIT then
         streamWriteUInt16(streamId, MH.getJobTypeIndex(self.job))
         self.job:writeStream(streamId, connection)
-    elseif self.action == MH.ACTION.REMOVE then
-        streamWriteInt32(streamId, self.entryId)
+    elseif action == MH.ACTION.MOVE then
+        streamWriteBool(streamId, self.flag)
     end
 end
 
 function MHQueueRequestEvent:readStream(streamId, connection)
     local MH = MapHelper
-    self.action = streamReadUIntN(streamId, MH.ACTION_NUM_BITS)
+    local action = streamReadUIntN(streamId, MH.ACTION_NUM_BITS)
+    self.action = action
     self.vehicle = NetworkUtil.readNodeObject(streamId)
-    if self.action == MH.ACTION.ADD then
+    if action == MH.ACTION.ADD then
+        self.flag = streamReadBool(streamId)
+    elseif action == MH.ACTION.EDIT or action == MH.ACTION.MOVE or action == MH.ACTION.REMOVE then
+        self.entryId = streamReadInt32(streamId)
+    end
+    if action == MH.ACTION.ADD or action == MH.ACTION.EDIT then
         self.job = MH.createJob(streamReadUInt16(streamId))
         if self.job == nil then
             -- Same assumption as AIJobStartRequestEvent: both sides share the job types.
@@ -39,8 +59,8 @@ function MHQueueRequestEvent:readStream(streamId, connection)
             return
         end
         self.job:readStream(streamId, connection)
-    elseif self.action == MH.ACTION.REMOVE then
-        self.entryId = streamReadInt32(streamId)
+    elseif action == MH.ACTION.MOVE then
+        self.flag = streamReadBool(streamId)
     end
     self:run(connection)
 end
@@ -48,14 +68,14 @@ end
 function MHQueueRequestEvent:run(connection)
     if connection:getIsServer() then
         -- Requests are only handled by the server.
-        MapHelper.deleteJob(self.job)
         return
     end
-    MapHelper.handleRequest(self.action, self.vehicle, self.job, self.entryId, connection)
+    MapHelper.handleRequest(self.action, self.vehicle, self.job, self.entryId, connection, self.flag)
 end
 
 -- Server -> clients: the complete queue of one vehicle, sent after every change
--- and to joining players.
+-- and to joining players. The job a worker is driving right now is not part of it:
+-- clients read it from the vehicle (AIJobVehicle:getJob), like the native worker list.
 MHQueueStateEvent = {}
 local MHQueueStateEvent_mt = Class(MHQueueStateEvent, Event)
 InitEventClass(MHQueueStateEvent, "MHQueueStateEvent")
@@ -108,9 +128,6 @@ function MHQueueStateEvent:readStream(streamId, connection)
         local job = MH.createJob(streamReadUInt16(streamId))
         if job == nil then
             MH.warnOnce("unknownJobType", "Received a queued job of an unknown type")
-            for _, entry in ipairs(state.entries) do
-                MH.deleteJob(entry.job)
-            end
             return
         end
         job:readStream(streamId, connection)

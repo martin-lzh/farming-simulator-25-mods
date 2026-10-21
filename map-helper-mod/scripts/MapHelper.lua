@@ -11,7 +11,7 @@ MH.ADVANCE_DELAY = 1500
 MH.SAVE_FILENAME = "mapHelper.xml"
 MH.SAVE_VERSION = 1
 
-MH.ACTION = {ADD = 1, REMOVE = 2, CLEAR = 3, START = 4}
+MH.ACTION = {ADD = 1, REMOVE = 2, CLEAR = 3, START = 4, MOVE = 5, EDIT = 6}
 MH.ACTION_NUM_BITS = 3
 MH.PAUSE = {NONE = 0, STOPPED = 1, START_FAILED = 2, INVALID = 3}
 MH.PAUSE_NUM_BITS = 2
@@ -21,7 +21,7 @@ MH.NOTIFY_NUM_BITS = 2
 -- Engine class tables survive map changes, this table does not: start every mission clean.
 MH.queues = {}
 MH.nextEntryId = 1
-MH.features = {drawer = false, queue = false}
+MH.features = {page = false, queue = false, hotkey = false}
 MH.missionActive = false
 MH.warnings = {}
 MH.listeners = {}
@@ -61,11 +61,9 @@ function MH.getJobTypeIndex(job)
     return manager:getJobTypeIndex(job) or job.jobTypeIndex
 end
 
-function MH.deleteJob(job)
-    if job ~= nil and job.delete ~= nil then
-        job:delete()
-    end
-end
+-- Jobs are never deleted, only dropped. AIJob:delete (SDK ai/jobs/AIJob.lua:41-48) calls
+-- delete on every parameter, and no AIParameter class has one, so it raises; the game itself
+-- never deletes a job either and lets finished jobs go out of scope.
 
 -- AIJobFieldWork:readStream stores the sender's worker settings in pendingData and
 -- AIJobFieldWork:update applies them on the job's first update; AIJobFieldWork:writeStream
@@ -138,19 +136,13 @@ function MH.allocateEntryId()
     return id
 end
 
+-- Dropping the entries is all the cleanup a queued job needs (see the note above).
 function MH.clearEntries(queue)
-    for _, entry in ipairs(queue.entries) do
-        MH.deleteJob(entry.job)
-    end
     queue.entries = {}
 end
 
 function MH.deleteQueue(vehicle)
-    local queue = MH.queues[vehicle]
-    if queue ~= nil then
-        MH.clearEntries(queue)
-        MH.queues[vehicle] = nil
-    end
+    MH.queues[vehicle] = nil
 end
 
 -- A queue without entries, worker or message has nothing to show or keep.
@@ -200,9 +192,6 @@ end
 -- Client: replace the local copy with the server state.
 function MH.applyState(vehicle, state, notify)
     if not MH.getVehicleExists(vehicle) then
-        for _, entry in ipairs(state.entries) do
-            MH.deleteJob(entry.job)
-        end
         return
     end
     local queue = MH.getQueue(vehicle, true)
@@ -234,41 +223,52 @@ end
 -- Requests ---------------------------------------------------------------------
 -- Every change goes through MHQueueRequestEvent. On the host the event runs
 -- locally without serialization (Connection:sendEvent on the local stream).
-function MH.sendRequest(action, vehicle, job, entryId)
+-- flag: ADD = insert as the next entry instead of at the end; MOVE = move up (earlier).
+function MH.sendRequest(action, vehicle, job, entryId, flag)
     if g_client == nil then
         return false
     end
-    g_client:getServerConnection():sendEvent(MHQueueRequestEvent.new(action, vehicle, job, entryId))
+    g_client:getServerConnection():sendEvent(MHQueueRequestEvent.new(action, vehicle, job, entryId, flag))
     return true
 end
 
-function MH.requestAdd(vehicle, job)
-    return MH.sendRequest(MH.ACTION.ADD, vehicle, job, nil)
+function MH.requestAdd(vehicle, job, insertNext)
+    return MH.sendRequest(MH.ACTION.ADD, vehicle, job, nil, insertNext == true)
+end
+
+function MH.requestEdit(vehicle, entryId, job)
+    return MH.sendRequest(MH.ACTION.EDIT, vehicle, job, entryId, false)
+end
+
+function MH.requestMove(vehicle, entryId, up)
+    return MH.sendRequest(MH.ACTION.MOVE, vehicle, nil, entryId, up == true)
 end
 
 function MH.requestRemove(vehicle, entryId)
-    return MH.sendRequest(MH.ACTION.REMOVE, vehicle, nil, entryId)
+    return MH.sendRequest(MH.ACTION.REMOVE, vehicle, nil, entryId, false)
 end
 
 function MH.requestClear(vehicle)
-    return MH.sendRequest(MH.ACTION.CLEAR, vehicle, nil, nil)
+    return MH.sendRequest(MH.ACTION.CLEAR, vehicle, nil, nil, false)
 end
 
 function MH.requestStart(vehicle)
-    return MH.sendRequest(MH.ACTION.START, vehicle, nil, nil)
+    return MH.sendRequest(MH.ACTION.START, vehicle, nil, nil, false)
 end
 
-function MH.handleRequest(action, vehicle, job, entryId, connection)
+function MH.handleRequest(action, vehicle, job, entryId, connection, flag)
     if not MH.getIsServer() or not MH.features.queue then
-        MH.deleteJob(job)
         return false
     end
     if not MH.getCanManage(vehicle, connection) then
-        MH.deleteJob(job)
         return false
     end
     if action == MH.ACTION.ADD then
-        return MH.serverAdd(vehicle, job)
+        return MH.serverAdd(vehicle, job, flag == true)
+    elseif action == MH.ACTION.EDIT then
+        return MH.serverEdit(vehicle, entryId, job)
+    elseif action == MH.ACTION.MOVE then
+        return MH.serverMove(vehicle, entryId, flag == true)
     elseif action == MH.ACTION.REMOVE then
         return MH.serverRemove(vehicle, entryId)
     elseif action == MH.ACTION.CLEAR then
@@ -276,29 +276,39 @@ function MH.handleRequest(action, vehicle, job, entryId, connection)
     elseif action == MH.ACTION.START then
         return MH.serverStart(vehicle)
     end
-    MH.deleteJob(job)
     return false
 end
 
-function MH.serverAdd(vehicle, job)
+-- Server-side check of a job sent by a client, the same for new and edited entries:
+-- it must be for this vehicle and pass the native validation for the vehicle's farm.
+function MH.getIsValidRequestJob(vehicle, job, farmId)
     if job == nil or MH.getJobVehicle(job) ~= vehicle then
-        MH.deleteJob(job)
-        return false
-    end
-    local queue = MH.getQueue(vehicle, true)
-    if #queue.entries >= MH.MAX_ENTRIES then
-        MH.deleteJob(job)
-        MH.pruneQueue(queue)
         return false
     end
     MH.useVehicleSettingsAtStart(job)
     job:setValues()
-    if not job:validate(queue.farmId) then
-        MH.deleteJob(job)
+    return job:validate(farmId) == true
+end
+
+function MH.findEntry(queue, entryId)
+    if queue ~= nil and entryId ~= nil then
+        for index, entry in ipairs(queue.entries) do
+            if entry.id == entryId then
+                return index, entry
+            end
+        end
+    end
+    return nil, nil
+end
+
+function MH.serverAdd(vehicle, job, insertNext)
+    local queue = MH.getQueue(vehicle, true)
+    if #queue.entries >= MH.MAX_ENTRIES or not MH.getIsValidRequestJob(vehicle, job, queue.farmId) then
         MH.pruneQueue(queue)
         return false
     end
-    table.insert(queue.entries, {id = MH.allocateEntryId(), job = job})
+    local position = insertNext and 1 or #queue.entries + 1
+    table.insert(queue.entries, position, {id = MH.allocateEntryId(), job = job})
     MH.setPause(queue, MH.PAUSE.NONE)
     -- Added while a worker drives: the queue follows that job and continues after it,
     -- whether it came from the queue or was started directly.
@@ -313,23 +323,47 @@ function MH.serverAdd(vehicle, job)
     return true
 end
 
-function MH.serverRemove(vehicle, entryId)
+-- Replaces the job of a waiting entry; the entry keeps its id and place. An entry that
+-- started or was removed in the meantime can no longer be edited.
+function MH.serverEdit(vehicle, entryId, job)
     local queue = MH.queues[vehicle]
-    if queue == nil then
+    local _, entry = MH.findEntry(queue, entryId)
+    if entry == nil or not MH.getIsValidRequestJob(vehicle, job, queue.farmId) then
         return false
     end
-    for index, entry in ipairs(queue.entries) do
-        if entry.id == entryId then
-            table.remove(queue.entries, index)
-            MH.deleteJob(entry.job)
-            if #queue.entries == 0 then
-                MH.setPause(queue, MH.PAUSE.NONE)
-            end
-            MH.publish(queue)
-            return true
-        end
+    entry.job = job
+    MH.publish(queue)
+    return true
+end
+
+function MH.serverMove(vehicle, entryId, up)
+    local queue = MH.queues[vehicle]
+    local index, entry = MH.findEntry(queue, entryId)
+    if index == nil then
+        return false
     end
-    return false
+    local target = up and index - 1 or index + 1
+    if target < 1 or target > #queue.entries then
+        return false
+    end
+    queue.entries[index] = queue.entries[target]
+    queue.entries[target] = entry
+    MH.publish(queue)
+    return true
+end
+
+function MH.serverRemove(vehicle, entryId)
+    local queue = MH.queues[vehicle]
+    local index = MH.findEntry(queue, entryId)
+    if index == nil then
+        return false
+    end
+    table.remove(queue.entries, index)
+    if #queue.entries == 0 then
+        MH.setPause(queue, MH.PAUSE.NONE)
+    end
+    MH.publish(queue)
+    return true
 end
 
 function MH.serverClear(vehicle)
@@ -423,8 +457,10 @@ function MH.getIsSuccessfulFinish(aiMessage)
 end
 
 -- MessageType.AI_JOB_STOPPED, published by AISystem:stopJobInternal on server and clients.
+-- Not while the mission is deleted: FSBaseMission:delete deletes the AI system, which stops
+-- every active job and publishes AI_JOB_STOPPED (SDK ai/AISystem.lua:97, :587).
 function MH:onAIJobStopped(job, aiMessage)
-    if not MH.getIsServer() or job == nil then
+    if not MH.missionActive or not MH.getIsServer() or job == nil then
         return
     end
     for _, queue in pairs(MH.queues) do
@@ -486,6 +522,46 @@ function MH.sendInitialState(connection)
     end
 end
 
+-- Global hotkey ------------------------------------------------------------------
+-- Defined in modDesc <actions>; registered for on foot and in vehicles together with the
+-- game's own global actions (PlayerInputComponent:registerGlobalPlayerActionEvents).
+MH.HOTKEY_ACTION = "MH_OPEN_MAP_HELPER"
+
+function MH:onOpenMapHelperAction()
+    if MH.missionActive and MHMapFrame ~= nil then
+        MHMapFrame.openFromHotkey()
+    end
+end
+
+-- Appended to PlayerInputComponent:registerGlobalPlayerActionEvents(context). Like the game's
+-- function, it registers into the given context (VEHICLE from Enterable, else the current
+-- one) and switches the registration back afterwards. Registering twice in one context is
+-- refused by InputBinding:registerActionEvent, so repeated calls are harmless.
+function MH.registerHotkey(component, context)
+    local inputBinding = g_inputBinding
+    local action = InputAction[MH.HOTKEY_ACTION]
+    -- The player registers its actions while the mission loads, before onStartMission.
+    if inputBinding == nil or action == nil or component == nil
+        or component.player == nil or not component.player.isOwner then
+        return
+    end
+    MH.inputComponent = component
+    local currentContext = inputBinding:getContextName()
+    local targetContext = context or currentContext
+    if targetContext ~= currentContext then
+        inputBinding:beginActionEventsModification(targetContext)
+    end
+    local _, eventId = inputBinding:registerActionEvent(action, MH, MH.onOpenMapHelperAction, false, true, false, true)
+    if eventId ~= nil and eventId ~= "" then
+        -- Listed in the key help (F1) with the action's text input_MH_OPEN_MAP_HELPER.
+        inputBinding:setActionEventTextVisibility(eventId, true)
+        inputBinding:setActionEventTextPriority(eventId, GS_PRIO_VERY_LOW)
+    end
+    if targetContext ~= currentContext then
+        inputBinding:beginActionEventsModification(currentContext)
+    end
+end
+
 -- Labels -------------------------------------------------------------------------
 function MH.getJobTitle(job)
     local manager = MH.getJobTypeManager()
@@ -493,11 +569,26 @@ function MH.getJobTitle(job)
     return jobType ~= nil and jobType.title or "?"
 end
 
--- Job type title plus the first target the player picked (position or station).
-function MH.getJobLabel(job)
-    local title = MH.getJobTitle(job)
-    if job.getGroupedParameters == nil then
-        return title
+-- "Field No. 12" for a position inside a field, nil elsewhere. Fields are keyed by their
+-- farmland id (FieldManager:getFieldById), the farmland comes from the map position.
+function MH.getFieldNameAt(x, z)
+    if g_farmlandManager == nil or g_fieldManager == nil or x == nil or z == nil then
+        return nil
+    end
+    local farmland = g_farmlandManager:getFarmlandAtWorldPosition(x, z)
+    local field = farmland ~= nil and g_fieldManager:getFieldById(farmland.id) or nil
+    if field ~= nil and field:getId() ~= nil then
+        return string.format("%s %s", g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
+    end
+    return nil
+end
+
+-- Every target the player picked, in the job menu's order: positions (as field name or
+-- map coordinates) and stations, joined like "Silo > Mill".
+function MH.getJobTargets(job)
+    local targets = {}
+    if job == nil or job.getGroupedParameters == nil then
+        return ""
     end
     for _, group in ipairs(job:getGroupedParameters()) do
         for _, parameter in ipairs(group:getParameters()) do
@@ -505,17 +596,28 @@ function MH.getJobLabel(job)
             if parameterType == AIParameterType.POSITION or parameterType == AIParameterType.POSITION_ANGLE then
                 local x, z = parameter:getPosition()
                 if x ~= nil and z ~= nil then
-                    return string.format("%s - %d, %d", title, math.floor(x + 0.5), math.floor(z + 0.5))
+                    table.insert(targets, MH.getFieldNameAt(x, z)
+                        or string.format("%d, %d", math.floor(x + 0.5), math.floor(z + 0.5)))
                 end
             elseif parameterType == AIParameterType.UNLOADING_STATION or parameterType == AIParameterType.LOADING_STATION then
                 local name = parameter:getString()
                 if name ~= nil and name ~= "" then
-                    return string.format("%s - %s", title, name)
+                    table.insert(targets, name)
                 end
             end
         end
     end
-    return title
+    return table.concat(targets, " > ")
+end
+
+-- Job type title plus its targets.
+function MH.getJobLabel(job)
+    local title = MH.getJobTitle(job)
+    local targets = MH.getJobTargets(job)
+    if targets == "" then
+        return title
+    end
+    return string.format("%s - %s", title, targets)
 end
 
 function MH.getPauseReason(queue)
@@ -597,8 +699,7 @@ function MH.loadFromXMLFile(filename)
                 local job = MH.createJob(manager:getJobTypeIndexByName(xmlFile:getString(jobKey .. "#type")))
                 local parameter = job ~= nil and job:getNamedParameter("vehicle") or nil
                 if parameter == nil or parameter.setVehicle == nil or #queue.entries >= MH.MAX_ENTRIES then
-                    MH.deleteJob(job)
-                    dropped = dropped + 1
+                            dropped = dropped + 1
                     return
                 end
                 job:loadFromXMLFile(xmlFile, jobKey)
@@ -633,25 +734,31 @@ function MH.onMissionStarted(mission)
     end
 end
 
--- g_inGameMenu and its map frame are created once at startup (main.lua) and reused by
--- every mission; FSBaseMission:delete only resets them. Remove everything this Mod added,
--- so a later mission without the Mod gets the untouched map page.
+-- Runs first in FSBaseMission:delete and only flips a flag, so nothing here can stop the
+-- game's own teardown: every hook and callback of this Mod checks it and stays inert
+-- while the mission is deleted (for example InGameMenuMapFrame:reset calling
+-- setMapSelectionItem).
+function MH.onMissionDeleting()
+    MH.missionActive = false
+end
+
+-- Runs after FSBaseMission:delete. g_inGameMenu and its map frame are created once at
+-- startup (main.lua) and reused by every mission; FSBaseMission:delete only resets them.
+-- Remove everything this Mod added, so a later mission without the Mod gets the untouched
+-- map page. Queued jobs are only dropped, never deleted (see MH.clearEntries).
 function MH.onMissionDeleted(mission)
     MH.missionActive = false
     if MHMapFrame ~= nil then
         MHMapFrame.removeAll()
     end
-    if MHDrawerDialog ~= nil then
-        MHDrawerDialog.release()
+    if g_inputBinding ~= nil then
+        g_inputBinding:removeActionEventsByTarget(MH)
     end
     if g_messageCenter ~= nil then
         g_messageCenter:unsubscribeAll(MH)
     end
-    if mission ~= nil and mission.removeUpdateable ~= nil then
+    if mission ~= nil and mission.updateables ~= nil and mission.removeUpdateable ~= nil then
         mission:removeUpdateable(MH)
-    end
-    for vehicle in pairs(MH.queues) do
-        MH.deleteQueue(vehicle)
     end
     MH.queues = {}
     MH.listeners = {}
