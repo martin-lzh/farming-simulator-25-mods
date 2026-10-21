@@ -11,7 +11,10 @@
         <Profile name="mh_queueBg" extends="fs25_mapButtonBgLight"/>
         <Profile name="mh_queueText" extends="fs25_mapButtonText"/>
         <Profile name="mh_queueButton" extends="fs25_mapButton">
-            <inputAction value="MH_ADD_TO_QUEUE"/>
+            <inputAction value="MENU_EXTRA_1"/>
+            <!-- Triggered by this Mod's own key handler, which gives way to other buttons on
+                 the same key (ScreenElement.callButtonsWithAction would trigger both). -->
+            <isTriggerableByGlobalAction value="false"/>
         </Profile>
     </GUIProfiles>
 </GUI>

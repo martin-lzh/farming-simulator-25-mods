@@ -39,12 +39,12 @@ Adds a Map Helper drawer to the map page of the in-game menu. It works with the 
 - Start queue or Cancel job: start the queued jobs or stop the current worker.
 - Command queue: plan several jobs in a row, for example drive to a field, work it and drive back to the farm. In the job menu, click Add to queue instead of Start job. When a job is done, the next one starts by itself. If a job is stopped or can't be finished, the queue pauses and you get a message.
 
-Plan the queue while the vehicle is parked: the game only offers new jobs for vehicles without a worker.
+You can also add jobs while a worker is driving: Create job then reads Add to queue, and the queue continues after the current job.
 
 Multiplayer: farm members allowed to hire workers can use the queue. The server runs it, and it is saved with the game.
 
 Hotkeys:
-Open the map page and click Map Helper below your balance in the top-right corner (default key: Left Alt + H). In the job menu, Add to queue has the default key Left Alt + J. You can change both keys in the controls settings.
+Open the map page and click Map Helper below your balance in the top-right corner, or press the key shown on the button (X by default; controllers have their own default button). In the job menu, the same key adds the job to the queue.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
         <de><![CDATA[Beschreibung:
@@ -54,12 +54,12 @@ Fügt der Kartenseite des Spielmenüs eine Kartenassistent-Leiste hinzu. Sie wir
 - Warteschlange starten oder Job abbrechen: startet die vorgemerkten Jobs oder hält den aktuellen KI-Helfer an.
 - Befehlswarteschlange: plane mehrere Jobs nacheinander, zum Beispiel zum Feld fahren, es bearbeiten und zurück zum Hof fahren. Klicke im Jobmenü auf „Zur Warteschlange“ statt auf „Job starten“. Ist ein Job erledigt, startet der nächste von selbst. Wird ein Job abgebrochen oder kann er nicht beendet werden, hält die Warteschlange an und du erhältst eine Meldung.
 
-Plane die Warteschlange, solange das Fahrzeug steht: Das Spiel bietet neue Jobs nur für Fahrzeuge ohne KI-Helfer an.
+Du kannst auch Jobs hinzufügen, während ein KI-Helfer fährt: „Job erstellen“ heißt dann „Zur Warteschlange“, und die Warteschlange geht nach dem aktuellen Job weiter.
 
 Mehrspieler: Hofmitglieder mit dem Recht, KI-Helfer einzustellen, können die Warteschlange nutzen. Der Server führt sie aus, und sie wird mit dem Spielstand gespeichert.
 
 Tastenbelegung:
-Öffne die Kartenseite und klicke oben rechts unter deinem Kontostand auf „Kartenassistent“ (Standardtaste: Alt links + H). Im Jobmenü hat „Zur Warteschlange“ die Standardtaste Alt links + J. Beide Tasten kannst du in der Steuerung ändern.
+Öffne die Kartenseite und klicke oben rechts unter deinem Kontostand auf „Kartenassistent“ oder drücke die Taste, die auf der Schaltfläche angezeigt wird (standardmäßig X; Controller haben eine eigene Standardtaste). Im Jobmenü fügt dieselbe Taste den Job zur Warteschlange hinzu.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
         <cs><![CDATA[说明：
@@ -69,12 +69,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
 - 开始队列、取消作业：开始排队的作业，或停止当前帮手。
 - 指令队列：连续安排多个作业，例如前往田地、作业，再返回农场。在作业菜单中点击“加入队列”代替“开始作业”。一个作业完成后，下一个会自动开始；作业被取消或无法完成时，队列暂停并提示你。
 
-请在车辆停着时安排队列：游戏只为没有帮手的车辆提供新作业。
+帮手驾驶时也可以添加作业：此时“创建作业”显示为“加入队列”，队列会在当前作业完成后继续。
 
 多人游戏：有雇佣帮手权限的农场成员可以使用队列。队列由服务器执行，并随存档保存。
 
 快捷键：
-打开地图页面，点击右上角余额下方的“地图助手”（默认按键：左 Alt + H）。在作业菜单中，“加入队列”的默认按键为左 Alt + J。两个按键都可以在控制设置中修改。
+打开地图页面，点击右上角余额下方的“地图助手”，或按按钮上显示的按键（默认为 X；手柄有自己的默认按键）。在作业菜单中，同一个按键会把作业加入队列。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
         <br><![CDATA[Descrição:
@@ -84,12 +84,12 @@ Adiciona uma gaveta Assistente de mapa à página do mapa no menu do jogo. Ela a
 - Iniciar fila ou Cancelar tarefa: inicia as tarefas da fila ou para o funcionário atual.
 - Fila de comandos: planeje várias tarefas em sequência, por exemplo ir até um campo, trabalhá-lo e voltar para a fazenda. No menu de tarefas, clique em Adicionar à fila em vez de Iniciar tarefa. Quando uma tarefa termina, a próxima começa sozinha. Se uma tarefa for interrompida ou não puder ser concluída, a fila é pausada e você recebe uma mensagem.
 
-Planeje a fila com o veículo parado: o jogo só oferece novas tarefas para veículos sem funcionário.
+Também dá para adicionar tarefas enquanto um funcionário dirige: Criar tarefa passa a se chamar Adicionar à fila, e a fila continua depois da tarefa atual.
 
 Multijogador: membros da fazenda com permissão para contratar funcionários podem usar a fila. O servidor a executa, e ela é salva com o jogo.
 
 Teclas de atalho:
-Abra a página do mapa e clique em Assistente de mapa abaixo do seu saldo, no canto superior direito (tecla padrão: Alt esquerdo + H). No menu de tarefas, Adicionar à fila tem a tecla padrão Alt esquerdo + J. As duas teclas podem ser alteradas nas configurações de controles.
+Abra a página do mapa e clique em Assistente de mapa abaixo do seu saldo, no canto superior direito, ou pressione a tecla mostrada no botão (X por padrão; controles têm seu próprio botão padrão). No menu de tarefas, a mesma tecla adiciona a tarefa à fila.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
         <ct><![CDATA[說明：
@@ -99,12 +99,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
 - 開始佇列、取消工作：開始排入佇列的工作，或停止目前的幫手。
 - 指令佇列：連續安排多個工作，例如前往田地、作業，再返回農場。在工作選單中點擊「加入佇列」代替「開始工作」。一個工作完成後，下一個會自動開始；工作被取消或無法完成時，佇列暫停並提示你。
 
-請在車輛停著時安排佇列：遊戲只為沒有幫手的車輛提供新工作。
+幫手駕駛時也可以加入工作：此時「建立工作」會顯示為「加入佇列」，佇列會在目前的工作完成後繼續。
 
 多人遊戲：有僱用幫手權限的農場成員可以使用佇列。佇列由伺服器執行，並隨存檔儲存。
 
 快捷鍵：
-開啟地圖頁面，點擊右上角餘額下方的「地圖助手」（預設按鍵：左 Alt + H）。在工作選單中，「加入佇列」的預設按鍵為左 Alt + J。兩個按鍵都可以在控制設定中修改。
+開啟地圖頁面，點擊右上角餘額下方的「地圖助手」，或按按鈕上顯示的按鍵（預設為 X；手把有自己的預設按鍵）。在工作選單中，同一個按鍵會把工作加入佇列。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
         <cz><![CDATA[Popis:
@@ -114,12 +114,12 @@ Přidá na stránku mapy v herní nabídce panel Pomocník mapy. Pracuje s vozid
 - Spustit frontu nebo Zrušit úkol: spustí úkoly ve frontě nebo zastaví aktuálního pracovníka.
 - Fronta příkazů: naplánujte několik úkolů za sebou, například jet na pole, obdělat ho a vrátit se na farmu. V nabídce úkolů klikněte místo Zahájit úkol na Přidat do fronty. Když je úkol hotový, další se spustí sám. Pokud je úkol zastaven nebo ho nelze dokončit, fronta se pozastaví a zobrazí se zpráva.
 
-Frontu plánujte, když vozidlo stojí: hra nabízí nové úkoly jen vozidlům bez pracovníka.
+Úkoly můžete přidávat i během jízdy pracovníka: Vytvořit úkol se pak jmenuje Přidat do fronty a fronta pokračuje po aktuálním úkolu.
 
 Hra více hráčů: členové farmy s oprávněním najímat pracovníky mohou frontu používat. Spouští ji server a ukládá se spolu s hrou.
 
 Klávesové zkratky:
-Otevřete stránku mapy a klikněte vpravo nahoře pod zůstatkem na Pomocník mapy (výchozí klávesa: levý Alt + H). V nabídce úkolů má Přidat do fronty výchozí klávesu levý Alt + J. Obě klávesy lze změnit v nastavení ovládání.
+Otevřete stránku mapy a klikněte vpravo nahoře pod zůstatkem na Pomocník mapy, nebo stiskněte klávesu zobrazenou na tlačítku (výchozí je X; ovladače mají vlastní výchozí tlačítko). V nabídce úkolů stejná klávesa přidá úkol do fronty.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
         <da><![CDATA[Beskrivelse:
@@ -129,12 +129,12 @@ Tilføjer en kortassistent-skuffe på kortsiden i spilmenuen. Den virker på det
 - Start kø eller Annuller job: starter jobbene i køen eller stopper den nuværende arbejder.
 - Kommandokø: planlæg flere job i træk, for eksempel køre til en mark, bearbejde den og køre tilbage til gården. Klik på Føj til kø i jobmenuen i stedet for Start job. Når et job er færdigt, starter det næste af sig selv. Hvis et job stoppes eller ikke kan gøres færdigt, sættes køen på pause, og du får en besked.
 
-Planlæg køen, mens køretøjet holder stille: spillet tilbyder kun nye job til køretøjer uden arbejder.
+Du kan også tilføje job, mens en arbejder kører: Opret job hedder så Føj til kø, og køen fortsætter efter det nuværende job.
 
 Multiplayer: gårdmedlemmer, der må ansætte arbejdere, kan bruge køen. Serveren kører den, og den gemmes med spillet.
 
 Genvejstaster:
-Åbn kortsiden, og klik på Kortassistent under din saldo i øverste højre hjørne (standardtast: venstre Alt + H). I jobmenuen har Føj til kø standardtasten venstre Alt + J. Begge taster kan ændres i styringsindstillingerne.
+Åbn kortsiden, og klik på Kortassistent under din saldo i øverste højre hjørne, eller tryk på tasten, der vises på knappen (X som standard; controllere har deres egen standardknap). I jobmenuen føjer den samme tast jobbet til køen.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
         <ea><![CDATA[Descripción:
@@ -144,12 +144,12 @@ Agrega un panel Asistente de mapa a la página del mapa del menú del juego. Act
 - Iniciar cola o Cancelar trabajo: inicia los trabajos de la cola o detiene al ayudante actual.
 - Cola de órdenes: planea varios trabajos seguidos, por ejemplo ir a un campo, trabajarlo y volver a la granja. En el menú de trabajos, haz clic en Agregar a la cola en lugar de Iniciar trabajo. Cuando un trabajo termina, el siguiente empieza solo. Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje.
 
-Planea la cola con el vehículo detenido: el juego solo ofrece trabajos nuevos para vehículos sin ayudante.
+También puedes agregar trabajos mientras un ayudante conduce: Crear trabajo pasa a decir Agregar a la cola, y la cola continúa después del trabajo actual.
 
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
 
 Teclas de acceso rápido:
-Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha (tecla predeterminada: Alt izquierdo + H). En el menú de trabajos, Agregar a la cola tiene la tecla predeterminada Alt izquierdo + J. Puedes cambiar ambas teclas en la configuración de controles.
+Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha, o presiona la tecla que aparece en el botón (X de forma predeterminada; los controles tienen su propio botón predeterminado). En el menú de trabajos, la misma tecla agrega el trabajo a la cola.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
         <es><![CDATA[Descripción:
@@ -159,12 +159,12 @@ Añade un panel Asistente de mapa a la página del mapa del menú del juego. Act
 - Iniciar cola o Cancelar trabajo: inicia los trabajos de la cola o detiene al ayudante actual.
 - Cola de órdenes: planifica varios trabajos seguidos, por ejemplo ir a un campo, trabajarlo y volver a la granja. En el menú de trabajos, haz clic en Añadir a la cola en lugar de Iniciar trabajo. Cuando un trabajo termina, el siguiente empieza solo. Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje.
 
-Planifica la cola con el vehículo parado: el juego solo ofrece trabajos nuevos para vehículos sin ayudante.
+También puedes añadir trabajos mientras un ayudante conduce: Crear trabajo pasa a llamarse Añadir a la cola, y la cola sigue después del trabajo actual.
 
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
 
 Teclas de acceso rápido:
-Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha (tecla predeterminada: Alt izquierdo + H). En el menú de trabajos, Añadir a la cola tiene la tecla predeterminada Alt izquierdo + J. Puedes cambiar ambas teclas en los ajustes de controles.
+Abre la página del mapa y haz clic en Asistente de mapa debajo de tu saldo, en la esquina superior derecha, o pulsa la tecla que aparece en el botón (X por defecto; los mandos tienen su propio botón predeterminado). En el menú de trabajos, la misma tecla añade el trabajo a la cola.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
         <fc><![CDATA[Description :
@@ -174,12 +174,12 @@ Ajoute un tiroir Assistant de carte à la page de la carte du menu du jeu. Il ag
 - Lancer la file ou Annuler le travail : lance les travaux en attente ou arrête l'ouvrier actuel.
 - File de commandes : planifiez plusieurs travaux à la suite, par exemple aller à un champ, le travailler puis revenir à la ferme. Dans le menu des travaux, cliquez sur Ajouter à la file au lieu de Commencer le travail. Quand un travail est terminé, le suivant démarre tout seul. Si un travail est arrêté ou ne peut pas être terminé, la file se met en pause et un message s'affiche.
 
-Planifiez la file pendant que le véhicule est à l'arrêt : le jeu ne propose de nouveaux travaux qu'aux véhicules sans ouvrier.
+Vous pouvez aussi ajouter des travaux pendant qu'un ouvrier conduit : Créer un travail devient alors Ajouter à la file, et la file continue après le travail en cours.
 
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
 
 Raccourcis :
-Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite (touche par défaut : Alt gauche + H). Dans le menu des travaux, Ajouter à la file a la touche par défaut Alt gauche + J. Vous pouvez modifier les deux touches dans les réglages des commandes.
+Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite, ou appuyez sur la touche affichée sur le bouton (X par défaut ; les manettes ont leur propre bouton par défaut). Dans le menu des travaux, la même touche ajoute le travail à la file.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
         <fi><![CDATA[Kuvaus:
@@ -189,12 +189,12 @@ Lisää pelivalikon karttasivulle Kartta-avustaja-paneelin. Se toimii ajoneuvoll
 - Aloita jono tai Peruuta työ: aloittaa jonossa olevat työt tai pysäyttää nykyisen työntekijän.
 - Komentojono: suunnittele useita töitä peräkkäin, esimerkiksi aja pellolle, käsittele se ja aja takaisin tilalle. Valitse työvalikossa Lisää jonoon Aloita työ -painikkeen sijaan. Kun työ on valmis, seuraava alkaa itsestään. Jos työ keskeytetään tai sitä ei voi suorittaa loppuun, jono pysähtyy ja saat ilmoituksen.
 
-Suunnittele jono, kun ajoneuvo on paikallaan: peli tarjoaa uusia töitä vain ajoneuvoille, joilla ei ole työntekijää.
+Voit lisätä töitä myös työntekijän ajaessa: Luo työ -painikkeen nimi on silloin Lisää jonoon, ja jono jatkuu nykyisen työn jälkeen.
 
 Moninpeli: tilan jäsenet, joilla on oikeus palkata työntekijöitä, voivat käyttää jonoa. Palvelin suorittaa sen, ja se tallennetaan pelin mukana.
 
 Pikanäppäimet:
-Avaa karttasivu ja napsauta oikeassa yläkulmassa saldosi alla olevaa Kartta-avustaja-painiketta (oletusnäppäin: vasen Alt + H). Työvalikossa Lisää jonoon -toiminnon oletusnäppäin on vasen Alt + J. Molemmat näppäimet voi vaihtaa ohjausasetuksista.
+Avaa karttasivu ja napsauta oikeassa yläkulmassa saldosi alla olevaa Kartta-avustaja-painiketta tai paina painikkeessa näkyvää näppäintä (oletuksena X; ohjaimilla on oma oletuspainike). Työvalikossa sama näppäin lisää työn jonoon.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
         <fr><![CDATA[Description :
@@ -204,12 +204,12 @@ Ajoute un tiroir Assistant de carte à la page de la carte du menu du jeu. Il ag
 - Lancer la file ou Annuler la tâche : lance les tâches en attente ou arrête l'ouvrier actuel.
 - File de commandes : planifiez plusieurs tâches à la suite, par exemple aller à un champ, le travailler puis revenir à la ferme. Dans le menu des tâches, cliquez sur Ajouter à la file au lieu de Démarrer la tâche. Quand une tâche est terminée, la suivante démarre toute seule. Si une tâche est arrêtée ou ne peut pas être terminée, la file se met en pause et un message s'affiche.
 
-Planifiez la file pendant que le véhicule est à l'arrêt : le jeu ne propose de nouvelles tâches qu'aux véhicules sans ouvrier.
+Vous pouvez aussi ajouter des tâches pendant qu'un ouvrier conduit : Créer une tâche devient alors Ajouter à la file, et la file continue après la tâche en cours.
 
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
 
 Raccourcis :
-Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite (touche par défaut : Alt gauche + H). Dans le menu des tâches, Ajouter à la file a la touche par défaut Alt gauche + J. Vous pouvez modifier les deux touches dans les paramètres des commandes.
+Ouvrez la page de la carte et cliquez sur Assistant de carte sous votre solde, en haut à droite, ou appuyez sur la touche affichée sur le bouton (X par défaut ; les manettes ont leur propre bouton par défaut). Dans le menu des tâches, la même touche ajoute la tâche à la file.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
         <hu><![CDATA[Leírás:
@@ -219,12 +219,12 @@ Térképsegéd fiókot ad a játékmenü térképoldalához. Azzal a járművel 
 - Sor indítása vagy Feladat törlése: elindítja a sorban álló feladatokat, vagy leállítja az aktuális segítőt.
 - Parancssor: tervezz meg több feladatot egymás után, például menj ki egy táblára, dolgozd meg, majd térj vissza a gazdaságba. A feladatmenüben a Feladat elindítása helyett kattints a Sorhoz adás gombra. Ha egy feladat elkészült, a következő magától indul. Ha egy feladatot leállítanak vagy nem fejezhető be, a sor szünetel, és üzenetet kapsz.
 
-A sort álló járművel tervezd meg: a játék csak segítő nélküli járműveknek kínál új feladatot.
+Feladatot akkor is hozzáadhatsz, amikor egy segítő vezet: ilyenkor a Feladat létrehozása gomb neve Sorhoz adás, és a sor az aktuális feladat után folytatódik.
 
 Többjátékos mód: a gazdaság segítőfelvételi joggal rendelkező tagjai használhatják a sort. A szerver futtatja, és a játékkal együtt mentődik.
 
 Gyorsbillentyűk:
-Nyisd meg a térképoldalt, és kattints a jobb felső sarokban, az egyenleged alatt a Térképsegéd gombra (alapértelmezett billentyű: bal Alt + H). A feladatmenüben a Sorhoz adás alapértelmezett billentyűje a bal Alt + J. Mindkét billentyű módosítható az irányítási beállításokban.
+Nyisd meg a térképoldalt, és kattints a jobb felső sarokban, az egyenleged alatt a Térképsegéd gombra, vagy nyomd meg a gombon látható billentyűt (alapértelmezés szerint X; a kontrollereknek saját alapértelmezett gombjuk van). A feladatmenüben ugyanez a billentyű a sorhoz adja a feladatot.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
         <id><![CDATA[Deskripsi:
@@ -234,12 +234,12 @@ Menambahkan laci Asisten Peta ke halaman peta di menu game. Laci ini bekerja pad
 - Mulai antrean atau Batalkan Pekerjaan: memulai pekerjaan dalam antrean atau menghentikan pekerja saat ini.
 - Antrean perintah: rencanakan beberapa pekerjaan berurutan, misalnya pergi ke ladang, mengerjakannya, lalu kembali ke peternakan. Di menu pekerjaan, klik Tambah ke antrean alih-alih Mulai pekerjaan. Setelah satu pekerjaan selesai, pekerjaan berikutnya dimulai sendiri. Jika pekerjaan dihentikan atau tidak dapat diselesaikan, antrean dijeda dan Anda mendapat pesan.
 
-Rencanakan antrean saat kendaraan berhenti: game hanya menawarkan pekerjaan baru untuk kendaraan tanpa pekerja.
+Anda juga bisa menambah pekerjaan saat pekerja sedang mengemudi: Buat pekerjaan berubah menjadi Tambah ke antrean, dan antrean berlanjut setelah pekerjaan saat ini.
 
 Multipemain: anggota peternakan yang boleh mempekerjakan pekerja dapat menggunakan antrean. Server yang menjalankannya, dan antrean disimpan bersama game.
 
 Tombol pintas:
-Buka halaman peta lalu klik Asisten Peta di bawah saldo Anda di pojok kanan atas (tombol bawaan: Alt kiri + H). Di menu pekerjaan, Tambah ke antrean memiliki tombol bawaan Alt kiri + J. Kedua tombol dapat diubah di pengaturan kontrol.
+Buka halaman peta lalu klik Asisten Peta di bawah saldo Anda di pojok kanan atas, atau tekan tombol yang tertera pada tombol itu (bawaan X; kontroler punya tombol bawaannya sendiri). Di menu pekerjaan, tombol yang sama menambahkan pekerjaan ke antrean.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
         <it><![CDATA[Descrizione:
@@ -249,12 +249,12 @@ Aggiunge un pannello Assistente mappa alla pagina della mappa del menu di gioco.
 - Avvia coda o Annulla lavoro: avvia i lavori in coda o ferma l'aiutante attuale.
 - Coda di comandi: pianifica più lavori di fila, per esempio andare in un campo, lavorarlo e tornare alla fattoria. Nel menu dei lavori, fai clic su Aggiungi alla coda invece di Inizia lavoro. Quando un lavoro è finito, il successivo parte da solo. Se un lavoro viene fermato o non può essere completato, la coda va in pausa e ricevi un messaggio.
 
-Pianifica la coda a veicolo fermo: il gioco offre nuovi lavori solo ai veicoli senza aiutante.
+Puoi aggiungere lavori anche mentre un aiutante guida: Crea lavoro diventa Aggiungi alla coda e la coda continua dopo il lavoro in corso.
 
 Multigiocatore: i membri della fattoria autorizzati ad assumere aiutanti possono usare la coda. La esegue il server e viene salvata con la partita.
 
 Tasti di scelta rapida:
-Apri la pagina della mappa e fai clic su Assistente mappa sotto il tuo saldo, in alto a destra (tasto predefinito: Alt sinistro + H). Nel menu dei lavori, Aggiungi alla coda ha il tasto predefinito Alt sinistro + J. Puoi cambiare entrambi i tasti nelle impostazioni dei comandi.
+Apri la pagina della mappa e fai clic su Assistente mappa sotto il tuo saldo, in alto a destra, oppure premi il tasto indicato sul pulsante (X come predefinito; i controller hanno un proprio pulsante predefinito). Nel menu dei lavori, lo stesso tasto aggiunge il lavoro alla coda.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
         <jp><![CDATA[説明：
@@ -264,12 +264,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
 - キューを開始・仕事をキャンセル：キューの仕事を開始するか、現在のヘルパーを停止します。
 - コマンドキュー：複数の仕事を続けて計画できます。例えば畑へ移動し、作業し、農場へ戻る、といった流れです。仕事メニューで「仕事を開始」の代わりに「キューに追加」をクリックします。仕事が完了すると次の仕事が自動で始まります。仕事が中止されたり完了できなかったりすると、キューは一時停止し、メッセージが表示されます。
 
-キューは車両が停まっている間に計画してください。ゲームはヘルパーのいない車両にのみ新しい仕事を提示します。
+ヘルパーの運転中でも仕事を追加できます。その間「仕事を作成する」は「キューに追加」になり、キューは現在の仕事の後に続きます。
 
 マルチプレイ：ヘルパーを雇う権限のある農場メンバーがキューを使えます。キューはサーバーが実行し、セーブデータに保存されます。
 
 ホットキー：
-マップページを開き、右上の所持金の下にある「マップヘルパー」をクリックします（初期キー：左 Alt + H）。仕事メニューの「キューに追加」の初期キーは左 Alt + J です。どちらのキーも操作設定で変更できます。
+マップページを開き、右上の所持金の下にある「マップヘルパー」をクリックするか、ボタンに表示されたキーを押します（初期キーは X。コントローラーには専用の初期ボタンがあります）。仕事メニューでは、同じキーで仕事をキューに追加します。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
         <kr><![CDATA[설명:
@@ -279,12 +279,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 - 대기열 시작, 작업 취소: 대기열의 작업을 시작하거나 현재 작업자를 멈춥니다.
 - 명령 대기열: 여러 작업을 연속으로 계획합니다. 예를 들어 밭으로 이동해 작업한 뒤 농장으로 돌아올 수 있습니다. 작업 메뉴에서 '작업 시작' 대신 '대기열에 추가'를 클릭하세요. 작업이 끝나면 다음 작업이 자동으로 시작됩니다. 작업이 중지되거나 완료되지 못하면 대기열이 일시 정지되고 메시지가 표시됩니다.
 
-대기열은 차량이 멈춰 있을 때 계획하세요. 게임은 작업자가 없는 차량에만 새 작업을 제공합니다.
+작업자가 운전하는 중에도 작업을 추가할 수 있습니다. 이때 '작업 만들기'는 '대기열에 추가'로 바뀌고, 대기열은 현재 작업이 끝난 뒤 이어집니다.
 
 멀티플레이: 작업자 고용 권한이 있는 농장 구성원이 대기열을 사용할 수 있습니다. 서버가 대기열을 실행하며 게임과 함께 저장됩니다.
 
 단축키:
-맵 페이지를 열고 오른쪽 위 잔액 아래의 '지도 도우미'를 클릭하세요(기본 키: 왼쪽 Alt + H). 작업 메뉴에서 '대기열에 추가'의 기본 키는 왼쪽 Alt + J입니다. 두 키 모두 조작 설정에서 바꿀 수 있습니다.
+맵 페이지를 열고 오른쪽 위 잔액 아래의 '지도 도우미'를 클릭하거나 버튼에 표시된 키를 누르세요(기본 키: X, 컨트롤러는 별도의 기본 버튼). 작업 메뉴에서는 같은 키로 작업을 대기열에 추가합니다.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
         <nl><![CDATA[Beschrijving:
@@ -294,12 +294,12 @@ Voegt een Kaarthulp-lade toe aan de kaartpagina van het spelmenu. Die werkt met 
 - Wachtrij starten of Taak annuleren: start de klussen in de wachtrij of stopt de huidige helper.
 - Opdrachtenwachtrij: plan meerdere klussen achter elkaar, bijvoorbeeld naar een veld rijden, het bewerken en terugrijden naar de boerderij. Klik in het klusmenu op Aan wachtrij toevoegen in plaats van Klus starten. Is een klus klaar, dan start de volgende vanzelf. Wordt een klus gestopt of kan hij niet worden afgerond, dan pauzeert de wachtrij en krijg je een melding.
 
-Plan de wachtrij terwijl het voertuig stilstaat: het spel biedt alleen nieuwe klussen aan voor voertuigen zonder helper.
+Je kunt ook klussen toevoegen terwijl een helper rijdt: Klus maken heet dan Aan wachtrij toevoegen, en de wachtrij gaat verder na de huidige klus.
 
 Multiplayer: boerderijleden die helpers mogen inhuren, kunnen de wachtrij gebruiken. De server voert hem uit en hij wordt met het spel opgeslagen.
 
 Sneltoetsen:
-Open de kaartpagina en klik rechtsboven onder je saldo op Kaarthulp (standaardtoets: linker Alt + H). In het klusmenu heeft Aan wachtrij toevoegen de standaardtoets linker Alt + J. Beide toetsen kun je wijzigen in de besturingsinstellingen.
+Open de kaartpagina en klik rechtsboven onder je saldo op Kaarthulp, of druk op de toets die op de knop staat (standaard X; controllers hebben een eigen standaardknop). In het klusmenu voegt dezelfde toets de klus aan de wachtrij toe.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
         <no><![CDATA[Beskrivelse:
@@ -309,12 +309,12 @@ Legger til en kartassistent-skuff på kartsiden i spillmenyen. Den virker på kj
 - Start kø eller Avbryt jobb: starter jobbene i køen eller stopper den nåværende arbeideren.
 - Kommandokø: planlegg flere jobber etter hverandre, for eksempel kjøre til et jorde, bearbeide det og kjøre tilbake til gården. Klikk på Legg i kø i jobbmenyen i stedet for Start jobb. Når en jobb er ferdig, starter den neste av seg selv. Hvis en jobb stoppes eller ikke kan fullføres, settes køen på pause, og du får en melding.
 
-Planlegg køen mens kjøretøyet står stille: spillet tilbyr bare nye jobber til kjøretøy uten arbeider.
+Du kan også legge til jobber mens en arbeider kjører: Opprett jobb heter da Legg i kø, og køen fortsetter etter den nåværende jobben.
 
 Flerspiller: gårdsmedlemmer som har lov til å ansette arbeidere, kan bruke køen. Serveren kjører den, og den lagres med spillet.
 
 Hurtigtaster:
-Åpne kartsiden og klikk på Kartassistent under saldoen din øverst til høyre (standardtast: venstre Alt + H). I jobbmenyen har Legg i kø standardtasten venstre Alt + J. Begge tastene kan endres i kontrollinnstillingene.
+Åpne kartsiden og klikk på Kartassistent under saldoen din øverst til høyre, eller trykk på tasten som vises på knappen (X som standard; kontrollere har sin egen standardknapp). I jobbmenyen legger den samme tasten jobben i køen.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
         <pl><![CDATA[Opis:
@@ -324,12 +324,12 @@ Dodaje szufladę Pomocnik mapy do strony mapy w menu gry. Działa na pojazd, w k
 - Uruchom kolejkę lub Anuluj pracę: uruchamia prace z kolejki albo zatrzymuje obecnego pracownika.
 - Kolejka poleceń: zaplanuj kilka prac po kolei, na przykład dojazd na pole, jego obróbkę i powrót do gospodarstwa. W menu prac kliknij Dodaj do kolejki zamiast Rozpocznij pracę. Gdy praca się skończy, następna rusza sama. Jeśli praca zostanie przerwana lub nie da się jej ukończyć, kolejka zostaje wstrzymana i pojawia się komunikat.
 
-Planuj kolejkę, gdy pojazd stoi: gra oferuje nowe prace tylko pojazdom bez pracownika.
+Prace możesz dodawać także wtedy, gdy jedzie pracownik: Utwórz pracę zmienia się wtedy w Dodaj do kolejki, a kolejka będzie kontynuowana po bieżącej pracy.
 
 Gra wieloosobowa: członkowie gospodarstwa z prawem zatrudniania pracowników mogą korzystać z kolejki. Uruchamia ją serwer, a zapisuje się razem z grą.
 
 Skróty klawiszowe:
-Otwórz stronę mapy i kliknij Pomocnik mapy pod saldem w prawym górnym rogu (domyślny klawisz: lewy Alt + H). W menu prac Dodaj do kolejki ma domyślny klawisz lewy Alt + J. Oba klawisze można zmienić w ustawieniach sterowania.
+Otwórz stronę mapy i kliknij Pomocnik mapy pod saldem w prawym górnym rogu albo naciśnij klawisz widoczny na przycisku (domyślnie X; kontrolery mają własny domyślny przycisk). W menu prac ten sam klawisz dodaje pracę do kolejki.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
         <pt><![CDATA[Descrição:
@@ -339,12 +339,12 @@ Adiciona uma gaveta Assistente de mapa à página do mapa no menu do jogo. Atua 
 - Iniciar fila ou Cancelar trabalho: inicia as tarefas da fila ou para o trabalhador atual.
 - Fila de comandos: planeia várias tarefas seguidas, por exemplo ir até um campo, trabalhá-lo e voltar à quinta. No menu de tarefas, clica em Adicionar à fila em vez de Iniciar tarefa. Quando uma tarefa termina, a seguinte começa sozinha. Se uma tarefa for parada ou não puder ser concluída, a fila fica em pausa e recebes uma mensagem.
 
-Planeia a fila com o veículo parado: o jogo só oferece novas tarefas a veículos sem trabalhador.
+Também podes adicionar tarefas enquanto um trabalhador conduz: Criar tarefa passa a chamar-se Adicionar à fila, e a fila continua depois da tarefa atual.
 
 Multijogador: os membros da quinta com permissão para contratar trabalhadores podem usar a fila. O servidor executa-a e ela é guardada com o jogo.
 
 Teclas de atalho:
-Abre a página do mapa e clica em Assistente de mapa por baixo do teu saldo, no canto superior direito (tecla predefinida: Alt esquerdo + H). No menu de tarefas, Adicionar à fila tem a tecla predefinida Alt esquerdo + J. Podes alterar as duas teclas nas definições de controlos.
+Abre a página do mapa e clica em Assistente de mapa por baixo do teu saldo, no canto superior direito, ou prime a tecla indicada no botão (X por predefinição; os comandos têm o seu próprio botão predefinido). No menu de tarefas, a mesma tecla adiciona a tarefa à fila.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
         <ro><![CDATA[Descriere:
@@ -354,12 +354,12 @@ Adaugă un sertar Asistent de hartă pe pagina hărții din meniul jocului. Acț
 - Pornește coada sau Anulează sarcina: pornește sarcinile din coadă sau oprește lucrătorul actual.
 - Coadă de comenzi: planifică mai multe sarcini una după alta, de exemplu mergi la un câmp, lucrează-l și întoarce-te la fermă. În meniul sarcinilor, apasă Adaugă în coadă în loc de Începe munca. Când o sarcină se termină, următoarea pornește singură. Dacă o sarcină este oprită sau nu poate fi terminată, coada intră în pauză și primești un mesaj.
 
-Planifică coada cât timp vehiculul stă pe loc: jocul oferă sarcini noi doar vehiculelor fără lucrător.
+Poți adăuga sarcini și în timp ce un lucrător conduce: Creează loc de muncă devine atunci Adaugă în coadă, iar coada continuă după sarcina curentă.
 
 Multiplayer: membrii fermei care au voie să angajeze lucrători pot folosi coada. Serverul o execută și se salvează odată cu jocul.
 
 Taste rapide:
-Deschide pagina hărții și apasă Asistent de hartă sub soldul tău, în colțul din dreapta sus (tasta implicită: Alt stânga + H). În meniul sarcinilor, Adaugă în coadă are tasta implicită Alt stânga + J. Poți schimba ambele taste în setările de control.
+Deschide pagina hărții și apasă Asistent de hartă sub soldul tău, în colțul din dreapta sus, sau apasă tasta afișată pe buton (implicit X; controlerele au propriul buton implicit). În meniul sarcinilor, aceeași tastă adaugă sarcina în coadă.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
         <ru><![CDATA[Описание:
@@ -369,12 +369,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 - Запустить очередь или Отменить работу: запускает работы из очереди или останавливает текущего работника.
 - Очередь команд: запланируйте несколько работ подряд, например доехать до поля, обработать его и вернуться на ферму. В меню работ нажмите «В очередь» вместо «Начать работу». Когда работа выполнена, следующая начинается сама. Если работу остановили или её не удалось завершить, очередь приостанавливается и появляется сообщение.
 
-Планируйте очередь, пока техника стоит: игра предлагает новые работы только технике без работника.
+Работы можно добавлять и во время езды работника: тогда кнопка «Дать работу» называется «В очередь», а очередь продолжится после текущей работы.
 
 Мультиплеер: участники фермы с правом нанимать работников могут пользоваться очередью. Её выполняет сервер, и она сохраняется вместе с игрой.
 
 Горячие клавиши:
-Откройте страницу карты и нажмите «Помощник карты» под балансом в правом верхнем углу (клавиша по умолчанию: левый Alt + H). В меню работ у «В очередь» клавиша по умолчанию — левый Alt + J. Обе клавиши можно изменить в настройках управления.
+Откройте страницу карты и нажмите «Помощник карты» под балансом в правом верхнем углу или клавишу, показанную на кнопке (по умолчанию X; у контроллеров своя кнопка по умолчанию). В меню работ та же клавиша добавляет работу в очередь.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
         <sv><![CDATA[Beskrivning:
@@ -384,12 +384,12 @@ Lägger till en kartassistent-låda på kartsidan i spelmenyn. Den fungerar med 
 - Starta kö eller Avbryt jobb: startar jobben i kön eller stoppar den nuvarande arbetaren.
 - Kommandokö: planera flera jobb i rad, till exempel köra till ett fält, bearbeta det och köra tillbaka till gården. Klicka på Lägg i kö i jobbmenyn i stället för Starta jobb. När ett jobb är klart startar nästa av sig själv. Om ett jobb stoppas eller inte kan slutföras pausas kön och du får ett meddelande.
 
-Planera kön medan fordonet står still: spelet erbjuder bara nya jobb till fordon utan arbetare.
+Du kan också lägga till jobb medan en arbetare kör: Skapa jobb heter då Lägg i kö, och kön fortsätter efter det pågående jobbet.
 
 Flerspelarläge: gårdsmedlemmar som får anlita arbetare kan använda kön. Servern kör den och den sparas med spelet.
 
 Snabbtangenter:
-Öppna kartsidan och klicka på Kartassistent under ditt saldo uppe till höger (standardtangent: vänster Alt + H). I jobbmenyn har Lägg i kö standardtangenten vänster Alt + J. Båda tangenterna kan ändras i kontrollinställningarna.
+Öppna kartsidan och klicka på Kartassistent under ditt saldo uppe till höger, eller tryck på tangenten som visas på knappen (X som standard; handkontroller har en egen standardknapp). I jobbmenyn lägger samma tangent jobbet i kön.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
         <tr><![CDATA[Açıklama:
@@ -399,12 +399,12 @@ Oyun menüsünün harita sayfasına bir Harita Yardımcısı çekmecesi ekler. O
 - Sırayı başlat veya İşi iptal et: sıradaki işleri başlatır ya da mevcut yardımcıyı durdurur.
 - Komut sırası: birkaç işi art arda planlayın; örneğin bir tarlaya gidin, orayı işleyin ve çiftliğe dönün. İş menüsünde İşe başla yerine Sıraya ekle'ye tıklayın. Bir iş bittiğinde sıradaki kendiliğinden başlar. Bir iş durdurulursa veya tamamlanamazsa sıra duraklatılır ve bir mesaj alırsınız.
 
-Sırayı araç dururken planlayın: oyun yeni işleri yalnızca yardımcısı olmayan araçlara sunar.
+Bir yardımcı sürerken de iş ekleyebilirsiniz: İş oluştur o sırada Sıraya ekle olur ve sıra mevcut işten sonra devam eder.
 
 Çok oyunculu: yardımcı kiralama izni olan çiftlik üyeleri sırayı kullanabilir. Sırayı sunucu yürütür ve oyunla birlikte kaydedilir.
 
 Kısayol tuşları:
-Harita sayfasını açın ve sağ üstte bakiyenizin altındaki Harita Yardımcısı'na tıklayın (varsayılan tuş: Sol Alt + H). İş menüsünde Sıraya ekle'nin varsayılan tuşu Sol Alt + J'dir. İki tuşu da kontrol ayarlarından değiştirebilirsiniz.
+Harita sayfasını açın ve sağ üstte bakiyenizin altındaki Harita Yardımcısı'na tıklayın ya da düğmede gösterilen tuşa basın (varsayılan X; kumandaların kendi varsayılan düğmesi vardır). İş menüsünde aynı tuş işi sıraya ekler.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
         <uk><![CDATA[Опис:
@@ -414,12 +414,12 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 - Запустити чергу або Скасувати завдання: запускає завдання з черги або зупиняє поточного працівника.
 - Черга команд: заплануйте кілька завдань поспіль, наприклад доїхати до поля, обробити його й повернутися на ферму. У меню завдань натисніть «Додати до черги» замість «Почати виконувати завдання». Коли завдання виконано, наступне починається саме. Якщо завдання зупинили або його не вдалося завершити, черга призупиняється і з'являється повідомлення.
 
-Плануйте чергу, поки техніка стоїть: гра пропонує нові завдання лише техніці без працівника.
+Завдання можна додавати й тоді, коли працівник їде: кнопка «Створити завдання» тоді називається «Додати до черги», а черга продовжиться після поточного завдання.
 
 Мультиплеєр: учасники ферми з правом наймати працівників можуть користуватися чергою. Її виконує сервер, і вона зберігається разом із грою.
 
 Гарячі клавіші:
-Відкрийте сторінку мапи й натисніть «Помічник мапи» під балансом у правому верхньому куті (клавіша за замовчуванням: лівий Alt + H). У меню завдань «Додати до черги» має клавішу за замовчуванням лівий Alt + J. Обидві клавіші можна змінити в налаштуваннях керування.
+Відкрийте сторінку мапи й натисніть «Помічник мапи» під балансом у правому верхньому куті або клавішу, показану на кнопці (за замовчуванням X; контролери мають власну кнопку за замовчуванням). У меню завдань та сама клавіша додає завдання до черги.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
         <vi><![CDATA[Mô tả:
@@ -429,12 +429,12 @@ Thêm ngăn Trợ lý bản đồ vào trang bản đồ trong menu trò chơi. 
 - Bắt đầu hàng đợi hoặc Hủy công việc: bắt đầu các công việc trong hàng đợi hoặc dừng công nhân hiện tại.
 - Hàng đợi lệnh: lên kế hoạch nhiều công việc liên tiếp, ví dụ lái đến cánh đồng, làm việc ở đó rồi quay về trang trại. Trong menu công việc, nhấn Thêm vào hàng đợi thay cho Bắt đầu công việc. Khi một công việc xong, công việc tiếp theo tự bắt đầu. Nếu một công việc bị dừng hoặc không thể hoàn thành, hàng đợi tạm dừng và bạn nhận được thông báo.
 
-Hãy lên kế hoạch hàng đợi khi phương tiện đang đứng yên: trò chơi chỉ đề xuất công việc mới cho phương tiện chưa có công nhân.
+Bạn cũng có thể thêm công việc khi công nhân đang lái: lúc đó Tạo công việc đổi thành Thêm vào hàng đợi, và hàng đợi tiếp tục sau công việc hiện tại.
 
 Nhiều người chơi: thành viên trang trại được phép thuê công nhân có thể dùng hàng đợi. Máy chủ thực hiện hàng đợi và lưu cùng với trò chơi.
 
 Phím tắt:
-Mở trang bản đồ và nhấn Trợ lý bản đồ bên dưới số dư ở góc trên bên phải (phím mặc định: Alt trái + H). Trong menu công việc, Thêm vào hàng đợi có phím mặc định Alt trái + J. Bạn có thể đổi cả hai phím trong phần cài đặt điều khiển.
+Mở trang bản đồ và nhấn Trợ lý bản đồ bên dưới số dư ở góc trên bên phải, hoặc nhấn phím hiển thị trên nút (mặc định là X; tay cầm có nút mặc định riêng). Trong menu công việc, cùng phím đó sẽ thêm công việc vào hàng đợi.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
     </description>
@@ -447,77 +447,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
         <sourceFile filename="scripts/MapFrameExtension.lua"/>
         <sourceFile filename="scripts/Register.lua"/>
     </extraSourceFiles>
-    <actions>
-        <action name="MH_TOGGLE_DRAWER" category="SYSTEM" axisType="HALF"/>
-        <action name="MH_ADD_TO_QUEUE" category="SYSTEM" axisType="HALF"/>
-    </actions>
-    <inputBinding>
-        <actionBinding action="MH_TOGGLE_DRAWER">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_h"/>
-        </actionBinding>
-        <actionBinding action="MH_ADD_TO_QUEUE">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_j"/>
-        </actionBinding>
-    </inputBinding>
     <l10n>
-        <text name="input_MH_TOGGLE_DRAWER">
-            <en>Open Map Helper</en>
-            <de>Kartenassistent öffnen</de>
-            <cs>打开地图助手</cs>
-            <br>Abrir assistente de mapa</br>
-            <ct>開啟地圖助手</ct>
-            <cz>Otevřít pomocníka mapy</cz>
-            <da>Åbn kortassistent</da>
-            <ea>Abrir asistente de mapa</ea>
-            <es>Abrir asistente de mapa</es>
-            <fc>Ouvrir l'assistant de carte</fc>
-            <fi>Avaa kartta-avustaja</fi>
-            <fr>Ouvrir l'assistant de carte</fr>
-            <hu>Térképsegéd megnyitása</hu>
-            <id>Buka asisten peta</id>
-            <it>Apri assistente mappa</it>
-            <jp>マップヘルパーを開く</jp>
-            <kr>지도 도우미 열기</kr>
-            <nl>Kaarthulp openen</nl>
-            <no>Åpne kartassistent</no>
-            <pl>Otwórz pomocnika mapy</pl>
-            <pt>Abrir assistente de mapa</pt>
-            <ro>Deschide asistentul de hartă</ro>
-            <ru>Открыть помощник карты</ru>
-            <sv>Öppna kartassistent</sv>
-            <tr>Harita yardımcısını aç</tr>
-            <uk>Відкрити помічника мапи</uk>
-            <vi>Mở trợ lý bản đồ</vi>
-        </text>
-        <text name="input_MH_ADD_TO_QUEUE">
-            <en>Add job to queue</en>
-            <de>Job zur Warteschlange hinzufügen</de>
-            <cs>将作业加入队列</cs>
-            <br>Adicionar tarefa à fila</br>
-            <ct>將工作加入佇列</ct>
-            <cz>Přidat úkol do fronty</cz>
-            <da>Føj job til køen</da>
-            <ea>Agregar trabajo a la cola</ea>
-            <es>Añadir trabajo a la cola</es>
-            <fc>Ajouter le travail à la file</fc>
-            <fi>Lisää työ jonoon</fi>
-            <fr>Ajouter la tâche à la file</fr>
-            <hu>Feladat hozzáadása a sorhoz</hu>
-            <id>Tambahkan pekerjaan ke antrean</id>
-            <it>Aggiungi lavoro alla coda</it>
-            <jp>仕事をキューに追加</jp>
-            <kr>작업을 대기열에 추가</kr>
-            <nl>Klus aan wachtrij toevoegen</nl>
-            <no>Legg jobb i køen</no>
-            <pl>Dodaj pracę do kolejki</pl>
-            <pt>Adicionar tarefa à fila</pt>
-            <ro>Adaugă sarcina în coadă</ro>
-            <ru>Добавить работу в очередь</ru>
-            <sv>Lägg till jobb i kön</sv>
-            <tr>İşi sıraya ekle</tr>
-            <uk>Додати завдання до черги</uk>
-            <vi>Thêm công việc vào hàng đợi</vi>
-        </text>
         <text name="mh_toggle">
             <en>Map Helper</en>
             <de>Kartenassistent</de>

@@ -19,34 +19,35 @@ Give orders to the vehicle you are sitting in straight from the map. Map Helper 
 ### How to use
 
 1. Open the in-game menu and go to the map page.
-2. Click **Map Helper** below your balance in the top-right corner, or press Left Alt + H.
-3. The drawer opens for the vehicle you are sitting in:
+2. Click **Map Helper** on the right, below your balance and the worker status line, or press the key shown on the button.
+3. The drawer slides in from the right, under the button, for the vehicle you are sitting in:
 
 | Button | What it does |
 | --- | --- |
 | Center on me | Moves the map to your vehicle and selects it. On foot, it moves the map to you. |
-| Create job | Opens the game's job menu for your vehicle. |
+| Create job | Opens the game's job menu for your vehicle. While a worker is driving it, this button reads **Add to queue** (see Command queue). |
 | Start queue / Cancel job | Starts the jobs waiting in the queue, or stops the worker who is driving your vehicle. While the job menu is open, it shows Start job and starts the job you are setting up. |
-| Set destination | Pick a point and a direction on the map; a worker drives your vehicle there. |
+| Set destination | Pick a point and a direction on the map; a worker drives your vehicle there right away. Only available while no worker is driving your vehicle. |
 | Clear queue | Removes all waiting jobs. |
 
-On foot, the drawer only offers Center on me. **Back** or Esc closes the drawer.
+On foot, the drawer is small and only offers Center on me. **Back** or Esc closes the drawer.
+
+Map Helper uses the game's own menu key: X on the keyboard by default, and controllers have their own default button. The key is shown on the button. On the map page it opens the drawer. In the job menu it adds the job to the queue, and the Map Helper button is hidden there. On the Precision Farming soil map, X opens its Help instead; click Map Helper there.
 
 ### Command queue
 
-1. Sit in the vehicle and make sure no worker is driving it. The game only offers new jobs for vehicles without a worker, so plan the queue while the vehicle is parked.
-2. Open Map Helper and click **Create job**. Set up the job as usual, for example Go to with a point near the field.
-3. Click **Add to queue** (Left Alt + J), just above Start job. The job menu closes and the job appears in the queue.
-4. Repeat for the next jobs, for example field work on that field, then Go to back to the farm. A vehicle can have up to 10 waiting jobs.
-5. Click **Start queue**. The first job starts. Each time a job is finished, the next one starts a moment later.
+1. Sit in the vehicle, open Map Helper and click **Create job**. Set up the job as usual, for example Go to with a point near the field.
+2. Click **Add to queue**, just above Start job, or press the key shown on it. The job menu closes and the drawer opens on the queue, with the new job at the end.
+3. Repeat for the next jobs, for example field work on that field, then Go to back to the farm. A vehicle can have up to 10 waiting jobs.
+4. Click **Start queue**. The first job starts. Each time a job is finished, the next one starts a moment later.
+
+You can keep adding jobs while a worker is driving, like adding items to a to-do list. **Create job** then reads **Add to queue**, and the job menu only offers Add to queue, not Start job. The queue continues after the current job, even if you started that job yourself and not from the queue. To queue a drive somewhere, choose the Go to job type in the job menu: Set destination starts right away, so it is only offered while no worker is driving.
 
 Field work uses the worker settings your vehicle has when that job starts, not the ones it had when you queued it. If you change the settings in between, the new settings apply.
 
 If you stop a job, or a job can't be finished (for example out of fuel or seed, blocked, or the field isn't ready), the queue pauses. The remaining jobs stay, and you get a message. Fix the problem and click **Start queue** to continue, or remove jobs with **Delete**. The queue also pauses when the next job can't start, for example because too many workers are active; the drawer shows the reason.
 
 Queued jobs are kept when you save. After loading, the queue waits until you click **Start queue**. A worker who was driving when you saved isn't restarted, just like in the base game.
-
-You can change both keys in the controls settings, under Map Helper. Controller players can assign buttons there; there is no default controller button.
 
 Multiplayer:
 
@@ -78,34 +79,35 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 ### 使用方法
 
 1. 打开游戏菜单，进入地图页面。
-2. 点击右上角余额下方的“地图助手”，或按左 Alt + H。
-3. 抽屉会针对你当前驾驶的车辆打开：
+2. 点击右侧余额和帮手状态行下方的“地图助手”，或按按钮上显示的按键。
+3. 抽屉从右侧滑出，位于按钮下方，针对你当前驾驶的车辆：
 
 | 按钮 | 作用 |
 | --- | --- |
 | 定位到我 | 将地图移到你的车辆并选中它。步行时将地图移到你所在的位置。 |
-| 创建作业 | 为你的车辆打开游戏的作业菜单。 |
+| 创建作业 | 为你的车辆打开游戏的作业菜单。帮手正在驾驶时，此按钮显示为“加入队列”（见“指令队列”）。 |
 | 开始队列 / 取消作业 | 开始队列中等待的作业，或停止正在驾驶你车辆的帮手。作业菜单打开时，此按钮显示“开始作业”，开始你正在设置的作业。 |
-| 设置目的地 | 在地图上选择地点和方向，帮手会把车开过去。 |
+| 设置目的地 | 在地图上选择地点和方向，帮手会立即把车开过去。只在没有帮手驾驶你的车辆时可用。 |
 | 清空队列 | 删除所有等待中的作业。 |
 
-步行时，抽屉只提供“定位到我”。按“返回”或 Esc 关闭抽屉。
+步行时，抽屉较小，只提供“定位到我”。按“返回”或 Esc 关闭抽屉。
+
+地图助手使用游戏自带的菜单键：键盘默认为 X，手柄也有自己的默认按键。按键显示在按钮上。在地图页面按下会打开抽屉；在作业菜单中按下会把作业加入队列，此时“地图助手”按钮隐藏。在精准农业的土壤图层上，X 会打开它的帮助，此时请直接点击“地图助手”。
 
 ### 指令队列
 
-1. 坐进车辆，并确认没有帮手正在驾驶它。游戏只为没有帮手的车辆提供新作业，所以请在车辆停着时安排队列。
-2. 打开地图助手，点击“创建作业”。照常设置作业，例如选择“前往”，目的地设在田地附近。
-3. 点击“开始作业”上方的“加入队列”（左 Alt + J）。作业菜单关闭，作业出现在队列中。
-4. 按同样方法添加后续作业，例如在这块田地进行田地工作，再“前往”返回农场。每台车辆最多可有 10 个等待中的作业。
-5. 点击“开始队列”。第一个作业开始；每完成一个作业，稍后会自动开始下一个。
+1. 坐进车辆，打开地图助手，点击“创建作业”。照常设置作业，例如选择“前往”，目的地设在田地附近。
+2. 点击“开始作业”上方的“加入队列”，或按其上显示的按键。作业菜单关闭，抽屉打开并显示队列，新作业排在最后。
+3. 按同样方法添加后续作业，例如在这块田地进行田地工作，再“前往”返回农场。每台车辆最多可有 10 个等待中的作业。
+4. 点击“开始队列”。第一个作业开始；每完成一个作业，稍后会自动开始下一个。
+
+帮手驾驶期间也可以继续添加作业，就像往待办清单里添项。此时“创建作业”显示为“加入队列”，作业菜单只提供“加入队列”，不提供“开始作业”。队列会在当前作业之后继续，即使这个作业是你直接开始、而不是从队列开始的。想让车辆排队开往某处，请在作业菜单中选择“前往”作业类型：“设置目的地”会立即出发，所以只在没有帮手驾驶时提供。
 
 田地工作使用该作业开始时车辆的帮手设置，而不是加入队列时的设置。中途修改设置，开始时按新设置执行。
 
 如果你停止了作业，或作业无法完成（例如燃料或种子用完、被挡住、田地未准备好），队列会暂停：剩余作业保留，并提示你。解决问题后点击“开始队列”继续，或用“删除”移除作业。下一个作业无法开始时（例如在岗帮手太多），队列同样暂停，抽屉会显示原因。
 
 保存游戏时，队列中的作业一并保存。读档后，队列会等待你点击“开始队列”。保存时正在工作的帮手不会重新开始，与原版相同。
-
-两个按键都可以在设置的控制选项中“地图助手”一栏修改。手柄玩家也可以在那里分配按键；手柄没有默认按键。
 
 多人游戏：
 

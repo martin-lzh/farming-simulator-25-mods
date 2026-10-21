@@ -340,8 +340,17 @@ function mockElement(name)
     function e:setDisabled(disabled) self.disabled = disabled end
     function e:getIsDisabled() return self.disabled end
     function e:updateAbsolutePosition() self.positioned = true end
-    function e:setPosition(x, y) self.position = {x, y} end
-    function e:setSize(x, y) self.size = {x or self.size[1], y or self.size[2]} end
+    -- Like GuiElement:setPosition, a position change moves absPosition by the same amount.
+    function e:setPosition(x, y)
+        x, y = x or self.position[1], y or self.position[2]
+        self.absPosition = {self.absPosition[1] + x - self.position[1], self.absPosition[2] + y - self.position[2]}
+        self.position = {x, y}
+    end
+    function e:getTextHeight() return 0.02 end
+    function e:setSize(x, y)
+        self.size = {x or self.size[1], y or self.size[2]}
+        self.absSize = {self.size[1], self.size[2]}
+    end
     function e:invalidateLayout() self.layoutCount = (self.layoutCount or 0) + 1 end
     function e:addElement(child) table.insert(self.elements, child); child.parent = self end
     function e:unlinkElement()
@@ -454,7 +463,7 @@ function g_gui:showDialog(name)
 end
 function g_gui:getIsDialogVisible() return self.openDialog ~= nil end
 
-InputAction = {MH_TOGGLE_DRAWER = "MH_TOGGLE_DRAWER", MH_ADD_TO_QUEUE = "MH_ADD_TO_QUEUE"}
+InputAction = {MENU_EXTRA_1 = "MENU_EXTRA_1"}
 g_inputBinding = {events = {}, nextId = 1}
 function g_inputBinding:registerActionEvent(action, target, callback)
     for _, event in ipairs(self.events) do
@@ -485,6 +494,24 @@ function InGameMenuMapFrame:registerInput() end
 function InGameMenuMapFrame:setJobMenuVisible(isVisible) self.jobMenuVisible = isVisible end
 function InGameMenuMapFrame:getIsPicking() return self.picking == true end
 function InGameMenuMapFrame:setMapSelectionItem(hotspot) self.selected = hotspot end
+function InGameMenuMapFrame:refreshContextInput() self.contextRefreshed = (self.contextRefreshed or 0) + 1 end
+-- Like the native createJob: no permission check, but only job types the vehicle offers.
+function InGameMenuMapFrame:createJob()
+    local vehicle = self.selected ~= nil and self.selected.vehicle or nil
+    if vehicle == nil then return end
+    local available = false
+    for _, instance in pairs(self.jobTypeInstances) do
+        available = available or instance:getIsAvailableForVehicle(vehicle)
+    end
+    if not available then return end
+    self.mode = InGameMenuMapFrame.AI_MODE_CREATE
+    self.currentJobVehicle = vehicle
+    self.currentJob = nil
+    self:setJobMenuVisible(true)
+    self.currentJob = g_currentMission.aiJobTypeManager:createJob(AIJobType.GOTO)
+    self.currentJob.vehicleParameter:setVehicle(vehicle)
+    self.currentJob.positionParameter:setPosition(vehicle.x or 0, vehicle.z or 0)
+end
 function InGameMenuMapFrame:getCanStartJob()
     return self.mode == InGameMenuMapFrame.AI_MODE_CREATE and not self:getIsPicking() and g_currentMission:getHasPlayerPermission("hireAssistant")
 end
@@ -518,8 +545,15 @@ function InGameMenuMapFrame:updateWarnings() self.warningsUpdated = true end
 function mockFrame()
     local frame = setmetatable({mode = InGameMenuMapFrame.AI_MODE_OVERVIEW, elements = {mockElement("frameRoot")}}, {__index = InGameMenuMapFrame})
     frame.shopMoneyBox = mockElement("shopMoneyBox")
-    mockElement("header"):addElement(frame.shopMoneyBox)
+    frame.shopMoneyBoxBg = mockElement("shopMoneyBoxBg")
+    frame.shopMoneyBoxBg.absPosition, frame.shopMoneyBoxBg.absSize = {0.75, 0.85}, {0.2, 0.06}
+    frame.statusMessage = mockElement("statusMessage")
+    frame.statusMessage.absPosition = {0.9, 0.82}
+    local header = mockElement("header")
+    header:addElement(frame.shopMoneyBox)
     frame.createJobContainer = mockElement("createJobContainer")
+    frame.buttonStartJobContainer = mockElement("buttonStartJobContainer")
+    frame.createJobEmptyText = mockElement("createJobEmptyText")
     frame.ingameMap = {
         panToHotspot = function(map, hotspot) map.pannedTo = hotspot end,
         setCenterToWorldPosition = function(map, x, z) map.centered = {x, z} end
@@ -538,6 +572,7 @@ function mockVehicle(networkId, farmId, uniqueId)
     vehicle.hotspot = {vehicle = vehicle}
     function vehicle:getOwnerFarmId() return self.farmId end
     function vehicle:getIsAIActive() return self.aiJob ~= nil end
+    function vehicle:getJob() return self.aiJob end
     function vehicle:getName() return "Tractor " .. self.networkId end
     function vehicle:getUniqueId() return self.uniqueId end
     function vehicle:getMapHotspot() return self.hotspot end

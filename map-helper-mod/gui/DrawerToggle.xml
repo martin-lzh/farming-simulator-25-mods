@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Added to the map page header, below the farm balance. Styled like the map page's own buttons. -->
+<!-- Added to the map page header. MHMapFrame.placeToggle right-aligns it with the farm
+     balance and puts it below the balance and the AI status line; the position here is
+     only the starting point. Styled like the map page's own buttons. -->
 <GUI>
     <GuiElement profile="mh_toggleContainer">
         <ThreePartBitmap profile="mh_toggleBg"/>
@@ -10,13 +12,16 @@
         <Profile name="mh_toggleContainer" extends="emptyPanel">
             <anchors value="1 1 0 0"/>
             <pivot value="1 1"/>
-            <size value="300px 30px"/>
-            <position value="-45px -10px"/>
+            <size value="240px 30px"/>
+            <position value="-15px -60px"/>
         </Profile>
         <Profile name="mh_toggleBg" extends="fs25_mapButtonBg"/>
         <Profile name="mh_toggleText" extends="fs25_mapButtonText"/>
         <Profile name="mh_toggleButton" extends="fs25_mapButton">
-            <inputAction value="MH_TOGGLE_DRAWER"/>
+            <inputAction value="MENU_EXTRA_1"/>
+            <!-- Triggered by this Mod's own key handler, which gives way to other buttons on
+                 the same key (ScreenElement.callButtonsWithAction would trigger both). -->
+            <isTriggerableByGlobalAction value="false"/>
         </Profile>
     </GUIProfiles>
 </GUI>

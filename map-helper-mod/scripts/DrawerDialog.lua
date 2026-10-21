@@ -79,19 +79,61 @@ function MHDrawerDialog:onGuiSetupFinished()
     self.actionButtons = {self.centerButton, self.createButton, self.startStopButton, self.goToButton, self.clearButton}
 end
 
--- Drop down from the Map Helper button; keep the profile position if it is missing.
-function MHDrawerDialog:placeUnderToggle()
+-- Drawer layout from top to bottom, in pixels. The drawer is only as tall as what it shows.
+MHDrawerDialog.LAYOUT = {padding = 16, title = 34, gap = 12, action = 37, section = 28, row = 34,
+    maxRows = 6, empty = 40, buttons = 58, toggleGap = 8}
+MHDrawerDialog.SLIDE_TIME = 160
+
+-- Places each part below the previous one and fits the drawer height to them.
+function MHDrawerDialog:layout(state)
+    local L = MHDrawerDialog.LAYOUT
+    local px = g_pixelSizeScaledY
+    local onFoot = state.vehicle == nil
+    local y = L.padding
+    self.titleText:setPosition(nil, -y * px)
+    y = y + L.title
+    if (state.status or "") ~= "" then
+        self.statusText:setPosition(nil, -y * px)
+        y = y + math.ceil(self.statusText:getTextHeight() / px) + L.gap
+    end
+    local numActions = 0
+    for _, button in ipairs(self.actionButtons) do
+        if button:getIsVisible() then
+            numActions = numActions + 1
+        end
+    end
+    self.actionBox:setPosition(nil, -y * px)
+    self.actionBox:setSize(nil, numActions * L.action * px)
+    y = y + numActions * L.action
+    if not onFoot then
+        y = y + L.gap
+        self.queueTitle:setPosition(nil, -y * px)
+        y = y + L.section
+        local numRows = math.min(#state.entries, L.maxRows)
+        self.queueRows:setPosition(nil, -y * px)
+        self.queueRows:setSize(nil, math.max(numRows, 1) * L.row * px)
+        self.queueEmptyText:setPosition(nil, -y * px)
+        y = y + (numRows > 0 and numRows * L.row or L.empty)
+    end
+    self.drawerPanel:setSize(nil, (y + L.buttons) * px)
+    self:place()
+end
+
+-- Opens on the right, under the Map Helper button and aligned with its right edge; while
+-- sliding in, the drawer is shifted right by the remaining slide distance.
+function MHDrawerDialog:place()
     local ext = self.frame ~= nil and self.frame.mapHelper or nil
     local toggle = ext ~= nil and ext.toggle or nil
-    local parent = self.drawerPanel.parent
-    if toggle == nil or parent == nil or toggle.absSize == nil then
+    local panel = self.drawerPanel
+    if toggle == nil or toggle.absSize == nil or panel.absSize == nil then
         return
     end
-    local parentRight = parent.absPosition[1] + parent.absSize[1]
-    local parentTop = parent.absPosition[2] + parent.absSize[2]
-    local toggleRight = toggle.absPosition[1] + toggle.absSize[1]
-    local gap = 8 * g_pixelSizeScaledY
-    self.drawerPanel:setPosition(toggleRight - parentRight, toggle.absPosition[2] - gap - parentTop)
+    local progress = 1 - (1 - math.min(self.slideTime / MHDrawerDialog.SLIDE_TIME, 1)) ^ 3
+    local right = toggle.absPosition[1] + toggle.absSize[1] + (1 - progress) * panel.absSize[1]
+    local top = toggle.absPosition[2] - MHDrawerDialog.LAYOUT.toggleGap * g_pixelSizeScaledY
+    local dx = right - (panel.absPosition[1] + panel.absSize[1])
+    local dy = top - (panel.absPosition[2] + panel.absSize[2])
+    panel:setPosition(panel.position[1] + dx, panel.position[2] + dy)
 end
 
 function MHDrawerDialog:onOpen()
@@ -99,7 +141,7 @@ function MHDrawerDialog:onOpen()
     self.inputDelay = self.time + 250
     self.signature = nil
     self.refreshTimer = 0
-    self:placeUnderToggle()
+    self.slideTime = 0
     self.centerButton:setText(MapHelper.text("mh_centerOnMe"))
     self.clearButton:setText(MapHelper.text("mh_clearQueue"))
     self.queueTitle:setText(MapHelper.text("mh_queueTitle"))
@@ -123,6 +165,10 @@ end
 
 function MHDrawerDialog:update(dt)
     MHDrawerDialog:superClass().update(self, dt)
+    if self.isOpen and self.slideTime < MHDrawerDialog.SLIDE_TIME then
+        self.slideTime = self.slideTime + dt
+        self:place()
+    end
     if self.isOpen then
         self.refreshTimer = self.refreshTimer + dt
         if self.refreshTimer >= MHDrawerDialog.REFRESH_INTERVAL then
@@ -140,7 +186,7 @@ function MHDrawerDialog:deleteRows()
 end
 
 function MHDrawerDialog.getSignature(state)
-    local parts = {state.title or "", state.status or "", state.startStop or "",
+    local parts = {state.title or "", state.status or "", state.startStop or "", tostring(state.planning),
         tostring(state.canCreate), tostring(state.canGoTo), tostring(state.canStartStop),
         tostring(state.canClear), tostring(state.canRemove)}
     for _, entry in ipairs(state.entries) do
@@ -170,6 +216,8 @@ function MHDrawerDialog:refresh(force)
         startStopText = MapHelper.text("mh_startQueue")
     end
     self.startStopButton:setText(startStopText)
+    -- While the vehicle works, the job menu adds to the queue instead of starting.
+    self.createButton:setText(state.planning and MapHelper.text("mh_addToQueue") or g_i18n:getText("button_createJob"))
     local onFoot = state.vehicle == nil
     self.createButton:setVisible(not onFoot)
     self.startStopButton:setVisible(not onFoot)
@@ -192,6 +240,7 @@ function MHDrawerDialog:refresh(force)
     self.queueTitle:setVisible(not onFoot)
     self.queueEmptyText:setVisible(not onFoot and #state.entries == 0)
     self.queueRows:setVisible(not onFoot)
+    self:layout(state)
     for index, entry in ipairs(state.entries) do
         local element = self.rowTemplate:clone(self.queueRows)
         -- Clones keep the template width; the clipping viewport may be narrower.

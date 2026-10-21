@@ -300,6 +300,15 @@ function MH.serverAdd(vehicle, job)
     end
     table.insert(queue.entries, {id = MH.allocateEntryId(), job = job})
     MH.setPause(queue, MH.PAUSE.NONE)
+    -- Added while a worker drives: the queue follows that job and continues after it,
+    -- whether it came from the queue or was started directly.
+    if not queue.running and vehicle:getIsAIActive() and vehicle.getJob ~= nil then
+        local current = vehicle:getJob()
+        if current ~= nil then
+            queue.running = true
+            queue.runningJob = current
+        end
+    end
     MH.publish(queue)
     return true
 end
@@ -437,6 +446,10 @@ function MH:onAIJobStopped(job, aiMessage)
 end
 
 function MH:update(dt)
+    -- Undo a planning shadow left behind by an error while the job menu was built.
+    if MHMapFrame ~= nil then
+        MHMapFrame.restorePlanning()
+    end
     local isServer = MH.getIsServer()
     for vehicle, queue in pairs(MH.queues) do
         if not MH.getVehicleExists(vehicle) then

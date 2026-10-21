@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Map Helper drawer: opens under the Map Helper button in the top-right corner of the map page. -->
+<!-- Map Helper drawer: slides in on the right of the map page, under the Map Helper button.
+     MHDrawerDialog:layout stacks the parts and fits the height to what is shown. -->
 <GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
     <GuiElement profile="newLayer"/>
     <GuiElement profile="mh_drawer" id="drawerPanel">
@@ -40,8 +41,8 @@
         <Profile name="mh_drawer" extends="emptyPanel">
             <anchors value="1 1 1 1"/>
             <pivot value="1 1"/>
-            <size value="460px 640px"/>
-            <position value="-290px -205px"/>
+            <size value="400px 300px"/>
+            <position value="-200px -200px"/>
         </Profile>
         <Profile name="mh_drawerBg" extends="baseReference" with="anchorStretchingYStretchingX">
             <imageColor value="$preset_fs25_colorMainDark_90"/>
@@ -56,7 +57,7 @@
             <textLayoutMode value="scrolling"/>
         </Profile>
         <Profile name="mh_drawerStatus" extends="fs25_textDefault" with="anchorTopStretchingX">
-            <size value="100% 50px"/>
+            <size value="100% 40px"/>
             <absoluteSizeOffset value="40px 0px"/>
             <position value="0px -52px"/>
             <textSize value="15px"/>
@@ -118,13 +119,13 @@
             <height value="34px"/>
         </Profile>
         <Profile name="mh_queueRowLabel" extends="fs25_textDefault" with="anchorMiddleLeft">
-            <size value="280px 28px"/>
+            <size value="236px 28px"/>
             <position value="4px 0px"/>
             <textSize value="15px"/>
             <textLayoutMode value="scrolling"/>
         </Profile>
         <Profile name="mh_queueRowRemove" extends="mh_drawerAction" with="anchorMiddleRight">
-            <size value="120px 28px"/>
+            <size value="110px 28px"/>
             <margin value="0 0 0 0"/>
             <textSize value="14px"/>
         </Profile>

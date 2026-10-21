@@ -114,8 +114,11 @@ test("add to queue validates like Start job and leaves the job menu", function()
     assert(MF.addToQueue(frame))
     local entries = MH.getEntries(vehicle)
     assert(#entries == 1 and entries[1].job == job and job.setValuesCount >= 2)
-    assert(frame.mode == InGameMenuMapFrame.AI_MODE_OVERVIEW and frame.currentJob == nil and job.resetCount == 1)
-    assert(not ext.queueButton.visible and #broadcasts == 1)
+    -- Left like a successful start: the queued job is not reset, and the drawer shows it.
+    assert(frame.mode == InGameMenuMapFrame.AI_MODE_OVERVIEW and frame.currentJob == nil and (job.resetCount or 0) == 0)
+    assert(not ext.queueButton.visible and ext.toggle.visible and #broadcasts == 1 and frame.contextRefreshed >= 1)
+    assert(g_gui.openDialog ~= nil and #g_gui.openDialog.rows == 1)
+    g_gui.openDialog:onClickBack()
     -- An invalid job stays in the menu with the native warning.
     frame:setAIVehicle(vehicle)
     frame.currentJob.valid = false
@@ -136,6 +139,67 @@ test("add to queue is only offered for the vehicle the player sits in", function
     assert(frame.mapHelper.queueButton.visible)
     frame.mapHelper.queueButton:getDescendantByName("button").onClickCallback(frame.mapHelper)
     assert(#MH.getEntries(vehicle) == 1)
+    g_gui.openDialog:onClickBack()
+end)
+
+test("jobs can be added while the vehicle works and run after the current job", function()
+    local vehicle = seat(mockVehicle(7))
+    local current = newJob(vehicle)
+    g_currentMission.aiSystem:startJob(current, 1)
+    local frame = mockFrame()
+    InGameMenuMapFrame.onLoadMapFinished(frame)
+    local state = MF.getDrawerState(frame)
+    assert(state.planning and state.canCreate and not state.canGoTo and state.startStop == "cancel")
+    assert(rawget(vehicle, "getIsAIActive") ~= nil and vehicle:getIsAIActive(), "the vehicle's own function is back")
+    assert(MF.openDrawer(frame))
+    assert(g_gui.openDialog.createButton.text == "mh_addToQueue")
+    g_gui.openDialog:onClickCreate()
+    assert(frame.mode == InGameMenuMapFrame.AI_MODE_CREATE and frame.currentJobVehicle == vehicle)
+    assert(vehicle:getIsAIActive(), "planning only lasts while the job menu is built")
+    local ext = frame.mapHelper
+    assert(ext.queueButton.visible and not frame.buttonStartJobContainer.visible and not ext.toggle.visible)
+    assert(MF.addToQueue(frame))
+    local queue = MH.queues[vehicle]
+    assert(#queue.entries == 1 and queue.running and queue.runningJob == current)
+    assert(frame.buttonStartJobContainer.visible and ext.toggle.visible and ext.planningVehicle == nil)
+    g_gui.openDialog:onClickBack()
+    -- A second entry while the same job runs keeps following it.
+    MH.requestAdd(vehicle, newJob(vehicle, 5, 6))
+    assert(#queue.entries == 2 and queue.runningJob == current)
+    g_currentMission.aiSystem:stopJob(current, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    assert(#g_currentMission.aiSystem.started == 2 and #queue.entries == 1 and vehicle:getIsAIActive())
+    -- Stopping the job the queue follows pauses it, as for queued jobs.
+    vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
+    assert(queue.pause == MH.PAUSE.STOPPED and #queue.entries == 1)
+end)
+
+test("an error while planning is cleaned up on the next frame", function()
+    local vehicle = seat(mockVehicle(7))
+    g_currentMission.aiSystem:startJob(newJob(vehicle), 1)
+    local frame = mockFrame()
+    InGameMenuMapFrame.onLoadMapFinished(frame)
+    frame.createJob = function() error("broken menu") end
+    -- The error reaches the game log like any other; nothing here catches it.
+    assert(not pcall(MF.createJob, frame))
+    assert(not vehicle:getIsAIActive(), "the shadow is still there until the next frame")
+    update(16)
+    assert(rawget(vehicle, "getIsAIActive") ~= nil and vehicle:getIsAIActive())
+end)
+
+test("the key gives way to another button on the same key, such as Precision Farming help", function()
+    local frame = mockFrame()
+    InGameMenuMapFrame.onLoadMapFinished(frame)
+    InGameMenuMapFrame.registerInput(frame)
+    local help = mockElement("pfHelpButton")
+    help.inputActionName = "MENU_EXTRA_1"
+    frame.elements[1]:addElement(help)
+    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
+    assert(g_gui.openDialog == nil, "the soil map help button gets the key")
+    help:setVisible(false)
+    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
+    assert(g_gui.openDialog ~= nil)
+    g_gui.openDialog:onClickBack()
 end)
 
 test("queue holds at most the limit and server-side validation still applies", function()
@@ -183,7 +247,8 @@ test("start queue starts the head through the native AI system", function()
     local queue = MH.queues[vehicle]
     assert(queue.running and queue.runningJob == first and #queue.entries == 1)
     state = MF.getDrawerState(frame)
-    assert(state.startStop == "cancel" and state.status:find("mh_statusWorking", 1, true) and not state.canCreate)
+    assert(state.startStop == "cancel" and state.status:find("mh_statusWorking", 1, true))
+    assert(state.planning and state.canCreate and not state.canGoTo, "more jobs can be planned while it works")
 end)
 
 test("queue advances only after a successful finish", function()
@@ -373,6 +438,10 @@ test("map page hooks are idempotent across repeated registration and loads", fun
     assert(#header.elements == 2, "balance plus one Map Helper button")
     assert(#frame.createJobContainer.elements == 1)
     assert(frame.mapHelper.toggle:getDescendantByName("text").text == "mh_toggle")
+    -- The button sits right-aligned under the balance box and the AI status line.
+    local toggle, balance = frame.mapHelper.toggle, frame.shopMoneyBoxBg
+    assert(math.abs(toggle.absPosition[1] + toggle.absSize[1] - (balance.absPosition[1] + balance.absSize[1])) < 1e-9)
+    assert(toggle.absPosition[2] + toggle.absSize[2] < math.min(balance.absPosition[2], frame.statusMessage.absPosition[2]))
     -- A new frame for the next mission gets its own button; profiles load once.
     local profileLoads = g_gui.profileLoads
     local second = mockFrame()
@@ -380,7 +449,7 @@ test("map page hooks are idempotent across repeated registration and loads", fun
     assert(#second.shopMoneyBox.parent.elements == 2 and g_gui.profileLoads == profileLoads)
     InGameMenuMapFrame.registerInput(frame)
     InGameMenuMapFrame.registerInput(frame)
-    assert(#g_inputBinding.events == 2)
+    assert(#g_inputBinding.events == 1)
     local starts = 0
     local original = MH.onMissionStarted
     MH.onMissionStarted = function() starts = starts + 1 end
@@ -393,11 +462,15 @@ test("hotkeys open the drawer and add the job being created", function()
     local vehicle = seat(mockVehicle(7))
     local frame = frameWithJobMenu(vehicle)
     InGameMenuMapFrame.registerInput(frame)
-    g_inputBinding:trigger(InputAction.MH_ADD_TO_QUEUE)
+    -- One key: Add to queue in the job menu, where the header button steps aside.
+    assert(not frame.mapHelper.toggle.visible and frame.mapHelper.queueButton.visible)
+    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
     assert(#MH.getEntries(vehicle) == 1 and frame.mode == InGameMenuMapFrame.AI_MODE_OVERVIEW)
-    g_inputBinding:trigger(InputAction.MH_ADD_TO_QUEUE)
-    assert(#MH.getEntries(vehicle) == 1, "nothing to add outside the job menu")
-    g_inputBinding:trigger(InputAction.MH_TOGGLE_DRAWER)
+    assert(g_gui.openDialog ~= nil, "the drawer shows the queue after adding")
+    g_gui.openDialog:onClickBack()
+    -- Outside the job menu the same key opens the drawer and adds nothing.
+    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
+    assert(#MH.getEntries(vehicle) == 1)
     assert(g_gui.openDialog ~= nil and g_gui.openDialog.frame == frame)
     g_gui.openDialog:onClickBack()
     assert(g_gui.openDialog == nil)
@@ -423,7 +496,8 @@ test("drawer dialog lists the queue and sends remove, clear and start requests",
     assert(dialog.rows[1].element:getDescendantByName("label").text == "1. Go to - 3, 4")
     dialog:onClickStartStop()
     assert(#g_currentMission.aiSystem.started == 1 and dialog.isOpen)
-    assert(dialog.startStopButton.text == "button_cancelJob" and dialog.createButton.disabled)
+    assert(dialog.startStopButton.text == "button_cancelJob" and not dialog.createButton.disabled)
+    assert(dialog.createButton.text == "mh_addToQueue", "while it works, Create job plans the next entry")
     dialog:onClickStartStop()
     assert(not vehicle:getIsAIActive() and MH.queues[vehicle] == nil)
     dialog:update(MHDrawerDialog.REFRESH_INTERVAL)
@@ -521,7 +595,7 @@ test("map page controls are removed with the mission and come back only when the
     local oldExt = frame.mapHelper
     local oldToggle = oldExt.toggle:getDescendantByName("button")
     MF.openDrawer(frame)
-    assert(g_gui.openDialog ~= nil and #header.elements == 2 and #g_inputBinding.events == 2)
+    assert(g_gui.openDialog ~= nil and #header.elements == 2 and #g_inputBinding.events == 1)
     -- Leave the save: the open drawer, both buttons and the key events go.
     FSBaseMission.delete(g_currentMission)
     assert(g_gui.openDialog == nil and g_gui.guis[MHDrawerDialog.NAME] == nil and g_gui.nameScreenTypes[MHDrawerDialog.NAME] == nil)
@@ -534,7 +608,7 @@ test("map page controls are removed with the mission and come back only when the
     InGameMenuMapFrame.onLoadMapFinished(frame)
     InGameMenuMapFrame.registerInput(frame)
     oldToggle.onClickCallback(oldExt)
-    MF.onToggleAction(oldExt)
+    MF.onKeyAction(oldExt)
     assert(frame.mapHelper == nil and #header.elements == 1 and #g_inputBinding.events == 0)
     assert(g_gui.openDialog == nil and #g_messageCenter.subscribers == 0 and next(g_currentMission.updateables) == nil)
     FSBaseMission.delete(g_currentMission)
@@ -544,7 +618,7 @@ test("map page controls are removed with the mission and come back only when the
     FSBaseMission.onStartMission(g_currentMission)
     InGameMenuMapFrame.onLoadMapFinished(frame)
     InGameMenuMapFrame.registerInput(frame)
-    assert(frame.mapHelper ~= nil and frame.mapHelper ~= oldExt and #header.elements == 2 and #g_inputBinding.events == 2)
+    assert(frame.mapHelper ~= nil and frame.mapHelper ~= oldExt and #header.elements == 2 and #g_inputBinding.events == 1)
     oldToggle.onClickCallback(oldExt)
     assert(g_gui.openDialog == nil, "controls of the previous save stay inert")
     frame.mapHelper.toggle:getDescendantByName("button").onClickCallback(frame.mapHelper)
@@ -557,6 +631,29 @@ test("map page controls are removed with the mission and come back only when the
     frame.mapHelper = stale
     InGameMenuMapFrame.onLoadMapFinished(frame)
     assert(stale.toggle == nil and #header.elements == 2 and frame.mapHelper ~= stale)
+end)
+
+test("drawer slides in on the right under the button and is only as tall as its content", function()
+    local frame = mockFrame()
+    InGameMenuMapFrame.onLoadMapFinished(frame)
+    local toggle = frame.mapHelper.toggle
+    local function right(e) return e.absPosition[1] + e.absSize[1] end
+    local function top(e) return e.absPosition[2] + e.absSize[2] end
+    assert(MF.openDrawer(frame))
+    local dialog = g_gui.openDialog
+    local panel = dialog.drawerPanel
+    assert(right(panel) > right(toggle) + 1e-6, "starts outside its resting place")
+    dialog:update(MHDrawerDialog.SLIDE_TIME)
+    assert(math.abs(right(panel) - right(toggle)) < 1e-9 and top(panel) < toggle.absPosition[2])
+    local onFootHeight = panel.absSize[2]
+    dialog:onClickBack()
+    local vehicle = seat(mockVehicle(7))
+    MH.requestAdd(vehicle, newJob(vehicle, 1, 2))
+    assert(MF.openDrawer(frame))
+    dialog:update(MHDrawerDialog.SLIDE_TIME)
+    assert(panel.absSize[2] > onFootHeight + 4 * MHDrawerDialog.LAYOUT.action * g_pixelSizeScaledY - 1e-9)
+    assert(math.abs(right(panel) - right(toggle)) < 1e-9)
+    dialog:onClickBack()
 end)
 
 print(string.format("%d behavioral tests passed", passed))

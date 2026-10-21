@@ -58,14 +58,14 @@ end
 
 local drawerMissing = findMissing({
     {InGameMenuMapFrame, "InGameMenuMapFrame", {"onLoadMapFinished", "registerInput", "setJobMenuVisible", "setAIVehicle",
-        "setMapSelectionItem", "onStartGoToJob", "onStartCancelJob", "getCanStartJob", "getIsPicking", "onClickBack",
+        "setMapSelectionItem", "createJob", "refreshContextInput", "onStartGoToJob", "onStartCancelJob", "getCanStartJob", "getIsPicking", "onClickBack",
         "updateWarnings", "AI_MODE_OVERVIEW", "AI_MODE_CREATE"}},
     {IngameMapElement, "IngameMapElement", {"panToHotspot", "setCenterToWorldPosition"}},
     {g_gui, "g_gui", {"loadGui", "loadGuiRec", "loadProfileSet", "showDialog", "getIsDialogVisible"}},
     {MessageDialog, "MessageDialog", {"new"}},
     {InfoDialog, "InfoDialog", {"show"}},
     {AIMessageSuccessStoppedByUser, "AIMessageSuccessStoppedByUser", {"new"}},
-    {InputAction, "InputAction", {"MH_TOGGLE_DRAWER", "MH_ADD_TO_QUEUE"}}
+    {InputAction, "InputAction", {"MENU_EXTRA_1"}}
 })
 MH.features.drawer = drawerMissing == nil
 if drawerMissing ~= nil then
