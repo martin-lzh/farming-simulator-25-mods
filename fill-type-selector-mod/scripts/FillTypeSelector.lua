@@ -57,45 +57,84 @@ function FillTypeSelector.isChosenByGame(fillType)
         or FillTypeSelector.isSlurry(fillType)
 end
 
--- Fill types the implement is built to spread, or nil when every spray type of its tank
--- counts. Spray setups (vehicle.sprayer.sprayTypes.sprayType#fillTypes, read by
+-- True for manure and for other spray types spread like it (same spray ground type), such
+-- as Pumps n' Hoses' separated manure (PumpsAndHoses:registerSeparatedManure).
+function FillTypeSelector.isSpreadLikeManure(fillType)
+    if FillType.MANURE == nil then
+        return false
+    end
+    if fillType == FillType.MANURE then
+        return true
+    end
+    local manure = g_sprayTypeManager:getSprayTypeByFillTypeIndex(FillType.MANURE)
+    local sprayType = g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType)
+    return manure ~= nil and sprayType ~= nil and manure.sprayGroundType ~= nil
+        and sprayType.sprayGroundType == manure.sprayGroundType
+end
+
+-- Which fill types the implement is built to spread, or nil when every spray type of its
+-- tank counts. Spray setups (vehicle.sprayer.sprayTypes.sprayType#fillTypes, read by
 -- Sprayer:loadSprayTypeFromXML) name them, e.g. Bredal K105 "fertilizer unknown" and
--- "lime". A setup without fill types covers everything. Without setups a manure spreader
--- spreads manure only: universal trailers such as the Annaburger AW2217 take any bulk
--- good, lime included, into the same tank.
-local function getSpreadFillTypes(vehicle)
+-- "lime"; setups of another folding configuration don't apply (Foldable:loadSprayTypeFromXML
+-- sets hasRequiredFoldingConfiguration). A setup without fill types covers everything.
+-- Without setups a manure spreader spreads manure and what is spread like it: universal
+-- trailers such as the Annaburger AW2217 take any bulk good, lime included, into the tank.
+local function getSpreadFilter(vehicle)
     local sprayer = vehicle.spec_sprayer
     if sprayer == nil then
         return nil
     end
     local declared = nil
     for _, sprayType in ipairs(sprayer.sprayTypes or {}) do
-        if sprayType.fillTypes == nil then
-            return nil
-        end
-        for _, name in ipairs(sprayType.fillTypes) do
-            local fillType = g_fillTypeManager:getFillTypeIndexByName(name)
-            if fillType ~= nil then
-                declared = declared or {}
-                declared[fillType] = true
+        if sprayType.hasRequiredFoldingConfiguration ~= false then
+            if sprayType.fillTypes == nil then
+                return nil
+            end
+            for _, name in ipairs(sprayType.fillTypes) do
+                local fillType = g_fillTypeManager:getFillTypeIndexByName(name)
+                if fillType ~= nil then
+                    declared = declared or {}
+                    declared[fillType] = true
+                end
             end
         end
     end
-    if declared == nil and sprayer.isManureSpreader and FillType.MANURE ~= nil then
-        declared = {[FillType.MANURE] = true}
+    if declared ~= nil then
+        return function(fillType)
+            return declared[fillType] == true
+        end
     end
-    return declared
+    if sprayer.isManureSpreader then
+        return FillTypeSelector.isSpreadLikeManure
+    end
+    return nil
+end
+
+-- Specialization names of Pumps n' Hoses (and any Mod with the same name) are prefixed
+-- with their environment, e.g. "pdlc_pumpsAndHosesPack.umbilicalSprayer".
+function FillTypeSelector.hasSpecialization(vehicle, name)
+    for _, specName in ipairs(vehicle.specializationNames or {}) do
+        if specName == name or string.sub(specName, -(#name + 1)) == "." .. name then
+            return true
+        end
+    end
+    return false
 end
 
 -- Spray fill types of the sprayer's own tank that it is built to spread, sorted by index.
 function FillTypeSelector.findCandidates(vehicle, fillUnitIndex)
     local candidates = {}
     local supported = vehicle:getFillUnitSupportedFillTypes(fillUnitIndex)
-    local spreads = getSpreadFillTypes(vehicle)
+    -- Hose-fed applicators (Pumps n' Hoses umbilicalSprayer) never buy fill: their
+    -- getIsSprayerExternallyFilled is always false and the hose supplies the slurry.
+    if FillTypeSelector.hasSpecialization(vehicle, "umbilicalSprayer") then
+        return candidates
+    end
+    local spreads = getSpreadFilter(vehicle)
     if supported ~= nil then
         for fillType, isSupported in pairs(supported) do
             if isSupported and fillType ~= FillType.UNKNOWN
-                and (spreads == nil or spreads[fillType])
+                and (spreads == nil or spreads(fillType))
                 and g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType) ~= nil then
                 table.insert(candidates, fillType)
             end
@@ -316,8 +355,10 @@ function FillTypeSelector.isSeedKeyTaken(rootVehicle)
         if sowingMachine ~= nil and sowingMachine.seeds ~= nil and #sowingMachine.seeds > 1 then
             return true
         end
-        for _, name in ipairs(vehicle.specializationNames or {}) do
-            if name == "extendedSprayer" or string.sub(name, -16) == ".extendedSprayer" then
+        -- Precision Farming uses Y on sprayers; Pumps n' Hoses uses Y to switch its tool
+        -- carrier and hose reel (dlcDesc.xml PM_TOGGLE_TOOLCARRIER_STATE, PM_TOGGLE_REEL_STATE).
+        for _, name in ipairs({"extendedSprayer", "toolCarrier", "umbilicalReel"}) do
+            if FillTypeSelector.hasSpecialization(vehicle, name) then
                 return true
             end
         end
@@ -413,6 +454,11 @@ function FillTypeSelector:getExternalFill(superFunc, fillType, dt)
         local selected = FillTypeSelector.getEffectiveFillType(self)
         if selected ~= nil and FillTypeSelector.isSlurry(selected) then
             return FillTypeSelector.getExternalSlurry(self, superFunc, selected, dt)
+        elseif selected ~= nil and selected ~= FillType.MANURE and FillTypeSelector.isSpreadLikeManure(selected)
+            and g_currentMission.missionInfo.helperManureSource ~= 2 then
+            -- Separated manure is only bought (Pumps n' Hoses wraps getExternalFill for the
+            -- "buy" setting); from a manure heap the game takes manure.
+            return superFunc(self, FillType.UNKNOWN, dt)
         elseif selected ~= nil then
             return superFunc(self, selected, dt)
         end

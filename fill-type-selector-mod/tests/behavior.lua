@@ -428,4 +428,38 @@ test("slurry tankers buy or fetch the selected slurry type", function()
     info.helperSlurrySource, mission.liquidManureLoadingStations, mission.prices = 1, {}, {}
 end)
 
+test("Pumps n' Hoses: separated manure, hose-fed applicators and the Y key", function()
+    -- Manure spreaders without spray setups offer what is spread like manure, not lime.
+    local spreader = mockSprayer({fillTypes = {"MANURE", "SEPARATED_MANURE", "LIME"}, manure = true, pumpsAndHoses = true})
+    same(spec(spreader).candidates, {FillType.MANURE, FillType.SEPARATED_MANURE})
+    startAI(spreader)
+    local info = g_currentMission.missionInfo
+    FTS.setSelectedFillType(spreader, FillType.SEPARATED_MANURE)
+    info.helperManureSource = 2
+    assert(spreader:getExternalFill(FillType.UNKNOWN, 1000) == FillType.SEPARATED_MANURE, "bought through the DLC")
+    -- From a manure heap the DLC can't supply it: the game decides (manure).
+    info.helperManureSource = 3
+    assert(spreader:getExternalFill(FillType.UNKNOWN, 1000) ~= FillType.SEPARATED_MANURE)
+    info.helperManureSource = 1
+    -- Hose-fed applicators get their slurry from the hose: nothing to choose.
+    local applicator = mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true,
+        specNames = {"fillUnit", "sprayer", "pdlc_pumpsAndHosesPack.umbilicalSprayer"}})
+    same(spec(applicator).candidates, {})
+    assert(next(registerInput(applicator)) == nil)
+    -- Tool carriers and hose reels use Y, so the key moves to Alt+Y.
+    for _, name in ipairs({"pdlc_pumpsAndHosesPack.toolCarrier", "pdlc_pumpsAndHosesPack.umbilicalReel"}) do
+        local tanker = mockSprayer({fillTypes = {"LIQUIDMANURE", "DIGESTATE"}, slurry = true,
+            specNames = {"fillUnit", "sprayer", name}})
+        local events = registerInput(tanker)
+        assert(events[InputAction.FTS_SELECT_FILL_TYPE] ~= nil and events[InputAction.TOGGLE_SEEDS] == nil, name)
+    end
+end)
+
+test("spray setups of another folding configuration don't count", function()
+    local rogator = mockSprayer({fillTypes = {"FERTILIZER", "LIQUIDFERTILIZER", "HERBICIDE"},
+        sprayTypes = {{fillTypes = {"fertilizer"}, hasRequiredFoldingConfiguration = false},
+            {fillTypes = {"liquidFertilizer", "herbicide"}}}})
+    same(spec(rogator).candidates, {FillType.LIQUIDFERTILIZER, FillType.HERBICIDE})
+end)
+
 print(string.format("%d behavioral tests passed", passed))

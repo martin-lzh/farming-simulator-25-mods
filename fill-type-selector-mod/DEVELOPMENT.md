@@ -41,6 +41,17 @@
 
 失败保护：`Register.lua` 在注册前检查所有被调用或覆盖的游戏函数和常量，缺少任一项时写一次警告并不添加 specialization，原版喷洒机具完全不变。检查不包含 `FillType.*` 常量：游戏在 `TypeManager.validateTypes` 之后才由 `FillTypeManager` 重建并填充 `FillType`（GS `fillTypes/FillTypeManager.lua:103`），检查时它还是空表。2026-10-21 的游戏日志显示旧版因检查 `FillType.UNKNOWN` 而 `Fill Type Selector disabled`，整个 Mod 未生效；`FillType` 只在游戏运行中使用。测试的替身同样在脚本加载和类型验证时让 `FillType` 为空，地图加载后才填入（`loadMapFillTypes`）。specialization 注册名必须是 `FS25_FillTypeSelector.fillTypeSelector`，否则报错并跳过。钩子按 Mod 名加键，重复载入地图不叠加；类型已有本 specialization 时不再添加。
 
+## 扩展包兼容（2026-10-21，8 个已安装 DLC 解包核对）
+
+解包位置 `work/reference/1.25.0.0/dlc/`。只有 Pumps n' Hoses 需要处理：
+
+- 分离粪肥：DLC 新增 `SEPARATED_MANURE`，加入 BULK、MANURESPREADER、MANURESPREADER_ORCHARDS、SHOVEL 类别（`archive/data/fillTypes/fillTypes.xml:43-46`），并在地图加载时注册为喷洒类型，地面类型与粪肥相同（`PumpsAndHoses.lua:109-113`）。没有 spray setup 的粪肥撒布机因此候选为“粪肥及与粪肥同地面类型的喷洒类型”（`FillTypeSelector.isSpreadLikeManure`）。DLC 在加载时直接包装 `Sprayer.getExternalFill`（`inject_manureSeparation.lua:2-32, 93`）：原版没找到时，若请求的是分离粪肥（或空箱且料箱允许）且粪肥补充为“购买”，就购买分离粪肥。本 Mod 的覆盖排在它外层，选了分离粪肥时传给下一层；粪肥补充不是“购买”时传 `UNKNOWN`，由原版从粪堆取粪肥，避免帮手停机。
+- 拖管施肥机：`umbilicalSprayer` 的 `getIsSprayerExternallyFilled` 总是返回 false 且不调用下一层（`UmbilicalSprayer.lua:25, 284-286`），料来自软管（`updatePreferredSpraySource`，`:240-261`）。这类车没有候选，不提供按键。
+- Y 键：DLC 的 `PM_TOGGLE_TOOLCARRIER_STATE`、`PM_TOGGLE_REEL_STATE` 绑定 Y（`archive/dlcDesc.xml:312-331`），工具架即使未选中也注册（`ToolCarrier.lua:442-447`）。组合中有 `*.toolCarrier` 或 `*.umbilicalReel` 时视为 Y 已占用，改用 Alt+Y。
+- 泵车 PW121、JC450、G400 是 `manureTrailer` 类型，没有 Sprayer，本 Mod 不涉及。
+- 折叠配置：spray setup 可限定折叠配置（`Foldable:loadSprayTypeFromXML`，GS Foldable.lua:1598-1618，`hasRequiredFoldingConfiguration`），不适用于当前配置的 setup 不计入候选（例如 Plains & Prairies 的 Rogator 900 液体配置）。
+- 其余 DLC（Highlands、NEXAT、Plains & Prairies 的撒肥机、喷雾机与粪浆罐车）按现有规则得到合理候选；Emergency、Daimler、NH CR11、Straw Harvest 没有喷洒机具（Straw Harvest 的 `SH_GRAB_BALES` 绑定 Y，但不在喷洒组合中）。没有 DLC 覆盖 `getIsSprayTypeActive`、`getSprayerUsage` 或 `onStateChange`。
+
 ## FS25 1.25 接口核对
 
 路径前缀：GS = `work/reference/1.25.0.0/gameSource/dataS/scripts/`（随游戏 SDK 的 Lua），DC = `work/reference/1.25.0.0/decompiled/scripts/`（1.25 变更文件的反编译），DC24 = `work/reference/decompiled/dataS/scripts/`（1.24 反编译，1.25 字节码未变的文件）。1.25 中 Sprayer 与 SowingMachine 字节码有变化，GS 与 DC 的相关逻辑一致。
@@ -129,6 +140,8 @@ python fill-type-selector-mod/tools/build.py
 | FTS-13 | 多人：选择后新客户端加入 | 加入的客户端看到相同选择 |
 | FTS-15 | 多人：另一农场的玩家坐进不属于自己农场的撒肥机按 Y；本农场机具在 AI 作业中 | 选择不变（访问规则通常已阻止进入；无法进入时按客户端命令测试）；AI 作业中无按键 |
 | FTS-14 | 精准农业开启的存档中的撒肥机 | Y 保持精准农业的功能；肥料选择为 Alt+Y |
+| FTS-16 | Pumps n' Hoses：粪肥撒布机（例如 Highlands Lowlander HBD）选分离粪肥，粪肥补充设为购买，再改为粪堆 | 购买时帮手买分离粪肥；粪堆时改用粪肥，不停机 |
+| FTS-17 | Pumps n' Hoses：拖管施肥机（SP12260/SPC1230 装在 HS5100 上、SP8040）与软管卷盘组合 | 施肥机没有选择按键；带工具架或卷盘的组合中肥料选择为 Alt+Y，Y 仍切换工具架/卷盘 |
 
 ## 结构
 

@@ -8,7 +8,7 @@ GS_PRIO_HIGH = 2
 -- (fillTypes/FillTypeManager.lua:103), after Mod scripts ran. Scripts see an empty table
 -- at load time; tests call loadMapFillTypes() before anything uses fill types.
 MOCK_FILL_TYPES = {UNKNOWN = 1, FERTILIZER = 2, LIQUIDFERTILIZER = 3, HERBICIDE = 4, LIME = 5, MANURE = 6,
-    LIQUIDMANURE = 7, DIGESTATE = 8, SEEDS = 9, WHEAT = 10}
+    LIQUIDMANURE = 7, DIGESTATE = 8, SEEDS = 9, WHEAT = 10, SEPARATED_MANURE = 11}
 FillType = {}
 function loadMapFillTypes() FillType = MOCK_FILL_TYPES end
 FillTypeManager = {SEND_NUM_BITS = 8}
@@ -21,10 +21,13 @@ g_fillTypeManager = {
     getFillTypeNameByIndex = function(_, index) return names[index] end,
     getFillTypeTitleByIndex = function(_, index) return titles[names[index]] end
 }
-local sprayTypes = {FERTILIZER = true, LIQUIDFERTILIZER = true, HERBICIDE = true, LIME = true, MANURE = true,
-    LIQUIDMANURE = true, DIGESTATE = true}
+-- Spray types with their sprayGroundType (maps_sprayTypes.xml); separated manure as Pumps n'
+-- Hoses registers it (PumpsAndHoses.lua:109-113, ground type MANURE).
+local sprayTypes = {FERTILIZER = "FERTILIZER", LIQUIDFERTILIZER = "FERTILIZER", HERBICIDE = "NONE", LIME = "LIME",
+    MANURE = "MANURE", LIQUIDMANURE = "LIQUID_MANURE", DIGESTATE = "LIQUID_MANURE", SEPARATED_MANURE = "MANURE"}
 g_sprayTypeManager = {getSprayTypeByFillTypeIndex = function(_, index)
-    if sprayTypes[names[index]] then return {name = names[index]} end
+    local ground = sprayTypes[names[index]]
+    if ground then return {name = names[index], sprayGroundType = ground} end
 end}
 
 InputAction = {TOGGLE_SEEDS = "TOGGLE_SEEDS", TOGGLE_SEEDS_BACK = "TOGGLE_SEEDS_BACK",
@@ -276,6 +279,18 @@ function mockSprayer(options)
         return true, id
     end
     vehicle.getExternalFill = vanillaExternalFill
+    if options.pumpsAndHoses then
+        -- inject_manureSeparation.lua:2-32: after the game found nothing, buy separated manure
+        -- under "AI Worker Refill - Manure: buy" when asked for it (or for an empty tank).
+        vehicle.getExternalFill = function(self, fillType, dt)
+            local found, usage = vanillaExternalFill(self, fillType, dt)
+            if found == FillType.UNKNOWN and g_currentMission.missionInfo.helperManureSource == 2
+                and fillType == FillType.SEPARATED_MANURE then
+                return FillType.SEPARATED_MANURE, dt / 1000
+            end
+            return found, usage
+        end
+    end
     vehicle.getIsSprayerExternallyFilled = vanillaExternallyFilled
     vehicle.getIsSprayTypeActive = function(self, sprayType) return vanillaSprayTypeActive(self, sprayType) end
     local inner = vehicle.getIsSprayTypeActive

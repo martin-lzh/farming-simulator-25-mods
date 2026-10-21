@@ -23,7 +23,7 @@ Choose what an empty fertilizer spreader, sprayer or lime spreader will apply, t
 
 1. Get into the tractor with the empty spreader or sprayer attached.
 2. Press **Y** to switch between the types the implement can apply; **Shift+Y** goes back. The help (F1) shows, for example, **Select fertilizer (Lime)**, and the empty tank shows your choice.
-3. If the implement or the combination already uses Y, for example a seeder with several seeds or Precision Farming, the key is **Alt+Y**. You can change it in Settings → Controls under Fill Type Selector.
+3. If the implement or the combination already uses Y, for example a seeder with several seeds, Precision Farming, or a Pumps n' Hoses tool carrier or hose reel, the key is **Alt+Y**. You can change it in Settings → Controls under Fill Type Selector.
 
 Implements that can only take one type don't get the key. With two choosable implements attached, the key works on the selected one.
 
@@ -41,6 +41,7 @@ Implements that can only take one type don't get the key. With two choosable imp
 - When the tank holds something, that content is used and the choice is locked; the key is hidden. Once the tank is empty again, your choice applies again.
 - An attached tank with content, such as a front tank, is used before your choice, as in the base game.
 - You can only choose what the implement is built to spread: fertilizer, liquid fertilizer, lime, herbicide or manure. A trailer that only carries lime in its tank, such as a universal trailer with a manure spreader, offers manure only.
+- With the Pumps n' Hoses pack: manure spreaders can also choose separated manure. The worker buys it when **AI Worker Refill - Manure** is set to buy; with a manure heap selected it uses manure. Drag hose applicators fed through a hose have nothing to choose.
 - Slurry tankers that take slurry and digestate: choose which of the two the worker uses. Under **AI Worker Refill - Slurry** it buys the chosen type, or takes it from your slurry pit first and the other type when that runs out. Without a choice the game uses slurry, as before.
 - Spreaders with a separate lime setup switch to it when you choose lime, so the worker uses the same working width as with lime in the tank.
 
@@ -75,7 +76,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 1. 坐进挂着空撒肥机或喷雾机的拖拉机。
 2. 按 **Y** 在机具能施用的类型之间切换，**Shift+Y** 反向切换。帮助（F1）中会显示例如“选择肥料（石灰）”，空料箱上会显示你的选择。
-3. 如果机具或组合已经使用 Y（例如可选多种种子的播种机，或精准农业），按键改为 **Alt+Y**。可在“设置 → 控制”中“肥料选择”一栏修改。
+3. 如果机具或组合已经使用 Y（例如可选多种种子的播种机、精准农业，或 Pumps n' Hoses 的工具架和软管卷盘），按键改为 **Alt+Y**。可在“设置 → 控制”中“肥料选择”一栏修改。
 
 只能装一种类型的机具不会出现此按键。同时挂着两台可选择的机具时，按键作用于当前选中的那台。
 
@@ -93,6 +94,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 - 料箱里有东西时按实际内容施用，选择被锁定，按键隐藏；料箱再次清空后，你的选择重新生效。
 - 与原版相同，连接的储箱（例如前置料箱）里有内容时优先使用它，而不是你的选择。
 - 只能选择机具本身能施撒的类型：固态肥料、液态肥料、石灰、除草剂或粪肥。只是料箱能装石灰的拖车（例如带粪肥撒布装置的通用拖车）只提供粪肥。
+- 安装 Pumps n' Hoses 扩展包时：粪肥撒布机还可以选择分离粪肥。“AI 帮手补充 - 粪肥”设为购买时帮手会购买它；选择粪堆作为来源时改用粪肥。通过软管供料的拖管施肥机没有可选项。
 - 能装粪浆和沼渣的罐车：可以选择帮手使用哪一种。按“AI 帮手补充 - 粪浆”的设置购买所选类型，或先从你的粪池调取所选类型，用完后再用另一种。不做选择时和原来一样使用粪浆。
 - 带有单独石灰配置的撒肥机，选择石灰后会切换到该配置，帮手使用与装着石灰时相同的作业宽度。
 
