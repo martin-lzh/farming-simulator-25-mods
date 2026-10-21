@@ -415,6 +415,13 @@ test("slurry tankers buy or fetch the selected slurry type", function()
     assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.DIGESTATE and levels[FillType.DIGESTATE] == 99)
     levels[FillType.DIGESTATE] = 0
     assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.LIQUIDMANURE)
+    -- With different rates the amount is computed once, for the type tried first, and reused
+    -- for the other one, as the game does for slurry and digestate.
+    levels[FillType.DIGESTATE], levels[FillType.LIQUIDMANURE] = 0, 100
+    tanker.usageRates = {[FillType.DIGESTATE] = 2, [FillType.LIQUIDMANURE] = 1}
+    local fallback, amount = tanker:getExternalFill(FillType.UNKNOWN, 1000)
+    assert(fallback == FillType.LIQUIDMANURE and amount == 2 and levels[FillType.LIQUIDMANURE] == 98)
+    tanker.usageRates = nil
     -- Off: nothing is bought, as in the game.
     info.helperSlurrySource = 1
     assert(tanker:getExternalFill(FillType.UNKNOWN, 1000) == FillType.UNKNOWN and not tanker:getIsSprayerExternallyFilled())

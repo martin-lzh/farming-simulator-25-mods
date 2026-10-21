@@ -140,8 +140,9 @@ local function vanillaExternalFill(self, fillType, dt)
         elseif info.helperSlurrySource > 2 then
             local station = g_currentMission.liquidManureLoadingStations[info.helperSlurrySource - 2]
             if self.isServer and station ~= nil then
+                -- Sprayer.lua:522-528: usage is computed once, for slurry, and reused for digestate.
+                local usage = self:getSprayerUsage(FillType.LIQUIDMANURE, dt)
                 for _, candidate in ipairs({FillType.LIQUIDMANURE, FillType.DIGESTATE}) do
-                    local usage = self:getSprayerUsage(candidate, dt)
                     if usage - station:removeFillLevel(candidate, usage, 1) > 0.000001 then
                         return candidate, usage
                     end
@@ -256,7 +257,8 @@ function mockSprayer(options)
         self.fillUnits[i].fillTypeToDisplayIsPersistent = isPersistent == true
     end
     function vehicle:getSprayerFillUnitIndex() return self.spec_sprayer.fillUnitIndex end
-    function vehicle:getSprayerUsage(_, dt) return dt / 1000 end
+    -- Liters per call; tests can give fill types different rates (spray type litersPerSecond).
+    function vehicle:getSprayerUsage(fillType, dt) return dt / 1000 * ((self.usageRates or {})[fillType] or 1) end
     function vehicle:getActiveFarm() return self.ownerFarmId end
     function vehicle:getLastTouchedFarmlandFarmId() return self.ownerFarmId end
     function vehicle:setSprayerAITerrainDetailProhibitedRange(fillType) table.insert(self.aiRanges, fillType) end

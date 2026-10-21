@@ -444,8 +444,10 @@ function FillTypeSelector:getExternalSlurry(superFunc, selected, dt)
         local loadingStation = mission.liquidManureLoadingStations ~= nil and mission.liquidManureLoadingStations[source - 2] or nil
         if self.isServer and loadingStation ~= nil then
             local other = selected == FillType.LIQUIDMANURE and FillType.DIGESTATE or FillType.LIQUIDMANURE
+            -- Like the game, the amount is computed once, for the type tried first, and the
+            -- same amount is taken from the other type when the first one runs out.
+            local usage = self:getSprayerUsage(selected, dt)
             for _, fillType in ipairs({selected, other}) do
-                local usage = self:getSprayerUsage(fillType, dt)
                 local remainingDelta = loadingStation:removeFillLevel(fillType, usage, farmId or self:getOwnerFarmId())
                 if usage - remainingDelta > 0.000001 then
                     return fillType, usage
