@@ -4,13 +4,18 @@ g_currentModName = "FS25_FillTypeSelector"
 g_modIsLoaded = {[g_currentModName] = true}
 GS_PRIO_HIGH = 2
 
-FillType = {UNKNOWN = 1, FERTILIZER = 2, LIQUIDFERTILIZER = 3, HERBICIDE = 4, LIME = 5, MANURE = 6,
+-- Like the game: FillTypeManager:initDataStructures resets FillType while the map loads
+-- (fillTypes/FillTypeManager.lua:103), after Mod scripts ran. Scripts see an empty table
+-- at load time; tests call loadMapFillTypes() before anything uses fill types.
+MOCK_FILL_TYPES = {UNKNOWN = 1, FERTILIZER = 2, LIQUIDFERTILIZER = 3, HERBICIDE = 4, LIME = 5, MANURE = 6,
     LIQUIDMANURE = 7, DIGESTATE = 8, SEEDS = 9, WHEAT = 10}
+FillType = {}
+function loadMapFillTypes() FillType = MOCK_FILL_TYPES end
 FillTypeManager = {SEND_NUM_BITS = 8}
 local titles = {FERTILIZER = "Solid Fertilizer", LIQUIDFERTILIZER = "Liquid Fertilizer", HERBICIDE = "Herbicide",
     LIME = "Lime", MANURE = "Manure", LIQUIDMANURE = "Slurry", DIGESTATE = "Digestate", SEEDS = "Seeds"}
 local names = {}
-for name, index in pairs(FillType) do names[index] = name end
+for name, index in pairs(MOCK_FILL_TYPES) do names[index] = name end
 g_fillTypeManager = {
     getFillTypeIndexByName = function(_, name) return name and FillType[string.upper(name)] end,
     getFillTypeNameByIndex = function(_, index) return names[index] end,

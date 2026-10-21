@@ -336,8 +336,14 @@ test("registration adds the specialization once to sprayer types only", function
             manager.types[typeName].specializationsByName[specName] = true
             table.insert(calls, typeName .. "/" .. specName)
         end}
+    -- The game validates vehicle types before FillTypeManager fills FillType (log of 1.25:
+    -- the Mod was disabled when it checked FillType.UNKNOWN here), so FillType is empty now.
+    local loadedFillTypes = FillType
+    FillType = {}
     TypeManager.validateTypes(manager); TypeManager.validateTypes(manager)
+    FillType = loadedFillTypes
     same(calls, {"sprayer/" .. FTS.SPEC_NAME})
+    assert(#warnings == 0, "registers although fill types load later")
     manager.typeName = "placeable"
     sprayerType.specializationsByName = {}
     TypeManager.validateTypes(manager)

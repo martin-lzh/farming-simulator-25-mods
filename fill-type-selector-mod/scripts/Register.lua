@@ -28,7 +28,6 @@ local function findMissingApi()
         {"SpecializationUtil.registerOverwrittenFunction", SpecializationUtil.registerOverwrittenFunction},
         {"InputAction.TOGGLE_SEEDS", InputAction.TOGGLE_SEEDS},
         {"InputAction.TOGGLE_SEEDS_BACK", InputAction.TOGGLE_SEEDS_BACK},
-        {"FillType.UNKNOWN", FillType ~= nil and FillType.UNKNOWN},
         {"g_sprayTypeManager", g_sprayTypeManager},
         {"FTSSelectFillTypeEvent", FTSSelectFillTypeEvent}, {"FillTypeSelector", FillTypeSelector},
     }

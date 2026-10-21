@@ -39,7 +39,7 @@
 
 存档：`vehicles.vehicle(?).FS25_FillTypeSelector.fillTypeSelector#fillType`，按 fillType 名保存，在 `initSpecialization` 中向 `Vehicle.xmlSchemaSavegame` 注册（与精准农业 SoilSampler 相同做法）。在 `onPostLoad` 读取（FillUnit 在 `onPostLoad` 中恢复料量，本 specialization 排在其后）。未知名称或不属于候选的类型忽略。
 
-失败保护：`Register.lua` 在注册前检查所有被调用或覆盖的游戏函数和常量，缺少任一项时写一次警告并不添加 specialization，原版喷洒机具完全不变。specialization 注册名必须是 `FS25_FillTypeSelector.fillTypeSelector`，否则报错并跳过。钩子按 Mod 名加键，重复载入地图不叠加；类型已有本 specialization 时不再添加。
+失败保护：`Register.lua` 在注册前检查所有被调用或覆盖的游戏函数和常量，缺少任一项时写一次警告并不添加 specialization，原版喷洒机具完全不变。检查不包含 `FillType.*` 常量：游戏在 `TypeManager.validateTypes` 之后才由 `FillTypeManager` 重建并填充 `FillType`（GS `fillTypes/FillTypeManager.lua:103`），检查时它还是空表。2026-10-21 的游戏日志显示旧版因检查 `FillType.UNKNOWN` 而 `Fill Type Selector disabled`，整个 Mod 未生效；`FillType` 只在游戏运行中使用。测试的替身同样在脚本加载和类型验证时让 `FillType` 为空，地图加载后才填入（`loadMapFillTypes`）。specialization 注册名必须是 `FS25_FillTypeSelector.fillTypeSelector`，否则报错并跳过。钩子按 Mod 名加键，重复载入地图不叠加；类型已有本 specialization 时不再添加。
 
 ## FS25 1.25 接口核对
 

@@ -14,6 +14,8 @@ lua = LuaRuntime(unpack_returned_tuples=True)
 lua.execute((root / "tests/engine_mock.lua").read_text(encoding="utf-8"))
 for name in SCRIPTS:
     lua.execute((root / f"scripts/{name}.lua").read_text(encoding="utf-8"))
+# Scripts loaded while FillType was still empty, as in the game; now the map loads.
+lua.execute("loadMapFillTypes()")
 # Simulate a second map load: the type hook must not add the specialization twice.
 lua.execute((root / "scripts/Register.lua").read_text(encoding="utf-8"))
 lua.execute((root / "tests/behavior.lua").read_text(encoding="utf-8"))

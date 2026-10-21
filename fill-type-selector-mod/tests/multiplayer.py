@@ -15,6 +15,7 @@ class Peer:
         self.lua.execute((root / "tests/engine_mock.lua").read_text(encoding="utf-8"))
         for name in scripts:
             self.lua.execute((root / f"scripts/{name}.lua").read_text(encoding="utf-8"))
+        self.lua.execute("loadMapFillTypes()")
         self.lua.globals().serverPeer = server
         # Server packets carry their target: None for a broadcast, else the client index.
         self.lua.globals().capturePacket = lambda packet, target=None: self.outgoing.append(
