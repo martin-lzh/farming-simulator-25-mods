@@ -1195,4 +1195,30 @@ test("merged fields show as one row", function()
         .. "Field No. 5|contract_field_cultivate_title;Field No. 6|contract_field_cultivate_title", placeTexts(page))
 end)
 
+test("double-clicking a field queues field work there", function()
+    local vehicle = seat(mockVehicle(7))
+    vehicle.canFieldWork, vehicle.canDeliver = true, true
+    mockField(3, 300, 310, 2.5, 1)
+    mockField(4, 400, 410, 1, 1)
+    g_currentMission.stations.loading = {mockStation(600, "Silo", 50, 60)}
+    local frame, page = openPage()
+    page.mhPlacesList:doubleClick(1, 1)
+    -- Added and, with nobody driving, started at once (field work at field 3).
+    local started = g_currentMission.aiSystem.started
+    assert(#started == 1 and started[1].jobTypeIndex == AIJobType.FIELDWORK and started[1].positionAngleParameter.x == 300)
+    page.mhPlacesList:doubleClick(1, 2)
+    local entries = MH.getEntries(vehicle)
+    assert(#entries == 1 and entries[1].job.positionAngleParameter.x == 400, "the second field waits behind the first")
+    -- Stations only fill in the form.
+    page.mhFilterSelector:setState(3, true)
+    page.mhPlacesList:doubleClick(1, 1)
+    assert(#MH.getEntries(vehicle) == 1 and frame.currentJob.jobTypeIndex == AIJobType.LOAD_AND_DELIVER)
+    -- Without field work a double click only fills in Go to.
+    vehicle.canFieldWork = false
+    page:setVehicle(vehicle, false)
+    page.mhFilterSelector:setState(1, true)
+    page.mhPlacesList:doubleClick(1, 1)
+    assert(#MH.getEntries(vehicle) == 1 and frame.currentJob.jobTypeIndex == AIJobType.GOTO)
+end)
+
 print(string.format("%d behavioral tests passed", passed))

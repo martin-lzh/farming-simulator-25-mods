@@ -625,6 +625,15 @@ function mockSmoothList(name, sectionHeaderName)
         self:setSelectedItem(s, i, true)
         self.onClickCallback(self.target, self, s, i, self.cells[s][i], false)
     end
+    -- Like SmoothListElement:mouseEvent: the first click selects, the second one raises the
+    -- double click and then is handled as a click again.
+    function list:doubleClick(s, i)
+        self:click(s, i)
+        if self.onDoubleClickCallback ~= nil then
+            self.onDoubleClickCallback(self.target, self, s, i, self.cells[s][i], true)
+        end
+        self:click(s, i)
+    end
     return list
 end
 
@@ -662,6 +671,10 @@ local function buildElement(node, parent, target, profiles)
     if attributes.onClick ~= nil then
         element.onClickCallback = target[attributes.onClick]
         assert(element.onClickCallback ~= nil, "no callback " .. attributes.onClick)
+    end
+    if attributes.onDoubleClick ~= nil then
+        element.onDoubleClickCallback = target[attributes.onDoubleClick]
+        assert(element.onDoubleClickCallback ~= nil, "no callback " .. attributes.onDoubleClick)
     end
     parent:addElement(element)
     for _, child in ipairs(node.children) do buildElement(child, element, target, profiles) end

@@ -26,7 +26,7 @@
 
         <!-- Places of the chosen category: fields needing the work, own fields, contracts, stations. -->
         <GuiElement profile="mh_placesBox" id="mhPlacesBox">
-            <SmoothList profile="mh_list" id="mhPlacesList" startClipperElementName="startClipper" endClipperElementName="endClipper" onClick="onClickPlace">
+            <SmoothList profile="mh_list" id="mhPlacesList" startClipperElementName="startClipper" endClipperElementName="endClipper" onClick="onClickPlace" onDoubleClick="onDoubleClickPlace">
                 <ListItem profile="mh_placeItem">
                     <ThreePartBitmap profile="mh_listItemBg"/>
                     <Bitmap profile="mh_placeItemIcon" name="icon"/>

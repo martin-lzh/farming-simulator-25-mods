@@ -849,6 +849,20 @@ function MHPage:onClickPlace(list, section, index)
     self:prefill(place)
 end
 
+-- SmoothList onDoubleClick (SmoothListElement:notifyDoubleClick, SDK gui/elements/
+-- SmoothListElement.lua:1546-1550, 1598-1600): a field or contract with field work is filled in
+-- and added to the queue at once, like Add to queue. Stations, Go to (no field work) and an
+-- entry being edited keep the single-click behaviour.
+function MHPage:onDoubleClickPlace(list, section, index)
+    local place = self.places ~= nil and self.places[index] or nil
+    if place == nil or not self:getIsShown() or self.editingId ~= nil or place.station ~= nil
+        or AIJobType.FIELDWORK == nil or place.jobTypeIndex ~= AIJobType.FIELDWORK then
+        return
+    end
+    self:prefill(place)
+    self:submit(false)
+end
+
 function MHPage:getFormJobTypeIndex()
     local job = self.frame.currentJob
     return job ~= nil and MH.getJobTypeIndex(job) or nil

@@ -16,6 +16,8 @@
 - “需要此作业的田地”也会列出车辆能完成的已接合同，并排在最前；合同田地不属于你，之前因此没有显示。
 - Fields you merged by working the strip between them show as one row, such as Field No. 3 + 4 + 5.
 - 通过耕作中间地带合并的田地显示为一行，例如“田地编号 3 + 4 + 5”。
+- Double-click a field or contract to add field work there to the queue straight away.
+- 双击田地或合同，可直接把该处的田地工作加入队列。
 - Click a place to move the map there and fill in the job.
 - 点击一个地点，地图会移到该处并填好作业。
 - Jobs are set up with the game's own job settings, including picking the target on the map. Add to queue (Z) puts the job at the end, Insert as next (X) puts it first.
