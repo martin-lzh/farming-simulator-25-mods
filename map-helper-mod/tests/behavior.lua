@@ -1221,4 +1221,30 @@ test("double-clicking a field queues field work there", function()
     assert(#MH.getEntries(vehicle) == 1 and frame.currentJob.jobTypeIndex == AIJobType.GOTO)
 end)
 
+test("places a worker already has are marked and listed last", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    mockContract(mockField(10, 1000, 1000, 1, 0), 1, "Cultivating A", 0.2, nil, "cultivateMission")
+    mockContract(mockField(53, 5300, 5300, 1, 0), 1, "Cultivating B", 0.5, nil, "cultivateMission")
+    mockField(3, 300, 300, 1, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(4, 400, 400, 1, 1, {groundType = FieldGroundType.PLOWED})
+    -- Another tractor of the farm works contract A; a queue waits for field 3.
+    local other = mockVehicle(8)
+    g_currentMission.aiSystem:startJob(newJob(other, 1000, 1000, AIJobType.FIELDWORK), 1)
+    MH.requestAdd(other, newJob(other, 300, 300, AIJobType.FIELDWORK))
+    local _, page = openPage()
+    assert(placeTexts(page) == "Cultivating B - Field No. 53|contract_field_cultivate_title - 50 %;"
+        .. "Field No. 4|contract_field_cultivate_title;"
+        .. "Cultivating A - Field No. 10|mh_claimWorking · contract_field_cultivate_title - 20 %;"
+        .. "Field No. 3|mh_claimQueued · contract_field_cultivate_title", placeTexts(page))
+    -- Contracts: the same, claimed last.
+    page.mhFilterSelector:setState(3, true)
+    assert(placeTexts(page) == "Cultivating B - Field No. 53|contract_field_cultivate_title - 50 %;"
+        .. "Cultivating A - Field No. 10|mh_claimWorking · contract_field_cultivate_title - 20 %", placeTexts(page))
+    -- My fields keep their order and only show the mark.
+    page.mhFilterSelector:setState(2, true)
+    assert(placeTexts(page):find("^Field No. 3|mh_claimQueued") ~= nil, placeTexts(page))
+end)
+
 print(string.format("%d behavioral tests passed", passed))

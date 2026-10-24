@@ -371,6 +371,15 @@ end
 AISystem = {}
 AISystem.__index = AISystem
 function AISystem.new() return setmetatable({started = {}, nextId = 1}, AISystem) end
+-- Jobs that run now (AISystem:getActiveJobs, SDK ai/AISystem.lua:541): started and not stopped.
+function AISystem:getActiveJobs()
+    local active = {}
+    for _, job in ipairs(self.started) do
+        local vehicle = job.vehicleParameter:getVehicle()
+        if vehicle ~= nil and vehicle.aiJob == job then table.insert(active, job) end
+    end
+    return active
+end
 function AISystem:startJob(job, farmId)
     job.jobId = self.nextId
     self.nextId = self.nextId + 1
@@ -1076,6 +1085,10 @@ end
 -- Farmland squares of 100 m; the field of a farmland has the farmland's id.
 g_farmlandManager = {owners = {}}
 function g_farmlandManager:getFarmlandOwner(id) return self.owners[id] or 0 end
+function g_farmlandManager:getFarmlandIdAtWorldPosition(x, z)
+    local farmland = self:getFarmlandAtWorldPosition(x, z)
+    return farmland ~= nil and farmland.id or 0
+end
 function g_farmlandManager:getFarmlandAtWorldPosition(x, z)
     for _, field in ipairs(g_fieldManager.fields) do
         if math.abs(field.posX - x) <= 50 and math.abs(field.posZ - z) <= 50 then return field.farmland end

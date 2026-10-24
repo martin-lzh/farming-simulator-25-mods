@@ -615,6 +615,10 @@ function MHPage:reloadPlaces()
         else
             places = self:getStationPlaces(vehicle, available)
         end
+        if key ~= MHPage.FILTER.STATIONS then
+            -- Places a worker already has are marked; in the work lists they go to the end.
+            places = MHPage.markClaims(places, self:getClaims(farmId), key ~= MHPage.FILTER.FIELDS)
+        end
     end
     self.places = places
     self.mhPlacesList:reloadData()
@@ -665,7 +669,7 @@ function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
         local x, z = MHPage.getFieldPoint(field)
         local state = MHFieldNeeds.readState(x, z)
         local item = {ids = {field:getId()}, area = field:getAreaHa(), icon = MHPage.ICON.FIELD, x = x, z = z,
-            jobTypeIndex = jobTypeIndex}
+            jobTypeIndex = jobTypeIndex, farmlands = {field.farmland.id}}
         if onlyNeeded then
             local needs = MHFieldNeeds.getNeeds(state, self.works, self.workList)
             if #needs > 0 then
@@ -721,6 +725,7 @@ function MHPage.mergeFieldItems(items)
             table.insert(merged, item)
         else
             table.insert(group.ids, item.ids[1])
+            table.insert(group.farmlands, item.farmlands[1])
             group.area = (group.area or 0) + (item.area or 0)
         end
     end
@@ -730,6 +735,75 @@ end
 -- Contracts of the farm that are in progress and belong to a field (MissionManager:
 -- getMissionsByFarmId, AbstractMission:getIsInProgress, AbstractFieldMission). Contracts
 -- whose field needs the combination's work come first and name that work.
+-- Farmlands whose field already has a worker: field work of the farm that runs now
+-- (AISystem:getActiveJobs, SDK ai/AISystem.lua:541) or waits in a Map Helper queue. The job's
+-- start position (AIParameterPosition:getPosition, SDK ai/parameters/AIParameterPosition.lua:71)
+-- names the field; its farmland comes from FarmlandManager:getFarmlandIdAtWorldPosition (SDK
+-- economy/FarmlandManager.lua:421). A running job wins over a queued one.
+MHPage.CLAIM = {WORKING = "working", QUEUED = "queued"}
+MHPage.CLAIM_TEXT = {working = "mh_claimWorking", queued = "mh_claimQueued"}
+
+function MHPage:getClaims(farmId)
+    local claims = {}
+    local function claim(job, kind)
+        if job == nil or AIJobType.FIELDWORK == nil or MH.getJobTypeIndex(job) ~= AIJobType.FIELDWORK then
+            return
+        end
+        local parameter = job.positionAngleParameter
+        if parameter == nil or parameter.getPosition == nil or g_farmlandManager == nil then
+            return
+        end
+        local x, z = parameter:getPosition()
+        local farmlandId = x ~= nil and g_farmlandManager:getFarmlandIdAtWorldPosition(x, z) or nil
+        if farmlandId ~= nil and farmlandId ~= 0 and claims[farmlandId] ~= MHPage.CLAIM.WORKING then
+            claims[farmlandId] = kind
+        end
+    end
+    local aiSystem = g_currentMission ~= nil and g_currentMission.aiSystem or nil
+    if aiSystem ~= nil and aiSystem.getActiveJobs ~= nil then
+        for _, job in ipairs(aiSystem:getActiveJobs() or {}) do
+            if job.startedFarmId == nil or job.startedFarmId == farmId then
+                claim(job, MHPage.CLAIM.WORKING)
+            end
+        end
+    end
+    for _, queue in pairs(MH.queues) do
+        if queue.farmId == farmId then
+            for _, entry in ipairs(queue.entries) do
+                claim(entry.job, MHPage.CLAIM.QUEUED)
+            end
+        end
+    end
+    return claims
+end
+
+-- Puts the claim in front of each claimed place's info and, with sendToEnd, moves claimed places
+-- behind the others (keeping their order).
+function MHPage.markClaims(places, claims, sendToEnd)
+    local free, claimed = {}, {}
+    for _, place in ipairs(places) do
+        local kind = nil
+        for _, farmlandId in ipairs(place.farmlands or {}) do
+            local found = claims[farmlandId]
+            if found == MHPage.CLAIM.WORKING or (found ~= nil and kind == nil) then
+                kind = found
+            end
+        end
+        place.claim = kind
+        if kind ~= nil then
+            local text = MH.text(MHPage.CLAIM_TEXT[kind])
+            place.info = (place.info ~= nil and place.info ~= "") and string.format("%s · %s", text, place.info) or text
+            table.insert(sendToEnd and claimed or free, place)
+        else
+            table.insert(free, place)
+        end
+    end
+    for _, place in ipairs(claimed) do
+        table.insert(free, place)
+    end
+    return free
+end
+
 -- The work a contract asks for, by mission type (MissionManager:registerMissionType names,
 -- decompiled missions/field/*Mission.lua NAME). Baling, wrapping and tedding contracts have
 -- no work the page recognises.
@@ -777,7 +851,8 @@ function MHPage:getContractPlaces(farmId, jobTypeIndex, onlyNeeded)
             end
             local work = self:getContractWork(mission)
             local percent = MHPage.formatPercent(mission.completion)
-            local item = {name = name, icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex}
+            local item = {name = name, icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex,
+                farmlands = {field.farmland ~= nil and field.farmland.id or nil}}
             if work ~= nil then
                 item.info = string.format("%s - %s", MHFieldNeeds.getWorkText(work), percent)
                 table.insert(workable, item)

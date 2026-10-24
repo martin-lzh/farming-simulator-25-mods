@@ -1099,6 +1099,64 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
             <uk>Мої поля</uk>
             <vi>Cánh đồng của tôi</vi>
         </text>
+        <text name="mh_claimWorking">
+            <en>Worker on it</en>
+            <de>Helfer arbeitet</de>
+            <cs>帮手作业中</cs>
+            <br>Ajudante trabalhando</br>
+            <ct>幫手作業中</ct>
+            <cz>Pracuje pomocník</cz>
+            <da>Medhjælper arbejder</da>
+            <ea>Ayudante trabajando</ea>
+            <es>Ayudante trabajando</es>
+            <fc>Ouvrier au travail</fc>
+            <fi>Apuri työssä</fi>
+            <fr>Ouvrier au travail</fr>
+            <hu>Segítő dolgozik</hu>
+            <id>Pekerja sedang bekerja</id>
+            <it>Aiutante al lavoro</it>
+            <jp>ヘルパー作業中</jp>
+            <kr>일꾼 작업 중</kr>
+            <nl>Helper aan het werk</nl>
+            <no>Hjelper jobber</no>
+            <pl>Pomocnik pracuje</pl>
+            <pt>Ajudante a trabalhar</pt>
+            <ro>Ajutor la lucru</ro>
+            <ru>Работает помощник</ru>
+            <sv>Medhjälpare arbetar</sv>
+            <tr>Yardımcı çalışıyor</tr>
+            <uk>Працює помічник</uk>
+            <vi>Người làm đang làm việc</vi>
+        </text>
+        <text name="mh_claimQueued">
+            <en>Queued</en>
+            <de>In Warteschlange</de>
+            <cs>已在队列</cs>
+            <br>Na fila</br>
+            <ct>已在佇列</ct>
+            <cz>Ve frontě</cz>
+            <da>I kø</da>
+            <ea>En la cola</ea>
+            <es>En la cola</es>
+            <fc>Dans la file</fc>
+            <fi>Jonossa</fi>
+            <fr>Dans la file</fr>
+            <hu>Sorban</hu>
+            <id>Dalam antrean</id>
+            <it>In coda</it>
+            <jp>キュー登録済み</jp>
+            <kr>대기열에 있음</kr>
+            <nl>In wachtrij</nl>
+            <no>I kø</no>
+            <pl>W kolejce</pl>
+            <pt>Na fila</pt>
+            <ro>În coadă</ro>
+            <ru>В очереди</ru>
+            <sv>I kö</sv>
+            <tr>Sırada</tr>
+            <uk>У черзі</uk>
+            <vi>Đã xếp hàng</vi>
+        </text>
         <text name="mh_emptyNeeds">
             <en>No field needs this work right now.</en>
             <de>Gerade braucht kein Feld diese Arbeit.</de>

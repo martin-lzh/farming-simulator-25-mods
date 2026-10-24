@@ -35,7 +35,7 @@ Plan worker jobs for your vehicles straight from the map. Map Helper adds a page
 | Contracts | Your accepted field contracts with their progress. Contracts this vehicle can work on come first and name the work. |
 | Stations | Where the vehicle can load or deliver. Only offered when it can do delivery jobs. |
 
-The page starts with Fields needing this work when it recognises the vehicle's tools, otherwise with My fields, and remembers your choice for each vehicle while you play. Field states are read every few seconds, at the same point of each field the game uses for the field's state. Fields you merged by working the strip between them show as one row, such as Field No. 3 + 4 + 5. Click a place to move the map there and fill in the job below: a field or contract sets field work there (or Go to, if the vehicle can't do field work), a station sets load and deliver or deliver with that station. Double-click a field or contract to add field work there to the queue straight away, when the vehicle can do field work.
+The page starts with Fields needing this work when it recognises the vehicle's tools, otherwise with My fields, and remembers your choice for each vehicle while you play. Field states are read every few seconds, at the same point of each field the game uses for the field's state. Fields you merged by working the strip between them show as one row, such as Field No. 3 + 4 + 5. Places one of your workers is already working are marked **Worker on it**, places waiting in a queue **Queued**; in Fields needing this work and Contracts they come last. Click a place to move the map there and fill in the job below: a field or contract sets field work there (or Go to, if the vehicle can't do field work), a station sets load and deliver or deliver with that station. Double-click a field or contract to add field work there to the queue straight away, when the vehicle can do field work.
 
 **Job.** The game's own job settings, the same as when you create a job for the vehicle on the map: job type, target position and direction (picked on the map), stations, fill type and looping. Then:
 
@@ -112,7 +112,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 | 合同 | 已接受的田地合同及其进度。这台车辆能做的合同排在前面并写明作业。 |
 | 站点 | 车辆可以装货或卸货的地方。只在车辆能执行运送类作业时提供。 |
 
-页面识别出车辆的农具时，默认显示“需要此作业的田地”，否则显示“我的田地”；每台车辆的选择在游戏期间会被记住。田地状态每隔几秒读取一次，读取点与游戏记录田地状态时使用的点相同。通过耕作中间地带合并起来的田地显示为一行，例如“田地编号 3 + 4 + 5”。点击一个地点，地图会移到该处，并在下方填好作业：田地或合同会设为在该处进行田地工作（车辆不能进行田地工作时设为“前往”），站点会设为使用该站点的“装载和运送”或“运送”。车辆能进行田地工作时，双击田地或合同可直接把该处的田地工作加入队列。
+页面识别出车辆的农具时，默认显示“需要此作业的田地”，否则显示“我的田地”；每台车辆的选择在游戏期间会被记住。田地状态每隔几秒读取一次，读取点与游戏记录田地状态时使用的点相同。通过耕作中间地带合并起来的田地显示为一行，例如“田地编号 3 + 4 + 5”。已有你的帮手在作业的地点标为“帮手作业中”，在队列中等待的标为“已在队列”；在“需要此作业的田地”和“合同任务”中它们排在最后。点击一个地点，地图会移到该处，并在下方填好作业：田地或合同会设为在该处进行田地工作（车辆不能进行田地工作时设为“前往”），站点会设为使用该站点的“装载和运送”或“运送”。车辆能进行田地工作时，双击田地或合同可直接把该处的田地工作加入队列。
 
 **作业。** 游戏自带的作业设置，与在地图上为车辆创建作业时相同：作业类型、目标位置和方向（在地图上选择）、站点、填充类型和循环。然后：
 

@@ -18,6 +18,8 @@
 - 通过耕作中间地带合并的田地显示为一行，例如“田地编号 3 + 4 + 5”。
 - Double-click a field or contract to add field work there to the queue straight away.
 - 双击田地或合同，可直接把该处的田地工作加入队列。
+- Places a worker is already working are marked Worker on it, places waiting in a queue Queued; both come last in the work and contract lists.
+- 已有帮手在作业的地点标为“帮手作业中”，在队列中等待的标为“已在队列”；两者在作业和合同列表中排在最后。
 - Click a place to move the map there and fill in the job.
 - 点击一个地点，地图会移到该处并填好作业。
 - Jobs are set up with the game's own job settings, including picking the target on the map. Add to queue (Z) puts the job at the end, Insert as next (X) puts it first.

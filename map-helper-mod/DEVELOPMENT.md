@@ -95,6 +95,8 @@ GUI 预览实验室（`tools/gui_lab/`，由集成方维护）渲染方法：
 
 默认：有“需要此作业的田地”时选它，否则“我的田地”（例如卡车、没有挂农具的拖拉机）。每台车辆的选择存在 `MHPage.filterByVehicle`（本局游戏内，拆除时清空）。空列表显示对应说明（`mh_emptyNeeds/Fields/Contracts/Stations`）。田地状态在切换车辆、切换过滤和每 10 s（`MHPage.PLACES_INTERVAL`，页面显示时）读取一次，不是每帧。
 
+**已被帮手认领**：`MHPage:getClaims` 收集本农场正在运行的田地工作（`AISystem:getActiveJobs`，SDK `ai/AISystem.lua:541`，`startedFarmId` 为本农场）和地图助手队列中等待的田地工作，按作业起点（`AIParameterPosition:getPosition`，SDK `ai/parameters/AIParameterPosition.lua:71`）用 `FarmlandManager:getFarmlandIdAtWorldPosition`（SDK `economy/FarmlandManager.lua:421`）找到所在农地；运行中优先于排队。`MHPage.markClaims` 按地点的农地（合并田地取所有成员、合同取其田地）在信息栏前加“帮手作业中”（`mh_claimWorking`）或“已在队列”（`mh_claimQueued`）；在“需要此作业的田地”和“合同任务”中把这些地点稳定地移到最后，“我的田地”只标注不改顺序；站点不处理。2026-10-24 维护者要求。
+
 **双击加入**：地点列表设 `onDoubleClick="onDoubleClickPlace"`（SmoothList 原生回调，SDK `gui/elements/SmoothListElement.lua:138/1546-1550/1598-1600`：第二次点击先触发双击，再按普通点击处理）。田地或合同、且预填的是田地工作（车辆能做田地工作）、不在编辑中时，`prefill` 后走与“加入队列”相同的 `submit(false)`（同样验证、队列满提示、空闲时自动开始）；站点和“前往”只预填。随后的普通点击再预填一次同一地点，无副作用。2026-10-24 维护者要求。
 
 **合并的田地**：游戏没有“合并”记录，每个田地编号始终是一个 `Field`；玩家把两块田之间的地带耕作后，它们在地面上连成一片。`MHFieldNeeds.getIsGroundConnected` 沿两块田位置点之间的直线每 4 m 读一次地面类型层（`fieldGroundSystem:getValueAtWorldPos(FieldDensityMap.GROUND_TYPE, x, 0, z)` + `FieldGroundType.getTypeByValue`，与 `FieldState:update` 相同，decompiled `field/FieldState.lua:110-111`），全程都是田地地面（不是 NONE）就算合并；超过 800 m 不检查，遇到第一处 NONE 即停。`MHPage.mergeFieldItems` 用并查集把列表中的田地分组（也可经第三块田连通），显示为“田地编号 3 + 4 + 5”，取第一块田的位置、需求或状态，面积相加。每对结果缓存 60 s（`MERGE_CACHE_TIME`），列表每 10 s 刷新时不重复采样。凹形田地的直线可能穿出田外，这时仍分开显示。游戏自己的边界检测（`field/course/BoundaryDetectionTask.lua`）是后台任务，代价太高，不用于列表。2026-10-24 维护者游戏内反馈合并的田地各自出现在需求列表里后加入。
