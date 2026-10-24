@@ -118,6 +118,14 @@ if MH.features.queue then
     installHook(FSCareerMissionInfo, "saveToXMLFile", false, function(missionInfo)
         MapHelper.onSavegameSaved(missionInfo)
     end)
+    -- Diagnostic log line only (MapHelper.onDriveTaskStartedDriving); without it nothing is missing.
+    if AITaskDriveTo ~= nil and AITaskDriveTo.startDriving ~= nil then
+        installHook(AITaskDriveTo, "startDriving", false, function(task)
+            if MapHelper.features.queue then
+                MapHelper.onDriveTaskStartedDriving(task)
+            end
+        end)
+    end
 end
 
 if MH.features.page then

@@ -254,6 +254,30 @@ test("the next job waits until the vehicle stands and no implement folds or lowe
     assert(queue.pause == MH.PAUSE.STOPPED and #queue.entries == 1 and not queue.running)
 end)
 
+test("jobs the queue starts on its own log their target distance, start task and fold state", function()
+    local vehicle = mockVehicle(7)
+    local boom = attachImplement(vehicle, {spec_foldable = {foldAnimTime = 0.5, foldMoveDirection = 0, turnOnFoldDirection = -1}})
+    function boom:getName() return "MEGA 1200L" end
+    local first = newJob(vehicle, 1, 1, AIJobType.FIELDWORK)
+    -- The vehicle stands at 100, 200: the next field work target is 1.4 m away.
+    local near = newJob(vehicle, 101, 201, AIJobType.FIELDWORK)
+    MH.requestAdd(vehicle, first)
+    MH.requestAdd(vehicle, near)
+    first.driveToTask:startDriving()
+    assert(#logged.infos == 0, "a start the player asked for is not logged")
+    g_currentMission.aiSystem:stopJob(first, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    assert(g_currentMission.aiSystem.started[2] == near and #logged.infos == 1, #logged.infos)
+    local fold = "MEGA 1200L foldAnimTime=0.500 foldMoveDirection=0 turnOnFoldDirection=-1"
+    assert(logged.infos[1] == "[Map Helper] Queue starts Field work on Tractor 7: 1.4 m to target, start task 2; " .. fold,
+        logged.infos[1])
+    boom.spec_foldable.foldAnimTime = 1
+    near.driveToTask:startDriving()
+    assert(#logged.infos == 2 and logged.infos[2]
+        == "[Map Helper] Queue job Field work on Tractor 7 starts driving; MEGA 1200L foldAnimTime=1.000 foldMoveDirection=0 turnOnFoldDirection=-1",
+        logged.infos[2])
+end)
+
 test("stop by the player, errors and deletion pause the queue", function()
     for _, reason in ipairs({"player", "error", "deleted"}) do
         objects, g_currentMission.notifications = {}, {}
@@ -430,6 +454,28 @@ test("save and load round trip restores queues and drops what no longer exists",
     assert(logged.infos[1]:find("Dropped 2"), logged.infos[1])
     local queue = MH.queues[reloaded]
     assert(not queue.running and queue.pause == MH.PAUSE.NONE, "a loaded queue waits for Resume")
+end)
+
+test("a saved job without its target is dropped and the mission still starts", function()
+    local vehicle = mockVehicle(7, 1, "vehicleA")
+    startManual(vehicle)
+    MH.requestAdd(vehicle, newJob(vehicle, 10, 20))
+    MH.requestAdd(vehicle, newJob(vehicle, 30, 40, AIJobType.FIELDWORK))
+    MH.requestAdd(vehicle, newJob(vehicle, 50, 60))
+    FSCareerMissionInfo.saveToXMLFile(g_currentMission.missionInfo)
+    local saved = files["savegame1/mapHelper.xml"]
+    -- Still valid XML, but the first job lost its direction and the second its position.
+    assert(saved["mapHelper.queue(0).job(0).parameter(1)#angle"] ~= nil)
+    saved["mapHelper.queue(0).job(0).parameter(1)#angle"] = nil
+    saved["mapHelper.queue(0).job(1).parameter(1)#x"] = nil
+    FSBaseMission.delete(g_currentMission)
+    objects = {}
+    local reloaded = mockVehicle(42, 1, "vehicleA")
+    g_currentMission = newMission(true)
+    FSBaseMission.onStartMission(g_currentMission)
+    local entries = MH.getEntries(reloaded)
+    assert(#entries == 1 and entries[1].job.positionAngleParameter.x == 50, "the complete job is kept")
+    assert(logged.infos[1]:find("Dropped 2"), logged.infos[1])
 end)
 
 test("after loading, the queue continues after the next worker on its vehicle", function()
@@ -839,6 +885,30 @@ test("implements attached while the page is open update the filter and keep the 
     table.remove(tractor.childVehicles)
     InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
     assert(table.concat(selector.texts, ";") == "mh_filterFields;ui_contracts" and page.filterKey == "fields")
+end)
+
+test("attaching or detaching a field implement while the page is open switches field places and job types", function()
+    local tractor = seat(mockVehicle(7))
+    mockField(3, 300, 300, 1, 1, {groundType = FieldGroundType.PLOWED})
+    local frame, page = openPage()
+    assert(page.places[1].jobTypeIndex == AIJobType.GOTO and table.concat(frame.jobTypeElement.texts, ";") == "Go to")
+    -- Another player attaches a cultivator while the page stays open.
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
+    assert(page.places[1].jobTypeIndex == AIJobType.FIELDWORK, "field places become field work")
+    assert(table.concat(frame.jobTypeElement.texts, ";") == "Go to;Field work")
+    assert(frame.currentJob.jobTypeIndex == AIJobType.GOTO, "the form keeps its type")
+    page.mhPlacesList:doubleClick(1, 1)
+    local started = g_currentMission.aiSystem.started
+    assert(#started == 1 and started[1].jobTypeIndex == AIJobType.FIELDWORK and started[1].positionAngleParameter.x == 300)
+    g_currentMission.aiSystem:stopJob(started[1], AIMessageSuccessFinishedJob.new())
+    -- Detached again: back to Go to.
+    tractor.canFieldWork = false
+    table.remove(tractor.childVehicles)
+    InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
+    page.mhFilterSelector:setState(1, true)
+    assert(page.places[1].jobTypeIndex == AIJobType.GOTO and table.concat(frame.jobTypeElement.texts, ";") == "Go to")
 end)
 
 test("each filter explains an empty list", function()

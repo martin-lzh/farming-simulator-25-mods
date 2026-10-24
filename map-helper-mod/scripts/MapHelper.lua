@@ -478,6 +478,11 @@ function MH.startNext(queue, requester)
     table.remove(queue.entries, 1)
     queue.running = true
     queue.runningJob = job
+    -- Only jobs the queue starts on its own get the diagnostic lines (MH.logQueueStart).
+    queue.autoStartedJob = requester == nil and job or nil
+    if requester == nil then
+        MH.logQueueStart(queue.vehicle, job)
+    end
     MH.setPause(queue, MH.PAUSE.NONE)
     MH.useVehicleSettingsAtStart(job)
     g_currentMission.aiSystem:startJob(job, queue.farmId)
@@ -524,13 +529,17 @@ function MH:onAIJobStopped(job, aiMessage)
 end
 
 -- MessageType.AI_JOB_STARTED, published by AISystem:startJobInternal for every job start,
--- whoever asks for it (SDK ai/AISystem.lua:561-566). The game itself never restarts a job
--- after loading: the vehicle saves only lastJob, the template for the job menu, and
--- AISystem:save no jobs (1.24 decompiled vehicles/specializations/AIJobVehicle.lua:434-442,
--- SDK AIJobVehicle.lua:113-151, ai/AISystem.lua:421-444). A worker that drives after
--- loading was started by the player or another Mod; a loaded queue that waits (not running,
--- not paused) continues after that job, as after one running when a job is added. A paused
--- queue keeps waiting for Resume.
+-- whoever asks for it (SDK ai/AISystem.lua:561-566). Jobs themselves are not saved: the vehicle
+-- keeps only lastJob, the template for the job menu, and AISystem:save no jobs (1.24 decompiled
+-- vehicles/specializations/AIJobVehicle.lua:434-442, SDK AIJobVehicle.lua:113-151,
+-- ai/AISystem.lua:421-444). A field worker may come back, though: 1.25 still saves its isActive
+-- (SDK vehicles/specializations/AIFieldWorker.lua:202-206), and in 1.24 onLoad reads it and the
+-- server's onUpdate then requests a new field work job where the vehicle stands (1.24 decompiled
+-- AIFieldWorker.lua:135-143, 181-191). The 1.25 load and update bodies are not in the
+-- references, so whether 1.25 still does this is not known. Either way, a worker that drives
+-- after loading (restarted by the game, started by the player or by another Mod) makes a loaded
+-- queue that waits (not running, not paused) continue after that job, as after one running when
+-- a job is added. A paused queue keeps waiting for Resume.
 function MH:onAIJobStarted(job)
     if not MH.missionActive or not MH.getIsServer() or job == nil then
         return
@@ -570,6 +579,76 @@ function MH.getIsCombinationMoving(vehicle)
         end
     end
     return false
+end
+
+-- Diagnostics for the folding report (DEVELOPMENT.md, "推进前等待组合停稳"): one log line when
+-- the queue starts a job on its own and one when that job's drive task starts driving, each
+-- with the fold state of every foldable vehicle in the combination (Foldable: foldAnimTime,
+-- foldMoveDirection, turnOnFoldDirection, SDK vehicles/specializations/Foldable.lua:369-387/441),
+-- so the maintainer's log.txt shows whether the worker drove off unfolded.
+local function formatValue(value)
+    if type(value) == "number" then
+        return string.format("%.3f", value)
+    end
+    return tostring(value)
+end
+
+function MH.getFoldStates(vehicle)
+    local parts = {}
+    local rootVehicle = vehicle:getRootVehicle()
+    for _, child in ipairs(rootVehicle:getChildVehicles()) do
+        local foldable = child.spec_foldable
+        if foldable ~= nil then
+            table.insert(parts, string.format("%s foldAnimTime=%s foldMoveDirection=%s turnOnFoldDirection=%s",
+                child.getName ~= nil and child:getName() or "?", formatValue(foldable.foldAnimTime),
+                tostring(foldable.foldMoveDirection), tostring(foldable.turnOnFoldDirection)))
+        end
+    end
+    if #parts == 0 then
+        return "no foldable vehicle"
+    end
+    return table.concat(parts, "; ")
+end
+
+-- Before the native start: the distance from the vehicle to the job's target and the task the
+-- job will start with. AIJob:update asks getStartTaskIndex on the job's first update (SDK
+-- ai/jobs/AIJob.lua:117-126); AIJobFieldWork:getStartTaskIndex only reads the vehicle and the
+-- target and returns 2, the field work task without the drive task and its transport
+-- preparation, when the vehicle is less than 3 m from the target (AIJobFieldWork.lua:90-104).
+-- Other job types (also those of other Mods) are not asked.
+function MH.logQueueStart(vehicle, job)
+    local parameter = job:getNamedParameter("positionAngle") or job:getNamedParameter("position")
+    local tx, tz = nil, nil
+    if parameter ~= nil and parameter.getPosition ~= nil then
+        tx, tz = parameter:getPosition()
+    end
+    local distance = "-"
+    if tx ~= nil and tz ~= nil and vehicle.rootNode ~= nil then
+        local x, _, z = getWorldTranslation(vehicle.rootNode)
+        distance = string.format("%.1f m", MathUtil.vector2Length(x - tx, z - tz))
+    end
+    local startTask = "-"
+    if AIJobType ~= nil and MH.getJobTypeIndex(job) == AIJobType.FIELDWORK and job.getStartTaskIndex ~= nil then
+        startTask = tostring(job:getStartTaskIndex())
+    end
+    Logging.info("%s Queue starts %s on %s: %s to target, start task %s; %s", MH.LOG_PREFIX, MH.getJobTitle(job),
+        vehicle:getName(), distance, startTask, MH.getFoldStates(vehicle))
+end
+
+-- Appended to AITaskDriveTo:startDriving, which the server calls once the combination is ready
+-- to drive (AITaskDriveTo:update in PREPARE_DRIVING, SDK ai/tasks/AITaskDriveTo.lua:88-104/135-151).
+-- AITask.new keeps the job (ai/tasks/AITask.lua:16-26).
+function MH.onDriveTaskStartedDriving(task)
+    if not MH.missionActive or not MH.getIsServer() or task == nil or task.job == nil then
+        return
+    end
+    for _, queue in pairs(MH.queues) do
+        if queue.autoStartedJob == task.job and queue.runningJob == task.job and MH.getVehicleExists(queue.vehicle) then
+            Logging.info("%s Queue job %s on %s starts driving; %s", MH.LOG_PREFIX, MH.getJobTitle(task.job),
+                queue.vehicle:getName(), MH.getFoldStates(queue.vehicle))
+            return
+        end
+    end
 end
 
 function MH:update(dt)
@@ -769,6 +848,36 @@ function MH.saveToXMLFile(filename)
     return true
 end
 
+-- Whether a loaded job got every target it needs from the file. A new job has no position and
+-- no angle (AIParameterPosition.new / AIParameterPositionAngle.new, SDK
+-- ai/parameters/AIParameterPosition.lua:16-25, AIParameterPositionAngle.lua:16-26) and
+-- loadFromXMLFile only fills in the attributes that are there (:38-42), so a damaged or
+-- hand-edited mapHelper.xml leaves them nil. AIJobGoTo/AIJobFieldWork:setValues then pass the nil
+-- angle to MathUtil.getDirectionFromYRotation (SDK ai/jobs/AIJobGoTo.lua:147-157,
+-- AIJobFieldWork.lua:199-211; decompiled utils/MathUtil.lua:228-229), which raises and would stop
+-- the mission start. Unset stations and fill types only make setValues return early
+-- (AIJobDeliver.lua:69-79, AIJobLoadAndDeliver.lua:73-88) and validate fail later, which pauses
+-- the queue at that job like any job that became invalid.
+function MH.getHasSavedTargets(job)
+    if job.getNamedParameters == nil then
+        return true
+    end
+    for _, item in ipairs(job:getNamedParameters()) do
+        local parameter = item.parameter
+        local parameterType = parameter ~= nil and parameter.getType ~= nil and parameter:getType() or nil
+        if parameterType == AIParameterType.POSITION or parameterType == AIParameterType.POSITION_ANGLE then
+            local x, z = parameter:getPosition()
+            if x == nil or z == nil then
+                return false
+            end
+            if parameterType == AIParameterType.POSITION_ANGLE and parameter:getAngle() == nil then
+                return false
+            end
+        end
+    end
+    return true
+end
+
 function MH.loadFromXMLFile(filename)
     local mission = g_currentMission
     local manager = MH.getJobTypeManager()
@@ -792,11 +901,15 @@ function MH.loadFromXMLFile(filename)
                 local job = MH.createJob(manager:getJobTypeIndexByName(xmlFile:getString(jobKey .. "#type")))
                 local parameter = job ~= nil and job:getNamedParameter("vehicle") or nil
                 if parameter == nil or parameter.setVehicle == nil or #queue.entries >= MH.MAX_ENTRIES then
-                            dropped = dropped + 1
+                    dropped = dropped + 1
                     return
                 end
                 job:loadFromXMLFile(xmlFile, jobKey)
                 parameter:setVehicle(vehicle)
+                if not MH.getHasSavedTargets(job) then
+                    dropped = dropped + 1
+                    return
+                end
                 job:setValues()
                 table.insert(queue.entries, {id = MH.allocateEntryId(), job = job})
                 loaded = loaded + 1
@@ -811,7 +924,8 @@ function MH.loadFromXMLFile(filename)
     end
     xmlFile:delete()
     if dropped > 0 then
-        Logging.info("%s Dropped %d saved queue jobs whose vehicle or job type no longer exists", MH.LOG_PREFIX, dropped)
+        Logging.info("%s Dropped %d saved queue jobs whose vehicle or job type no longer exists or whose target is missing",
+            MH.LOG_PREFIX, dropped)
     end
     return loaded
 end

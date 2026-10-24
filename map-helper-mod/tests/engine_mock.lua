@@ -46,6 +46,8 @@ function g_i18n:formatArea(area, precision) return string.format("%." .. precisi
 function g_i18n:formatDistance(distance, precision) return string.format("%d m", math.floor(distance + 0.5)) end
 Overlay = {DEFAULT_UVS = {0, 0, 0, 1, 1, 0, 1, 1}}
 MathUtil = {vector2Length = function(x, z) return math.sqrt(x * x + z * z) end}
+-- decompiled utils/MathUtil.lua:228-229: raises on a nil rotation, like the game.
+function MathUtil.getDirectionFromYRotation(rotY) return math.sin(rotY), math.cos(rotY) end
 function getWorldTranslation(node) return node.x, 0, node.z end
 
 -- Streams: ordered value lists; the bit width is checked against the value.
@@ -176,6 +178,11 @@ local function group(title, ...)
     return {getTitle = function() return title end, getParameters = function() return parameters end}
 end
 
+-- The drive task: AITask.new keeps its job (SDK ai/tasks/AITask.lua:16-26); startDriving runs on
+-- the server once the combination is ready to drive (ai/tasks/AITaskDriveTo.lua:88-104/135-151).
+AITaskDriveTo = {}
+function AITaskDriveTo:startDriving() self.drivingStarted = true end
+
 -- A job with the parameters of its 1.25 type (SDK ai/jobs/*.lua constructors).
 MockJob = {}
 MockJob.__index = MockJob
@@ -193,7 +200,7 @@ function MockJob.new(typeIndex)
     end
     if typeIndex == AIJobType.GOTO or typeIndex == AIJobType.FIELDWORK then
         addPosition("ai_parameterGroupTitlePosition")
-        self.driveToTask = {}
+        self.driveToTask = setmetatable({job = self}, {__index = AITaskDriveTo})
         self.tasks = {self.driveToTask}
     elseif typeIndex == AIJobType.DELIVER then
         self.unloadingStationParameter = stationParameter("unloading")
@@ -232,11 +239,25 @@ function MockJob:applyCurrentState(vehicle, mission, farmId, isDirectStart)
     if self.loadingStationParameter ~= nil then self.loadingStationParameter:setValid(stations.loading) end
     if self.unloadingStationParameter ~= nil then self.unloadingStationParameter:setValid(stations.unloading) end
 end
+-- Like AIJobGoTo/AIJobFieldWork:setValues (SDK ai/jobs/AIJobGoTo.lua:147-157): the angle goes
+-- through MathUtil.getDirectionFromYRotation, so a missing angle raises.
 function MockJob:setValues()
     self.setValuesCount = self.setValuesCount + 1
     if self.driveToTask ~= nil and self.positionAngleParameter ~= nil then
+        self.driveToTask.dirX, self.driveToTask.dirZ = MathUtil.getDirectionFromYRotation(self.positionAngleParameter:getAngle())
         self.driveToTask.x, self.driveToTask.z = self.positionAngleParameter:getPosition()
     end
+end
+-- Like AIJobFieldWork:getStartTaskIndex (SDK ai/jobs/AIJobFieldWork.lua:90-104): within 3 m of
+-- the target field work starts with the field work task; AIJob:getStartTaskIndex returns 1.
+function MockJob:getStartTaskIndex()
+    if self.jobTypeIndex == AIJobType.FIELDWORK then
+        local vehicle = self.vehicleParameter:getVehicle()
+        local x, _, z = getWorldTranslation(vehicle.rootNode)
+        local tx, tz = self.positionAngleParameter:getPosition()
+        if MathUtil.vector2Length(x - tx, z - tz) < 3 then return 2 end
+    end
+    return 1
 end
 function MockJob:resetTasks() self.resetCount = self.resetCount + 1 end
 function MockJob:getTaskByIndex(index) return self.tasks[index] end

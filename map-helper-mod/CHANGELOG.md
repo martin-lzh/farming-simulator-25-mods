@@ -40,10 +40,14 @@
 - 作业被停止或无法完成时，队列暂停并显示原因，同时提示你。点击“继续队列”或加入作业即可继续。
 - Queues are saved with the game. In multiplayer, the server runs them, farm members allowed to hire workers can change them, and players who join later see them.
 - 队列随存档保存。多人游戏中由服务器执行，有雇佣帮手权限的农场成员可以修改，之后加入的玩家也能看到。
-- After loading, the queue also continues after a worker that starts on the vehicle, for example one you start yourself or one another Mod restarts. Before, only that job ran and the queue stopped.
-- 读档后，车辆上开始工作的帮手（例如你自己开始的或其他 Mod 重新启动的）完成作业后，队列也会继续。之前只执行这一个作业，队列随后停下。
+- After loading, the queue also continues after a worker that starts on the vehicle, for example one who carries on with the field work he was doing when you saved, one you start yourself or one another Mod starts. Before, only that job ran and the queue stopped.
+- 读档后，车辆上开始工作的帮手（例如接着做保存时田地工作的帮手、你自己开始的或其他 Mod 启动的）完成作业后，队列也会继续。之前只执行这一个作业，队列随后停下。
 - The next job in the queue starts only once the vehicle has stopped and its implements have finished folding or lifting, so the worker doesn't drive off while a sprayer boom is still folding.
 - 队列中的下一个作业要等车辆停稳、农具折叠或升起完毕后才开始，帮手不会在喷杆还在折叠时就开走。
+- A queued job whose target is missing in the save file is left out when you load, instead of stopping the save from loading.
+- 存档文件中缺少目标的排队作业在读档时被略过，不再导致存档无法载入。
+- Attaching or detaching an implement while the Map Helper page is open now also switches the job types: within a few seconds fields are set up as field work (or Go to) to match.
+- 在地图助手页面打开时挂上或卸下农具，作业类型也会随之更新：几秒内点击田地会相应地填为田地工作（或前往）。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
 

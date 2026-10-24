@@ -62,7 +62,7 @@ Field work uses the worker settings your vehicle has when that job starts, not t
 
 If you stop a job, or a job can't be finished (for example out of fuel or seed, blocked, or the field isn't ready), the queue pauses. The remaining jobs stay, the card shows the reason, and you get a message. Fix the problem and click **Resume**, or add a job: the queue continues with its first waiting job. The queue also pauses when the next job can't start, for example because too many workers are active.
 
-Queued jobs are kept when you save. After loading, the queue waits until you click **Resume** or add a job. A worker who was driving when you saved isn't restarted, just like in the base game. If a worker starts on the vehicle after loading, for example one you start yourself or one another Mod restarts, the queue continues after that job.
+Queued jobs are kept when you save. After loading, the queue waits until you click **Resume** or add a job. If a worker starts on the vehicle after loading, for example a worker who was doing field work when you saved and carries on, one you start yourself or one another Mod starts, the queue continues after that job.
 
 On the Precision Farming soil map, X opens its Help instead; click Map Helper there.
 
@@ -139,7 +139,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 如果你停止了作业，或作业无法完成（例如燃料或种子用完、被挡住、田地未准备好），队列会暂停：剩余作业保留，卡片显示原因，并提示你。解决问题后点击 **继续队列** 或加入一个作业，队列从第一个等待中的作业继续。下一个作业无法开始时（例如在岗帮手太多），队列同样暂停。
 
-保存游戏时，队列中的作业一并保存。读档后，队列会等待你点击 **继续队列** 或加入作业。保存时正在工作的帮手不会重新开始，与原版相同。读档后如果车辆上有帮手开始工作，例如你自己开始的或其他 Mod 重新启动的，队列会在该作业之后继续。
+保存游戏时，队列中的作业一并保存。读档后，队列会等待你点击 **继续队列** 或加入作业。读档后如果车辆上有帮手开始工作，例如保存时正在做田地工作、读档后接着工作的帮手，你自己开始的或其他 Mod 启动的，队列会在该作业之后继续。
 
 在精准农业的土壤图层上，X 会打开它的帮助，此时请直接点击“地图助手”。
 

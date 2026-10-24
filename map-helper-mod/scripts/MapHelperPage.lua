@@ -397,6 +397,35 @@ function MHPage:buildForm(jobTypeIndex, sourceJob)
     return true
 end
 
+-- Job type indices in order, to see whether the available types changed.
+function MHPage.getJobTypesSignature(types)
+    local parts = {}
+    for _, jobType in ipairs(types or {}) do
+        table.insert(parts, tostring(jobType.index))
+    end
+    return table.concat(parts, ",")
+end
+
+-- Which job types the vehicle can do changes with its implements: field work needs an AI
+-- implement (AIJobFieldWork:getIsAvailableForVehicle asks getCanStartFieldWork, SDK
+-- ai/jobs/AIJobFieldWork.lua:166-168). The periodic refresh reads them again; when they
+-- changed, the form is rebuilt with its current type (if still offered) and parameters, so
+-- the job type selector and the places (field work or Go to) follow the attached implements.
+-- Not while a position is being picked on the map.
+function MHPage:refreshJobTypes()
+    local vehicle = self.vehicle
+    if self:getNoFormReason(vehicle) ~= nil or self.frame:getIsPicking() then
+        return false
+    end
+    local types = self:getAvailableJobTypes(vehicle)
+    if MHPage.getJobTypesSignature(types) == MHPage.getJobTypesSignature(self.jobTypes) then
+        return false
+    end
+    local job = self.frame.currentJob
+    self:buildForm(job ~= nil and MH.getJobTypeIndex(job) or nil, job)
+    return true
+end
+
 -- Copies the parameters of a queued job into the form's job, the way AIJobVehicle saves
 -- and loads lastJob: AIJob:saveToXMLFile/loadFromXMLFile through an XML file that only
 -- exists in memory (never saved). The vehicle parameter has no loadFromXMLFile and stays.
@@ -1463,6 +1492,7 @@ function MHPage:update(dt)
     end
     if self.placesTimer >= MHPage.PLACES_INTERVAL then
         -- Implements may have been attached, detached or refilled in the meantime.
+        self:refreshJobTypes()
         self:updateFilterOptions(true)
         self:reloadPlaces()
     end
