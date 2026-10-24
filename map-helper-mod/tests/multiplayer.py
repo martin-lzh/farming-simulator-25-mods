@@ -8,7 +8,7 @@ from collections import deque
 from lupa import LuaRuntime
 from guixml import install
 
-SCRIPTS = ("MapHelper", "QueueEvents", "MapHelperPage", "MapFrameExtension", "Register")
+SCRIPTS = ("MapHelper", "QueueEvents", "FieldNeeds", "MapHelperPage", "MapFrameExtension", "Register")
 
 
 class Peer:
@@ -79,6 +79,13 @@ class Peer:
                 return MH.requestAdd(vehicle or tractor, newJob(vehicle or tractor, x, z), insertNext)
             end
             function idAt(index) return MH.getEntries(tractor)[index].id end
+            -- A worker the player started himself: added jobs wait behind it.
+            function busy()
+                local job = newJob(tractor, 0, 0)
+                g_currentMission.aiSystem:startJob(job, 1)
+                return job
+            end
+            function startedX(index) return g_currentMission.aiSystem.started[index].positionAngleParameter.x end
             function labels(vehicle)
                 local result = {}
                 for _, entry in ipairs(MH.getEntries(vehicle or tractor)) do table.insert(result, MH.getJobLabel(entry.job)) end
@@ -155,19 +162,24 @@ def run_multiplayer(root):
     assert a.value("labels()") == "", "no optimistic client update"
     session.deliver(0)
     session.broadcast()
-    assert session.labels() == ["Go to - 10, 20"] * 4
-    worker.run("add(nil, 30, 40)")
+    assert session.server.value("#g_currentMission.aiSystem.started") == 1 and session.server.value("startedX(1)") == 10
+    assert session.labels() == [""] * 4 and all(peer.value("MH.queues[tractor].running") for peer in session.clients)
+    passed("the first job added to an idle vehicle starts at once on the server and every client sees it running")
+
+    a.run("add(nil, 30, 40)")
+    session.deliver(0)
+    session.broadcast()
+    assert session.labels() == ["Go to - 30, 40"] * 4
+    worker.run("add(nil, 50, 60)")
     foreign.run("MH.requestClear(tractor)")
     session.deliver(1)
     session.deliver(2)
     assert not session.server.outgoing
-    assert session.labels() == ["Go to - 10, 20"] * 4
+    assert session.labels() == ["Go to - 30, 40"] * 4
     passed("manager request is applied by the server and reaches every client; others are refused")
 
-    session.server.run("add(nil, 50, 60)")
-    session.broadcast()
     second = Session(root, clients=((1, True), (1, True)))
-    second.server.run("add(nil, 1, 1); add(nil, 2, 2)")
+    second.server.run("busy(); add(nil, 1, 1); add(nil, 2, 2)")
     second.broadcast()
     entry = second.clients[0].value("firstId()")
     for client in second.clients:
@@ -179,16 +191,11 @@ def run_multiplayer(root):
     assert second.labels() == ["Go to - 2, 2"] * 3
     passed("host edits broadcast and concurrent removal of one entry removes it once")
 
-    a.run("MH.requestStart(tractor)")
-    session.deliver(0)
-    session.broadcast()
-    assert session.server.value("#g_currentMission.aiSystem.started") == 1
-    assert a.value("MH.queues[tractor].running") and a.value("labels()") == "Go to - 50, 60"
     session.server.run("finishRunning(AIMessageSuccessFinishedJob.new())")
     session.broadcast()
     session.server.run("tick(MH.ADVANCE_DELAY)")
     session.broadcast()
-    assert session.server.value("#g_currentMission.aiSystem.started") == 2
+    assert session.server.value("#g_currentMission.aiSystem.started") == 2 and session.server.value("startedX(2)") == 30
     assert session.labels() == [""] * 4 and a.value("MH.queues[tractor].running")
     session.server.run("finishRunning(AIMessageSuccessFinishedJob.new())")
     session.broadcast()
@@ -199,7 +206,7 @@ def run_multiplayer(root):
 
     session = Session(root)
     a, worker, foreign = session.clients
-    a.run("add(nil, 1, 1); add(nil, 2, 2); add(nil, 3, 3); MH.requestStart(tractor)")
+    a.run("add(nil, 1, 1); add(nil, 2, 2); add(nil, 3, 3)")
     session.deliver(0)
     session.broadcast()
     session.server.run("finishRunning(AIMessageSuccessStoppedByUser.new()); tick(MH.ADVANCE_DELAY * 2)")
@@ -223,7 +230,25 @@ def run_multiplayer(root):
     assert late.value("notes()") == "", "joining players get the state without a message"
     passed("joining player receives the current queue")
 
+    session = Session(root)
+    a = session.clients[0]
+    a.run("add(nil, 1, 1); add(nil, 2, 2)")
+    session.deliver(0)
+    session.broadcast()
+    session.server.run("finishRunning(AIMessageErrorOutOfFill.new())")
+    session.broadcast()
+    assert a.value("MH.queues[tractor].pause == MH.PAUSE.STOPPED")
+    a.run("add(nil, 3, 3)")
+    session.deliver(0)
+    session.broadcast()
+    assert session.server.value("#g_currentMission.aiSystem.started") == 2 and session.server.value("startedX(2)") == 2
+    assert all(peer.value("MH.queues[tractor].pause == MH.PAUSE.NONE and MH.queues[tractor].running")
+               for peer in [session.server, *session.clients])
+    assert session.labels() == ["Go to - 3, 3"] * 4
+    passed("adding a job to a paused queue resumes it with its first waiting job")
+
     session = Session(root, clients=((1, True),))
+    session.server.run("busy()")
     session.clients[0].run("add(nil, 7, 8); add(other, 9, 9)")
     session.deliver(0)
     session.broadcast()
@@ -240,11 +265,11 @@ def run_multiplayer(root):
     fresh.deliver(0)
     fresh.broadcast()
     assert fresh.server.value("#g_currentMission.aiSystem.started") == 1 and joined.value("labels()") == ""
-    passed("server save, reload, join snapshot and start after loading")
+    passed("server save, reload, join snapshot and resume after loading")
 
     session = Session(root, clients=((1, True),), dedicated=True)
     manager = session.clients[0]
-    manager.run("add(nil, 4, 4); add(nil, 5, 5); MH.requestStart(tractor)")
+    manager.run("add(nil, 4, 4); add(nil, 5, 5)")
     session.deliver(0)
     session.broadcast()
     session.server.run("finishRunning(AIMessageErrorOutOfFill.new())")
@@ -255,6 +280,7 @@ def run_multiplayer(root):
 
     session = Session(root)
     a, worker, foreign = session.clients
+    session.server.run("busy()")
     a.run("add(nil, 1, 1); add(nil, 2, 2); add(nil, 3, 3, true)")
     session.deliver(0)
     session.broadcast()
@@ -271,15 +297,14 @@ def run_multiplayer(root):
     session.deliver(1)
     session.deliver(2)
     assert not session.server.outgoing and session.labels()[0] == "Go to - 3, 3;Go to - 9, 9;Go to - 1, 1"
-    a.run(f"MH.requestMove(tractor, {a.value('idAt(1)')}, true)")
+    first_id = a.value("idAt(1)")
+    a.run(f"MH.requestMove(tractor, {first_id}, true)")
     session.deliver(0)
     assert not session.server.outgoing, "moving the first entry up changes nothing"
-    a.run("MH.requestStart(tractor)")
-    session.deliver(0)
+    session.server.run("finishRunning(AIMessageSuccessFinishedJob.new()); tick(MH.ADVANCE_DELAY)")
     session.broadcast()
-    first = session.server.value("g_currentMission.aiSystem.started[1].positionAngleParameter.x")
-    assert first == 3, first
-    a.run(f"MH.requestEdit(tractor, 999, newJob(tractor, 7, 7))")
+    assert session.server.value("startedX(2)") == 3, "the inserted job runs next"
+    a.run("MH.requestEdit(tractor, 999, newJob(tractor, 7, 7))")
     session.deliver(0)
     assert not session.server.outgoing, "an entry that is gone can't be edited"
     passed("insert as next, move and edit are applied by the server for managers only")

@@ -255,6 +255,10 @@ function MockJob:getIsStartable(connection)
     if vehicle == nil then return false, 2 end
     if g_currentMission.aiSystem.limitReached then return false, 1 end
     if vehicle:getIsAIActive() then return false, 4 end
+    -- Enterable:getIsInUse: someone sits in it and the start comes from another connection.
+    if vehicle.spec_enterable ~= nil and vehicle.spec_enterable.isControlled and vehicle:getOwnerConnection() ~= connection then
+        return false, 5
+    end
     return true, 0
 end
 local function writeParameters(job, s)
@@ -947,8 +951,83 @@ function mockVehicle(networkId, farmId, uniqueId)
     function vehicle:getMapHotspot() return self.hotspot end
     function vehicle:getOwnerConnection() return self.ownerConnection end
     function vehicle:stopCurrentAIJob(aiMessage) g_currentMission.aiSystem:stopJob(self.aiJob, aiMessage) end
+    -- Vehicle:getRootVehicle / getChildVehicles (the list includes the root itself).
+    vehicle.childVehicles = {vehicle}
+    function vehicle:getRootVehicle() return self end
+    function vehicle:getChildVehicles() return self.childVehicles end
     objects[networkId] = vehicle
     return vehicle
+end
+
+-- An attached implement with the given specialization tables (spec_plow = {}, ...).
+function attachImplement(vehicle, specs)
+    local implement = {fillTypes = {}, fillLevels = {}}
+    for name, spec in pairs(specs) do implement[name] = spec end
+    function implement:getSprayerFillUnitIndex() return 1 end
+    function implement:getFillUnitFillType(index) return self.fillTypes[index] end
+    function implement:getFillUnitFillLevel(index)
+        return self.fillLevels[index] or (self.fillTypes[index] ~= nil and 1000 or 0)
+    end
+    table.insert(vehicle.childVehicles, implement)
+    return implement
+end
+
+-- Field state at a point: the state of the field whose square contains it (FieldState:update).
+FieldGroundType = {NONE = 1, STUBBLE_TILLAGE = 2, CULTIVATED = 3, SEEDBED = 4, PLOWED = 5, ROLLED_SEEDBED = 6, RIDGE = 7,
+    SOWN = 8, DIRECT_SOWN = 9, PLANTED = 10, RIDGE_SOWN = 11, ROLLER_LINES = 12, HARVEST_READY = 13,
+    HARVEST_READY_OTHER = 14, GRASS = 15, GRASS_CUT = 16}
+FruitType = {UNKNOWN = 0}
+FieldDensityMap = {SPRAY_LEVEL = "SPRAY_LEVEL"}
+Platform = {gameplay = {useRolling = true, useLimeCounter = true, hasWeeder = true}}
+SowingMachine = {AI_REQUIRED_GROUND_TYPES = {FieldGroundType.STUBBLE_TILLAGE, FieldGroundType.CULTIVATED,
+    FieldGroundType.SEEDBED, FieldGroundType.PLOWED, FieldGroundType.ROLLED_SEEDBED, FieldGroundType.RIDGE},
+    AI_OUTPUT_GROUND_TYPES = {FieldGroundType.SOWN, FieldGroundType.DIRECT_SOWN, FieldGroundType.PLANTED,
+        FieldGroundType.RIDGE_SOWN, FieldGroundType.ROLLER_LINES, FieldGroundType.HARVEST_READY,
+        FieldGroundType.HARVEST_READY_OTHER, FieldGroundType.GRASS, FieldGroundType.GRASS_CUT}}
+FieldState = {}
+FieldState.__index = FieldState
+function FieldState.new() return setmetatable({isValid = false, groundType = FieldGroundType.NONE}, FieldState) end
+function FieldState:update(x, z)
+    fieldStateReads = (fieldStateReads or 0) + 1
+    for _, field in ipairs(g_fieldManager.fields) do
+        if math.abs(field.posX - x) <= 50 and math.abs(field.posZ - z) <= 50 then
+            for key, value in pairs(field.state) do self[key] = value end
+            self.isValid = true
+            return
+        end
+    end
+end
+-- Fruits with the FruitTypeDesc checks the Mod uses: wheat (growing 1-3, harvest 4,
+-- withered 5, cut 6, mulched 7), grass (growing 1-2, harvest 3), potato (foliage 4, harvest 5).
+-- getIsHarvestable includes the forage states, like the game's harvest transitions
+-- (FruitTypeDesc.lua:483/695); getIsGrowing ends before minHarvestingGrowthState (:713).
+local function fruit(index, title, ranges)
+    local desc = {index = index, title = title, mulchedState = ranges.mulched or 0,
+        minHarvestingGrowthState = ranges.minHarvest, maxHarvestingGrowthState = ranges.maxHarvest,
+        minForageGrowthState = ranges.minForage or 0}
+    function desc:getIsGrowing(gs) return gs > 0 and gs < ranges.minHarvest and gs ~= ranges.prepare end
+    function desc:getIsHarvestable(gs) return gs >= (ranges.minForage or ranges.minHarvest) and gs <= ranges.maxHarvest end
+    function desc:getIsPreparable(gs) return gs == ranges.prepare end
+    function desc:getIsWithered(gs) return gs == ranges.withered end
+    function desc:getIsCut(gs) return gs == ranges.cut end
+    function desc:getIsWeedable(gs) return gs > 0 and gs <= 2 end
+    function desc:getIsHoeable(gs) return gs > 0 and gs <= 2 end
+    return desc
+end
+FRUIT = {WHEAT = 1, GRASS = 2, POTATO = 3, MAIZE = 4}
+g_fruitTypeManager = {fruits = {
+    fruit(1, "Wheat", {minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, mulched = 7}),
+    fruit(2, "Grass", {minHarvest = 3, maxHarvest = 3, cut = 4}),
+    fruit(3, "Potato", {minHarvest = 5, maxHarvest = 5, prepare = 4, cut = 6}),
+    fruit(4, "Maize", {minForage = 3, minHarvest = 4, maxHarvest = 4, cut = 6})
+}}
+function g_fruitTypeManager:getFruitTypeByIndex(index) return self.fruits[index] end
+g_sprayTypeManager = {}
+function g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType)
+    if fillType == nil then return nil end
+    local groundTypes = {FERTILIZER = 1, LIQUIDFERTILIZER = 2, LIME = 3, HERBICIDE = 4}
+    return {isLime = fillType == "LIME", isHerbicide = fillType == "HERBICIDE",
+        isFertilizer = fillType == "FERTILIZER" or fillType == "LIQUIDFERTILIZER", sprayGroundType = groundTypes[fillType]}
 end
 
 -- Farmland squares of 100 m; the field of a farmland has the farmland's id.
@@ -964,8 +1043,11 @@ function g_fieldManager:getFields() return self.fields end
 function g_fieldManager:getFieldById(id)
     for _, field in ipairs(self.fields) do if field.farmland.id == id then return field end end
 end
-function mockField(id, x, z, area, ownerFarmId)
+function mockField(id, x, z, area, ownerFarmId, state)
     local field = {farmland = {id = id}, posX = x, posZ = z, areaHa = area}
+    field.state = {groundType = FieldGroundType.STUBBLE_TILLAGE, fruitTypeIndex = 0, growthState = 0, sprayLevel = 0,
+        limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0}
+    for key, value in pairs(state or {}) do field.state[key] = value end
     function field:getId() return self.farmland.id end
     function field:getAreaHa() return self.areaHa end
     function field:getIndicatorPosition() return self.posX, self.posZ end
@@ -1003,7 +1085,19 @@ function newMission(isServer)
             if object.uniqueId == uniqueId then return object end
         end
     end}
-    mission.missionInfo = {isValid = true, savegameDirectory = "savegame1"}
+    mission.missionInfo = {isValid = true, savegameDirectory = "savegame1", plowingRequiredEnabled = true,
+        limeRequired = true, weedsEnabled = true, stonesEnabled = true}
+    mission.fieldGroundSystem = {getMaxValue = function(_, layer) assert(layer == "SPRAY_LEVEL"); return 2 end}
+    mission.stoneSystem = {getMinMaxValues = function() return 2, 4 end, getMaskValue = function() return 1 end}
+    -- Weed replacement tables: the weeder takes small weeds, the hoe also medium ones,
+    -- herbicide all three states.
+    mission.weedSystem = {
+        getWeederReplacements = function(_, isHoe)
+            return {weed = {replacements = isHoe and {[1] = 0, [2] = 0} or {[1] = 0}}}
+        end,
+        getHerbicideReplacements = function() return {weed = {replacements = {[1] = 0, [2] = 0, [3] = 0}}} end
+    }
+    mission.userManager = {getUserIdByConnection = function(_, connection) return connection ~= nil and connection.userId or nil end}
     return mission
 end
 

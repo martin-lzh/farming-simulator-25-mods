@@ -77,16 +77,14 @@
       "key": "Wheel"
     },
     "mhVehicleTitle": "FASTRAC 2135 4WS",
-    "mhVehicleStatus": "工作中：田地工作 - 进行田地作业",
-    "mhVehicleInfo": "距目标 120 m · 合同完成 72% · 队列 2 项",
-    "mhMineText": "我的车辆",
-    "mhStartStopText": "取消作业",
+    "mhVehicleStatus": "帮手正在驾驶此车辆。",
+    "mhVehicleInfo": "等待中的作业：2",
     "mhAddText": "加入队列",
     "mhNextText": "插入为下一项",
     "mhQueueTitle": "指令队列",
     "mhClearText": "清空队列",
     "mhEditText": "编辑",
-    "mhRemoveText": "删除",
+    "mhRemoveText": "$l10n_button_cancelJob",
     "mhQueueEmpty": {
       "visible": false
     },
@@ -125,69 +123,86 @@
     },
     "createPositionRotationTemplate": {
       "text": "< 812 , 433 | 90° >"
-    }
+    },
+    "mhFilterSelector": {
+      "texts": [
+        "需要此作业的田地",
+        "我的田地",
+        "$l10n_ui_contracts",
+        "$l10n_ui_stations"
+      ],
+      "state": 1
+    },
+    "mhPlacesEmpty": {
+      "visible": false
+    },
+    "mhResumeContainer": {
+      "visible": false
+    },
+    "mhResumeText": "继续队列"
   },
   "lists": {
     "mhPlacesList": [
       {
-        "section": "已接合同"
+        "name": "田地编号 2",
+        "info": "犁地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
       },
       {
-        "name": "田地 84 · 草捆打包",
-        "info": "72%"
+        "name": "田地编号 5",
+        "info": "犁地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
       },
       {
-        "name": "田地 44 · 草捆打包",
-        "info": "0%"
+        "name": "田地编号 9",
+        "info": "犁地, 需要石灰",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
       },
       {
-        "section": "自己的田地"
+        "name": "田地编号 12",
+        "info": "犁地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
       },
       {
-        "name": "田地 3",
-        "info": "2.4 ha"
-      },
-      {
-        "name": "田地 4",
-        "info": "1.9 ha"
-      },
-      {
-        "section": "作业类型"
-      },
-      {
-        "name": "田地工作",
-        "info": ""
-      },
-      {
-        "name": "前往",
-        "info": ""
+        "name": "田地编号 14",
+        "info": "犁地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
       }
     ],
     "mhQueueList": [
       {
-        "index": "▶",
-        "title": "田地工作 · 田地 84",
-        "text": "进行中 · 距目标 120 m"
+        "index": "",
+        "title": "田地工作 - 正在田地中作业",
+        "text": "距离: 120 m  ·  合同进度: 72 %",
+        "badgeIcon": {
+          "visible": true
+        }
       },
       {
         "index": "1",
-        "title": "前往 · 农场",
-        "text": "等待中"
+        "title": "前往",
+        "text": "412, 1180",
+        "badgeIcon": {
+          "visible": false
+        }
       },
       {
         "index": "2",
-        "title": "运送 · 谷物仓库",
-        "text": "等待中"
-      },
-      {
-        "index": "3",
-        "title": "田地工作 · 田地 3",
-        "text": "等待中"
-      },
-      {
-        "index": "4",
-        "title": "前往 · 农场",
-        "text": "等待中"
+        "title": "田地工作",
+        "text": "田地编号 12",
+        "badgeIcon": {
+          "visible": false
+        }
       }
     ],
     "pagingTabList": [
@@ -245,7 +260,7 @@
   },
   "listSelection": {
     "mhPlacesList": 2,
-    "mhQueueList": 2,
+    "mhQueueList": 1,
     "pagingTabList": 1
   }
 }

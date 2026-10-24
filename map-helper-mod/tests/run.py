@@ -15,7 +15,7 @@ from guixml import GUI_FILES, install
 from multiplayer import run_multiplayer
 
 root = Path(__file__).resolve().parents[1]
-SCRIPTS = ("MapHelper", "QueueEvents", "MapHelperPage", "MapFrameExtension", "Register")
+SCRIPTS = ("MapHelper", "QueueEvents", "FieldNeeds", "MapHelperPage", "MapFrameExtension", "Register")
 REFERENCE = root.parent / "work/reference/1.25.0.0/dataS-archive"
 
 
@@ -25,10 +25,16 @@ def check_texts():
     texts = {node.attrib["name"]: node for node in desc.findall("l10n/text")}
     languages = [child.tag for child in desc.find("title")]
     assert len(languages) == 27, languages
+    profiles = set()
+    for name in GUI_FILES:
+        profiles.update(node.attrib["name"] for node in ET.parse(root / name).getroot().iter("Profile"))
     used = set()
     for name in SCRIPTS:
         source = (root / f"scripts/{name}.lua").read_text(encoding="utf-8")
         used.update(re.findall(r'(?:MH|MapHelper)\.text\("([a-zA-Z_]+)"\)', source))
+        # Keys kept in tables (for example the empty texts per filter) are quoted literals;
+        # quoted profile names are not texts.
+        used.update(set(re.findall(r'"(mh_[a-zA-Z]+)"', source)) - profiles)
     for name in GUI_FILES:
         used.update(key for key in re.findall(r'\$l10n_([a-zA-Z0-9_]+)', (root / name).read_text(encoding="utf-8"))
                     if key.startswith("mh_"))
@@ -64,6 +70,8 @@ def check_gui_against_game():
     script_texts = set()
     for name in SCRIPTS:
         script_texts.update(re.findall(r'g_i18n:getText\("([a-zA-Z0-9_]+)"\)', (root / f"scripts/{name}.lua").read_text(encoding="utf-8")))
+        # Game text keys kept in tables (FieldNeeds work and ground texts).
+        script_texts.update(re.findall(r'"((?:ui|contract|button)_[a-zA-Z0-9_]+)"', (root / f"scripts/{name}.lua").read_text(encoding="utf-8")))
     missing_texts = script_texts - game_texts
     assert not missing_texts, f"game texts not found: {sorted(missing_texts)}"
     checked = 0

@@ -31,7 +31,7 @@ def build():
     paths = {"modDesc.xml", check_icon(desc)}
     paths.update(node.attrib["filename"] for node in desc.findall("extraSourceFiles/sourceFile"))
     paths.update(GUI_FILES)
-    assert len(paths) == 9, "Review runtime whitelist when adding files"
+    assert len(paths) == 10, "Review runtime whitelist when adding files"
     for name in GUI_FILES:
         ET.parse(ROOT / name)
     for name in paths:

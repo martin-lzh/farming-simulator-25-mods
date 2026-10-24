@@ -72,6 +72,20 @@ if pageMissing ~= nil then
     MH.warnOnce("page", "%s not found in this game version; the Map Helper page is disabled", pageMissing)
 end
 
+-- Field states for the "fields needing this work" filter and the field hints. Without them
+-- the page still lists fields, contracts and stations.
+local fieldNeedsMissing = findMissing({
+    {FieldState, "FieldState", {"new", "update"}},
+    {FieldGroundType, "FieldGroundType", {"NONE", "PLOWED", "CULTIVATED", "SEEDBED"}},
+    {FruitType, "FruitType", {"UNKNOWN"}},
+    {FieldDensityMap, "FieldDensityMap", {"SPRAY_LEVEL"}},
+    {g_fruitTypeManager, "g_fruitTypeManager", {"getFruitTypeByIndex"}}
+})
+MH.features.fieldNeeds = fieldNeedsMissing == nil
+if fieldNeedsMissing ~= nil and MH.features.page then
+    MH.warnOnce("fieldNeeds", "%s not found in this game version; field needs are not shown", fieldNeedsMissing)
+end
+
 local hotkeyMissing = findMissing({
     {PlayerInputComponent, "PlayerInputComponent", {"registerGlobalPlayerActionEvents"}},
     {InGameMenu, "InGameMenu", {"openMapOverview"}},

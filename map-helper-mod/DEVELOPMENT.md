@@ -6,6 +6,7 @@
 
 - 2026-10-21：首次实现（右侧抽屉 + 作业菜单中的“加入队列”），后改为原生 `MENU_EXTRA_1` 和规划模式。
 - 2026-10-21 之后（未提交）：界面重做。删除右侧抽屉（`DrawerDialog`）和作业菜单里的“加入队列”按钮，改为地图左侧边栏 `mapOverviewSelector` 的新页面“地图助手”（下文“页面”）；新增全局热键左 Alt + M；服务器新增 MOVE、EDIT 和“插入为下一个”；修复退出存档失败（下文“退出存档时的清理”）。本机 `uv run map-helper-mod/tests/run.py`：l10n（24 个键）、GUI 引用核对、36 项行为测试、降级检查、8 组多人模拟通过；5 个脚本用 `work/tools/fs-utils-bin/fs-luau-compile.exe` 编译通过（输出在被忽略的 `work/validation/map-helper-luau/`，只说明可解析）；`python map-helper-mod/tools/build.py` 9 个文件，SHA256 见最终报告。**尚未在游戏内运行过**，下方 MAP-xx 清单全部待维护者执行。
+- 2026-10-24（未提交，维护者按 1b8bd5e 游戏内反馈）：去掉“我的车辆”和“开始队列”按钮，原位置改为地点过滤选择器（下文“地点过滤与作业需求”），新增 `scripts/FieldNeeds.lua` 判断田地是否需要当前组合的作业；田地图标改为 `gui.storeAttribute_seeding`（原 `gui.icon_others_farmland` 在列表尺寸下看起来像人像）；加入作业时自动开始/继续队列，队列标题旁新增“继续队列”，当前作业行的“删除”改为“取消作业”（下文“自动开始、继续与取消”）；点击车辆卡片回到自己的车辆。随后按审查修正：别人坐着的车辆不再被自动开始或继续；需求判断改用各农具自己的设置（直播、土壤/草地镇压器、除草机/锄的替换表、去茎叶机作物、割台青贮阶段、有无作业区域、喷洒来源、已有喷洒类型）；页面打开时每 10 s 重算组合的作业。本机 `uv run map-helper-mod/tests/run.py`：l10n（30 个键）、GUI 引用核对、45 项行为测试、降级检查、10 组多人模拟通过；6 个脚本编译通过；构建 10 个文件，SHA256 见最终报告。同样**尚未在游戏内运行过**。
 - 仓库级接入（`tools/ci.py` 的 `MODS` 已有 `map-helper`）。`tools/check_syntax.py` 用 `git ls-files` 列文件，删除的抽屉文件在暂存前会报“文件不存在”，暂存删除后即正常。
 
 
@@ -17,11 +18,12 @@
 - `scripts/MapHelper.lua`：队列模型与服务端逻辑（请求处理、启动下一个作业、完成/取消判断、暂停原因、存档读写、加入同步、任务生命周期、全局热键注册）。
 - `scripts/QueueEvents.lua`：`MHQueueRequestEvent`（客户端 → 服务器：添加/插入为下一个、编辑、移动、删除、清空、开始）和 `MHQueueStateEvent`（服务器 → 客户端：某车辆的完整队列）。
 - `scripts/MapFrameExtension.lua`（`MHMapFrame`）：地图页面接入：选择器新状态与圆点、余额下方的“地图助手”按钮、地图页按键（`MENU_EXTRA_1`、`MENU_MAP_ACTION_1`）、全局热键打开页面、各原生函数的钩子入口、规划模式（`MF.withPlanning`）、拆除。
-- `scripts/MapHelperPage.lua`（`MHPage`）：页面内容：车辆卡片、地点列表、原生作业表单的放置与填写、加入/插入/保存、队列列表与进度、条目操作。
+- `scripts/MapHelperPage.lua`（`MHPage`）：页面内容：车辆卡片、地点过滤与地点列表、原生作业表单的放置与填写、加入/插入/保存、队列列表与进度、条目操作、继续队列。
+- `scripts/FieldNeeds.lua`（`MHFieldNeeds`）：组合（车辆及其挂接农具）做哪些田间作业、某块田地在其名称标记处的状态、是否需要这些作业，以及“我的田地”的状态文字。
 - `gui/MapHelperPage.xml`：页面本体，全部尺寸和位置写在 profile 里（下文“页面布局”）。`gui/DrawerToggle.xml`：余额下方的按钮，沿用地图页 `fs25_mapButton*` 样式。
-- `scripts/Register.lua`：检查所需游戏函数是否存在，按功能（队列、页面、热键）安装钩子；钩子按类只装一次，重复执行只刷新回调。
-- `tests/`：原创引擎替身（`engine_mock.lua`）、`guixml.py`（把本 Mod 的 GUI XML 交给替身，替身按真实文件建元素树）、36 项行为测试、8 组多人模拟；不加载、不执行任何游戏文件。
-- `tools/build.py`：白名单打包 9 个运行时文件（modDesc、5 个脚本、2 个 GUI XML、DDS 图标），检查 DDS 格式。
+- `scripts/Register.lua`：检查所需游戏函数是否存在，按功能（队列、页面、热键、田地需求）安装钩子；钩子按类只装一次，重复执行只刷新回调。
+- `tests/`：原创引擎替身（`engine_mock.lua`）、`guixml.py`（把本 Mod 的 GUI XML 交给替身，替身按真实文件建元素树）、45 项行为测试、10 组多人模拟；不加载、不执行任何游戏文件。
+- `tools/build.py`：白名单打包 10 个运行时文件（modDesc、6 个脚本、2 个 GUI XML、DDS 图标），检查 DDS 格式。
 - `tools/make_icon.py`：代码绘制原创图标，PNG 源在 `assets/icon.png`。
 
 ## 设计
@@ -43,15 +45,15 @@
 | 区域 | profile | y / 高 |
 | --- | --- | --- |
 | 车辆卡片（`gui.animalDealer_box`，正是在岗帮手列表项的 358×100 底图；左侧车辆商店图或机械图标、名称、状态、等待数） | `mh_vehicleCard` 及子项 | 0 / 100 |
-| “我的车辆” / “开始队列·取消作业”（两个地图按钮） | `mh_buttonLeft/Right` | -106 / 25 |
-| 地点列表（分组：合同、田地、作业、站点；行 32 px） | `mh_placesBox`、`mh_list`、`mh_placeItem` | -139 / 130 |
+| 地点过滤选择器（原生作业类型选择器 `fs25_aiJobTypeMultiTextOption`，高 32 px） | `mh_filterSelector` | -104 / 32 |
+| 地点列表（只显示所选类别、无分组；行 32 px；空列表时显示说明文字） | `mh_placesBox`、`mh_list`、`mh_placeItem`、`mh_placesEmptyText` | -139 / 130 |
 | 作业表单槽（原生 `createJobContainer` 放在这里，见下节） | `mh_nativeForm`（作用于原生容器） | -277 / 320 |
 | “加入队列”（Z）/“插入为下一个”（X）；编辑时为“保存”/“取消” | `mh_buttonAction1/Extra1` | -603 / 25 |
-| 队列标题 + “清空队列” | `mh_queueTitle`、`mh_buttonClear` | -636 / 25 |
-| 队列列表（行 40 px：黑色编号方块或帮手图标、标题、说明） | `mh_queueBox`、`mh_queueItem` | -667 / 167 |
-| 上移、下移、编辑、删除 | `mh_buttonIcon/Entry` | -840 / 25 |
+| 队列标题 + “继续队列”（只在可继续时显示）+ “清空队列” | `mh_queueTitle`、`mh_buttonResume`、`mh_buttonClear` | -636 / 25 |
+| 队列列表（行 40 px：黑色编号方块或帮手图标、标题、说明；纵向随页面拉伸） | `mh_queueBox`、`mh_queueItem` | -667 / 167（1080p） |
+| 上移、下移、编辑、删除（当前作业行为“取消作业”），贴页面底部 | `mh_buttonIcon/Entry` | 底部 / 25 |
 
-顶部车辆和地点约占 31%。表单槽按最长的“装载和运送”计算：作业类型 40 px + 7 行 × 40 px（隐藏车辆组后：装载站标题、装载站、填充类型、卸载站标题、卸载站、循环标题、循环）= 320 px；较短的作业下方留空，与原生作业菜单把“开始作业”固定在底部相同。列表行用地图右侧上下文按钮的底图（`fs25_mapContextButtonListItemBg`，选中改为高亮绿），文字和图标的选中色为深色；分组标题、裁剪条、滚动条均为原生 `fs25_subCategory*`。按钮全部是地图页原生按钮（`fs25_mapButtonBgLight` + `fs25_mapButtonText` + `fs25_mapButton`），`isTriggerableByGlobalAction=false`，只由本 Mod 的按键事件触发。上/下按钮用原生选项箭头 `gui.3dShop_arrow`（指向右），旋转 270°/90°，方向需在预览或游戏中确认（MAP-27）。
+顶部车辆和地点约占 31%。表单槽按最长的“装载和运送”计算：作业类型 40 px + 7 行 × 40 px（隐藏车辆组后：装载站标题、装载站、填充类型、卸载站标题、卸载站、循环标题、循环）= 320 px；较短的作业下方留空，与原生作业菜单把“开始作业”固定在底部相同。列表行用地图右侧上下文按钮的底图（`fs25_mapContextButtonListItemBg`，选中改为高亮绿），文字和图标的选中色为深色；裁剪条、滚动条均为原生 `fs25_subCategory*`。地点行左侧名称 150 px，右侧信息 150 px（`textLayoutMode resize`，长文字缩小而不出框）。按钮全部是地图页原生按钮（`fs25_mapButtonBgLight` + `fs25_mapButtonText` + `fs25_mapButton`），`isTriggerableByGlobalAction=false`，只由本 Mod 的按键事件触发。上/下按钮用原生选项箭头 `gui.3dShop_arrow`（指向右），旋转 270°/90°；预览实验室中朝向正确（MAP-27 仍在游戏中确认）。
 
 GUI 预览实验室（`tools/gui_lab/`，由集成方维护）渲染方法：
 
@@ -76,16 +78,55 @@ GUI 预览实验室（`tools/gui_lab/`，由集成方维护）渲染方法：
 
 ### 车辆
 
-默认是 `g_localPlayer:getCurrentVehicle()`。页面显示时追加在 `setMapSelectionItem`（MF:1019）之后的钩子：选中的 hotspot 有 `getVehicle()` 且该车可规划（`MH.getCanManage` + `MF.getHasAccess` + `spec_aiJobVehicle`）时，页面改为该车并重建表单；其他 hotspot 只选中不切换。“我的车辆”回到当前驾驶的车辆。切换时按 `setAIVehicle`（MF:936-942）的方式 `setMapSelectionItem(hotspot)`，打开页面和“我的车辆”时再 `panToHotspot`。不再限定“只为自己驾驶的车辆排队”。
+默认是 `g_localPlayer:getCurrentVehicle()`。页面显示时追加在 `setMapSelectionItem`（MF:1019）之后的钩子：选中的 hotspot 有 `getVehicle()` 且该车可规划（`MH.getCanManage` + `MF.getHasAccess` + `spec_aiJobVehicle`）时，页面改为该车并重建表单；其他 hotspot 只选中不切换。“我的车辆”按钮已去掉：显示的不是自己驾驶的车辆（且自己的车可规划）时，卡片信息行加上 `mh_backToMine`（“点击返回你的车辆”），点击卡片回到自己的车辆并平移地图；显示的就是自己的车辆时，点击卡片只平移地图。切换时按 `setAIVehicle`（MF:936-942）的方式 `setMapSelectionItem(hotspot)`，打开页面和回到自己的车辆时再 `panToHotspot`。
+
+### 地点过滤与作业需求
+
+地点列表一次只显示一个类别，由列表上方的 `MultiTextOption`（`mhFilterSelector`，回调 `(state, element)`，SDK `gui/elements/MultiTextOptionElement.lua:342`）选择：
+
+| 选项 | 何时提供 | 内容 |
+| --- | --- | --- |
+| 需要此作业的田地（`mh_filterNeeds`） | 识别出组合至少一种田间作业且田地状态可读（`MH.features.fieldNeeds`） | 本农场田地中需要组合作业的；信息栏为需要的作业（最多两项） |
+| 我的田地（`mh_filterFields`） | 总是 | 本农场全部田地；信息栏为状态文字，读不到状态时为面积 |
+| 合同（`ui_contracts`） | 总是 | 本农场进行中的田地合同；组合能做的排在前面，信息栏“作业 - 百分比”，其余只显示百分比 |
+| 站点（`ui_stations`） | 车辆可执行 LOAD_AND_DELIVER 或 DELIVER | 有效的装载/卸载站点 |
+
+默认：有“需要此作业的田地”时选它，否则“我的田地”（例如卡车、没有挂农具的拖拉机）。每台车辆的选择存在 `MHPage.filterByVehicle`（本局游戏内，拆除时清空）。空列表显示对应说明（`mh_emptyNeeds/Fields/Contracts/Stations`）。田地状态在切换车辆、切换过滤和每 10 s（`MHPage.PLACES_INTERVAL`，页面显示时）读取一次，不是每帧。
+
+**组合的作业**（`MHFieldNeeds.getWorks`）：遍历 `vehicle:getRootVehicle():getChildVehicles()`（SDK `vehicles/Vehicle.lua:3010/3022`，列表含根车辆）中每台车的 specialization 表，并按各农具自己的设置：`spec_plow` → 犁地；`spec_cultivator` → 耕地；`spec_sowingMachine` → 播种，`useDirectPlanting`（SDK `SowingMachine.lua:168`）或组合中有耕作机时也播在收获后/草地地面（`AI_OUTPUT_GROUND_TYPES`，SDK `SowingMachine.lua:1224-1247`）；`spec_roller` 只在 `isSoilRoller` 时算镇压（SDK `Roller.lua:112-123/198-219`，纯草地镇压器没有可判断的需求）；`spec_weeder` 按 `isHoeWeeder`（SDK `Weeder.lua:87`）区分除草机/锄；`spec_mulcher` → 粉碎；`spec_stonePicker` → 捡石；`spec_fruitPreparer.fruitTypes`（SDK `FruitPreparer.lua:99-110`）→ 去茎叶（这些作物）；`spec_mower.fruitTypeConverters`（SDK `Mower.lua:156-162`，以作物类型为键）→ 割草；`spec_cutter.fruitTypeIndices` 与 `allowsForageGrowthState`（SDK `Cutter.lua:179-182/331`）→ 收割。喷洒机只在有作业区域时算（`spec_sprayer.hasWorkAreas`，SDK `Sprayer.lua:299`；只有药箱的车不算），施肥播种机、施肥耕作机仍按播种/耕地。喷洒内容按游戏开始喷洒时的顺序（SDK `Sprayer.lua:1206-1226`）：自身药箱有内容就用它，否则 `fillTypeSources` 中有支持的喷洒类型且有内容的来源（如前置药箱），两者都空时若装有本仓库的 Fill Type Selector Mod 则用其选择（车辆上的 `spec_FS25_FillTypeSelector.fillTypeSelector` 的 `selectedFillType/defaultFillType`，没有该 Mod 时这张表不存在）；然后 `g_sprayTypeManager:getSprayTypeByFillTypeIndex`（SDK `misc/SprayTypeManager.lua:228`），`isLime` → 施石灰，`isHerbicide` → 除草剂，其余和未知 → 施肥（`:146-148`），并记下喷洒类型的 `sprayGroundType`。
+
+**田地状态**：与地图田地信息框读鼠标下的点相同（MF:674-677），`FieldState.new()`（SDK `field/FieldState.lua:33-55`）+ `FieldState:update(x, z)`（1.24 decompiled `field/FieldState.lua:86-120`，约 12 次单点密度图读取，客户端可用），点取田地名称标记 `Field:getIndicatorPosition()`。`Field.fieldState` 不用：它只在服务器上为无主田地和整地任务后更新（1.25 decompiled `field/FieldManager.lua:363-388/643-670`）。`groundType == FieldGroundType.NONE` 或无效时视为读不到，不加需求。作物 `g_fruitTypeManager:getFruitTypeByIndex`，`FruitType.UNKNOWN`（SDK `fruits/FruitTypeManager.lua:84`）为无作物。
+
+**是否需要**（`MHFieldNeeds.getNeedsWork`；“裸地”= 无作物、生长阶段 0、已收割 `getIsCut` 或枯萎 `getIsWithered`）：
+
+| 作业 | 需要的条件 | 依据 |
+| --- | --- | --- |
+| 犁地 | 裸地且地面不是 PLOWED，并且地面未整（不是 CULTIVATED/SEEDBED/ROLLED_SEEDBED/RIDGE）或 `plowingRequiredEnabled` 且 `plowLevel == 0` | 犁的 AI 地面要求为除 PLOWED 外全部（1.24 decompiled `Plow.lua:5-20`）；信息框“需要犁地”（MF:748） |
+| 耕地 | 裸地且地面不是 CULTIVATED/SEEDBED/ROLLED_SEEDBED | 耕作机 AI 地面要求（`Cultivator.lua:3-17`） |
+| 播种 | 裸地且地面属于 `SowingMachine.AI_REQUIRED_GROUND_TYPES`；直播或带耕作机时也包括 `AI_OUTPUT_GROUND_TYPES`（收获后、草地等） | 1.24 decompiled `SowingMachine.lua:4-21`，SDK `:1224-1247` |
+| 镇压（只土壤镇压器） | `Platform.gameplay.useRolling`、`rollerLevel > 0`，且无作物或作物在第一生长阶段 | 信息框“需要镇压”（MF:751）；土壤镇压只在第一生长阶段（SDK `Roller.lua:210-219`） |
+| 施石灰 | `useLimeCounter`、`limeRequired`、`limeLevel == 0`，且地面喷洒类型不是石灰的 `sprayGroundType` | 信息框“需要石灰”（MF:745）；AI 排除已有该喷洒类型的地面（SDK `Sprayer.lua:753-758`） |
+| 施肥 | `sprayLevel` 小于最大值，地面喷洒类型不是这种肥料的 `sprayGroundType`，作物未枯萎、未到可收获（按信息框顺序） | 信息框施肥百分比（MF:740-742）；AI 排除最大喷洒等级和同种喷洒类型（SDK `Sprayer.lua:744-751`） |
+| 除草剂 | `weedsEnabled`、`weedState` 在除草剂替换表（`WeedSystem:getHerbicideReplacements`）中，无作物或作物生长中 | 信息框除草剂条件（MF:754-772）；AI 要求（SDK `Sprayer.lua:719-741`） |
+| 除草 / 锄 | `weedsEnabled`、`weedState` 在该工具的替换表（`getWeederReplacements(isHoe)`）中，除草机要求 `getIsWeedable`、锄要求 `getIsHoeable` | 信息框（MF:765-768）；AI 要求（SDK `Weeder.lua:209-229`）；1.24 decompiled `field/WeedSystem.lua:203/206` |
+| 粉碎 | 作物已收割（`getIsCut`）且有 `mulchedState` | 粉碎机 AI 作物要求（`Mulcher.lua:93-112`） |
+| 去茎叶 | 作物在该去茎叶机的作物列表中且 `getIsPreparable` | 信息框“去除茎叶”（MF:723）；SDK `FruitPreparer.lua:99-123` |
+| 割草 / 收割 | 割草：作物在转换表中且生长阶段在 `minHarvestingGrowthState..maxHarvestingGrowthState`；收割：作物在割台列表中，起点为 `allowsForageGrowthState` 时的 `minForageGrowthState`，否则 `minHarvestingGrowthState`，终点 `maxHarvestingGrowthState` | SDK `Mower.lua:224-227`、`Cutter.lua:1537-1538`；`getIsHarvestable` 含青贮阶段（1.25 decompiled `fruits/FruitTypeDesc.lua:483/695`），所以不用它 |
+| 捡石 | `stonesEnabled`、裸地、`stoneLevel > 0` 且（`stoneLevel` + 掩码值）在 `getMinMaxValues` 之间 | 1.24 decompiled `field/StoneSystem.lua:134-181`；捡石机 AI 要求（`StonePicker.lua:89-95`） |
+
+FruitTypeDesc 的判断函数见 1.25 decompiled `fruits/FruitTypeDesc.lua:695-729`；任务开关 `plowingRequiredEnabled/limeRequired/weedsEnabled/stonesEnabled` 见 1.24 decompiled `FSCareerMissionInfo.lua:57-71`。没有用 AI 自己的区域查询（`AIImplement:getFieldCropsQuery` + `AIVehicleUtil.getAIAreaOfVehicle`，1.24 decompiled `vehicles/ai/AIVehicleUtil.lua:381`）：它需要车辆的工作区域和一个平行四边形，且喷洒机、割台的要求只在服务器或 AI 开始时设置。单点判断的局限：田地部分完成时只反映名称标记处（MAP-28）。
+
+“我的田地”的状态文字（`MHFieldNeeds.getStateText`，均为游戏文字）：作物状态按信息框的判断顺序（已收割、枯萎、生长中、去除茎叶、可收获，MF:716-726，青贮阶段因此算生长中），其中可收获、去除茎叶、枯萎排在最前；然后需要石灰、需要犁地、需要镇压；再然后生长中、已收割；否则地面类型（`ui_growthMapStubbleTillage/Cultivated/Seedbed/Plowed/Sown`）。作业名称用游戏的合同标题（`contract_field_plow_title` 等）和信息框文字；粉碎没有游戏文字，用 `mh_workMulch`。
+
+田地图标：`gui.storeAttribute_seeding`（商店“播种”属性的幼苗图标）。原 `gui.icon_others_farmland`（`menu/gui.xml`，135×135 的山丘加标记）缩到 22 px 时像人像。
 
 ### 地点
 
 - 合同：`g_missionManager:getMissionsByFarmId(farmId)`（SDK `missions/MissionManager.lua:525`），筛选 `mission.farmId == farmId`、`getIsInProgress()`（`AbstractMission.lua:790`）且有 `getField()`（`missions/field/AbstractFieldMission.lua:86`）；名称 `getTitle()`（`AbstractMission.lua:868`），进度 `mission.completion`（随 `writeUpdateStream` 同步，`:300-311`），位置 `getWorldPosition()`（`AbstractFieldMission.lua:98`，即田地名称标记）。
 - 田地：`g_fieldManager:getFields()`（1.25 decompiled `field/FieldManager.lua:394`），`g_farmlandManager:getFarmlandOwner(field.farmland.id) == farmId`（SDK `economy/FarmlandManager.lua:407`，写法同 1.25 decompiled `gui/InGameMenuMobileMapFrame.lua:1113-1125`），按 `getId()` 排序，名称 `ui_fieldNo` + 编号、面积 `g_i18n:formatArea(getAreaHa(), 2)`（同 `InGameMenuMobileMapFrame.lua:1583-1594`）；位置 `getIndicatorPosition()`（1.24 decompiled `field/Field.lua:97`，SDK 中 `AbstractFieldMission:getWorldPosition` 也用它），保证落在田地内。
-- 作业：可用的作业类型（与表单相同，工作中的车辆在规划模式下判断）。
 - 站点：对可用的 LOAD_AND_DELIVER / DELIVER 各建一个临时作业，`applyCurrentState(vehicle, g_currentMission, farmId, false)`（SDK `ai/jobs/AIJobLoadAndDeliver.lua:217-260`、`AIJobDeliver.lua:172-214`）后读 `loadingStationParameter.loadingStationIds`、`unloadingStationParameter.unloadingStationIds`（SDK `ai/parameters/AIParameterLoadingStation.lua`、`AIParameterUnloadingStation.lua` 的 `setValidLoadingStations/setValidUnloadingStations`），`NetworkUtil.getObject` 得到站点，名称 `getName()`，位置取 `owningPlaceable:getHotspot(1):getWorldPosition()`（同 MF:1193-1218）。临时作业用完即丢。
 
-点击地点：有位置时 `ingameMap:setCenterToWorldPosition(x, z)`，然后预填表单：田地/合同 → FIELDWORK（不可用时 GOTO），把 `positionAngle` 参数设到该位置（角度保留）；装载站 → LOAD_AND_DELIVER 并 `setLoadingStation`；卸载站 → 当前是 DELIVER/LOAD_AND_DELIVER 时保留类型，否则优先 LOAD_AND_DELIVER；站点只在其 id 位于参数的有效列表中时才设置，之后调用 `job:onParameterValueChanged(parameter)`（装载站会刷新填充类型，`AIJobLoadAndDeliver.lua:276`）；作业类型项只切换类型。最后 `updateParameterValueTexts` + `validateParameters`（MF:2048/1992），原生的无效提示照常显示。
+点击地点：有位置时 `ingameMap:setCenterToWorldPosition(x, z)`，然后预填表单：田地/合同 → FIELDWORK（不可用时 GOTO），把 `positionAngle` 参数设到该位置（角度保留）；装载站 → LOAD_AND_DELIVER 并 `setLoadingStation`；卸载站 → 当前是 DELIVER/LOAD_AND_DELIVER 时保留类型，否则优先 LOAD_AND_DELIVER；站点只在其 id 位于参数的有效列表中时才设置，之后调用 `job:onParameterValueChanged(parameter)`（装载站会刷新填充类型，`AIJobLoadAndDeliver.lua:276`）。原来的“作业类型”分组已去掉，表单的作业类型选择器已经包含它。最后 `updateParameterValueTexts` + `validateParameters`（MF:2048/1992），原生的无效提示照常显示。
 
 ### 加入、插入为下一个、编辑
 
@@ -111,6 +152,14 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 
 服务器端（`MH.serverAdd`）：加入一项后，如果队列不在运行而车辆 `getIsAIActive()` 为真，就用 `vehicle:getJob()` 取当前作业，设 `queue.running = true`、`queue.runningJob = current`；之后的完成判断与队列自己启动的作业相同。
 
+### 自动开始、继续与取消
+
+- **有人坐着的车辆**：玩家要求的开始（加入作业触发的自动开始、继续队列）用请求者自己的连接做原生 `getIsStartable` 检查（`Enterable:getIsInUse`，SDK `vehicles/specializations/Enterable.lua:1663`；`AIJobGoTo.lua:205-213`），所以别的玩家坐着的车辆按游戏自己的“正在使用”原因被拒，作业留在队首、队列以 START_FAILED 暂停，卡片显示该类型的 `getIsStartErrorText`。只有请求者就是车里的人（同一连接，或 `userManager:getUserIdByConnection(请求者) == spec_enterable.controllerUserId`，1.24 decompiled `users/UserManager.lua:90`、SDK `Enterable.lua:217/936`）时才改用车内的连接，以免自己的座位被算作占用。队列完成一项后自己推进时（没有请求者），沿用车内的连接：这些作业已在之前排好。
+- **自动开始**（`MH.serverAdd`）：加入（ADD，包括插入为下一个）后，如果队列不在运行（`queue.running` 为假）且车辆没有帮手，服务器立即 `MH.startNext`，新加入的作业（或队首）成为正在执行的作业。两项之间的 1.5 s 间隔内队列仍是运行状态，新作业只排队；车辆有帮手时队列照旧跟随当前作业。
+- **暂停后加入**：选择让加入**继续**队列：暂停原因清除，从队首（最早等待的作业，不一定是新加入的）开始。理由：玩家加作业就是想让车辆干活；若暂停原因未解决，开始会再次失败并按原规则暂停、提示原因，等待的作业不丢。
+- **继续队列**：没有加作业也能继续——队列标题旁的“继续队列”（`mh_resumeQueue`，发送原有的 START 请求）只在有等待作业、没有帮手且队列不在运行时显示（暂停后或读档后）。读档后的队列同样等待“继续队列”或新作业。
+- **取消当前作业**：原“开始队列/取消作业”按钮已去掉。队列第一行（当前作业）被选中时，条目按钮“删除”显示为“取消作业”（`button_cancelJob`），调用与 `InGameMenuMapFrame:cancelJob`（MF:1396-1402）相同的 `vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())`；队列按“玩家停止”暂停，“继续队列”可继续。右侧原生上下文框的“取消作业”和车内 H 键同样有效。`mh_startQueue`（“开始队列”）已删除。
+
 ### 队列、请求与完成判断
 
 队列只存在服务器上，按车辆存放，每辆最多 10 项，每项有服务器分配的 id。请求动作（`MH.ACTION`，3 bit）：ADD=1、REMOVE=2、CLEAR=3、START=4、MOVE=5、EDIT=6。
@@ -127,7 +176,7 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 
 服务器校验：车辆存在且支持 AI、请求者农场等于车辆所属农场、`getHasPlayerPermission("hireAssistant", connection, farmId)`。ADD 和 EDIT 都经 `MH.getIsValidRequestJob`：作业的 vehicle 参数就是该车辆、清掉随请求来的帮手设置（见下）、`setValues` + `validate(farmId)`。ADD 未超过上限，插入为下一个时放在位置 1；EDIT 找不到条目（已开始或已删除）时拒绝；MOVE 在首/尾越界时不变。状态事件 `MHQueueStateEvent` 格式不变（农场、运行中、暂停原因、条目 id + 作业），当前作业不在其中，客户端从车辆读取。
 
-“开始队列”时服务器对第一项 `setValues`、`validate(farmId)`，再用原生 `job:getIsStartable(connection)` 检查（AI 上限、车辆存在、hireAssistant、车辆是否被占用）；connection 取车辆当前控制者的连接（`spec_enterable.isControlled` 时 `getOwnerConnection()`），玩家自己坐在车里不会被 `Enterable:getIsInUse`（SDK `vehicles/specializations/Enterable.lua:1663`）判为占用。通过后才从队列移除并 `g_currentMission.aiSystem:startJob(job, farmId)`。
+开始（自动开始、继续队列）时服务器对第一项 `setValues`、`validate(farmId)`，再用原生 `job:getIsStartable(connection)` 检查（AI 上限、车辆存在、hireAssistant、车辆是否被占用）；connection 见上文“有人坐着的车辆”（`MH.getStartConnection`）。通过后才从队列移除并 `g_currentMission.aiSystem:startJob(job, farmId)`。
 
 完成判断订阅 `MessageType.AI_JOB_STOPPED`（`AISystem:stopJobInternal` 发布 `job, aiMessage`，SDK `ai/AISystem.lua:583-589`），只处理队列启动或跟随的那个作业：`AIMessageSuccessFinishedJob`（`AIJob:update`）和 `AIMessageSuccessSiloEmpty`（`AIJobLoadAndDeliver.lua:411`）算成功，还有下一项时 1500 ms 后启动（原生作业在下一次 `AISystem:update` 才移除）；其他消息和 nil 让队列暂停并提示。启动失败：`validate` 失败记为“下一个作业无法按计划开始”，`getIsStartable` 失败记下原生状态码，客户端用该类型的 `getIsStartErrorText(state)` 显示原因；失败项留在队首。车辆删除时队列删除；车辆所有者变化时清空并广播。
 
@@ -236,9 +285,9 @@ uv run map-helper-mod/tools/make_icon.py --texconv <texconv.exe路径>
 
 `run.py` 用固定版本 Lupa 执行：l10n 检查（脚本和 GUI 用到的 Mod 文本键与 modDesc 一一对应、27 种语言齐全、格式参数一致、描述 27 种语言）、GUI 引用核对（`work/reference/1.25.0.0/dataS-archive` 存在时：GUI XML 引用的 profile、父 profile、trait、切片、preset、游戏文本和脚本用到的游戏文本都存在）、36 项行为测试、缺少游戏函数时的降级检查（页面、队列、热键分别关闭）和 8 组多人模拟。替身中的 GUI 树由 `tests/guixml.py` 从真实 XML 构建，回调按加载时绑定，选择器回调绑定原函数，列表按数据源填充。
 
-行为测试覆盖：服务器权限、上限与验证；插入为下一个、移动、编辑、删除、清空；开始、成功推进、停止/错误/删除暂停、启动失败；自己座位；忽略非队列作业；车辆删除与易主；全部请求动作和状态事件的序列化；存档往返；加入同步；田地作业设置；**带排队、运行中、删除和编辑过的条目退出存档**；页面注册（第 8 个状态和圆点）、原生容器隐藏、原生表单放入页面并在其他状态恢复、原生“创建作业”仍在状态 6 正常打开；步行/无 AI/无权限的说明；表单隐藏车辆组并保留原生类型切换；地图选择切换车辆、其他农场车辆不切换、“我的车辆”；地点列表（合同只含本农场进行中、本农场田地按编号、作业类型、装载/卸载站点）；由地点预填（田地 → 田地工作或前往、装载站、卸载站保留类型、作业类型）；Z 加入、X 插入为下一个、无效作业提示、队列已满；列表上移/下移/编辑（保存替换、取消、条目开始时结束编辑）/删除/清空；当前作业的描述、距离和合同进度、每秒原地刷新、完成后消失并推进；规划模式；规划出错下一帧恢复；客户端只发请求；X 让给 PF 帮助、余额下方按钮；全局热键在 PLAYER 和 VEHICLE 各注册一次、打开页面、锁定时不打开；钩子与页面幂等；退出存档后原生地图页完全恢复（文字、圆点、选择器回调、容器 profile 与可见性、开始按钮、按键）、未启用 Mod 的存档中遗留回调无效、再次启用时重新创建；关闭菜单交还表单、重新打开恢复页面、选点在切换页面时取消。
+行为测试覆盖（2026-10-24 新增：过滤选项随车辆类型、每车记忆、各类农具的需求判断与设置开关、四个列表的内容与空状态、每 10 s 重读状态、空闲车辆首个作业自动开始、暂停后加入继续、继续队列、当前作业行取消、卡片回到自己的车辆）：服务器权限、上限与验证；插入为下一个、移动、编辑、删除、清空；开始、成功推进、停止/错误/删除暂停、启动失败；自己座位；忽略非队列作业；车辆删除与易主；全部请求动作和状态事件的序列化；存档往返；加入同步；田地作业设置；**带排队、运行中、删除和编辑过的条目退出存档**；页面注册（第 8 个状态和圆点）、原生容器隐藏、原生表单放入页面并在其他状态恢复、原生“创建作业”仍在状态 6 正常打开；步行/无 AI/无权限的说明；表单隐藏车辆组并保留原生类型切换；地图选择切换车辆、其他农场车辆不切换、“我的车辆”；地点列表（合同只含本农场进行中、本农场田地按编号、作业类型、装载/卸载站点）；由地点预填（田地 → 田地工作或前往、装载站、卸载站保留类型、作业类型）；Z 加入、X 插入为下一个、无效作业提示、队列已满；列表上移/下移/编辑（保存替换、取消、条目开始时结束编辑）/删除/清空；当前作业的描述、距离和合同进度、每秒原地刷新、完成后消失并推进；规划模式；规划出错下一帧恢复；客户端只发请求；X 让给 PF 帮助、余额下方按钮；全局热键在 PLAYER 和 VEHICLE 各注册一次、打开页面、锁定时不打开；钩子与页面幂等；退出存档后原生地图页完全恢复（文字、圆点、选择器回调、容器 profile 与可见性、开始按钮、按键）、未启用 Mod 的存档中遗留回调无效、再次启用时重新创建；关闭菜单交还表单、重新打开恢复页面、选点在切换页面时取消。
 
-多人模拟：服务器和多个客户端各用独立 Lua 环境，经有序队列交换真实 Mod 事件。新增一组：插入为下一个、上移、编辑（条目 id 不变）由服务器应用并广播到所有端；无权限成员和其他农场的移动/编辑被拒；首项上移不变；编辑已不存在的条目被拒。替身不模拟原生 AI 事件、对象创建、ghost 和断线，不能代替双机实测。
+多人模拟（新增：首个作业在服务器自动开始且各端显示运行中、暂停后加入作业由服务器继续）：服务器和多个客户端各用独立 Lua 环境，经有序队列交换真实 Mod 事件。新增一组：插入为下一个、上移、编辑（条目 id 不变）由服务器应用并广播到所有端；无权限成员和其他农场的移动/编辑被拒；首项上移不变；编辑已不存在的条目被拒。替身不模拟原生 AI 事件、对象创建、ghost 和断线，不能代替双机实测。
 
 ## 游戏内回归清单（全部待执行）
 
@@ -249,25 +298,29 @@ uv run map-helper-mod/tools/make_icon.py --texconv <texconv.exe路径>
 - MAP-03：页面视觉：卡片、两行按钮、地点列表、作业表单、加入按钮、队列标题与清空按钮、队列列表、条目按钮从上到下不重叠，左右对齐边栏列表；1080p、1440p、超宽屏和不同 UI 缩放下不溢出底部按钮栏；列表滚动条位于列表右侧；中文、德文等长文本不出框（滚动显示）。
 - MAP-04：按钮上显示 Z 和 X；页面上按 Z 加入、按 X 插入为下一个，不会同时开始原生作业；地图其他页面按 X 切到地图助手页，Precision Farming 土壤图层下按 X 打开 PF 帮助。
 - MAP-05：全局热键：步行、驾驶、作为乘客时按左 Alt + M 都打开地图并显示地图助手页面；F1 按键帮助中列出“打开地图助手”；控制设置中能看到并修改此键；骑马时不生效（已知）。按 Alt + M 时车辆的 M 功能不动作。菜单已打开时无反应。
-- MAP-06：车辆：驾驶时打开页面，卡片显示该车名称和商店图；在地图上点击自己农场的另一台车，页面切换到它，右侧上下文框显示该车；点击别人农场的车只选中不切换；“我的车辆”回到自己的车并移动地图；步行时卡片显示步行说明，表单区显示提示文字。
+- MAP-06：车辆：驾驶时打开页面，卡片显示该车名称和商店图；在地图上点击自己农场的另一台车，页面切换到它，右侧上下文框显示该车；点击别人农场的车只选中不切换；信息行出现“点击返回你的车辆”，点击卡片回到自己的车并移动地图；步行时卡片显示步行说明，表单区显示提示文字。
 - MAP-07：原生表单：作业类型列表、参数行与在地图上点车辆再点“创建作业”相同（只是不显示车辆一行）；改作业类型、选站点和填充类型、在地图上选位置和方向都正常；验证失败时出现原生红色提示和对话框。页面上没有“开始作业”按钮。
 - MAP-08：离开页面（切到其他图层、在岗帮手、创建作业页、关闭菜单）后原生“创建作业”页和右侧“创建作业”按钮打开的原生作业菜单位置、大小与原版完全相同，“开始作业”按钮在；再回到页面表单重新出现在页面中。
-- MAP-09：地点：进行中的合同显示进度百分比，未接受的合同和其他农场的合同不显示；只列出自己的田地及面积；作业类型与表单相同；站点为该车可装载/卸载的站点。点击田地/合同：地图移到该处，表单为田地工作（或前往）且目标在田内；点击装载站/卸载站：表单为装载和运送（或运送）并选中该站点；点击作业类型切换类型。
-- MAP-10：加入队列：新项排在最后；插入为下一个：新项排在第一；加入后表单恢复为该类型的新作业；已满 10 项时提示。
+- MAP-09：地点：过滤选择器外观与作业类型选择器一致、左右箭头和点击都能切换；“合同”只含本农场进行中的田地合同，能做的排在前面并写明作业；“我的田地”只含自己的田地并显示状态；“站点”只在车辆能运送时出现。点击田地/合同：地图移到该处，表单为田地工作（或前往）且目标在田内；点击装载站/卸载站：表单为装载和运送（或运送）并选中该站点。田地行图标是幼苗而不是人像。
+- MAP-10：加入队列：车辆空闲时第一个作业立即开始并成为第一行；之后的新项排在最后，插入为下一个排在第一；加入后表单恢复为该类型的新作业；已满 10 项时提示。
 - MAP-11：队列列表：上移/下移顺序正确，箭头方向与动作一致；编辑把条目载入表单，按钮变为“保存/取消”，保存后条目原位替换，取消不改变；编辑中该条目开始执行时退出编辑；删除、清空正常。
-- MAP-12：执行与进度：开始队列后第一行显示帮手当前任务，驾驶阶段显示到目标的距离且每秒更新，在合同田地上显示合同进度；作业完成后该行消失，约 1.5 秒后下一项开始并成为第一行；全部完成后出现完成提示。
+- MAP-12：执行与进度：作业开始后第一行显示帮手当前任务，驾驶阶段显示到目标的距离且每秒更新，在合同田地上显示合同进度；作业完成后该行消失，约 1.5 秒后下一项开始并成为第一行；全部完成后出现完成提示。
 - MAP-13：帮手工作期间（含玩家直接开始的作业）：表单仍可用、作业类型与空闲时相同，加入的作业在当前作业后执行；右侧上下文框显示“取消作业”而非“创建作业”；帮手行为不受影响。
-- MAP-14：取消与失败：用卡片旁“取消作业”、车内 H 键、地图原生“取消作业”停止，队列暂停，卡片显示原因并提示；缺油、缺种子、被挡、帮手过多等原因同样暂停并显示原生原因；“开始队列”继续。
+- MAP-14：取消与失败：选中第一行用“取消作业”、车内 H 键、地图原生“取消作业”停止，队列暂停，卡片显示原因并提示，“继续队列”出现；缺油、缺种子、被挡、帮手过多等原因同样暂停并显示原生原因；“继续队列”或加入新作业都从第一个等待作业继续。
 - MAP-15：田地工作排队后再改车辆的帮手设置，开始后按新设置执行；客户端排队、主机执行时同样如此；存档读回后同样。
-- MAP-16：手柄：Z 和 X 对应的手柄默认键（`MENU_MAP_ACTION_1` 的 `BUTTON_1`、`MENU_EXTRA_1` 的 `BUTTON_11`）显示在按钮上且有效；地点和队列列表可用手柄选择并确认；条目按钮（上/下/编辑/删除）、清空、我的车辆、开始队列没有按键，手柄能否聚焦需确认（地图按钮原生 `handleFocus=false`）。确认这两个菜单键不能在控制设置中修改。
-- MAP-17：存档、退出、重新载入：队列保留且不自动开始；卖掉其中一辆车后保存再载入，该车队列被丢弃并在日志写 info。
-- MAP-18：联机：客户端经理添加、插入、移动、编辑、删除、开始，其他客户端页面同步；无权限成员和其他农场不能修改（按钮无效、服务器拒绝）；之后加入的玩家看到队列；规划者离开后队列继续；客户端上当前作业行和距离正常显示。
+- MAP-16：手柄：Z 和 X 对应的手柄默认键（`MENU_MAP_ACTION_1` 的 `BUTTON_1`、`MENU_EXTRA_1` 的 `BUTTON_11`）显示在按钮上且有效；地点和队列列表可用手柄选择并确认；过滤选择器、条目按钮（上/下/编辑/删除）、清空、继续队列没有按键，手柄能否聚焦需确认（地图按钮原生 `handleFocus=false`）。确认这两个菜单键不能在控制设置中修改。
+- MAP-17：存档、退出、重新载入：队列保留且不自动开始，“继续队列”显示；卖掉其中一辆车后保存再载入，该车队列被丢弃并在日志写 info。
+- MAP-18：联机：客户端经理添加（空闲车辆立即开始）、插入、移动、编辑、删除、继续、取消，其他客户端页面同步；无权限成员和其他农场不能修改（按钮无效、服务器拒绝）；之后加入的玩家看到队列；规划者离开后队列继续；客户端上当前作业行和距离正常显示。
 - MAP-19：车辆卖出、转给其他农场或被重置/删除时，页面切回自己的车辆或步行说明，无报错；队列按原规则删除或暂停。
 - MAP-20：与 Precision Farming 同时使用：PF 页面（筛选、实验室窗口）显示正常，地图助手页面与 PF 页面互相切换时元素不残留；PF 土壤图层的“帮助”与 X 的让位正常。
 - MAP-21：载入启用本 Mod 的存档，回主菜单，载入未启用本 Mod 的存档：地图页没有地图助手页面、圆点、按钮，“创建作业”页和作业菜单为原版布局，X 和 Alt + M 无本 Mod 行为；再载入启用的存档，一切只有一份且可用。
 - MAP-22：余额下方按钮：右对齐余额底框，位于余额和帮手状态行下方；在页面上和原生作业菜单中隐藏；切换分辨率/UI 缩放后重新进入地图页位置仍正确。
 - MAP-23：页面选点：在页面上选位置时光标标记跟随鼠标（仅在边栏右侧，原生规则），确认/取消后表单和地图标记正确；在地图空白处点击后表单的目标标记仍显示。
-- MAP-24：暂停游戏时加入、开始按钮不可用；导览进行中热键不打开。
+- MAP-24：暂停游戏时加入、继续队列、取消作业不可用；取消暂停后一秒内恢复可用；导览进行中热键不打开。
 - MAP-25：快速连续切换页面和车辆、在页面上关闭再打开菜单，不出现重复元素或残留的“开始作业”隐藏状态。
 - MAP-26：预览实验室无法显示的部分（运行时文字、禁用状态、选中色、车辆图、表单参数行、按键图标）在游戏中逐项检查。
 - MAP-27：上/下按钮的箭头朝向（`gui.3dShop_arrow` 旋转 270°/90°）与动作一致，否则交换两个 profile 的旋转。
+- MAP-28：需要此作业的田地：分别挂犁、耕作机、播种机（含施肥播种机）、装石灰/化肥/除草剂的喷洒机、镇压器、除草机、粉碎机、割草机、联合收割机割台（谷物/玉米）、去茎叶机、捡石机，打开页面，默认选中“需要此作业的田地”，列出的田地与地图田地信息框（鼠标停在田地名称标记处）的状态一致；作业完成一部分的田地按名称标记处判断（已知局限）；关闭石灰、杂草、石头或犁地要求的存档中对应需求不出现。卡车、没有农具的拖拉机默认“我的田地”。工作 10 秒后列表随状态更新。
+- MAP-29：每台车辆记住自己的过滤选择（切换车辆再切回）；空列表显示对应说明文字；大量田地（50 块以上）时打开页面和切换过滤无明显卡顿。
+- MAP-30：联机：另一名玩家坐在车里时，为该车加入作业或点“继续队列”不会开车，作业留在队首，卡片显示游戏的“车辆正在使用”原因；他下车后“继续队列”开始。自己坐在车里时加入作业照常开始（单人和客户端都测）。
+- MAP-31：割台：谷物割台不把青贮阶段的玉米列为需要收割，青贮割台列出；“我的田地”中青贮阶段显示“生长中”。直播机在收获后的田地上列出播种需求，普通播种机不列；带耕作机的播种组合也列出。除草机只列小杂草、锄也列中等杂草；纯草地镇压器不列需求；去茎叶机只列自己的作物；没有作业区域的药箱车不算喷洒机；刚施过同种肥料/石灰的田地不再列出。前置药箱装除草剂、后置喷杆空箱时列为除草剂；装有 Fill Type Selector 且药箱为空时按其选择。页面打开时挂上或卸下农具，10 秒内选项更新、当前选择保持（若仍可用）。

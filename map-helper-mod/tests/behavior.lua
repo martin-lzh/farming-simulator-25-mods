@@ -12,7 +12,7 @@ local function test(name, body)
     MH.onMissionDeleted(nil)
     g_currentMission = newMission(true)
     g_localPlayer.farmId, g_localPlayer.vehicle = 1, nil
-    localConnection.farmId, localConnection.allowed = 1, true
+    localConnection.farmId, localConnection.allowed, localConnection.userId = 1, true, nil
     g_inGameMenu.pageMapOverview = nil
     FSBaseMission.onStartMission(g_currentMission)
     body()
@@ -42,6 +42,20 @@ local function isQueued(vehicle, job)
     end
     return false
 end
+-- A worker the player started himself: jobs added now wait behind it.
+local function startManual(vehicle)
+    local job = newJob(vehicle, 0, 0)
+    g_currentMission.aiSystem:startJob(job, 1)
+    return job
+end
+-- Waiting entries without a worker: queued behind a job the player started and then stopped.
+local function pausedQueue(vehicle, jobs)
+    startManual(vehicle)
+    for _, job in ipairs(jobs) do MH.requestAdd(vehicle, job) end
+    vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
+    g_currentMission.notifications = {}
+    return MH.queues[vehicle]
+end
 -- A map page as the in-game menu shows it: loaded, opened, Map Helper page selected.
 local function openPage()
     local frame = mockFrame()
@@ -61,20 +75,17 @@ local function rowTexts(page)
     end
     return result
 end
-local function placeNames(page)
+local function placeTexts(page)
     local result = {}
-    for s, cells in ipairs(page.mhPlacesList.cells) do
-        table.insert(result, "#" .. page.mhPlacesList.headers[s]:getAttribute("title"):getText())
-        for _, cell in ipairs(cells) do
-            table.insert(result, cell:getAttribute("name"):getText())
-        end
+    for _, cell in ipairs(page.mhPlacesList.cells[1] or {}) do
+        table.insert(result, cell:getAttribute("name"):getText() .. "|" .. cell:getAttribute("info"):getText())
     end
     return table.concat(result, ";")
 end
 
 -- Queue model and server ------------------------------------------------------------------
 test("feature checks pass against the doubles and both events are registered", function()
-    assert(MH.features.queue and MH.features.page and MH.features.hotkey)
+    assert(MH.features.queue and MH.features.page and MH.features.hotkey and MH.features.fieldNeeds)
     assert(registeredEvents.MHQueueRequestEvent >= 1 and registeredEvents.MHQueueStateEvent >= 1)
     assert(g_messageCenter.subscribers[1].type == MessageType.AI_JOB_STOPPED)
     assert(g_currentMission.updateables[MH] == MH)
@@ -85,13 +96,14 @@ test("server permission follows hireAssistant and the vehicle's farm", function(
     local job = newJob(vehicle)
     assert(not MH.handleRequest(MH.ACTION.ADD, vehicle, job, nil, {farmId = 2, allowed = true}))
     assert(not MH.handleRequest(MH.ACTION.ADD, vehicle, newJob(vehicle), nil, {farmId = 1, allowed = false}))
-    assert(#MH.getEntries(vehicle) == 0 and #broadcasts == 0)
+    assert(#MH.getEntries(vehicle) == 0 and #broadcasts == 0 and #g_currentMission.aiSystem.started == 0)
     vehicle.farmId = FarmManager.SPECTATOR_FARM_ID
     assert(not MH.getCanManage(vehicle, nil))
 end)
 
 test("queue holds at most the limit and server-side validation still applies", function()
     local vehicle = mockVehicle(7)
+    startManual(vehicle)
     for i = 1, MH.MAX_ENTRIES do
         assert(MH.handleRequest(MH.ACTION.ADD, vehicle, newJob(vehicle, i, i), nil, localConnection))
     end
@@ -107,8 +119,49 @@ test("queue holds at most the limit and server-side validation still applies", f
     assert(not MH.handleRequest(MH.ACTION.EDIT, vehicle, edit, MH.getEntries(vehicle)[1].id, localConnection))
 end)
 
+test("the first job added to an idle vehicle starts right away; later ones wait", function()
+    local vehicle = mockVehicle(7)
+    local first, second, third = newJob(vehicle, 1, 1), newJob(vehicle, 2, 2), newJob(vehicle, 3, 3)
+    MH.requestAdd(vehicle, first)
+    local started = g_currentMission.aiSystem.started
+    assert(#started == 1 and started[1] == first and vehicle:getIsAIActive())
+    local queue = MH.queues[vehicle]
+    assert(queue.running and queue.runningJob == first and #queue.entries == 0 and queue.pause == MH.PAUSE.NONE)
+    MH.requestAdd(vehicle, second)
+    MH.requestAdd(vehicle, third, true)
+    assert(#started == 1 and queue.entries[1].job == third and queue.entries[2].job == second)
+    -- Between two queued jobs the queue keeps running: an added job just waits.
+    g_currentMission.aiSystem:stopJob(first, AIMessageSuccessFinishedJob.new())
+    MH.requestAdd(vehicle, newJob(vehicle, 4, 4))
+    assert(#started == 1 and #queue.entries == 3)
+    update(MH.ADVANCE_DELAY)
+    assert(started[2] == third)
+    -- Insert as next on an idle vehicle starts the job as well.
+    local other = mockVehicle(8)
+    local nextJob = newJob(other, 5, 5)
+    MH.requestAdd(other, nextJob, true)
+    assert(started[3] == nextJob)
+end)
+
+test("adding to a paused queue resumes it; Resume continues it without adding", function()
+    local vehicle = mockVehicle(7)
+    local a, b = newJob(vehicle, 1, 1), newJob(vehicle, 2, 2)
+    local queue = pausedQueue(vehicle, {a, b})
+    assert(queue.pause == MH.PAUSE.STOPPED and #queue.entries == 2 and not vehicle:getIsAIActive())
+    MH.requestAdd(vehicle, newJob(vehicle, 3, 3))
+    local started = g_currentMission.aiSystem.started
+    assert(started[#started] == a, "resumes with the first waiting job, not the added one")
+    assert(queue.pause == MH.PAUSE.NONE and queue.running and #queue.entries == 2)
+    vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
+    assert(queue.pause == MH.PAUSE.STOPPED)
+    MH.requestStart(vehicle)
+    assert(started[#started] == b and queue.running)
+    assert(not MH.handleRequest(MH.ACTION.START, vehicle, nil, nil, localConnection), "a worker is driving")
+end)
+
 test("insert as next, move, edit and remove work by entry id", function()
     local vehicle = mockVehicle(7)
+    startManual(vehicle)
     local jobs = {newJob(vehicle, 1, 1), newJob(vehicle, 2, 2), newJob(vehicle, 3, 3)}
     MH.requestAdd(vehicle, jobs[1])
     MH.requestAdd(vehicle, jobs[2])
@@ -131,23 +184,11 @@ test("insert as next, move, edit and remove work by entry id", function()
     assert(MH.queues[vehicle] == nil)
 end)
 
-test("start queue starts the head through the native AI system", function()
-    local vehicle = mockVehicle(7)
-    local first, second = newJob(vehicle, 1, 1), newJob(vehicle, 2, 2)
-    MH.requestAdd(vehicle, first)
-    MH.requestAdd(vehicle, second)
-    MH.requestStart(vehicle)
-    local started = g_currentMission.aiSystem.started
-    assert(#started == 1 and started[1] == first and first.startedFarmId == 1 and vehicle:getIsAIActive())
-    local queue = MH.queues[vehicle]
-    assert(queue.running and queue.runningJob == first and #queue.entries == 1)
-end)
-
 test("queue advances only after a successful finish", function()
     local vehicle = mockVehicle(7)
     local jobs = {newJob(vehicle, 1, 1), newJob(vehicle, 2, 2), newJob(vehicle, 3, 3)}
     for _, job in ipairs(jobs) do MH.requestAdd(vehicle, job) end
-    MH.requestStart(vehicle)
+    assert(g_currentMission.aiSystem.started[1] == jobs[1])
     g_currentMission.aiSystem:stopJob(jobs[1], AIMessageSuccessFinishedJob.new())
     update(MH.ADVANCE_DELAY - 1)
     assert(#g_currentMission.aiSystem.started == 1, "waits for the native job removal")
@@ -170,7 +211,6 @@ test("stop by the player, errors and deletion pause the queue", function()
         local first, second = newJob(vehicle, 1, 1), newJob(vehicle, 2, 2)
         MH.requestAdd(vehicle, first)
         MH.requestAdd(vehicle, second)
-        MH.requestStart(vehicle)
         if reason == "player" then
             vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
         elseif reason == "error" then
@@ -192,9 +232,8 @@ end)
 
 test("a job that cannot start keeps its place and shows the native reason", function()
     local vehicle = mockVehicle(7)
-    MH.requestAdd(vehicle, newJob(vehicle, 1, 1))
     g_currentMission.aiSystem.limitReached = true
-    MH.requestStart(vehicle)
+    MH.requestAdd(vehicle, newJob(vehicle, 1, 1))
     local queue = MH.queues[vehicle]
     assert(queue.pause == MH.PAUSE.START_FAILED and queue.startState == 1 and #queue.entries == 1)
     assert(MH.getPauseReason(queue) == "GoTo start error 1")
@@ -207,24 +246,51 @@ end)
 
 test("the player's own seat is not reported as in use", function()
     local vehicle = seat(mockVehicle(7))
-    local seatConnection = {farmId = 1}
-    vehicle.spec_enterable = {isControlled = true}
+    local seatConnection = {farmId = 1, userId = 1}
+    localConnection.userId = 1
+    vehicle.spec_enterable = {isControlled = true, controllerUserId = 1}
     vehicle.ownerConnection = seatConnection
     local job = newJob(vehicle)
     MH.requestAdd(vehicle, job)
+    assert(job.startConnection == seatConnection and g_currentMission.aiSystem.started[1] == job)
+end)
+
+test("a vehicle another player sits in is not started for someone else", function()
+    local vehicle = mockVehicle(7)
+    local driver = {farmId = 1, userId = 2}
+    localConnection.userId = 1
+    vehicle.spec_enterable = {isControlled = true, controllerUserId = 2}
+    vehicle.ownerConnection = driver
+    local job = newJob(vehicle)
+    MH.requestAdd(vehicle, job)
+    local queue = MH.queues[vehicle]
+    -- Refused with the game's own "in use" reason; the job waits.
+    assert(#g_currentMission.aiSystem.started == 0 and job.startConnection == localConnection)
+    assert(queue.pause == MH.PAUSE.START_FAILED and queue.startState == 5 and MH.getPauseReason(queue) == "GoTo start error 5")
+    assert(queue.entries[1].job == job)
     MH.requestStart(vehicle)
-    assert(job.startConnection == seatConnection)
+    assert(#g_currentMission.aiSystem.started == 0, "Resume is refused the same way")
+    -- The driver gets out: Resume starts it.
+    vehicle.spec_enterable.isControlled = false
+    MH.requestStart(vehicle)
+    assert(g_currentMission.aiSystem.started[1] == job and queue.pause == MH.PAUSE.NONE)
+    -- A queue that advances on its own keeps going for a driver who got in meanwhile.
+    MH.requestAdd(vehicle, newJob(vehicle, 5, 5))
+    vehicle.spec_enterable.isControlled = true
+    g_currentMission.aiSystem:stopJob(job, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    assert(#g_currentMission.aiSystem.started == 2 and g_currentMission.aiSystem.started[2].startConnection == driver)
 end)
 
 test("jobs the queue did not start are ignored", function()
     local vehicle = mockVehicle(7)
-    MH.requestAdd(vehicle, newJob(vehicle))
+    local queue = pausedQueue(vehicle, {newJob(vehicle)})
     local manual = newJob(vehicle)
     g_currentMission.aiSystem:startJob(manual, 1)
     g_currentMission.aiSystem:stopJob(manual, AIMessageSuccessFinishedJob.new())
     update(MH.ADVANCE_DELAY)
-    assert(#g_currentMission.aiSystem.started == 1 and #MH.getEntries(vehicle) == 1)
-    assert(MH.queues[vehicle].pause == MH.PAUSE.NONE and #g_currentMission.notifications == 0)
+    assert(#g_currentMission.aiSystem.started == 2 and #MH.getEntries(vehicle) == 1)
+    assert(queue.pause == MH.PAUSE.STOPPED and #g_currentMission.notifications == 0)
 end)
 
 test("deleted vehicles and owner changes drop the queue", function()
@@ -243,6 +309,7 @@ end)
 
 test("request and state events serialize every action with the native job stream", function()
     local vehicle = mockVehicle(7)
+    startManual(vehicle)
     local client = {farmId = 1, allowed = true, getIsServer = function() return false end}
     local function send(event)
         local stream = {}
@@ -260,8 +327,9 @@ test("request and state events serialize every action with the native job stream
     send(MHQueueRequestEvent.new(MH.ACTION.EDIT, vehicle, newJob(vehicle, 1, 1, AIJobType.FIELDWORK), editedId))
     assert(MH.getEntries(vehicle)[2].job.jobTypeIndex == AIJobType.FIELDWORK and MH.getEntries(vehicle)[2].id == editedId)
     send(MHQueueRequestEvent.new(MH.ACTION.REMOVE, vehicle, nil, editedId))
+    vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
     send(MHQueueRequestEvent.new(MH.ACTION.START, vehicle))
-    assert(#MH.getEntries(vehicle) == 0 and #g_currentMission.aiSystem.started == 1)
+    assert(#MH.getEntries(vehicle) == 0 and #g_currentMission.aiSystem.started == 2)
     -- Server state reaches a client copy.
     MH.requestAdd(vehicle, newJob(vehicle, 3, 4))
     local stateEvent = broadcasts[#broadcasts]
@@ -284,6 +352,8 @@ test("save and load round trip restores queues and drops what no longer exists",
     local vehicle = mockVehicle(7, 1, "vehicleA")
     local gone = mockVehicle(8, 1, "vehicleB")
     local silo = mockStation(500, "Grain silo", 0, 0)
+    startManual(vehicle)
+    startManual(gone)
     MH.requestAdd(vehicle, newJob(vehicle, 10, 20))
     local station = newJob(vehicle, nil, nil, AIJobType.LOAD_AND_DELIVER)
     station.loadingStationParameter:setLoadingStation(silo)
@@ -308,7 +378,7 @@ test("save and load round trip restores queues and drops what no longer exists",
     assert(MH.getJobLabel(entries[2].job) == "Load and deliver - Grain silo")
     assert(logged.infos[1]:find("Dropped 2"), logged.infos[1])
     local queue = MH.queues[reloaded]
-    assert(not queue.running and queue.pause == MH.PAUSE.NONE)
+    assert(not queue.running and queue.pause == MH.PAUSE.NONE, "a loaded queue waits for Resume")
 end)
 
 test("saving with no queues overwrites stale queue data", function()
@@ -332,6 +402,7 @@ end)
 
 test("queued field work uses the vehicle's worker settings when it starts", function()
     local vehicle = mockVehicle(7)
+    local manual = startManual(vehicle)
     vehicle.aiSettings = "A"
     local job = newJob(vehicle, 5, 5, AIJobType.FIELDWORK)
     local stream = {}
@@ -341,8 +412,9 @@ test("queued field work uses the vehicle's worker settings when it starts", func
     local queued = MH.getEntries(vehicle)[1].job
     assert(queued.pendingData == nil and queued.pendingVehicle == nil, "the requester's copy is dropped")
     vehicle.aiSettings = "B"
-    MH.requestStart(vehicle)
-    assert(g_currentMission.aiSystem.started[1] == queued and vehicle.aiSettings == "B")
+    g_currentMission.aiSystem:stopJob(manual, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    assert(g_currentMission.aiSystem.started[2] == queued and vehicle.aiSettings == "B")
 end)
 
 test("quitting with queued jobs completes the mission teardown and never deletes a job", function()
@@ -352,7 +424,6 @@ test("quitting with queued jobs completes the mission teardown and never deletes
     for i = 1, 3 do MH.requestAdd(vehicle, newJob(vehicle, i, i)) end
     local other = mockVehicle(8)
     MH.handleRequest(MH.ACTION.ADD, other, newJob(other), nil, localConnection)
-    MH.requestStart(vehicle)
     MH.requestRemove(vehicle, MH.getEntries(vehicle)[1].id)
     MH.requestEdit(vehicle, MH.getEntries(vehicle)[1].id, newJob(vehicle, 9, 9))
     local frame, page = openPage()
@@ -401,7 +472,8 @@ test("the page shows the vehicle the player sits in and explains when nothing ca
     local frame, page = openPage()
     assert(page.mhVehicleTitle.text == "mh_onFoot" and page.mhVehicleStatus.text == "mh_statusOnFoot")
     assert(page.mhFormEmptyText.visible and frame.currentJob == nil and not frame.createJobContainer.visible)
-    assert(page.mhAddButton.disabled and page.mhMineButton.disabled and page.mhPlacesList:getItemCount() == 0)
+    assert(page.mhAddButton.disabled and page.mhPlacesList:getItemCount() == 0)
+    assert(page.mhFilterSelector.disabled and #page.mhFilterSelector.texts == 0 and not page.mhPlacesEmpty.visible)
     local vehicle = seat(mockVehicle(7))
     frame.mapOverviewSelector:setState(1, true)
     frame.mapOverviewSelector:setState(frame.mapHelper.pageIndex, true)
@@ -431,40 +503,251 @@ test("the native form hides its vehicle row and keeps the native job type list",
     assert(frame.currentJob.jobTypeIndex == AIJobType.FIELDWORK and not frame.jobMenuLayout.elements[2].visible)
 end)
 
-test("selecting another own vehicle on the map switches the page; My vehicle switches back", function()
+test("selecting another own vehicle on the map switches the page; the card switches back", function()
     local mine = seat(mockVehicle(7))
     local other = mockVehicle(8)
     local foreign = mockVehicle(9, 2)
     local frame, page = openPage()
+    assert(page.mhVehicleInfo.text == "", "no hint on the own vehicle")
     frame:setMapSelectionItem(other.hotspot)
     assert(page.vehicle == other and frame.currentJobVehicle == other and page.mhVehicleTitle.text == "Tractor 8")
-    assert(not page.mhMineButton.disabled)
+    assert(page.mhVehicleInfo.text == "mh_backToMine")
     frame:setMapSelectionItem(foreign.hotspot)
     assert(page.vehicle == other, "other farms' vehicles are only selected, not planned for")
     frame:setMapSelectionItem(nil)
     assert(page.vehicle == other and g_currentMission.mapHotspots[frame.aiTargetMapHotspot], "the form marker stays")
-    page.mhMineButton.onClickCallback(page)
-    assert(page.vehicle == mine and page.mhMineButton.disabled and frame.ingameMap.pannedTo == mine.hotspot)
+    page.mhVehicleCardButton.onClickCallback(page)
+    assert(page.vehicle == mine and frame.ingameMap.pannedTo == mine.hotspot and page.mhVehicleInfo.text == "")
+    -- On the own vehicle the card moves the map to it.
+    frame.ingameMap.pannedTo = nil
+    page.mhVehicleCardButton.onClickCallback(page)
+    assert(page.vehicle == mine and frame.ingameMap.pannedTo == mine.hotspot)
 end)
 
-test("places list contracts, own fields, job types and stations", function()
-    local vehicle = seat(mockVehicle(7))
-    vehicle.canFieldWork, vehicle.canDeliver = true, true
-    local field3 = mockField(3, 300, 300, 2.5, 1)
-    mockField(1, 100, 100, 1.25, 1)
-    mockField(2, 200, 200, 4, 2)
-    mockContract(field3, 1, "Plowing", 0.42)
-    mockContract(mockField(5, 500, 500, 1, 0), 2, "Other farm", 0.1)
-    mockContract(mockField(6, 600, 600, 1, 0), 1, "Not accepted", 0, "created")
+test("the place filter offers what the vehicle can use and remembers the choice per vehicle", function()
+    local tractor = seat(mockVehicle(7))
+    local truck = mockVehicle(8)
+    truck.canDeliver = true
+    local frame, page = openPage()
+    local selector = page.mhFilterSelector
+    -- Nothing recognised (no implement): all own fields first, no stations without a delivery job.
+    assert(table.concat(selector.texts, ";") == "mh_filterFields;ui_contracts" and page.filterKey == "fields")
+    attachImplement(tractor, {spec_plow = {}})
+    page:setVehicle(tractor, false)
+    assert(table.concat(selector.texts, ";") == "mh_filterNeeds;mh_filterFields;ui_contracts")
+    assert(page.filterKey == "needs" and selector.state == 1 and not selector.disabled)
+    selector:setState(3, true)
+    assert(page.filterKey == "contracts")
+    frame:setMapSelectionItem(truck.hotspot)
+    assert(table.concat(selector.texts, ";") == "mh_filterFields;ui_contracts;ui_stations" and page.filterKey == "fields")
+    selector:setState(3, true)
+    -- Back on the tractor (card), then the truck again: each keeps its own choice.
+    page.mhVehicleCardButton.onClickCallback(page)
+    assert(page.vehicle == tractor and page.filterKey == "contracts" and selector.state == 3)
+    frame:setMapSelectionItem(truck.hotspot)
+    assert(page.filterKey == "stations" and selector.state == 3)
+end)
+
+test("field needs follow what each implement can do", function()
+    local FN = MHFieldNeeds
+    local W = FN.WORK
+    local function state(values)
+        local result = {groundType = FieldGroundType.STUBBLE_TILLAGE, fruitTypeIndex = 0, growthState = 0, sprayLevel = 0,
+            limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0, sprayType = 0}
+        for key, value in pairs(values) do result[key] = value end
+        result.fruit = g_fruitTypeManager:getFruitTypeByIndex(result.fruitTypeIndex)
+        return result
+    end
+    local function works(specs, fill)
+        local vehicle = mockVehicle(90 + #g_currentMission.notifications + math.random(1000))
+        local implement = attachImplement(vehicle, specs)
+        implement.fillTypes[1] = fill
+        local map, list = FN.getWorks(vehicle)
+        return table.concat(list, ","), map, vehicle, implement
+    end
+    assert(works({spec_plow = {}}) == "PLOW")
+    assert(works({spec_cultivator = {}}) == "CULTIVATE")
+    assert(works({spec_sowingMachine = {}, spec_sprayer = {}}) == "SOW", "a fertilizing seeder sows")
+    assert(works({spec_sprayer = {}}, "LIME") == "LIME" and works({spec_sprayer = {}}, "HERBICIDE") == "HERBICIDE")
+    assert(works({spec_sprayer = {}}, "LIQUIDFERTILIZER") == "FERTILIZE" and works({spec_sprayer = {}}) == "FERTILIZE")
+    assert(works({spec_sprayer = {hasWorkAreas = false}}, "HERBICIDE") == "", "a tank without work areas sprays nothing")
+    assert(works({spec_roller = {isSoilRoller = false, isGrassRoller = true}}) == "", "a grass roller has no soil need")
+    assert(works({spec_roller = {isSoilRoller = true}}) == "ROLL")
+
+    local stubble, plowed = state({}), state({groundType = FieldGroundType.PLOWED})
+    local cultivated = state({groundType = FieldGroundType.CULTIVATED})
+    local growing = state({groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 2})
+    local ripe = state({groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 4})
+    local harvested = state({groundType = FieldGroundType.HARVEST_READY, fruitTypeIndex = FRUIT.WHEAT, growthState = 6})
+    -- Soil work only where no crop would be destroyed.
+    assert(FN.getNeedsWork(stubble, W.PLOW) and not FN.getNeedsWork(plowed, W.PLOW) and not FN.getNeedsWork(growing, W.PLOW))
+    assert(FN.getNeedsWork(state({groundType = FieldGroundType.CULTIVATED, plowLevel = 0}), W.PLOW), "plowing required")
+    assert(FN.getNeedsWork(stubble, W.CULTIVATE) and FN.getNeedsWork(plowed, W.CULTIVATE))
+    assert(not FN.getNeedsWork(state({groundType = FieldGroundType.SEEDBED}), W.CULTIVATE))
+    -- Sowing: prepared ground; a direct seeder or a seeder with a cultivator also on harvested ground.
+    local _, plain = works({spec_sowingMachine = {}})
+    local _, direct = works({spec_sowingMachine = {useDirectPlanting = true}})
+    local seederVehicle = mockVehicle(80)
+    attachImplement(seederVehicle, {spec_sowingMachine = {}})
+    attachImplement(seederVehicle, {spec_cultivator = {}})
+    local combined = FN.getWorks(seederVehicle)
+    assert(FN.getNeedsWork(cultivated, W.SOW, plain.SOW) and not FN.getNeedsWork(growing, W.SOW, direct.SOW))
+    assert(not FN.getNeedsWork(harvested, W.SOW, plain.SOW), "a normal seeder needs worked soil")
+    assert(FN.getNeedsWork(harvested, W.SOW, direct.SOW) and FN.getNeedsWork(harvested, W.SOW, combined.SOW))
+    -- Field info box conditions; soil rolling only before the second growth state.
+    assert(FN.getNeedsWork(state({rollerLevel = 1}), W.ROLL) and not FN.getNeedsWork(stubble, W.ROLL))
+    assert(not FN.getNeedsWork(state({rollerLevel = 1, fruitTypeIndex = FRUIT.WHEAT, growthState = 2}), W.ROLL))
+    local _, limeWorks = works({spec_sprayer = {}}, "LIME")
+    assert(FN.getNeedsWork(state({limeLevel = 0}), W.LIME, limeWorks.LIME) and not FN.getNeedsWork(stubble, W.LIME))
+    assert(not FN.getNeedsWork(state({limeLevel = 0, sprayType = 3}), W.LIME, limeWorks.LIME), "lime just spread")
+    local _, liquid = works({spec_sprayer = {}}, "LIQUIDFERTILIZER")
+    assert(FN.getNeedsWork(state({sprayLevel = 1}), W.FERTILIZE, liquid.FERTILIZE))
+    assert(not FN.getNeedsWork(state({sprayLevel = 2}), W.FERTILIZE, liquid.FERTILIZE))
+    assert(not FN.getNeedsWork(state({sprayLevel = 1, sprayType = 2}), W.FERTILIZE, liquid.FERTILIZE),
+        "the same fertilizer was just spread")
+    assert(FN.getNeedsWork(state({sprayLevel = 1, sprayType = 1}), W.FERTILIZE, liquid.FERTILIZE), "another fertilizer")
+    assert(not FN.getNeedsWork(ripe, W.FERTILIZE), "no fertilizer on a ripe crop")
+    -- Weeds: herbicide on growing crops; weeder and hoe by their own replacement tables and crop states.
+    local function weedy(weedState, growthState)
+        return state({groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = growthState or 1,
+            weedState = weedState})
+    end
+    local _, weeder = works({spec_weeder = {isHoeWeeder = false}})
+    local _, hoe = works({spec_weeder = {isHoeWeeder = true}})
+    assert(FN.getNeedsWork(weedy(2, 2), W.HERBICIDE) and not FN.getNeedsWork(growing, W.HERBICIDE))
+    assert(FN.getNeedsWork(weedy(1), W.WEED, weeder.WEED) and not FN.getNeedsWork(weedy(2), W.WEED, weeder.WEED),
+        "the weeder only takes small weeds")
+    assert(FN.getNeedsWork(weedy(2), W.WEED, hoe.WEED) and not FN.getNeedsWork(weedy(3), W.WEED, hoe.WEED))
+    assert(not FN.getNeedsWork(weedy(1, 3), W.WEED, weeder.WEED), "too late in the crop for the weeder")
+    -- Crops: mulching stubble, the topper's own crops, mower and header ranges.
+    assert(FN.getNeedsWork(state({fruitTypeIndex = FRUIT.WHEAT, growthState = 6}), W.MULCH) and not FN.getNeedsWork(growing, W.MULCH))
+    assert(not FN.getNeedsWork(state({fruitTypeIndex = FRUIT.GRASS, growthState = 4}), W.MULCH), "grass has no mulched state")
+    local _, topper = works({spec_fruitPreparer = {fruitTypes = {FRUIT.POTATO}}})
+    local _, otherTopper = works({spec_fruitPreparer = {fruitTypes = {FRUIT.WHEAT}}})
+    local foliage = state({fruitTypeIndex = FRUIT.POTATO, growthState = 4})
+    assert(FN.getNeedsWork(foliage, W.PREPARE, topper.PREPARE) and not FN.getNeedsWork(foliage, W.PREPARE, otherTopper.PREPARE))
+    local _, grain = works({spec_cutter = {fruitTypeIndices = {FRUIT.WHEAT, FRUIT.MAIZE}}})
+    local _, forage = works({spec_cutter = {fruitTypeIndices = {FRUIT.MAIZE}, allowsForageGrowthState = true}})
+    local maizeForage = state({fruitTypeIndex = FRUIT.MAIZE, growthState = 3})
+    local maizeRipe = state({fruitTypeIndex = FRUIT.MAIZE, growthState = 4})
+    assert(FN.getNeedsWork(ripe, W.HARVEST, grain.HARVEST) and not FN.getNeedsWork(growing, W.HARVEST, grain.HARVEST))
+    assert(not FN.getNeedsWork(maizeForage, W.HARVEST, grain.HARVEST), "a grain header waits for ripe maize")
+    assert(FN.getNeedsWork(maizeForage, W.HARVEST, forage.HARVEST) and FN.getNeedsWork(maizeRipe, W.HARVEST, forage.HARVEST))
+    local grass = state({groundType = FieldGroundType.GRASS, fruitTypeIndex = FRUIT.GRASS, growthState = 3})
+    assert(not FN.getNeedsWork(grass, W.HARVEST, grain.HARVEST), "the header does not cut grass")
+    local _, mower = works({spec_mower = {fruitTypeConverters = {[FRUIT.GRASS] = {}}}})
+    assert(FN.getNeedsWork(grass, W.MOW, mower.MOW) and not FN.getNeedsWork(ripe, W.MOW, mower.MOW))
+    assert(FN.getNeedsWork(state({stoneLevel = 2}), W.STONES) and not FN.getNeedsWork(stubble, W.STONES))
+    -- "My fields" keeps the map's order: forage maize is growing, not ready to harvest.
+    assert(FN.getStateText(maizeForage) == "ui_growthMapGrowing" and FN.getStateText(maizeRipe) == "ui_growthMapReadyToHarvest")
+    -- Switched-off game settings switch the needs off.
+    g_currentMission.missionInfo.limeRequired, g_currentMission.missionInfo.weedsEnabled = false, false
+    assert(not FN.getNeedsWork(state({limeLevel = 0}), W.LIME) and not FN.getNeedsWork(weedy(2, 2), W.HERBICIDE))
+    assert(#FN.getNeeds(nil, {}, {"PLOW"}) == 0, "a point outside every field has no need")
+end)
+
+test("a sprayer sprays what its tank, a front tank or the fill type choice supplies", function()
+    local FN = MHFieldNeeds
+    local function sprayer()
+        local vehicle = mockVehicle(60)
+        local implement = attachImplement(vehicle, {spec_sprayer = {supportedSprayTypes = {"FERTILIZER", "HERBICIDE"},
+            fillTypeSources = {FERTILIZER = {}, HERBICIDE = {}}}})
+        return vehicle, implement
+    end
+    local vehicle, implement = sprayer()
+    local frontTank = attachImplement(vehicle, {})
+    frontTank.fillTypes[2] = "HERBICIDE"
+    implement.spec_sprayer.fillTypeSources.HERBICIDE = {{vehicle = frontTank, fillUnitIndex = 2}}
+    local _, list = FN.getWorks(vehicle)
+    assert(table.concat(list, ",") == "HERBICIDE", "the empty tank is supplied with herbicide from the front tank")
+    implement.fillTypes[1] = "FERTILIZER"
+    _, list = FN.getWorks(vehicle)
+    assert(table.concat(list, ",") == "FERTILIZE", "the own tank comes first")
+    -- Empty everywhere: the Fill Type Selector Mod's choice, when that Mod is there.
+    vehicle, implement = sprayer()
+    _, list = FN.getWorks(vehicle)
+    assert(table.concat(list, ",") == "FERTILIZE")
+    implement[FN.FILL_TYPE_SELECTOR_SPEC] = {selectedFillType = "LIME"}
+    _, list = FN.getWorks(vehicle)
+    assert(table.concat(list, ",") == "LIME")
+end)
+
+test("the lists: fields needing the work, my fields with their state, contracts and stations", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork, tractor.canDeliver = true, true
+    attachImplement(tractor, {spec_plow = {}})
+    local field1 = mockField(1, 100, 100, 1.25, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(3, 300, 300, 3, 1, {groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 4})
+    mockField(2, 200, 200, 2, 1, {limeLevel = 0})
+    mockField(4, 400, 400, 1, 2)
+    mockContract(mockField(5, 500, 500, 1, 0, {groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 2}),
+        1, "Sowing", 0.1)
+    mockContract(mockField(6, 600, 600, 1, 0), 1, "Plowing", 0.42)
+    mockContract(mockField(7, 700, 700, 1, 0), 2, "Other farm", 0.5)
+    mockContract(mockField(8, 800, 800, 1, 0), 1, "Not accepted", 0, "created")
     g_currentMission.stations.loading = {mockStation(600, "Silo", 50, 60)}
-    g_currentMission.stations.unloading = {mockStation(601, "Mill", 70, 80), mockStation(602, "Bakery", 90, 95)}
-    local _, page = openPage()
-    assert(placeNames(page) == "#ui_contracts;Plowing;#ui_fields;Field No. 1;Field No. 3;#mh_placesJobs;Go to;Field work;Deliver;Load and deliver;#ui_stations;Silo;Bakery;Mill",
-        placeNames(page))
-    assert(page.mhPlacesList.cells[1][1]:getAttribute("info"):getText() == "42 %")
-    assert(page.mhPlacesList.cells[2][1]:getAttribute("info"):getText() == "1.25 ha")
+    g_currentMission.stations.unloading = {mockStation(601, "Mill", 70, 80)}
+    local frame, page = openPage()
+    local selector = page.mhFilterSelector
+    assert(placeTexts(page) == "Field No. 2|contract_field_plow_title", placeTexts(page))
+    assert(page.mhPlacesList.cells[1][1]:getAttribute("icon").imageSlice == "gui.storeAttribute_seeding")
+    assert(not page.mhPlacesEmpty.visible)
+    selector:setState(2, true)
+    assert(placeTexts(page) == "Field No. 1|ui_growthMapPlowed;Field No. 2|ui_growthMapNeedsLime;Field No. 3|ui_growthMapReadyToHarvest",
+        placeTexts(page))
+    selector:setState(3, true)
+    assert(placeTexts(page) == "Plowing - Field No. 6|contract_field_plow_title - 42 %;Sowing - Field No. 5|10 %", placeTexts(page))
     assert(page.mhPlacesList.cells[1][1]:getAttribute("icon").imageSlice == "gui.ingameMap_contracts")
-    assert(page.mhPlacesList.cells[4][1]:getAttribute("icon").imageSlice == "gui.ingameMap_loadingStation")
+    selector:setState(4, true)
+    assert(placeTexts(page) == "Silo|;Mill|")
+    assert(page.mhPlacesList.cells[1][1]:getAttribute("icon").imageSlice == "gui.ingameMap_loadingStation")
+    -- The field states are read again every few seconds while the page is open.
+    selector:setState(1, true)
+    field1.state.groundType = FieldGroundType.STUBBLE_TILLAGE
+    InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
+    assert(placeTexts(page) == "Field No. 2|contract_field_plow_title")
+    InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
+    assert(placeTexts(page) == "Field No. 1|contract_field_plow_title;Field No. 2|contract_field_plow_title", placeTexts(page))
+end)
+
+test("implements attached while the page is open update the filter and keep the choice", function()
+    local tractor = seat(mockVehicle(7))
+    mockField(1, 100, 100, 1, 1)
+    local frame, page = openPage()
+    local selector = page.mhFilterSelector
+    assert(page.filterKey == "fields" and table.concat(selector.texts, ";") == "mh_filterFields;ui_contracts")
+    selector:setState(2, true)
+    attachImplement(tractor, {spec_plow = {}})
+    InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
+    assert(table.concat(selector.texts, ";") == "mh_filterNeeds;mh_filterFields;ui_contracts")
+    assert(page.filterKey == "contracts" and selector.state == 3, "the shown choice stays")
+    selector:setState(1, true)
+    assert(placeTexts(page) == "Field No. 1|contract_field_plow_title")
+    -- Detached again: the needs choice is gone, the page falls back to the first option.
+    table.remove(tractor.childVehicles)
+    InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
+    assert(table.concat(selector.texts, ";") == "mh_filterFields;ui_contracts" and page.filterKey == "fields")
+end)
+
+test("each filter explains an empty list", function()
+    local tractor = seat(mockVehicle(7))
+    attachImplement(tractor, {spec_plow = {}})
+    local _, page = openPage()
+    local selector = page.mhFilterSelector
+    assert(page.mhPlacesEmpty.visible and page.mhPlacesEmpty.text == "mh_emptyNeeds")
+    selector:setState(2, true)
+    assert(page.mhPlacesEmpty.visible and page.mhPlacesEmpty.text == "mh_emptyFields")
+    selector:setState(3, true)
+    assert(page.mhPlacesEmpty.visible and page.mhPlacesEmpty.text == "mh_emptyContracts")
+    mockField(1, 100, 100, 1, 1, {groundType = FieldGroundType.PLOWED})
+    selector:setState(1, true)
+    assert(page.mhPlacesEmpty.text == "mh_emptyNeeds", "a field that needs nothing is not listed")
+    selector:setState(2, true)
+    assert(not page.mhPlacesEmpty.visible and page.mhPlacesList:getItemCount() == 1)
+    tractor.canDeliver = true
+    page:setVehicle(tractor, false)
+    selector:setState(4, true)
+    assert(page.mhPlacesEmpty.visible and page.mhPlacesEmpty.text == "mh_emptyStations")
 end)
 
 test("a place moves the map there and prefills the native form", function()
@@ -476,6 +759,7 @@ test("a place moves the map there and prefills the native form", function()
     g_currentMission.stations.loading = {mockStation(599, "Depot", 0, 0), silo}
     g_currentMission.stations.unloading = {mill}
     local frame, page = openPage()
+    assert(page.filterKey == "fields")
     -- Field: field work at the field.
     page.mhPlacesList:click(1, 1)
     assert(frame.ingameMap.centered[1] == 300 and frame.ingameMap.centered[2] == 310)
@@ -483,38 +767,41 @@ test("a place moves the map there and prefills the native form", function()
     assert(job.jobTypeIndex == AIJobType.FIELDWORK and job.positionAngleParameter.x == 300 and job.positionAngleParameter.z == 310)
     assert(frame.jobTypeElement.state == 2 and frame.lastValid)
     -- Loading station: load and deliver with that station.
-    page.mhPlacesList:click(3, 2)
+    page.mhFilterSelector:setState(3, true)
+    assert(placeTexts(page) == "Depot|;Silo|;Mill|")
+    page.mhPlacesList:click(1, 2)
     job = frame.currentJob
     assert(job.jobTypeIndex == AIJobType.LOAD_AND_DELIVER and job.loadingStationParameter:getLoadingStation() == silo)
     assert(job.changedParameter == job.loadingStationParameter and frame.ingameMap.centered[1] == 50)
     -- Unloading station keeps the current delivery type and sets its unloading station.
-    page.mhPlacesList:click(3, 3)
+    page.mhPlacesList:click(1, 3)
     assert(frame.currentJob == job and job.unloadingStationParameter:getUnloadingStation() == mill)
-    -- A job type just selects that type.
-    page.mhPlacesList:click(2, 1)
-    assert(frame.currentJob.jobTypeIndex == AIJobType.GOTO)
     -- Without field work, a field prefills Go to.
     vehicle.canFieldWork = false
     page:setVehicle(vehicle, false)
+    page.mhFilterSelector:setState(1, true)
     page.mhPlacesList:click(1, 1)
     assert(frame.currentJob.jobTypeIndex == AIJobType.GOTO and frame.currentJob.positionAngleParameter.x == 300)
 end)
 
-test("Add to queue and Insert as next send the native form's job and start a fresh form", function()
+test("Add to queue starts the first job at once; Insert as next puts a job in front", function()
     local vehicle = seat(mockVehicle(7))
     local frame, page = openPage()
     frame.currentJob.positionAngleParameter:setPosition(5, 6)
     local first = frame.currentJob
     -- Z (MENU_MAP_ACTION_1) adds: the native handler does nothing on the page.
     g_inputBinding:trigger(InputAction.MENU_MAP_ACTION_1)
-    assert(isQueued(vehicle, first) and frame.nativeStartPressed == nil)
+    assert(g_currentMission.aiSystem.started[1] == first and vehicle:getIsAIActive() and frame.nativeStartPressed == nil)
     assert(frame.currentJob ~= first and frame.currentJob.jobTypeIndex == AIJobType.GOTO and (first.resetCount or 0) == 0)
+    assert(#rowTexts(page) == 1 and rowTexts(page)[1]:sub(1, 13) == "|Go to - task", rowTexts(page)[1])
+    frame.currentJob.positionAngleParameter:setPosition(9, 9)
+    page:onClickAdd()
     frame.currentJob.positionAngleParameter:setPosition(7, 8)
     -- X (MENU_EXTRA_1) inserts as next.
     g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
-    assert(MH.getEntries(vehicle)[1].job.positionAngleParameter.x == 7)
-    assert(table.concat(rowTexts(page), ";") == "1|Go to|7, 8;2|Go to|5, 6", table.concat(rowTexts(page), ";"))
-    assert(page.mhVehicleInfo.text == "Waiting: 2" and not page.mhStartStopButton.disabled)
+    local rows = rowTexts(page)
+    assert(#rows == 3 and rows[2] == "1|Go to|7, 8" and rows[3] == "2|Go to|9, 9", table.concat(rows, ";"))
+    assert(page.mhVehicleInfo.text == "Waiting: 2" and not page.mhResumeContainer.visible, "running: nothing to resume")
     -- An invalid form stays with the native warning.
     frame.currentJob.valid = false
     page.mhAddButton.onClickCallback(page)
@@ -528,18 +815,22 @@ end)
 test("entries can be moved, edited and removed from the queue list", function()
     local vehicle = seat(mockVehicle(7))
     vehicle.canFieldWork = true
+    local manual = startManual(vehicle)
     for i = 1, 3 do MH.requestAdd(vehicle, newJob(vehicle, i, i)) end
     local frame, page = openPage()
-    assert(#rowTexts(page) == 3 and page.mhUpButton.disabled and not page.mhDownButton.disabled, "first row selected")
-    page.mhQueueList:click(1, 3)
-    assert(page.mhDownButton.disabled and not page.mhUpButton.disabled)
+    -- Row 1 is the running job: no arrows or edit, Delete reads Cancel job.
+    assert(#rowTexts(page) == 4 and page.selectedCurrent and page.mhUpButton.disabled and page.mhEditButton.disabled)
+    assert(page.mhRemoveText.text == "button_cancelJob" and not page.mhRemoveButton.disabled)
+    page.mhQueueList:click(1, 4)
+    assert(page.mhDownButton.disabled and not page.mhUpButton.disabled and page.mhRemoveText.text == "button_delete")
     page.mhUpButton.onClickCallback(page)
-    assert(table.concat(rowTexts(page), ";") == "1|Go to|1, 1;2|Go to|3, 3;3|Go to|2, 2")
-    assert(page.selectedRow == 2, "the selection follows the moved entry")
+    local rows = rowTexts(page)
+    assert(rows[2] == "1|Go to|1, 1" and rows[3] == "2|Go to|3, 3" and rows[4] == "3|Go to|2, 2", table.concat(rows, ";"))
+    assert(page.selectedRow == 3, "the selection follows the moved entry")
     page.mhDownButton.onClickCallback(page)
-    assert(rowTexts(page)[3] == "3|Go to|3, 3")
+    assert(rowTexts(page)[4] == "3|Go to|3, 3")
     -- Edit loads the entry into the native form; Save replaces it in place.
-    page.mhQueueList:click(1, 2)
+    page.mhQueueList:click(1, 3)
     local id = MH.getEntries(vehicle)[2].id
     page.mhEditButton.onClickCallback(page)
     assert(page.editingId == id and frame.currentJob.positionAngleParameter.x == 2 and page.mhAddText.text == "button_save")
@@ -552,19 +843,37 @@ test("entries can be moved, edited and removed from the queue list", function()
     assert(#entries == 3 and entries[2].id == id and entries[2].job.jobTypeIndex == AIJobType.FIELDWORK)
     assert(entries[2].job.positionAngleParameter.x == 42 and page.editingId == nil and page.mhAddText.text == "mh_addToQueue")
     -- X cancels an edit without sending anything.
-    page.mhQueueList:click(1, 1)
+    page.mhQueueList:click(1, 2)
     page:onClickEdit()
     g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
     assert(page.editingId == nil and #MH.getEntries(vehicle) == 3 and MH.getEntries(vehicle)[1].job.positionAngleParameter.x == 1)
     -- An entry that starts while it is edited ends the edit.
     page:onClickEdit()
-    MH.requestStart(vehicle)
-    assert(page.editingId == nil)
-    page.mhQueueList:click(1, 2)
+    g_currentMission.aiSystem:stopJob(manual, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    assert(page.editingId == nil and #MH.getEntries(vehicle) == 2)
+    page.mhQueueList:click(1, 3)
     page.mhRemoveButton.onClickCallback(page)
     assert(#MH.getEntries(vehicle) == 1)
     page.mhClearButton.onClickCallback(page)
     assert(#MH.getEntries(vehicle) == 0)
+end)
+
+test("Cancel job on the running row pauses the queue; Resume continues it", function()
+    local vehicle = seat(mockVehicle(7))
+    local a, b = newJob(vehicle, 1, 1), newJob(vehicle, 2, 2)
+    MH.requestAdd(vehicle, a)
+    MH.requestAdd(vehicle, b)
+    local _, page = openPage()
+    assert(page.selectedCurrent and page.mhRemoveText.text == "button_cancelJob" and not page.mhResumeContainer.visible)
+    page.mhRemoveButton.onClickCallback(page)
+    local queue = MH.queues[vehicle]
+    assert(not vehicle:getIsAIActive() and queue.pause == MH.PAUSE.STOPPED and #queue.entries == 1)
+    assert(page.mhVehicleStatus.text == "Paused: mh_reasonStopped")
+    assert(page.mhResumeContainer.visible and not page.mhResumeButton.disabled and page.mhRemoveText.text == "button_delete")
+    page.mhResumeButton.onClickCallback(page)
+    local started = g_currentMission.aiSystem.started
+    assert(started[#started] == b and queue.running and not page.mhResumeContainer.visible)
 end)
 
 test("the running job shows its progress and disappears when it is done", function()
@@ -575,10 +884,9 @@ test("the running job shows its progress and disappears when it is done", functi
     MH.requestAdd(vehicle, newJob(vehicle, 400, 200, AIJobType.FIELDWORK))
     MH.requestAdd(vehicle, newJob(vehicle, 1, 2))
     local frame, page = openPage()
-    page.mhStartStopButton.onClickCallback(page)
     local rows = rowTexts(page)
     assert(#rows == 2 and rows[1] == "|Field work - task 1|ui_distance: 300 m  ·  contract_progress: 25 %", rows[1])
-    assert(rows[2] == "1|Go to|1, 2" and page.mhStartStopText.text == "button_cancelJob")
+    assert(rows[2] == "1|Go to|1, 2" and page.mhRemoveText.text == "button_cancelJob")
     assert(page.mhVehicleStatus.text == "mh_statusWorking")
     local cell = page.mhQueueList:getElementAtSectionIndex(1, 1)
     assert(cell:getAttribute("badgeIcon").visible and not page.mhQueueList:getElementAtSectionIndex(1, 2):getAttribute("badgeIcon").visible)
@@ -600,8 +908,7 @@ end)
 
 test("jobs can be planned while the vehicle works and run after the current job", function()
     local vehicle = seat(mockVehicle(7))
-    local current = newJob(vehicle)
-    g_currentMission.aiSystem:startJob(current, 1)
+    local current = startManual(vehicle)
     local frame, page = openPage()
     assert(frame.currentJob ~= nil and frame.currentJob.builtWhileAIActive == false, "built while the vehicle reads idle")
     assert(rawget(vehicle, "getIsAIActive") ~= nil and vehicle:getIsAIActive(), "the vehicle's own function is back")
@@ -616,7 +923,7 @@ end)
 
 test("an error while planning is cleaned up on the next frame", function()
     local vehicle = seat(mockVehicle(7))
-    g_currentMission.aiSystem:startJob(newJob(vehicle), 1)
+    startManual(vehicle)
     local _, page = openPage()
     page.frame.setActiveJobTypeSelection = function() error("broken menu") end
     -- The error reaches the game log like any other; nothing in the Mod catches it.
@@ -637,7 +944,7 @@ test("clients only send requests and wait for the server", function()
     page:onClickAdd()
     page:onClickInsertNext()
     assert(#sent == 2 and sent[1].action == MH.ACTION.ADD and not sent[1].flag and sent[2].flag)
-    assert(#MH.getEntries(vehicle) == 0)
+    assert(#MH.getEntries(vehicle) == 0 and #g_currentMission.aiSystem.started == 0)
     assert(not MH.handleRequest(MH.ACTION.ADD, vehicle, newJob(vehicle), nil, localConnection), "clients never apply")
     g_client, g_server = previousClient, previousServer
 end)
@@ -809,21 +1116,22 @@ end)
 
 test("buttons follow pause and permission changes on the periodic refresh", function()
     local vehicle = seat(mockVehicle(7))
-    MH.requestAdd(vehicle, newJob(vehicle))
+    pausedQueue(vehicle, {newJob(vehicle)})
     local frame, page = openPage()
-    assert(not page.mhAddButton.disabled and not page.mhStartStopButton.disabled)
+    assert(not page.mhAddButton.disabled and page.mhResumeContainer.visible and not page.mhResumeButton.disabled)
     g_currentMission.paused = true
     InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
-    assert(page.mhAddButton.disabled and page.mhStartStopButton.disabled)
+    assert(page.mhAddButton.disabled and page.mhResumeButton.disabled)
     g_currentMission.paused = false
     InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
-    assert(not page.mhAddButton.disabled and not page.mhStartStopButton.disabled)
+    assert(not page.mhAddButton.disabled and not page.mhResumeButton.disabled)
     g_currentMission.allowed = false
     InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
-    assert(page.mhAddButton.disabled and page.mhClearButton.disabled and page.mhEditButton.disabled)
+    assert(page.mhAddButton.disabled and page.mhClearButton.disabled and page.mhRemoveButton.disabled)
+    assert(not page.mhResumeContainer.visible)
     g_currentMission.allowed = true
     InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
-    assert(not page.mhClearButton.disabled)
+    assert(not page.mhClearButton.disabled and page.mhResumeContainer.visible)
 end)
 
 test("vehicles that never take a worker are recognised up front", function()

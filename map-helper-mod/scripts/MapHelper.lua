@@ -21,7 +21,7 @@ MH.NOTIFY_NUM_BITS = 2
 -- Engine class tables survive map changes, this table does not: start every mission clean.
 MH.queues = {}
 MH.nextEntryId = 1
-MH.features = {page = false, queue = false, hotkey = false}
+MH.features = {page = false, queue = false, hotkey = false, fieldNeeds = false}
 MH.missionActive = false
 MH.warnings = {}
 MH.listeners = {}
@@ -267,7 +267,7 @@ function MH.handleRequest(action, vehicle, job, entryId, connection, flag)
         return false
     end
     if action == MH.ACTION.ADD then
-        return MH.serverAdd(vehicle, job, flag == true)
+        return MH.serverAdd(vehicle, job, flag == true, connection)
     elseif action == MH.ACTION.EDIT then
         return MH.serverEdit(vehicle, entryId, job)
     elseif action == MH.ACTION.MOVE then
@@ -277,7 +277,7 @@ function MH.handleRequest(action, vehicle, job, entryId, connection, flag)
     elseif action == MH.ACTION.CLEAR then
         return MH.serverClear(vehicle)
     elseif action == MH.ACTION.START then
-        return MH.serverStart(vehicle)
+        return MH.serverStart(vehicle, connection)
     end
     return false
 end
@@ -304,7 +304,7 @@ function MH.findEntry(queue, entryId)
     return nil, nil
 end
 
-function MH.serverAdd(vehicle, job, insertNext)
+function MH.serverAdd(vehicle, job, insertNext, connection)
     local queue = MH.getQueue(vehicle, true)
     if #queue.entries >= MH.MAX_ENTRIES or not MH.getIsValidRequestJob(vehicle, job, queue.farmId) then
         MH.pruneQueue(queue)
@@ -321,6 +321,14 @@ function MH.serverAdd(vehicle, job, insertNext)
             queue.running = true
             queue.runningJob = current
         end
+    end
+    -- Auto-start: nobody drives the vehicle and the queue is idle or paused, so the queue
+    -- starts (or resumes) with its first entry right away. Between two queued jobs (delay)
+    -- the queue is already running and simply continues.
+    if not queue.running and not vehicle:getIsAIActive() then
+        queue.delay = nil
+        MH.startNext(queue, connection)
+        return true
     end
     MH.publish(queue)
     return true
@@ -384,23 +392,37 @@ function MH.serverClear(vehicle)
     return true
 end
 
-function MH.serverStart(vehicle)
+function MH.serverStart(vehicle, connection)
     local queue = MH.queues[vehicle]
     if queue == nil or #queue.entries == 0 or vehicle:getIsAIActive() then
         return false
     end
     queue.delay = nil
-    return MH.startNext(queue)
+    return MH.startNext(queue, connection)
 end
 
--- Same connection the vanilla start request would use: whoever is sitting in the
--- vehicle, so Enterable:getIsInUse does not report the player's own seat as busy.
-function MH.getStartConnection(vehicle)
+-- The connection the native start check (AIJob:getIsStartable, which asks
+-- Enterable:getIsInUse, SDK vehicles/specializations/Enterable.lua:1663) is made with.
+-- A start the player asks for (adding a job, Resume) uses the player's own connection, so a
+-- vehicle someone else sits in is refused with the game's own "in use" reason. Only when
+-- the player is the one sitting in it, his seat is not counted against him: then the
+-- occupant's connection is used. The queue advancing on its own after a finished job keeps
+-- the occupant's connection, since that start was planned before.
+function MH.getStartConnection(vehicle, requester, isRequest)
     local enterable = vehicle.spec_enterable
-    if enterable ~= nil and enterable.isControlled and vehicle.getOwnerConnection ~= nil then
-        return vehicle:getOwnerConnection()
+    if enterable == nil or not enterable.isControlled or vehicle.getOwnerConnection == nil then
+        return requester
     end
-    return nil
+    local occupant = vehicle:getOwnerConnection()
+    if not isRequest or requester == occupant then
+        return occupant
+    end
+    local users = g_currentMission.userManager
+    if users ~= nil and requester ~= nil and enterable.controllerUserId ~= nil and enterable.controllerUserId ~= 0
+        and users:getUserIdByConnection(requester) == enterable.controllerUserId then
+        return occupant
+    end
+    return requester
 end
 
 function MH.pauseQueue(queue, pause, startState, startJobTypeIndex)
@@ -418,7 +440,9 @@ end
 
 -- Server: start the first entry through the native AI system. The entry only
 -- leaves the queue once the native start has been accepted.
-function MH.startNext(queue)
+-- requester: the connection of the player whose request starts the queue (adding a job,
+-- Resume); nil when the queue advances on its own.
+function MH.startNext(queue, requester)
     local entry = queue.entries[1]
     if entry == nil then
         queue.running = false
@@ -431,7 +455,7 @@ function MH.startNext(queue)
         MH.pauseQueue(queue, MH.PAUSE.INVALID)
         return false
     end
-    local startable, state = job:getIsStartable(MH.getStartConnection(queue.vehicle))
+    local startable, state = job:getIsStartable(MH.getStartConnection(queue.vehicle, requester, requester ~= nil))
     if not startable then
         MH.pauseQueue(queue, MH.PAUSE.START_FAILED, state, MH.getJobTypeIndex(job))
         return false

@@ -4,7 +4,7 @@
      InGameMenuMapFrame:onLoadMapFinished; hidden unless its selector state is active.
 
      Top to bottom inside the 358 x (100% - 215px) list area of the sidebar:
-       vehicle card (100px), vehicle buttons (25px), places list (130px),
+       vehicle card (100px), place filter (32px), places list (130px),
        form slot (320px, the native createJobContainer is placed here with profile
        mh_nativeForm), form buttons (25px), queue header (25px), queue list (167px),
        entry buttons (25px).
@@ -21,28 +21,17 @@
             <Button profile="mh_vehicleCardButton" id="mhVehicleCardButton" onClick="onClickVehicleCard"/>
         </Bitmap>
 
-        <GuiElement profile="mh_buttonLeft" id="mhMineContainer" position="0px -106px">
-            <ThreePartBitmap profile="fs25_mapButtonBgLight"/>
-            <Text profile="fs25_mapButtonText" id="mhMineText" textOffset="15px 0px" text="$l10n_mh_myVehicle"/>
-            <Button profile="mh_button" id="mhMineButton" onClick="onClickMine"/>
-        </GuiElement>
-        <GuiElement profile="mh_buttonRight" id="mhStartStopContainer" position="0px -106px">
-            <ThreePartBitmap profile="fs25_mapButtonBgLight"/>
-            <Text profile="fs25_mapButtonText" id="mhStartStopText" textOffset="15px 0px" text="$l10n_mh_startQueue"/>
-            <Button profile="mh_button" id="mhStartStopButton" onClick="onClickStartStop"/>
-        </GuiElement>
+        <!-- Which places the list shows, styled like the native job type selector. -->
+        <MultiTextOption profile="mh_filterSelector" id="mhFilterSelector" onClick="onClickFilter"/>
 
-        <!-- Places: contracts, own fields, job types of the vehicle, stations. -->
+        <!-- Places of the chosen category: fields needing the work, own fields, contracts, stations. -->
         <GuiElement profile="mh_placesBox" id="mhPlacesBox">
-            <SmoothList profile="mh_list" id="mhPlacesList" listSectionHeader="section" startClipperElementName="startClipper" endClipperElementName="endClipper" onClick="onClickPlace">
+            <SmoothList profile="mh_list" id="mhPlacesList" startClipperElementName="startClipper" endClipperElementName="endClipper" onClick="onClickPlace">
                 <ListItem profile="mh_placeItem">
                     <ThreePartBitmap profile="mh_listItemBg"/>
                     <Bitmap profile="mh_placeItemIcon" name="icon"/>
                     <Text profile="mh_placeItemName" name="name"/>
                     <Text profile="mh_placeItemInfo" name="info"/>
-                </ListItem>
-                <ListItem profile="mh_listSection" name="section">
-                    <Text profile="mh_listSectionTitle" name="title"/>
                 </ListItem>
             </SmoothList>
             <Bitmap profile="fs25_subCategoryStartClipper" name="startClipper"/>
@@ -50,6 +39,7 @@
             <ThreePartBitmap profile="fs25_subCategoryListSliderBox">
                 <Slider profile="fs25_listSlider" dataElementId="mhPlacesList"/>
             </ThreePartBitmap>
+            <Text profile="mh_placesEmptyText" id="mhPlacesEmpty"/>
         </GuiElement>
 
         <!-- Shown instead of the form when no job can be planned for the shown vehicle. -->
@@ -68,6 +58,11 @@
 
         <!-- Command queue: the running job first, then the waiting entries. -->
         <Text profile="mh_queueTitle" id="mhQueueTitle" text="$l10n_mh_queueTitle"/>
+        <GuiElement profile="mh_buttonResume" id="mhResumeContainer">
+            <ThreePartBitmap profile="fs25_mapButtonBgLight"/>
+            <Text profile="fs25_mapButtonText" id="mhResumeText" textOffset="15px 0px" text="$l10n_mh_resumeQueue"/>
+            <Button profile="mh_button" id="mhResumeButton" onClick="onClickResume"/>
+        </GuiElement>
         <GuiElement profile="mh_buttonClear" id="mhClearContainer">
             <ThreePartBitmap profile="fs25_mapButtonBgLight"/>
             <Text profile="fs25_mapButtonText" id="mhClearText" textOffset="15px 0px" text="$l10n_mh_clearQueue"/>
@@ -173,8 +168,17 @@
             <size value="40px 25px"/>
         </Profile>
         <Profile name="mh_buttonClear" extends="fs25_mapButtonContainer" with="anchorTopRight">
-            <size value="150px 25px"/>
+            <size value="112px 25px"/>
             <position value="0px -636px"/>
+        </Profile>
+        <!-- Shown only while a queue with waiting jobs has no worker (paused or just loaded). -->
+        <Profile name="mh_buttonResume" extends="mh_buttonClear">
+            <position value="-118px -636px"/>
+        </Profile>
+        <!-- The native job type selector (fs25_aiJobTypeMultiTextOption, 40px) at 32px high. -->
+        <Profile name="mh_filterSelector" extends="fs25_aiJobTypeMultiTextOption">
+            <size value="100% 32px"/>
+            <position value="0px -104px"/>
         </Profile>
         <!-- Triggered by this Mod's own key events only (ScreenElement.callButtonsWithAction
              would trigger every button with the same action). -->
@@ -223,13 +227,6 @@
             <startImageHighlightedColor value="$preset_fs25_colorMainDark"/>
             <endImageHighlightedColor value="$preset_fs25_colorMainDark"/>
         </Profile>
-        <Profile name="mh_listSection" extends="emptyPanel" with="anchorTopStretchingX">
-            <height value="26px"/>
-        </Profile>
-        <Profile name="mh_listSectionTitle" extends="fs25_subCategoryListSectionHeaderTitle">
-            <size value="100% 24px"/>
-            <position value="0px -2px"/>
-        </Profile>
         <Profile name="mh_placeItem" extends="emptyPanel" with="anchorTopStretchingX">
             <height value="32px"/>
         </Profile>
@@ -240,17 +237,18 @@
             <imageSelectedColor value="$preset_fs25_colorMainDark"/>
         </Profile>
         <Profile name="mh_placeItemName" extends="fs25_textDefault" with="anchorMiddleLeft">
-            <size value="210px 20px"/>
+            <size value="150px 20px"/>
             <position value="42px 0px"/>
             <textBold value="true"/>
             <textLayoutMode value="scrolling"/>
             <textSelectedColor value="$preset_fs25_colorMainDark"/>
         </Profile>
         <Profile name="mh_placeItemInfo" extends="fs25_textDefault" with="anchorMiddleRight">
-            <size value="90px 20px"/>
+            <size value="150px 20px"/>
             <position value="-10px 0px"/>
             <textSize value="14px"/>
             <textAlignment value="right"/>
+            <textLayoutMode value="resize"/>
             <textColor value="$preset_fs25_colorGreyLight"/>
             <textSelectedColor value="$preset_fs25_colorMainDark"/>
         </Profile>
@@ -297,13 +295,15 @@
         </Profile>
         <Profile name="mh_queueTitle" extends="fs25_subCategoryListSectionHeaderTitle">
             <size value="100% 25px"/>
-            <absoluteSizeOffset value="160px 0px"/>
-            <position value="-80px -636px"/>
+            <absoluteSizeOffset value="236px 0px"/>
+            <position value="-118px -636px"/>
             <textVerticalAlignment value="middle"/>
+            <textLayoutMode value="resize"/>
         </Profile>
         <Profile name="mh_queueEmptyText" extends="fs25_aiContainerEmptyText">
             <textSize value="16px"/>
         </Profile>
+        <Profile name="mh_placesEmptyText" extends="mh_queueEmptyText"/>
         <Profile name="mh_formEmptyText" extends="fs25_aiContainerEmptyText" with="anchorTopCenter">
             <size value="320px 120px"/>
             <position value="0px -320px"/>

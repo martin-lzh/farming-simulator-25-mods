@@ -19,8 +19,9 @@ MHPage.EDIT_XML = "mapHelperEditJob.xml"
 
 MHPage.ICON = {
     CONTRACT = "gui.ingameMap_contracts",
-    FIELD = "gui.icon_others_farmland",
-    JOB = "gui.ingameMap_helper",
+    -- The seedling of the shop's seeding attribute; the farmland icon (a hill with a marker)
+    -- reads as a person at list size.
+    FIELD = "gui.storeAttribute_seeding",
     LOADING = "gui.ingameMap_loadingStation",
     UNLOADING = "gui.ingameMap_tippingStation"
 }
@@ -31,7 +32,8 @@ function MHPage.new(frame, ext)
     self.ext = ext
     self.name = frame.name
     self.vehicle = nil
-    self.sections = {}
+    self.places = {}
+    self.filterByVehicle = {}
     self.rows = {}
     self.selectedRow = nil
     self.editingId = nil
@@ -56,7 +58,7 @@ function MHPage:load()
     self.mhPage = self.root
     self.root:onGuiSetupFinished()
     -- Button labels highlight with their button, as the native map buttons do (MF:158-173).
-    for _, pair in ipairs({{"mhMineText", "mhMineButton"}, {"mhStartStopText", "mhStartStopButton"},
+    for _, pair in ipairs({{"mhResumeText", "mhResumeButton"},
         {"mhAddText", "mhAddButton"}, {"mhNextText", "mhNextButton"}, {"mhClearText", "mhClearButton"},
         {"mhEditText", "mhEditButton"}, {"mhRemoveText", "mhRemoveButton"}}) do
         local text, button = self[pair[1]], self[pair[2]]
@@ -126,6 +128,7 @@ function MHPage:release()
         self.root = nil
     end
     self.vehicle = nil
+    self.filterByVehicle = {}
     self.ext = nil
 end
 
@@ -152,6 +155,7 @@ function MHPage:setVehicle(vehicle, pan)
         end
     end
     self:buildForm(nil, nil)
+    self:updateFilterOptions()
     self:reloadPlaces()
     self:refresh()
 end
@@ -167,23 +171,6 @@ function MHPage:onMapSelectionChanged(hotspot)
     else
         -- The native selection removed or moved the target markers; show the form's again.
         self:showFormMarkers()
-    end
-end
-
-function MHPage:onClickMine()
-    local vehicle = MHMapFrame.getControlledVehicle()
-    if self:getIsShown() and vehicle ~= nil and vehicle ~= self.vehicle then
-        self:setVehicle(vehicle, true)
-    end
-end
-
-function MHPage:onClickVehicleCard()
-    local vehicle = self.vehicle
-    if self:getIsShown() and MH.getVehicleExists(vehicle) and vehicle.getMapHotspot ~= nil then
-        local hotspot = vehicle:getMapHotspot()
-        if hotspot ~= nil then
-            self.frame.ingameMap:panToHotspot(hotspot)
-        end
     end
 end
 
@@ -523,57 +510,126 @@ function MHPage:onClickInsertNext()
     end
 end
 
--- Lists -------------------------------------------------------------------------------
--- Places where the shown vehicle can work: running contracts of its farm, the farm's own
--- fields, the job types it can do and the stations its delivery jobs accept.
-function MHPage:reloadPlaces()
-    self.sections = {}
+-- Places ------------------------------------------------------------------------------
+-- The places list shows one category at a time, chosen with the filter selector above it:
+-- fields that need the combination's work, all own fields with their state, the farm's
+-- contracts, or the stations the vehicle's delivery jobs accept.
+MHPage.FILTER = {NEEDS = "needs", FIELDS = "fields", CONTRACTS = "contracts", STATIONS = "stations"}
+MHPage.FILTER_EMPTY = {needs = "mh_emptyNeeds", fields = "mh_emptyFields", contracts = "mh_emptyContracts",
+    stations = "mh_emptyStations"}
+MHPage.PLACES_INTERVAL = 10000
+
+function MHPage:getFilterTitle(key)
+    if key == MHPage.FILTER.NEEDS then
+        return MH.text("mh_filterNeeds")
+    elseif key == MHPage.FILTER.FIELDS then
+        return MH.text("mh_filterFields")
+    elseif key == MHPage.FILTER.CONTRACTS then
+        return g_i18n:getText("ui_contracts")
+    end
+    return g_i18n:getText("ui_stations")
+end
+
+function MHPage:getAvailableTypes()
+    local available = {}
+    for _, jobType in ipairs(self.jobTypes or {}) do
+        available[jobType.index] = true
+    end
+    return available
+end
+
+-- Options for the shown vehicle and the remembered or default choice: the needs filter when
+-- the combination does field work the page can recognise, otherwise all own fields. With
+-- keepCurrent (the periodic refresh, when implements may have changed) the shown choice stays
+-- while it is still offered.
+function MHPage:updateFilterOptions(keepCurrent)
     local vehicle = self.vehicle
+    local options = {}
+    self.works, self.workList = {}, {}
     if self:getNoFormReason(vehicle) == nil then
-        local farmId = vehicle:getOwnerFarmId()
-        local available = {}
-        for _, jobType in ipairs(self.jobTypes or {}) do
-            available[jobType.index] = true
+        self.works, self.workList = MHFieldNeeds.getWorks(vehicle)
+        local available = self:getAvailableTypes()
+        if #self.workList > 0 and MH.features.fieldNeeds then
+            table.insert(options, MHPage.FILTER.NEEDS)
         end
+        table.insert(options, MHPage.FILTER.FIELDS)
+        table.insert(options, MHPage.FILTER.CONTRACTS)
+        if available[AIJobType.LOAD_AND_DELIVER] or available[AIJobType.DELIVER] then
+            table.insert(options, MHPage.FILTER.STATIONS)
+        end
+    end
+    self.filterOptions = options
+    local wanted = vehicle ~= nil and self.filterByVehicle[vehicle] or nil
+    if keepCurrent and self.filterKey ~= nil then
+        wanted = self.filterKey
+    end
+    local selected = nil
+    local texts = {}
+    for i, key in ipairs(options) do
+        table.insert(texts, self:getFilterTitle(key))
+        if key == wanted then
+            selected = i
+        end
+    end
+    selected = selected or 1
+    self.filterKey = options[selected]
+    self.mhFilterSelector:setTexts(texts)
+    self.mhFilterSelector:setState(selected)
+    self.mhFilterSelector:setDisabled(#options == 0)
+end
+
+-- MultiTextOption callback (state, element): remember the choice for this vehicle.
+function MHPage:onClickFilter(state)
+    local key = self.filterOptions ~= nil and self.filterOptions[state] or nil
+    if key == nil or not self:getIsShown() then
+        return
+    end
+    self.filterKey = key
+    if self.vehicle ~= nil then
+        self.filterByVehicle[self.vehicle] = key
+    end
+    self:reloadPlaces()
+end
+
+function MHPage:reloadPlaces()
+    local places = {}
+    local vehicle = self.vehicle
+    local key = self.filterKey
+    self.placesTimer = 0
+    if key ~= nil and self:getNoFormReason(vehicle) == nil then
+        local farmId = vehicle:getOwnerFarmId()
+        local available = self:getAvailableTypes()
         local fieldJob = AIJobType.FIELDWORK ~= nil and available[AIJobType.FIELDWORK] and AIJobType.FIELDWORK
             or (AIJobType.GOTO ~= nil and available[AIJobType.GOTO] and AIJobType.GOTO or nil)
-        self:addSection(g_i18n:getText("ui_contracts"), MHPage.getContractPlaces(farmId, fieldJob))
-        self:addSection(g_i18n:getText("ui_fields"), MHPage.getFieldPlaces(farmId, fieldJob))
-        local jobs = {}
-        for _, jobType in ipairs(self.jobTypes or {}) do
-            table.insert(jobs, {name = jobType.title, info = "", icon = MHPage.ICON.JOB, jobTypeIndex = jobType.index})
+        if key == MHPage.FILTER.NEEDS or key == MHPage.FILTER.FIELDS then
+            places = self:getFieldPlaces(farmId, fieldJob, key == MHPage.FILTER.NEEDS)
+        elseif key == MHPage.FILTER.CONTRACTS then
+            places = self:getContractPlaces(farmId, fieldJob)
+        else
+            places = self:getStationPlaces(vehicle, available)
         end
-        self:addSection(MH.text("mh_placesJobs"), jobs)
-        self:addSection(g_i18n:getText("ui_stations"), self:getStationPlaces(vehicle, available))
     end
+    self.places = places
     self.mhPlacesList:reloadData()
-end
-
-function MHPage:addSection(title, items)
-    if #items > 0 then
-        table.insert(self.sections, {title = title, items = items})
+    local empty = #places == 0 and key ~= nil
+    self.mhPlacesEmpty:setVisible(empty)
+    if empty then
+        self.mhPlacesEmpty:setText(MH.text(MHPage.FILTER_EMPTY[key]))
     end
 end
 
--- Contracts of the farm that are in progress and belong to a field
--- (MissionManager:getMissionsByFarmId, AbstractMission:getIsInProgress, AbstractFieldMission).
-function MHPage.getContractPlaces(farmId, jobTypeIndex)
-    local items = {}
-    if g_missionManager == nil then
-        return items
+-- Texts of the works a field needs, the first two.
+function MHPage.getNeedsText(needs)
+    local texts = {}
+    for i = 1, math.min(#needs, 2) do
+        table.insert(texts, MHFieldNeeds.getWorkText(needs[i]))
     end
-    for _, mission in ipairs(g_missionManager:getMissionsByFarmId(farmId)) do
-        if mission.farmId == farmId and mission:getIsInProgress() and mission.getField ~= nil and mission:getField() ~= nil then
-            local x, z = mission:getWorldPosition()
-            table.insert(items, {name = mission:getTitle(), info = MHPage.formatPercent(mission.completion),
-                icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex})
-        end
-    end
-    return items
+    return table.concat(texts, ", ")
 end
 
--- Fields on farmland the farm owns, by number (as InGameMenuMobileMapFrame:updateFields).
-function MHPage.getFieldPlaces(farmId, jobTypeIndex)
+-- Fields on farmland the farm owns, by number (as InGameMenuMobileMapFrame:updateFields). Each
+-- is read at its name marker; onlyNeeded keeps the fields that need the combination's work.
+function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
     local items = {}
     if g_fieldManager == nil or g_farmlandManager == nil then
         return items
@@ -589,10 +645,56 @@ function MHPage.getFieldPlaces(farmId, jobTypeIndex)
     end)
     for _, field in ipairs(fields) do
         local x, z = field:getIndicatorPosition()
-        table.insert(items, {name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), tostring(field:getId())),
-            info = g_i18n:formatArea(field:getAreaHa(), 2), icon = MHPage.ICON.FIELD, x = x, z = z, jobTypeIndex = jobTypeIndex})
+        local state = MHFieldNeeds.readState(x, z)
+        local name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
+        local item = {name = name, icon = MHPage.ICON.FIELD, x = x, z = z, jobTypeIndex = jobTypeIndex}
+        if onlyNeeded then
+            local needs = MHFieldNeeds.getNeeds(state, self.works, self.workList)
+            if #needs > 0 then
+                item.info = MHPage.getNeedsText(needs)
+                table.insert(items, item)
+            end
+        else
+            local stateText = MHFieldNeeds.getStateText(state)
+            item.info = stateText ~= "" and stateText or g_i18n:formatArea(field:getAreaHa(), 2)
+            table.insert(items, item)
+        end
     end
     return items
+end
+
+-- Contracts of the farm that are in progress and belong to a field (MissionManager:
+-- getMissionsByFarmId, AbstractMission:getIsInProgress, AbstractFieldMission). Contracts
+-- whose field needs the combination's work come first and name that work.
+function MHPage:getContractPlaces(farmId, jobTypeIndex)
+    local workable, other = {}, {}
+    if g_missionManager == nil then
+        return workable
+    end
+    for _, mission in ipairs(g_missionManager:getMissionsByFarmId(farmId)) do
+        if mission.farmId == farmId and mission:getIsInProgress() and mission.getField ~= nil and mission:getField() ~= nil then
+            local x, z = mission:getWorldPosition()
+            local field = mission:getField()
+            local name = mission:getTitle()
+            if field.getId ~= nil and field:getId() ~= nil then
+                name = string.format("%s - %s %s", name, g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
+            end
+            local needs = MHFieldNeeds.getNeeds(MHFieldNeeds.readState(x, z), self.works, self.workList)
+            local percent = MHPage.formatPercent(mission.completion)
+            local item = {name = name, icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex}
+            if #needs > 0 then
+                item.info = string.format("%s - %s", MHFieldNeeds.getWorkText(needs[1]), percent)
+                table.insert(workable, item)
+            else
+                item.info = percent
+                table.insert(other, item)
+            end
+        end
+    end
+    for _, item in ipairs(other) do
+        table.insert(workable, item)
+    end
+    return workable
 end
 
 -- The stations the vehicle's Load and deliver / Deliver jobs accept: a scratch job of each
@@ -639,11 +741,9 @@ function MHPage.formatPercent(value)
 end
 
 -- A place pans the map to it and prefills the form: fields and contracts with field work
--- (or Go to) at the field, stations with the delivery job that accepts them, job types
--- with that type.
+-- (or Go to) at the field, stations with the delivery job that accepts them.
 function MHPage:onClickPlace(list, section, index)
-    local data = self.sections[section]
-    local place = data ~= nil and data.items[index] or nil
+    local place = self.places ~= nil and self.places[index] or nil
     if place == nil or not self:getIsShown() then
         return
     end
@@ -829,30 +929,25 @@ function MHPage:reloadQueue()
 end
 
 -- SmoothList data source and delegate ------------------------------------------------------
+-- Both lists have one section without a header.
 function MHPage:getNumberOfSections(list)
-    if list == self.mhPlacesList then
-        return #self.sections
-    end
     return 1
 end
 
 function MHPage:getTitleForSectionHeader(list, section)
-    if list == self.mhPlacesList and self.sections[section] ~= nil then
-        return self.sections[section].title
-    end
     return nil
 end
 
 function MHPage:getNumberOfItemsInSection(list, section)
     if list == self.mhPlacesList then
-        return self.sections[section] ~= nil and #self.sections[section].items or 0
+        return #(self.places or {})
     end
     return #self.rows
 end
 
 function MHPage:populateCellForItemInSection(list, section, index, cell)
     if list == self.mhPlacesList then
-        local place = self.sections[section].items[index]
+        local place = self.places[index]
         cell:getAttribute("name"):setText(place.name)
         cell:getAttribute("info"):setText(place.info or "")
         cell:getAttribute("icon"):setImageSlice(nil, place.icon)
@@ -871,6 +966,7 @@ function MHPage:onListSelectionChanged(list, section, index)
         local row = self.rows[index]
         self.selectedRow = row ~= nil and index or nil
         self.selectedEntryId = row ~= nil and row.entry ~= nil and row.entry.id or nil
+        self.selectedCurrent = row ~= nil and row.current == true
         self:refreshButtons()
     end
 end
@@ -880,8 +976,12 @@ function MHPage:onClickQueueEntry(list, section, index)
 end
 
 -- Queue actions -----------------------------------------------------------------------------
+function MHPage:getSelectedRow()
+    return self.selectedRow ~= nil and self.rows[self.selectedRow] or nil
+end
+
 function MHPage:getSelectedEntry()
-    local row = self.selectedRow ~= nil and self.rows[self.selectedRow] or nil
+    local row = self:getSelectedRow()
     return row ~= nil and row.entry or nil
 end
 
@@ -916,14 +1016,25 @@ function MHPage:onClickEdit()
     self:refresh()
 end
 
+-- Delete removes a waiting entry. On the running row it reads Cancel job and stops the
+-- worker, with the same call as InGameMenuMapFrame:cancelJob; the queue then pauses as for
+-- any stop by the player, and Resume continues it.
 function MHPage:onClickRemove()
-    local entry = self:getSelectedEntry()
-    if entry ~= nil and self:getCanChangeQueue() then
-        if entry.id == self.editingId then
-            self.editingId = nil
-        end
-        MH.requestRemove(self.vehicle, entry.id)
+    local row = self:getSelectedRow()
+    if row == nil or not self:getCanChangeQueue() then
+        return
     end
+    if row.current then
+        local vehicle = self.vehicle
+        if vehicle:getIsAIActive() and not g_currentMission.paused then
+            vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
+        end
+        return
+    end
+    if row.entry.id == self.editingId then
+        self.editingId = nil
+    end
+    MH.requestRemove(self.vehicle, row.entry.id)
 end
 
 function MHPage:onClickClear()
@@ -933,20 +1044,53 @@ function MHPage:onClickClear()
     end
 end
 
--- Start the queue, or stop the worker (same call as InGameMenuMapFrame:cancelJob).
-function MHPage:onClickStartStop()
+-- Adding a job starts the queue by itself. Resume is for a queue with waiting jobs and no
+-- worker: paused after a stop or an error, or loaded from the savegame.
+function MHPage:getCanResume()
     local vehicle = self.vehicle
-    if not self:getCanChangeQueue() or g_currentMission.paused then
-        return
+    if vehicle == nil or not MHMapFrame.getCanPlanFor(vehicle) or vehicle:getIsAIActive() then
+        return false
     end
-    if vehicle:getIsAIActive() then
-        vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())
-    elseif #MH.getEntries(vehicle) > 0 then
-        MH.requestStart(vehicle)
+    local queue = MH.queues[vehicle]
+    return #MH.getEntries(vehicle) > 0 and (queue == nil or not queue.running)
+end
+
+function MHPage:onClickResume()
+    if self:getIsShown() and self:getCanResume() and not g_currentMission.paused then
+        MH.requestStart(self.vehicle)
     end
 end
 
 -- Card, buttons and refresh -------------------------------------------------------------------
+-- The player's own vehicle when it is not the one shown and can take jobs.
+function MHPage:getOtherOwnVehicle()
+    local mine = MHMapFrame.getControlledVehicle()
+    if mine ~= nil and mine ~= self.vehicle and MHMapFrame.getCanPlanFor(mine) then
+        return mine
+    end
+    return nil
+end
+
+-- Clicking the card goes back to the player's own vehicle; on that vehicle it moves the map
+-- to it.
+function MHPage:onClickVehicleCard()
+    if not self:getIsShown() then
+        return
+    end
+    local mine = self:getOtherOwnVehicle()
+    if mine ~= nil then
+        self:setVehicle(mine, true)
+        return
+    end
+    local vehicle = self.vehicle
+    if MH.getVehicleExists(vehicle) and vehicle.getMapHotspot ~= nil then
+        local hotspot = vehicle:getMapHotspot()
+        if hotspot ~= nil then
+            self.frame.ingameMap:panToHotspot(hotspot)
+        end
+    end
+end
+
 function MHPage:refreshCard()
     local vehicle = self.vehicle
     local title, status, info = MH.text("mh_onFoot"), MH.text("mh_statusOnFoot"), ""
@@ -970,6 +1114,9 @@ function MHPage:refreshCard()
             info = string.format(MH.text("mh_statusWaiting"), waiting)
         end
     end
+    if self:getOtherOwnVehicle() ~= nil then
+        info = info ~= "" and string.format("%s - %s", info, MH.text("mh_backToMine")) or MH.text("mh_backToMine")
+    end
     self.mhVehicleTitle:setText(title)
     self.mhVehicleStatus:setText(status)
     self.mhVehicleInfo:setText(info)
@@ -988,20 +1135,11 @@ function MHPage:refreshButtons()
     end
     self.buttonSignature = self:getButtonSignature()
     local vehicle = self.vehicle
-    local mine = MHMapFrame.getControlledVehicle()
     local canPlan = vehicle ~= nil and MHMapFrame.getCanPlanFor(vehicle)
     local mission = g_currentMission
     local paused = mission ~= nil and mission.paused
     local entries = MH.getEntries(vehicle)
     local hasForm = canPlan and self.formPlaced and self.frame.currentJob ~= nil
-
-    self.mhMineButton:setDisabled(mine == nil or mine == vehicle or not MH.getSupportsAI(mine))
-
-    local aiActive = canPlan and vehicle:getIsAIActive()
-    local queue = MH.queues[vehicle]
-    self.mhStartStopText:setText(aiActive and g_i18n:getText("button_cancelJob") or MH.text("mh_startQueue"))
-    self.mhStartStopButton:setDisabled(not canPlan or paused
-        or (not aiActive and (#entries == 0 or (queue ~= nil and queue.running))))
 
     local editing = self.editingId ~= nil
     self.mhAddText:setText(editing and g_i18n:getText("button_save") or MH.text("mh_addToQueue"))
@@ -1009,13 +1147,20 @@ function MHPage:refreshButtons()
     self.mhAddButton:setDisabled(not hasForm or paused)
     self.mhNextButton:setDisabled(not editing and (not hasForm or paused))
 
+    local canResume = self:getCanResume()
+    self.mhResumeContainer:setVisible(canResume)
+    self.mhResumeButton:setDisabled(not canResume or paused)
     self.mhClearButton:setDisabled(not canPlan or #entries == 0)
-    local entry = self:getSelectedEntry()
+
+    local row = self:getSelectedRow()
+    local entry = row ~= nil and row.entry or nil
     local index = entry ~= nil and self:getEntryIndex(entry) or nil
+    local isCurrent = row ~= nil and row.current == true
     self.mhUpButton:setDisabled(not canPlan or index == nil or index <= 1)
     self.mhDownButton:setDisabled(not canPlan or index == nil or index >= #entries)
     self.mhEditButton:setDisabled(not canPlan or entry == nil)
-    self.mhRemoveButton:setDisabled(not canPlan or entry == nil)
+    self.mhRemoveText:setText(isCurrent and g_i18n:getText("button_cancelJob") or g_i18n:getText("button_delete"))
+    self.mhRemoveButton:setDisabled(not canPlan or row == nil or (isCurrent and paused))
 end
 
 function MHPage:getEntryIndex(entry)
@@ -1053,9 +1198,11 @@ function MHPage.getRowsSignature(rows)
 end
 
 -- Every second, like the native worker list (InGameMenuMapFrame:update): progress texts
--- change in place; a job that started or finished rebuilds the list.
+-- change in place; a job that started or finished rebuilds the list. The places list is
+-- read again every PLACES_INTERVAL, since field states change slowly.
 function MHPage:update(dt)
     self.refreshTimer = self.refreshTimer + dt
+    self.placesTimer = (self.placesTimer or 0) + dt
     if self.refreshTimer < MHPage.REFRESH_INTERVAL then
         return
     end
@@ -1063,6 +1210,11 @@ function MHPage:update(dt)
     if self.vehicle ~= nil and not MH.getVehicleExists(self.vehicle) then
         self:setVehicle(MHMapFrame.getControlledVehicle(), false)
         return
+    end
+    if self.placesTimer >= MHPage.PLACES_INTERVAL then
+        -- Implements may have been attached, detached or refilled in the meantime.
+        self:updateFilterOptions(true)
+        self:reloadPlaces()
     end
     local rows = self:buildRows()
     if MHPage.getRowsSignature(rows) ~= MHPage.getRowsSignature(self.rows) then
@@ -1090,11 +1242,10 @@ end
 function MHPage:getButtonSignature()
     local vehicle = self.vehicle
     local mission = g_currentMission
-    local mine = MHMapFrame.getControlledVehicle()
     local canPlan = vehicle ~= nil and MHMapFrame.getCanPlanFor(vehicle)
     local queue = MH.queues[vehicle]
     return table.concat({tostring(canPlan), tostring(mission ~= nil and mission.paused),
         tostring(canPlan and vehicle:getIsAIActive()), tostring(queue ~= nil and queue.running),
-        tostring(#MH.getEntries(vehicle)), tostring(mine), tostring(mine ~= nil and MH.getSupportsAI(mine)),
-        tostring(self.editingId), tostring(self.selectedEntryId), tostring(self.formPlaced and self.frame.currentJob ~= nil)}, "|")
+        tostring(#MH.getEntries(vehicle)), tostring(self.editingId), tostring(self.selectedEntryId),
+        tostring(self.selectedCurrent), tostring(self.formPlaced and self.frame.currentJob ~= nil)}, "|")
 end
