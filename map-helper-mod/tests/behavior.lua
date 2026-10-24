@@ -635,8 +635,12 @@ test("field needs follow what each implement can do", function()
     assert(FN.getNeedsWork(maizeForage, W.HARVEST, forage.HARVEST) and FN.getNeedsWork(maizeRipe, W.HARVEST, forage.HARVEST))
     local grass = state({groundType = FieldGroundType.GRASS, fruitTypeIndex = FRUIT.GRASS, growthState = 3})
     assert(not FN.getNeedsWork(grass, W.HARVEST, grain.HARVEST), "the header does not cut grass")
-    local _, mower = works({spec_mower = {fruitTypeConverters = {[FRUIT.GRASS] = {}}}})
-    assert(FN.getNeedsWork(grass, W.MOW, mower.MOW) and not FN.getNeedsWork(ripe, W.MOW, mower.MOW))
+    -- The game's MOWER converter: grass -> grass windrow, grain -> straw (maps_fruitTypes.xml:59-67).
+    local _, mower = works({spec_mower = {fruitTypeConverters = {
+        [FRUIT.GRASS] = {fillTypeIndex = FillType.GRASS_WINDROW, conversionFactor = 1},
+        [FRUIT.WHEAT] = {fillTypeIndex = FillType.STRAW, conversionFactor = 1}}}})
+    assert(FN.getNeedsWork(grass, W.MOW, mower.MOW))
+    assert(not FN.getNeedsWork(ripe, W.MOW, mower.MOW), "ripe wheat is harvested, not mowed for straw")
     assert(FN.getNeedsWork(state({stoneLevel = 2}), W.STONES) and not FN.getNeedsWork(stubble, W.STONES))
     -- "My fields" keeps the map's order: forage maize is growing, not ready to harvest.
     assert(FN.getStateText(maizeForage) == "ui_growthMapGrowing" and FN.getStateText(maizeRipe) == "ui_growthMapReadyToHarvest")

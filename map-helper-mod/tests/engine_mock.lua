@@ -1015,6 +1015,9 @@ local function fruit(index, title, ranges)
     return desc
 end
 FRUIT = {WHEAT = 1, GRASS = 2, POTATO = 3, MAIZE = 4}
+-- Fill types here are their names, as in the spray type double below.
+FillType = FillType or {}
+FillType.STRAW, FillType.GRASS_WINDROW = "STRAW", "GRASS_WINDROW"
 g_fruitTypeManager = {fruits = {
     fruit(1, "Wheat", {minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, mulched = 7}),
     fruit(2, "Grass", {minHarvest = 3, maxHarvest = 3, cut = 4}),

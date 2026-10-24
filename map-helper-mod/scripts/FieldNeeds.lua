@@ -103,9 +103,16 @@ function FN.getWorks(vehicle)
             end
         end
         if child.spec_mower ~= nil and child.spec_mower.fruitTypeConverters ~= nil then
+            -- The MOWER converter also lists wheat, barley, oat, canola and soybean -> straw
+            -- (maps_fruitTypes.xml:59-67): a mower can cut straw from grain, but that isn't a
+            -- mowing job. Like the game's mowing contracts (MowMission.lua:98-105, grass only),
+            -- only crops the mower turns into something other than straw count.
             local mow = add(FN.WORK.MOW, {fruits = {}})
-            for fruitTypeIndex in pairs(child.spec_mower.fruitTypeConverters) do
-                mow.fruits[fruitTypeIndex] = true
+            for fruitTypeIndex, converted in pairs(child.spec_mower.fruitTypeConverters) do
+                local fillTypeIndex = type(converted) == "table" and converted.fillTypeIndex or nil
+                if FillType.STRAW == nil or fillTypeIndex ~= FillType.STRAW then
+                    mow.fruits[fruitTypeIndex] = true
+                end
             end
         end
         if child.spec_cutter ~= nil and child.spec_cutter.fruitTypeIndices ~= nil then
