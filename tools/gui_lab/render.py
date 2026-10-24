@@ -596,7 +596,9 @@ class HtmlWriter:
             self.out.append(self.key_glyph_html(key, ix, iy, iw, ih, text_color, bg))
         elif e.extra.get("icon") and e.extra["icon"]["slices"]:
             rotation = e.attr_num("iconRotation", 0.0) or 0.0
-            extra = f"transform:rotate({rotation:.0f}deg)" if rotation else ""
+            # The game turns overlays counter-clockwise (setOverlayRotation, maths convention);
+            # CSS rotate() turns clockwise.
+            extra = f"transform:rotate({-rotation:.0f}deg)" if rotation else ""
             self.out.append(self.overlay_html(e.extra["icon"], state, ix, iy, iw, ih, extra))
 
     def page(self, title: str) -> str:
