@@ -634,14 +634,23 @@ function mockSmoothList(name, sectionHeaderName)
         self:setSelectedItem(s, i, true)
         self.onClickCallback(self.target, self, s, i, self.cells[s][i], false)
     end
-    -- Like SmoothListElement:mouseEvent: the first click selects, the second one raises the
-    -- double click and then is handled as a click again.
-    function list:doubleClick(s, i)
-        self:click(s, i)
-        if self.onDoubleClickCallback ~= nil then
-            self.onDoubleClickCallback(self.target, self, s, i, self.cells[s][i], true)
+    -- A mouse click as SmoothListElement:activateInput (SDK gui/elements/SmoothListElement.lua:
+    -- 1546-1555): a second click on the selected row within 400 ms of the target's clock raises
+    -- the double click; every click also selects and clicks the row.
+    function list:mouseClick(s, i)
+        if self.lastClickTime ~= nil and self.lastClickTime > self.target.time - 400 then
+            if s == self.selectedSectionIndex and i == self.selectedIndex and self.onDoubleClickCallback ~= nil then
+                self.onDoubleClickCallback(self.target, self, s, i, self.cells[s][i], true)
+            end
+            self.lastClickTime = nil
+        else
+            self.lastClickTime = self.target.time
         end
         self:click(s, i)
+    end
+    function list:doubleClick(s, i)
+        self:mouseClick(s, i)
+        self:mouseClick(s, i)
     end
     return list
 end
@@ -1037,6 +1046,7 @@ end
 -- (workedStrips, {x1, z1, x2, z2} rectangles). Values differ from types, as in the game.
 FieldDensityMap.GROUND_TYPE = "GROUND_TYPE"
 function FieldGroundType.getTypeByValue(value) return (value or 0) + 1 end
+function getDensityMapSize(map) assert(map == "groundTypeMap"); return 4096, 4096 end
 workedStrips = {}
 function groundValueAt(x, z)
     for _, field in ipairs(g_fieldManager.fields) do
@@ -1124,6 +1134,11 @@ function mockField(id, x, z, area, ownerFarmId, state)
     function field:getId() return self.farmland.id end
     function field:getAreaHa() return self.areaHa end
     function field:getCenterOfFieldWorldPosition() return self.posX, self.posZ end
+    -- The outline is the 40 m square of field ground around the point (see groundValueAt).
+    function field:getDensityMapPolygon()
+        local x, z = self.posX, self.posZ
+        return {getVerticesList = function() return {x - 40, z - 40, x + 40, z - 40, x + 40, z + 40, x - 40, z + 40} end}
+    end
     -- As on real maps, the name sign stands off the worked area (here outside every field
     -- square), so a state read there finds no field ground.
     function field:getIndicatorPosition() return self.posX + 80, self.posZ + 80 end
@@ -1167,8 +1182,11 @@ function newMission(isServer)
         limeRequired = true, weedsEnabled = true, stonesEnabled = true}
     mission.fieldGroundSystem = {
         getMaxValue = function(_, layer) assert(layer == "SPRAY_LEVEL"); return 2 end,
-        getValueAtWorldPos = function(_, layer, x, _, z) assert(layer == "GROUND_TYPE"); return groundValueAt(x, z) end
+        getValueAtWorldPos = function(_, layer, x, _, z) assert(layer == "GROUND_TYPE"); return groundValueAt(x, z) end,
+        getDensityMapData = function(_, layer) assert(layer == "GROUND_TYPE"); return "groundTypeMap", 0, 4 end
     }
+    -- A 2 km map with a ground type layer of 4096 cells: half a metre per cell.
+    mission.terrainSize = 2048
     mission.stoneSystem = {getMinMaxValues = function() return 2, 4 end, getMaskValue = function() return 1 end}
     -- Weed replacement tables: the weeder takes small weeds, the hoe also medium ones,
     -- herbicide all three states.

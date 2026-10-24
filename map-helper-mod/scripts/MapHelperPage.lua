@@ -38,6 +38,10 @@ function MHPage.new(frame, ext)
     self.selectedRow = nil
     self.editingId = nil
     self.shown = false
+    -- The page is the target of its lists: SmoothListElement compares target.time with the
+    -- last click to raise a double click (SDK gui/elements/SmoothListElement.lua:1546), so the
+    -- page keeps a clock like a screen does.
+    self.time = 0
     self.refreshTimer = 0
     return self
 end
@@ -698,8 +702,10 @@ function MHPage.getFieldPoint(field)
     return nil, nil
 end
 
--- Fields on farmland the farm owns, by number (as InGameMenuMobileMapFrame:updateFields). Each
--- is read at its name marker; onlyNeeded keeps the fields that need the combination's work.
+-- Fields on farmland the farm owns, by number (as InGameMenuMobileMapFrame:updateFields), each
+-- read at its field point. Merged fields are grouped first, so a group keeps all its fields'
+-- farmlands for the worker marks; onlyNeeded then keeps the groups where any field needs the
+-- combination's work and points the row at the first such field.
 function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
     local items = {}
     if g_fieldManager == nil or g_farmlandManager == nil then
@@ -716,37 +722,42 @@ function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
     end)
     for _, field in ipairs(fields) do
         local x, z = MHPage.getFieldPoint(field)
-        local state = MHFieldNeeds.readState(x, z)
-        local item = {ids = {field:getId()}, area = field:getAreaHa(), icon = MHPage.ICON.FIELD, x = x, z = z,
-            jobTypeIndex = jobTypeIndex, farmlands = {field.farmland.id}}
-        if onlyNeeded then
-            local needs = MHFieldNeeds.getNeeds(state, self.works, self.workList)
-            if #needs > 0 then
-                item.info = MHPage.getNeedsText(needs)
-                table.insert(items, item)
-            end
-        else
-            item.stateText = MHFieldNeeds.getStateText(state)
-            table.insert(items, item)
-        end
+        table.insert(items, {ids = {field:getId()}, area = field:getAreaHa(), icon = MHPage.ICON.FIELD, x = x, z = z,
+            jobTypeIndex = jobTypeIndex, farmlands = {field.farmland.id}, bounds = MHFieldNeeds.getFieldBounds(field),
+            state = MHFieldNeeds.readState(x, z)})
     end
-    items = MHPage.mergeFieldItems(items)
-    for _, item in ipairs(items) do
+    local places = {}
+    for _, item in ipairs(MHPage.mergeFieldItems(items)) do
         local ids = {}
         for _, id in ipairs(item.ids) do
             table.insert(ids, tostring(id))
         end
         item.name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), table.concat(ids, " + "))
-        if not onlyNeeded then
-            item.info = item.stateText ~= "" and item.stateText or g_i18n:formatArea(item.area, 2)
+        if onlyNeeded then
+            for _, member in ipairs(item.members) do
+                local needs = MHFieldNeeds.getNeeds(member.state, self.works, self.workList)
+                if #needs > 0 then
+                    item.x, item.z = member.x, member.z
+                    item.info = MHPage.getNeedsText(needs)
+                    break
+                end
+            end
+        else
+            local stateText = MHFieldNeeds.getStateText(item.state)
+            item.info = stateText ~= "" and stateText or g_i18n:formatArea(item.area, 2)
+        end
+        if item.info ~= nil then
+            item.members, item.state, item.bounds = nil, nil, nil
+            table.insert(places, item)
         end
     end
-    return items
+    return places
 end
 
 -- Merged fields become one row "Field No. 3 + 4 + 5" at the first field's point, with the
--- first field's needs or state and the total area. Fields are joined when the ground between
--- their points is field ground (MHFieldNeeds.getIsGroundConnected), also through a third one.
+-- first field's state, the total area and every field as a member. Fields are joined when the
+-- ground between their points is field ground (MHFieldNeeds.getIsGroundConnected), also through
+-- a third one.
 function MHPage.mergeFieldItems(items)
     local groupOf = {}
     for i = 1, #items do
@@ -760,7 +771,8 @@ function MHPage.mergeFieldItems(items)
     end
     for i = 1, #items do
         for j = i + 1, #items do
-            if find(i) ~= find(j) and MHFieldNeeds.getIsGroundConnected(items[i].x, items[i].z, items[j].x, items[j].z) then
+            if find(i) ~= find(j) and MHFieldNeeds.getIsGroundConnected(items[i].x, items[i].z, items[j].x, items[j].z,
+                items[i].bounds, items[j].bounds) then
                 groupOf[find(j)] = find(i)
             end
         end
@@ -771,10 +783,12 @@ function MHPage.mergeFieldItems(items)
         local group = byRoot[root]
         if group == nil then
             byRoot[root] = item
+            item.members = {item}
             table.insert(merged, item)
         else
             table.insert(group.ids, item.ids[1])
             table.insert(group.farmlands, item.farmlands[1])
+            table.insert(group.members, item)
             group.area = (group.area or 0) + (item.area or 0)
         end
     end
@@ -876,7 +890,7 @@ function MHPage:getContractWork(mission)
     if (upper == "HOEMISSION" and data.hoe ~= true) or (upper == "WEEDMISSION" and data.weeder ~= true) then
         return nil
     end
-    if (work == "HARVEST" or work == "MOW") and mission.fruitTypeIndex ~= nil and data.fruits ~= nil
+    if (work == "HARVEST" or work == "MOW" or work == "SOW") and mission.fruitTypeIndex ~= nil and data.fruits ~= nil
         and data.fruits[mission.fruitTypeIndex] == nil then
         return nil
     end
@@ -1436,6 +1450,7 @@ end
 -- change in place; a job that started or finished rebuilds the list. The places list is
 -- read again every PLACES_INTERVAL, since field states change slowly.
 function MHPage:update(dt)
+    self.time = self.time + dt
     self.refreshTimer = self.refreshTimer + dt
     self.placesTimer = (self.placesTimer or 0) + dt
     if self.refreshTimer < MHPage.REFRESH_INTERVAL then

@@ -78,6 +78,11 @@ function FN.getWorks(vehicle)
         if child.spec_sowingMachine ~= nil then
             local sow = add(FN.WORK.SOW)
             sow.direct = sow.direct or child.spec_sowingMachine.useDirectPlanting == true
+            -- The crops it can sow (spec.seeds, SDK SowingMachine.lua:176-190), for sowing contracts.
+            for _, fruitTypeIndex in ipairs(child.spec_sowingMachine.seeds or {}) do
+                sow.fruits = sow.fruits or {}
+                sow.fruits[fruitTypeIndex] = true
+            end
         end
         if child.spec_roller ~= nil and child.spec_roller.isSoilRoller then
             add(FN.WORK.ROLL)
@@ -185,17 +190,64 @@ end
 
 -- Merged fields: the game keeps one Field per field number, also after the player worked the
 -- strip between two fields into one area. Two fields count as merged when the ground is field
--- ground all along the straight line between their points (the ground type layer, read like
+-- ground in every density map cell along the straight line between their points (the ground type layer, read like
 -- FieldState:update, decompiled field/FieldState.lua:110-111). A concave field whose line
 -- leaves it just stays separate.
-FN.MERGE_STEP = 4
 FN.MERGE_MAX_DISTANCE = 800
 -- A merge only changes when a strip is worked, so each pair's result is kept for a minute
 -- (the field list refreshes every 10 s).
 FN.MERGE_CACHE_TIME = 60000
 FN.mergeCache = {}
 
-function FN.getIsGroundConnected(x1, z1, x2, z2)
+-- Fields whose outlines' bounding boxes are further apart than this can't touch.
+FN.MERGE_BOUNDS_GAP = 30
+FN.boundsCache = {}
+
+-- Bounding box of a field's outline (Field:getDensityMapPolygon, DensityMapPolygon:
+-- getVerticesList, decompiled densityMaps/DensityMapPolygon.lua:67-77), or nil.
+function FN.getFieldBounds(field)
+    if field == nil then
+        return nil
+    end
+    local cached = FN.boundsCache[field]
+    if cached ~= nil then
+        return cached or nil
+    end
+    local bounds = false
+    local polygon = field.getDensityMapPolygon ~= nil and field:getDensityMapPolygon() or nil
+    local vertices = polygon ~= nil and polygon.getVerticesList ~= nil and polygon:getVerticesList() or nil
+    if vertices ~= nil and #vertices >= 2 then
+        bounds = {minX = math.huge, minZ = math.huge, maxX = -math.huge, maxZ = -math.huge}
+        for i = 1, #vertices - 1, 2 do
+            bounds.minX, bounds.maxX = math.min(bounds.minX, vertices[i]), math.max(bounds.maxX, vertices[i])
+            bounds.minZ, bounds.maxZ = math.min(bounds.minZ, vertices[i + 1]), math.max(bounds.maxZ, vertices[i + 1])
+        end
+    end
+    FN.boundsCache[field] = bounds
+    return bounds or nil
+end
+
+-- Sampling step: one density map cell (terrain size / map size), so no strip is stepped over.
+function FN.getSampleStep(system)
+    local terrainSize = g_currentMission ~= nil and g_currentMission.terrainSize or nil
+    local map = system.getDensityMapData ~= nil and system:getDensityMapData(FieldDensityMap.GROUND_TYPE) or nil
+    if map ~= nil and terrainSize ~= nil and getDensityMapSize ~= nil then
+        local size = getDensityMapSize(map)
+        if size ~= nil and size > 0 then
+            return terrainSize / size * 0.9
+        end
+    end
+    return 0.5
+end
+
+function FN.getIsGroundConnected(x1, z1, x2, z2, bounds1, bounds2)
+    if bounds1 ~= nil and bounds2 ~= nil then
+        local gapX = math.max(bounds1.minX - bounds2.maxX, bounds2.minX - bounds1.maxX, 0)
+        local gapZ = math.max(bounds1.minZ - bounds2.maxZ, bounds2.minZ - bounds1.maxZ, 0)
+        if gapX > FN.MERGE_BOUNDS_GAP or gapZ > FN.MERGE_BOUNDS_GAP then
+            return false
+        end
+    end
     local now = g_time or 0
     local key = string.format("%.1f,%.1f,%.1f,%.1f", x1 or 0, z1 or 0, x2 or 0, z2 or 0)
     local cached = FN.mergeCache[key]
@@ -217,7 +269,7 @@ function FN.readIsGroundConnected(x1, z1, x2, z2)
     if distance > FN.MERGE_MAX_DISTANCE then
         return false
     end
-    local steps = math.max(1, math.ceil(distance / FN.MERGE_STEP))
+    local steps = math.max(1, math.ceil(distance / FN.getSampleStep(system)))
     for i = 0, steps do
         local t = i / steps
         local value = system:getValueAtWorldPos(FieldDensityMap.GROUND_TYPE, x1 + dx * t, 0, z1 + dz * t)

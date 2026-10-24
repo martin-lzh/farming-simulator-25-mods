@@ -1221,6 +1221,64 @@ test("double-clicking a field queues field work there", function()
     assert(#MH.getEntries(vehicle) == 1 and frame.currentJob.jobTypeIndex == AIJobType.GOTO)
 end)
 
+test("two clicks far apart are no double click", function()
+    local vehicle = seat(mockVehicle(7))
+    vehicle.canFieldWork = true
+    mockField(3, 300, 310, 2.5, 1)
+    local _, page = openPage()
+    page.mhPlacesList:mouseClick(1, 1)
+    page:update(500)
+    page.mhPlacesList:mouseClick(1, 1)
+    assert(#g_currentMission.aiSystem.started == 0 and #MH.getEntries(vehicle) == 0, "nothing queued")
+    -- Within the interval the second click is a double click.
+    page.mhPlacesList:mouseClick(1, 1)
+    page:update(100)
+    page.mhPlacesList:mouseClick(1, 1)
+    assert(#g_currentMission.aiSystem.started == 1)
+end)
+
+test("a narrow unworked strip keeps fields apart", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    mockField(3, 300, 900, 2, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(4, 400, 900, 1.5, 1, {groundType = FieldGroundType.PLOWED})
+    -- Worked up to 2 m before field 4's edge (at 360).
+    workedStrips = {{340, 880, 358, 920}}
+    local _, page = openPage()
+    assert(placeTexts(page) == "Field No. 3|contract_field_cultivate_title;Field No. 4|contract_field_cultivate_title",
+        placeTexts(page))
+end)
+
+test("a merged field is listed and marked when only one of its fields needs the work", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    mockField(3, 300, 900, 2, 1, {groundType = FieldGroundType.CULTIVATED})
+    mockField(4, 400, 900, 1.5, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(5, 600, 600, 1, 1, {groundType = FieldGroundType.PLOWED})
+    workedStrips = {{330, 880, 370, 920}}
+    -- Another tractor works the merged field from field 3's point.
+    local other = mockVehicle(8)
+    MH.requestAdd(other, newJob(other, 300, 900, AIJobType.FIELDWORK))
+    local _, page = openPage()
+    assert(placeTexts(page) == "Field No. 5|contract_field_cultivate_title;Field No. 3 + 4|mh_claimWorking", placeTexts(page))
+    -- The row points at the field that needs the work.
+    assert(page.places[2].x == 400, page.places[2].x)
+end)
+
+test("sowing contracts are listed only for crops the seeder can sow", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_sowingMachine = {seeds = {FRUIT.WHEAT}}})
+    local wheat = mockContract(mockField(5, 500, 500, 1, 0, {groundType = FieldGroundType.CULTIVATED}), 1, "Wheat", 0.1, nil, "sowMission")
+    wheat.fruitTypeIndex = FRUIT.WHEAT
+    local maize = mockContract(mockField(6, 600, 600, 1, 0, {groundType = FieldGroundType.CULTIVATED}), 1, "Maize", 0.1, nil, "sowMission")
+    maize.fruitTypeIndex = FRUIT.MAIZE
+    local _, page = openPage()
+    assert(placeTexts(page) == "Wheat - Field No. 5|contract_field_sow_title - 10 %", placeTexts(page))
+end)
+
 test("places a worker already has are marked and listed last", function()
     local tractor = seat(mockVehicle(7))
     tractor.canFieldWork = true
