@@ -777,8 +777,9 @@ function MHPage:getClaims(farmId)
     return claims
 end
 
--- Puts the claim in front of each claimed place's info and, with sendToEnd, moves claimed places
--- behind the others (keeping their order).
+-- A claimed place shows the claim instead of the work (plus a contract's progress), so the
+-- 150 px info column (mh_placeItemInfo, textLayoutMode resize) keeps a readable size. With
+-- sendToEnd, claimed places move behind the others (keeping their order).
 function MHPage.markClaims(places, claims, sendToEnd)
     local free, claimed = {}, {}
     for _, place in ipairs(places) do
@@ -792,7 +793,7 @@ function MHPage.markClaims(places, claims, sendToEnd)
         place.claim = kind
         if kind ~= nil then
             local text = MH.text(MHPage.CLAIM_TEXT[kind])
-            place.info = (place.info ~= nil and place.info ~= "") and string.format("%s · %s", text, place.info) or text
+            place.info = place.percent ~= nil and string.format("%s · %s", text, place.percent) or text
             table.insert(sendToEnd and claimed or free, place)
         else
             table.insert(free, place)
@@ -852,7 +853,7 @@ function MHPage:getContractPlaces(farmId, jobTypeIndex, onlyNeeded)
             local work = self:getContractWork(mission)
             local percent = MHPage.formatPercent(mission.completion)
             local item = {name = name, icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex,
-                farmlands = {field.farmland ~= nil and field.farmland.id or nil}}
+                farmlands = {field.farmland ~= nil and field.farmland.id or nil}, percent = percent}
             if work ~= nil then
                 item.info = string.format("%s - %s", MHFieldNeeds.getWorkText(work), percent)
                 table.insert(workable, item)

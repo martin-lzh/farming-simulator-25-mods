@@ -144,36 +144,36 @@
   "lists": {
     "mhPlacesList": [
       {
-        "name": "田地编号 2",
-        "info": "犁地",
+        "name": "耕地合同 - 田地编号 53",
+        "info": "耕地 - 50 %",
         "icon": {
-          "imageSliceId": "gui.storeAttribute_seeding"
+          "imageSliceId": "gui.ingameMap_contracts"
         }
       },
       {
-        "name": "田地编号 5",
-        "info": "犁地",
+        "name": "田地编号 3 + 4 + 5",
+        "info": "耕地",
         "icon": {
           "imageSliceId": "gui.storeAttribute_seeding"
         }
       },
       {
         "name": "田地编号 9",
-        "info": "犁地, 需要石灰",
+        "info": "耕地, 需要石灰",
         "icon": {
           "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "耕地合同 - 田地编号 10",
+        "info": "帮手作业中 · 20 %",
+        "icon": {
+          "imageSliceId": "gui.ingameMap_contracts"
         }
       },
       {
         "name": "田地编号 12",
-        "info": "犁地",
-        "icon": {
-          "imageSliceId": "gui.storeAttribute_seeding"
-        }
-      },
-      {
-        "name": "田地编号 14",
-        "info": "犁地",
+        "info": "已在队列",
         "icon": {
           "imageSliceId": "gui.storeAttribute_seeding"
         }
@@ -183,23 +183,23 @@
       {
         "index": "",
         "title": "田地工作 - 正在田地中作业",
-        "text": "距离: 120 m  ·  合同进度: 72 %",
+        "text": "距离：120 m  ·  合同进度：50 %",
         "badgeIcon": {
           "visible": true
         }
       },
       {
         "index": "1",
-        "title": "前往",
-        "text": "412, 1180",
+        "title": "田地工作",
+        "text": "田地编号 12",
         "badgeIcon": {
           "visible": false
         }
       },
       {
         "index": "2",
-        "title": "田地工作",
-        "text": "田地编号 12",
+        "title": "前往",
+        "text": "412, 1180",
         "badgeIcon": {
           "visible": false
         }
@@ -259,7 +259,7 @@
     ]
   },
   "listSelection": {
-    "mhPlacesList": 2,
+    "mhPlacesList": 1,
     "mhQueueList": 1,
     "pagingTabList": 1
   }

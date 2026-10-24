@@ -1236,12 +1236,12 @@ test("places a worker already has are marked and listed last", function()
     local _, page = openPage()
     assert(placeTexts(page) == "Cultivating B - Field No. 53|contract_field_cultivate_title - 50 %;"
         .. "Field No. 4|contract_field_cultivate_title;"
-        .. "Cultivating A - Field No. 10|mh_claimWorking · contract_field_cultivate_title - 20 %;"
-        .. "Field No. 3|mh_claimQueued · contract_field_cultivate_title", placeTexts(page))
+        .. "Cultivating A - Field No. 10|mh_claimWorking · 20 %;"
+        .. "Field No. 3|mh_claimQueued", placeTexts(page))
     -- Contracts: the same, claimed last.
     page.mhFilterSelector:setState(3, true)
     assert(placeTexts(page) == "Cultivating B - Field No. 53|contract_field_cultivate_title - 50 %;"
-        .. "Cultivating A - Field No. 10|mh_claimWorking · contract_field_cultivate_title - 20 %", placeTexts(page))
+        .. "Cultivating A - Field No. 10|mh_claimWorking · 20 %", placeTexts(page))
     -- My fields keep their order and only show the mark.
     page.mhFilterSelector:setState(2, true)
     assert(placeTexts(page):find("^Field No. 3|mh_claimQueued") ~= nil, placeTexts(page))
