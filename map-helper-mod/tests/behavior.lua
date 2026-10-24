@@ -553,7 +553,7 @@ test("field needs follow what each implement can do", function()
     local W = FN.WORK
     local function state(values)
         local result = {groundType = FieldGroundType.STUBBLE_TILLAGE, fruitTypeIndex = 0, growthState = 0, sprayLevel = 0,
-            limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0, sprayType = 0}
+            limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0, sprayType = FieldSprayType.NONE}
         for key, value in pairs(values) do result[key] = value end
         result.fruit = g_fruitTypeManager:getFruitTypeByIndex(result.fruitTypeIndex)
         return result
@@ -599,13 +599,19 @@ test("field needs follow what each implement can do", function()
     assert(not FN.getNeedsWork(state({rollerLevel = 1, fruitTypeIndex = FRUIT.WHEAT, growthState = 2}), W.ROLL))
     local _, limeWorks = works({spec_sprayer = {}}, "LIME")
     assert(FN.getNeedsWork(state({limeLevel = 0}), W.LIME, limeWorks.LIME) and not FN.getNeedsWork(stubble, W.LIME))
-    assert(not FN.getNeedsWork(state({limeLevel = 0, sprayType = 3}), W.LIME, limeWorks.LIME), "lime just spread")
+    assert(not FN.getNeedsWork(state({limeLevel = 0, sprayType = FieldSprayType.LIME}), W.LIME, limeWorks.LIME),
+        "lime just spread")
     local _, liquid = works({spec_sprayer = {}}, "LIQUIDFERTILIZER")
     assert(FN.getNeedsWork(state({sprayLevel = 1}), W.FERTILIZE, liquid.FERTILIZE))
     assert(not FN.getNeedsWork(state({sprayLevel = 2}), W.FERTILIZE, liquid.FERTILIZE))
-    assert(not FN.getNeedsWork(state({sprayLevel = 1, sprayType = 2}), W.FERTILIZE, liquid.FERTILIZE),
+    -- Fertilized once (the maintainer's case): the field carries the FERTILIZER marker until the
+    -- game clears it, so it needs no fertilizer again, solid or liquid.
+    assert(not FN.getNeedsWork(state({sprayLevel = 1, sprayType = FieldSprayType.FERTILIZER}), W.FERTILIZE, liquid.FERTILIZE),
         "the same fertilizer was just spread")
-    assert(FN.getNeedsWork(state({sprayLevel = 1, sprayType = 1}), W.FERTILIZE, liquid.FERTILIZE), "another fertilizer")
+    local _, solid = works({spec_sprayer = {}}, "FERTILIZER")
+    assert(not FN.getNeedsWork(state({sprayLevel = 1, sprayType = FieldSprayType.FERTILIZER}), W.FERTILIZE, solid.FERTILIZE))
+    assert(FN.getNeedsWork(state({sprayLevel = 1, sprayType = FieldSprayType.MANURE}), W.FERTILIZE, liquid.FERTILIZE),
+        "manure leaves another marker")
     assert(not FN.getNeedsWork(ripe, W.FERTILIZE), "no fertilizer on a ripe crop")
     -- Weeds: herbicide on growing crops; weeder and hoe by their own replacement tables and crop states.
     local function weedy(weedState, growthState)

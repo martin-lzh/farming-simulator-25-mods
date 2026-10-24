@@ -984,6 +984,15 @@ SowingMachine = {AI_REQUIRED_GROUND_TYPES = {FieldGroundType.STUBBLE_TILLAGE, Fi
     AI_OUTPUT_GROUND_TYPES = {FieldGroundType.SOWN, FieldGroundType.DIRECT_SOWN, FieldGroundType.PLANTED,
         FieldGroundType.RIDGE_SOWN, FieldGroundType.ROLLER_LINES, FieldGroundType.HARVEST_READY,
         FieldGroundType.HARVEST_READY_OTHER, FieldGroundType.GRASS, FieldGroundType.GRASS_CUT}}
+-- Field spray types: FieldState keeps the type, the density map and spray types the value
+-- (decompiled field/FieldSprayType.lua). Types and values differ, as in the game.
+FieldSprayType = {NONE = 1, FERTILIZER = 2, LIME = 3, MANURE = 4, LIQUID_MANURE = 5,
+    VALUES = {NONE = 0, FERTILIZER = 1, LIME = 2, MANURE = 3, LIQUID_MANURE = 4}}
+function FieldSprayType.getTypeByValue(value)
+    for name, v in pairs(FieldSprayType.VALUES) do
+        if v == value then return FieldSprayType[name] end
+    end
+end
 FieldState = {}
 FieldState.__index = FieldState
 function FieldState.new() return setmetatable({isValid = false, groundType = FieldGroundType.NONE}, FieldState) end
@@ -1028,7 +1037,10 @@ function g_fruitTypeManager:getFruitTypeByIndex(index) return self.fruits[index]
 g_sprayTypeManager = {}
 function g_sprayTypeManager:getSprayTypeByFillTypeIndex(fillType)
     if fillType == nil then return nil end
-    local groundTypes = {FERTILIZER = 1, LIQUIDFERTILIZER = 2, LIME = 3, HERBICIDE = 4}
+    -- sprayGroundType is a density map value, as SprayTypeManager stores it; solid and liquid
+    -- fertilizer share the FERTILIZER ground (maps_sprayTypes.xml), herbicide has none.
+    local groundTypes = {FERTILIZER = FieldSprayType.VALUES.FERTILIZER, LIQUIDFERTILIZER = FieldSprayType.VALUES.FERTILIZER,
+        LIME = FieldSprayType.VALUES.LIME}
     return {isLime = fillType == "LIME", isHerbicide = fillType == "HERBICIDE",
         isFertilizer = fillType == "FERTILIZER" or fillType == "LIQUIDFERTILIZER", sprayGroundType = groundTypes[fillType]}
 end

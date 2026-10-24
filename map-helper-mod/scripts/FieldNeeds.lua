@@ -254,6 +254,19 @@ local function getTreatsWeedState(replacementData, weedState)
     return weed ~= nil and weed.replacements ~= nil and weed.replacements[weedState] ~= nil
 end
 
+-- Whether the field already carries this spray type's ground marker, which is what makes the
+-- game's AI skip it (Sprayer.lua:744-758): fertilizer once until the marker is cleared. The
+-- field state keeps a FieldSprayType type (FieldState:update, FieldSprayType.getTypeByValue,
+-- decompiled field/FieldState.lua:112-113), the spray type a density map value
+-- (SprayTypeManager:loadSprayTypes, FieldSprayType.getValueByName, decompiled
+-- misc/SprayTypeManager.lua:55), so the value is turned into its type before comparing.
+local function getHasSprayMarker(state, sprayType)
+    if sprayType == nil or sprayType.sprayGroundType == nil or state.sprayType == nil or FieldSprayType == nil then
+        return false
+    end
+    return FieldSprayType.getTypeByValue(sprayType.sprayGroundType) == state.sprayType
+end
+
 -- Whether a field in this state needs one work, with the combination's data for that work.
 -- Field info box conditions: lime (useLimeCounter, limeRequired, limeLevel == 0), plowing
 -- (plowingRequiredEnabled, plowLevel == 0), rolling (useRolling, rollerLevel > 0), weeds
@@ -287,14 +300,14 @@ function FN.getNeedsWork(state, work, data)
         -- The AI skips ground that already has this spray type (Sprayer.lua:753-758).
         local sprayType = data.sprayType
         return gameplay.useLimeCounter == true and info.limeRequired == true and state.limeLevel == 0
-            and not (sprayType ~= nil and state.sprayType == sprayType.sprayGroundType)
+            and not getHasSprayMarker(state, sprayType)
     elseif work == FN.WORK.FERTILIZE then
         -- The AI skips the maximum spray level and ground that already has this fertilizer's
         -- spray type (Sprayer.lua:744-751).
         local maxLevel = mission.fieldGroundSystem ~= nil and mission.fieldGroundSystem:getMaxValue(FieldDensityMap.SPRAY_LEVEL) or 0
         local sprayType = data.sprayType
         return (state.sprayLevel or 0) < maxLevel and status ~= "withered" and status ~= "harvestable"
-            and not (sprayType ~= nil and state.sprayType == sprayType.sprayGroundType)
+            and not getHasSprayMarker(state, sprayType)
     elseif work == FN.WORK.HERBICIDE then
         return info.weedsEnabled == true and (state.weedState or 0) > 0 and (fruit == nil or status == "growing")
             and weedSystem ~= nil and getTreatsWeedState(weedSystem:getHerbicideReplacements(), state.weedState)

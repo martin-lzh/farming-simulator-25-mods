@@ -108,7 +108,7 @@ GUI 预览实验室（`tools/gui_lab/`，由集成方维护）渲染方法：
 | 播种 | 裸地且地面属于 `SowingMachine.AI_REQUIRED_GROUND_TYPES`；直播或带耕作机时也包括 `AI_OUTPUT_GROUND_TYPES`（收获后、草地等） | 1.24 decompiled `SowingMachine.lua:4-21`，SDK `:1224-1247` |
 | 镇压（只土壤镇压器） | `Platform.gameplay.useRolling`、`rollerLevel > 0`，且无作物或作物在第一生长阶段 | 信息框“需要镇压”（MF:751）；土壤镇压只在第一生长阶段（SDK `Roller.lua:210-219`） |
 | 施石灰 | `useLimeCounter`、`limeRequired`、`limeLevel == 0`，且地面喷洒类型不是石灰的 `sprayGroundType` | 信息框“需要石灰”（MF:745）；AI 排除已有该喷洒类型的地面（SDK `Sprayer.lua:753-758`） |
-| 施肥 | `sprayLevel` 小于最大值，地面喷洒类型不是这种肥料的 `sprayGroundType`，作物未枯萎、未到可收获（按信息框顺序） | 信息框施肥百分比（MF:740-742）；AI 排除最大喷洒等级和同种喷洒类型（SDK `Sprayer.lua:744-751`） |
+| 施肥 | `sprayLevel` 小于最大值，地面喷洒类型不是这种肥料的 `sprayGroundType`，作物未枯萎、未到可收获（按信息框顺序） | 信息框施肥百分比（MF:740-742）；AI 排除最大喷洒等级和同种喷洒类型（SDK `Sprayer.lua:744-751`）。比较时把 `sprayGroundType`（密度图值，`FieldSprayType.getValueByName`，decompiled `misc/SprayTypeManager.lua:55`）用 `FieldSprayType.getTypeByValue` 换成类型，再与 `FieldState.sprayType`（类型，decompiled `field/FieldState.lua:112-113`）比较；固态和液态肥料共用 FERTILIZER 地面标记，施过一次后在标记清除前都不再列出。2026-10-24 前直接比较值和类型，施过肥的田仍被列出（维护者游戏内反馈）。 |
 | 除草剂 | `weedsEnabled`、`weedState` 在除草剂替换表（`WeedSystem:getHerbicideReplacements`）中，无作物或作物生长中 | 信息框除草剂条件（MF:754-772）；AI 要求（SDK `Sprayer.lua:719-741`） |
 | 除草 / 锄 | `weedsEnabled`、`weedState` 在该工具的替换表（`getWeederReplacements(isHoe)`）中，除草机要求 `getIsWeedable`、锄要求 `getIsHoeable` | 信息框（MF:765-768）；AI 要求（SDK `Weeder.lua:209-229`）；1.24 decompiled `field/WeedSystem.lua:203/206` |
 | 粉碎 | 作物已收割（`getIsCut`）且有 `mulchedState` | 粉碎机 AI 作物要求（`Mulcher.lua:93-112`） |

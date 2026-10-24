@@ -197,11 +197,13 @@
             <textAlignment value="center"/>
             <iconSliceId value="gui.3dShop_arrow"/>
             <iconSize value="10px 12px"/>
-            <iconRotation value="270"/>
+            <!-- Overlays turn counter-clockwise: the right-pointing arrow turned 90 points up.
+                 270 here showed a down arrow on Move up in game (2026-10-24). -->
+            <iconRotation value="90"/>
             <iconColor value="$preset_fs25_colorMainLight"/>
         </Profile>
         <Profile name="mh_buttonDown" extends="mh_buttonUp">
-            <iconRotation value="90"/>
+            <iconRotation value="270"/>
         </Profile>
 
         <!-- Lists: native sidebar list with rows styled like the map context buttons. -->
