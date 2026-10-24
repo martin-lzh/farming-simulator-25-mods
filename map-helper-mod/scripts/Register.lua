@@ -47,7 +47,7 @@ local queueMissing = findMissing({
     {AIJob, "AIJob", {"writeStream", "readStream", "saveToXMLFile", "loadFromXMLFile", "getIsStartable", "validate", "setValues"}},
     {AIJobTypeManager, "AIJobTypeManager", {"createJob", "getJobTypeIndex", "getJobTypeByIndex", "getJobTypeIndexByName"}},
     {AIMessageSuccessFinishedJob, "AIMessageSuccessFinishedJob", {"new"}},
-    {MessageType, "MessageType", {"AI_JOB_STOPPED"}},
+    {MessageType, "MessageType", {"AI_JOB_STARTED", "AI_JOB_STOPPED"}},
     {XMLFile, "XMLFile", {"create", "loadIfExists"}},
     {AIParameterType, "AIParameterType", {"POSITION", "POSITION_ANGLE", "LOADING_STATION", "UNLOADING_STATION", "TEXT"}}
 })

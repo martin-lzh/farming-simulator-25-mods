@@ -7,6 +7,7 @@
 - 2026-10-21：首次实现（右侧抽屉 + 作业菜单中的“加入队列”），后改为原生 `MENU_EXTRA_1` 和规划模式。
 - 2026-10-21 之后（未提交）：界面重做。删除右侧抽屉（`DrawerDialog`）和作业菜单里的“加入队列”按钮，改为地图左侧边栏 `mapOverviewSelector` 的新页面“地图助手”（下文“页面”）；新增全局热键左 Alt + M；服务器新增 MOVE、EDIT 和“插入为下一个”；修复退出存档失败（下文“退出存档时的清理”）。本机 `uv run map-helper-mod/tests/run.py`：l10n（24 个键）、GUI 引用核对、36 项行为测试、降级检查、8 组多人模拟通过；5 个脚本用 `work/tools/fs-utils-bin/fs-luau-compile.exe` 编译通过（输出在被忽略的 `work/validation/map-helper-luau/`，只说明可解析）；`python map-helper-mod/tools/build.py` 9 个文件，SHA256 见最终报告。**尚未在游戏内运行过**，下方 MAP-xx 清单全部待维护者执行。
 - 2026-10-24（未提交，维护者按 1b8bd5e 游戏内反馈）：去掉“我的车辆”和“开始队列”按钮，原位置改为地点过滤选择器（下文“地点过滤与作业需求”），新增 `scripts/FieldNeeds.lua` 判断田地是否需要当前组合的作业；田地图标改为 `gui.storeAttribute_seeding`（原 `gui.icon_others_farmland` 在列表尺寸下看起来像人像）；加入作业时自动开始/继续队列，队列标题旁新增“继续队列”，当前作业行的“删除”改为“取消作业”（下文“自动开始、继续与取消”）；点击车辆卡片回到自己的车辆。随后按审查修正：别人坐着的车辆不再被自动开始或继续；需求判断改用各农具自己的设置（直播、土壤/草地镇压器、除草机/锄的替换表、去茎叶机作物、割台青贮阶段、有无作业区域、喷洒来源、已有喷洒类型）；页面打开时每 10 s 重算组合的作业。本机 `uv run map-helper-mod/tests/run.py`：l10n（30 个键）、GUI 引用核对、45 项行为测试、降级检查、10 组多人模拟通过；6 个脚本编译通过；构建 10 个文件，SHA256 见最终报告。同样**尚未在游戏内运行过**。
+- 2026-10-25（维护者游戏内反馈后修正两处队列问题）：读档后队列只执行了一个作业，后面的不再自动开始（下文“读档后跟随帮手”）；队列自动开始下一个田地工作时，Hardi MEGA 1200L 喷杆还没收完帮手就开上了路（下文“推进前等待组合停稳”）。本机 `uv run map-helper-mod/tests/run.py`：57 项行为测试、10 组多人模拟通过，两项新回归测试在去掉修正后均失败；构建 SHA256 见最终报告。**尚未在游戏内验证**。
 - 仓库级接入（`tools/ci.py` 的 `MODS` 已有 `map-helper`）。`tools/check_syntax.py` 用 `git ls-files` 列文件，删除的抽屉文件在暂存前会报“文件不存在”，暂存删除后即正常。
 
 
@@ -22,7 +23,7 @@
 - `scripts/FieldNeeds.lua`（`MHFieldNeeds`）：组合（车辆及其挂接农具）做哪些田间作业、某块田地在其位置点的状态、是否需要这些作业，以及“我的田地”的状态文字。
 - `gui/MapHelperPage.xml`：页面本体，全部尺寸和位置写在 profile 里（下文“页面布局”）。`gui/DrawerToggle.xml`：余额下方的按钮，沿用地图页 `fs25_mapButton*` 样式。
 - `scripts/Register.lua`：检查所需游戏函数是否存在，按功能（队列、页面、热键、田地需求）安装钩子；钩子按类只装一次，重复执行只刷新回调。
-- `tests/`：原创引擎替身（`engine_mock.lua`）、`guixml.py`（把本 Mod 的 GUI XML 交给替身，替身按真实文件建元素树）、45 项行为测试、10 组多人模拟；不加载、不执行任何游戏文件。
+- `tests/`：原创引擎替身（`engine_mock.lua`）、`guixml.py`（把本 Mod 的 GUI XML 交给替身，替身按真实文件建元素树）、57 项行为测试、10 组多人模拟；不加载、不执行任何游戏文件。
 - `tools/build.py`：白名单打包 10 个运行时文件（modDesc、6 个脚本、2 个 GUI XML、DDS 图标），检查 DDS 格式。
 - `tools/make_icon.py`：代码绘制原创图标，PNG 源在 `assets/icon.png`。
 
@@ -162,14 +163,14 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 
 车辆有帮手或队列正在运行时，页面在 `MF.withPlanning` 内判断可用类型并调用 `setActiveJobTypeSelection`：给车辆写一个实例字段 `vehicle.getIsAIActive = function() return false end`，遮住 specialization 注册在类型上的函数，回调后恢复 `rawget` 得到的原值；之后再 `refreshContextInput` 一次，让右侧上下文框按真实状态显示。脚本不捕获错误：回调出错时错误进入日志，遮蔽记在 `MF.planningShadow`，由下一帧 `MapHelper:update` 开头的 `MF.restorePlanning` 去掉。`validate` 不检查帮手状态（`AIParameterVehicle:validate`，SDK `ai/parameters/AIParameterVehicle.lua:86-97`），加入时无需遮蔽。
 
-服务器端（`MH.serverAdd`）：加入一项后，如果队列不在运行而车辆 `getIsAIActive()` 为真，就用 `vehicle:getJob()` 取当前作业，设 `queue.running = true`、`queue.runningJob = current`；之后的完成判断与队列自己启动的作业相同。
+服务器端（`MH.serverAdd` → `MH.followCurrentJob`）：加入一项后，如果队列不在运行而车辆 `getIsAIActive()` 为真，就用 `vehicle:getJob()` 取当前作业，设 `queue.running = true`、`queue.runningJob = current`；之后的完成判断与队列自己启动的作业相同。
 
 ### 自动开始、继续与取消
 
 - **有人坐着的车辆**：玩家要求的开始（加入作业触发的自动开始、继续队列）用请求者自己的连接做原生 `getIsStartable` 检查（`Enterable:getIsInUse`，SDK `vehicles/specializations/Enterable.lua:1663`；`AIJobGoTo.lua:205-213`），所以别的玩家坐着的车辆按游戏自己的“正在使用”原因被拒，作业留在队首、队列以 START_FAILED 暂停，卡片显示该类型的 `getIsStartErrorText`。只有请求者就是车里的人（同一连接，或 `userManager:getUserIdByConnection(请求者) == spec_enterable.controllerUserId`，1.24 decompiled `users/UserManager.lua:90`、SDK `Enterable.lua:217/936`）时才改用车内的连接，以免自己的座位被算作占用。队列完成一项后自己推进时（没有请求者），沿用车内的连接：这些作业已在之前排好。
 - **自动开始**（`MH.serverAdd`）：加入（ADD，包括插入为下一个）后，如果队列不在运行（`queue.running` 为假）且车辆没有帮手，服务器立即 `MH.startNext`，新加入的作业（或队首）成为正在执行的作业。两项之间的 1.5 s 间隔内队列仍是运行状态，新作业只排队；车辆有帮手时队列照旧跟随当前作业。
 - **暂停后加入**：选择让加入**继续**队列：暂停原因清除，从队首（最早等待的作业，不一定是新加入的）开始。理由：玩家加作业就是想让车辆干活；若暂停原因未解决，开始会再次失败并按原规则暂停、提示原因，等待的作业不丢。
-- **继续队列**：没有加作业也能继续——队列标题旁的“继续队列”（`mh_resumeQueue`，发送原有的 START 请求）只在有等待作业、没有帮手且队列不在运行时显示（暂停后或读档后）。读档后的队列同样等待“继续队列”或新作业。
+- **继续队列**：没有加作业也能继续——队列标题旁的“继续队列”（`mh_resumeQueue`，发送原有的 START 请求）只在有等待作业、没有帮手且队列不在运行时显示（暂停后或读档后）。读档后的队列同样等待“继续队列”或新作业；期间车辆上开始的帮手作业会被跟随（下文“读档后跟随帮手”）。
 - **取消当前作业**：原“开始队列/取消作业”按钮已去掉。队列第一行（当前作业）被选中时，条目按钮“删除”显示为“取消作业”（`button_cancelJob`），调用与 `InGameMenuMapFrame:cancelJob`（MF:1396-1402）相同的 `vehicle:stopCurrentAIJob(AIMessageSuccessStoppedByUser.new())`；队列按“玩家停止”暂停，“继续队列”可继续。右侧原生上下文框的“取消作业”和车内 H 键同样有效。`mh_startQueue`（“开始队列”）已删除。
 
 ### 队列、请求与完成判断
@@ -190,7 +191,7 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 
 开始（自动开始、继续队列）时服务器对第一项 `setValues`、`validate(farmId)`，再用原生 `job:getIsStartable(connection)` 检查（AI 上限、车辆存在、hireAssistant、车辆是否被占用）；connection 见上文“有人坐着的车辆”（`MH.getStartConnection`）。通过后才从队列移除并 `g_currentMission.aiSystem:startJob(job, farmId)`。
 
-完成判断订阅 `MessageType.AI_JOB_STOPPED`（`AISystem:stopJobInternal` 发布 `job, aiMessage`，SDK `ai/AISystem.lua:583-589`），只处理队列启动或跟随的那个作业：`AIMessageSuccessFinishedJob`（`AIJob:update`）和 `AIMessageSuccessSiloEmpty`（`AIJobLoadAndDeliver.lua:411`）算成功，还有下一项时 1500 ms 后启动（原生作业在下一次 `AISystem:update` 才移除）；其他消息和 nil 让队列暂停并提示。启动失败：`validate` 失败记为“下一个作业无法按计划开始”，`getIsStartable` 失败记下原生状态码，客户端用该类型的 `getIsStartErrorText(state)` 显示原因；失败项留在队首。车辆删除时队列删除；车辆所有者变化时清空并广播。
+完成判断订阅 `MessageType.AI_JOB_STOPPED`（`AISystem:stopJobInternal` 发布 `job, aiMessage`，SDK `ai/AISystem.lua:583-589`），只处理队列启动或跟随的那个作业：`AIMessageSuccessFinishedJob`（`AIJob:update`）和 `AIMessageSuccessSiloEmpty`（`AIJobLoadAndDeliver.lua:411`）算成功，还有下一项时 1500 ms 后启动（原生作业在下一次 `AISystem:update` 才移除），并且要等组合停稳（下文“推进前等待组合停稳”）；其他消息和 nil 让队列暂停并提示。启动失败：`validate` 失败记为“下一个作业无法按计划开始”，`getIsStartable` 失败记下原生状态码，客户端用该类型的 `getIsStartErrorText(state)` 显示原因；失败项留在队首。车辆删除时队列删除；车辆所有者变化时清空并广播。
 
 ### 田地作业的帮手设置
 
@@ -203,6 +204,10 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 ### 存档
 
 追加在 `FSCareerMissionInfo:saveToXMLFile` 之后（服务器、存档有效时），写存档目录的 `mapHelper.xml`，没有队列也覆盖。格式与 `AIJobVehicle:saveToXMLFile` 保存 lastJob 相同：作业类型名 + 原生 `AIJob:saveToXMLFile` 参数，按车辆 `uniqueId` 分组。读取在 `FSBaseMission:onStartMission` 之后：`getVehicleByUniqueId`、`getJobTypeIndexByName` + `createJob`、`loadFromXMLFile`，车辆参数用 `setVehicle` 补上；找不到车辆或作业类型的项丢弃并写一行 info。读档后不自动开始。
+
+**读档后跟随帮手（2026-10-25）**：维护者反馈重启游戏读档后，队列只执行了第一个作业，之后不再自动开始下一个。核对：原版不会在读档后重新开始帮手作业——`AIJobVehicle:saveToXMLFile` 只保存 `lastJob`（作业菜单的预填模板，1.24 decompiled `vehicles/specializations/AIJobVehicle.lua:434-442`，读取 SDK `AIJobVehicle.lua:113-151`），`AISystem:save` 只写调试目标（SDK `ai/AISystem.lua:421-444`），1.25 脚本中调用 `startJob` 的只有地图菜单、`AIJobStartRequestEvent` 和控制台命令；README 中“保存时正在工作的帮手不会重新开始，与原版相同”成立。读档后车辆上的帮手因此是玩家自己（作业菜单按 `lastJob` 预填保存时的作业）或其他 Mod 开始的（维护者的 `log.txt` 中同时加载了 HiredHelper Tool、Courseplay、AutoDrive；本 Mod 不读取 mods 目录，未核对它们是否会重启帮手）。原来只有“加入作业”时才跟随车辆当前的作业，读档后的队列不跟随这样开始的作业，作业结束时 `MH:onAIJobStopped` 找不到对应队列，等待的作业不再开始。现在：服务器订阅 `MessageType.AI_JOB_STARTED`（`AISystem:startJobInternal` 对每次开始发布，SDK `ai/AISystem.lua:561-566`；此时 `aiJobStarted` 已设好车辆的作业），有等待作业、未运行且**未暂停**的队列（即读档后的队列）跟随该作业，作业完成后照常推进；读档时车辆已有帮手（在队列读取之前开始）也同样跟随。暂停的队列仍不跟随玩家直接开始的作业，等“继续队列”。“继续队列”路径本身没有问题，测试同样覆盖。
+
+**推进前等待组合停稳（2026-10-25）**：维护者反馈 Hardi MEGA 1200L（安装目录 `data/vehicles/hardi/mega1200L/mega1200L.xml`，一个折叠部件，`startMoveDirection="1"`，即折叠状态为 1、`turnOnFoldDirection = -1`，SDK `Foldable.lua:368-387`）在队列自动开始下一个田地工作（另一块田）时，喷杆没收完帮手就上了路；手动开始原生“前往”时完全折叠后才走。原版代码中两条路径相同：`AITaskDriveTo:start` 调用 `prepareForAIDriving`（`onAIImplementPrepareForTransport`，折叠动作 -1，SDK `AIDrivable.lua:1028-1030`、`Foldable.lua:2272-2276`），`AITaskDriveTo:update` 在 PREPARE_DRIVING 中等 `getIsAIReadyToDrive`（SDK `ai/tasks/AITaskDriveTo.lua:88-103`），`Foldable:getIsAIReadyToDrive` 对该喷雾机要求 `foldAnimTime == 1`（`:2174-2190`），`AIDrivable:getIsAIReadyToDrive` 检查组合中每台车（`:620-633`）；PC 上 `foldAfterAIFinished` 为假（decompiled `platform/Platform.lua:204`），作业结束时不折叠。原版脚本里没有找到队列开始与手动开始的区别（唯一不同是队列在 `AI_JOB_STOPPED` 后 1.5 s 开始、作业类型为田地工作）；其他已加载 Mod 的影响无法核对。按维护者批准的保护措施：`MH:update` 在 1.5 s 之后再等组合停稳才 `startNext`——根车辆 `getLastSpeed()` 低于 1 km/h（SDK `vehicles/Vehicle.lua:2587-2595`，AIDrivable 以 < 1 km/h 视为停住，`AIDrivable.lua:265`），`getRootVehicle():getChildVehicles()` 中没有 `spec_foldable.foldMoveDirection ~= 0` 的车（`setFoldState` 设置、`onUpdate` 到位后清零，`Foldable.lua:816-830/594-608`，折叠和中间位置升降都在其中），也没有正在升降的挂接点（车辆激活时 `attachedImplements` 对应 `attacherJoints[jointDescIndex].isMoving`，`setJointMoveDown` 置真、`onUpdateTick` 只在 `getIsActive()` 时移动并清除，`AttacherJoints.lua:3276-3284/1056-1075`；同 `getIsAutomaticShiftingAllowed` 的写法，`:4151-4163`）。`queue.delay` 低于 0 后记录额外等待，最多 `MH.SETTLE_TIMEOUT` = 20 s，之后照常开始；等待中车辆又有帮手时仍按“玩家停止”暂停。玩家要求的开始（加入第一个作业、继续队列）不等待。
 
 ### 退出存档时的清理（含退出失败修复）
 
@@ -275,7 +280,9 @@ AI 没有百分比进度，所以不做进度条。之后是等待中的条目�
 | `AIParameterLoadingStation/UnloadingStation` `setLoadingStation/setUnloadingStation/getString/loadingStationIds/unloadingStationIds` | SDK `ai/parameters/AIParameterLoadingStation.lua`、`AIParameterUnloadingStation.lua` | 预填站点 |
 | `AIParameterPosition(Angle)`、`AIParameterFillType:setValidFillTypes`、`AIParameterVehicle:validate` | SDK `ai/parameters/AIParameterPosition.lua:64-80`、`AIParameterPositionAngle.lua:68-120`、`AIParameterFillType.lua:64-96`、`AIParameterVehicle.lua:86-97` | 预填位置、编辑、规划时验证 |
 | `AITaskDriveTo` 目标 | SDK `ai/tasks/AITaskDriveTo.lua:25/65`；`AITaskStartEvent:run` `ai/events/AITaskStartEvent.lua:56-62` | 距离 |
-| `AISystem:startJob/stopJob/stopJobInternal` | SDK `ai/AISystem.lua:547/570/583` | 启动、完成消息 |
+| `AISystem:startJob/startJobInternal/stopJob/stopJobInternal`、`AI_JOB_STARTED` | SDK `ai/AISystem.lua:547/561-566/570/583` | 启动、跟随、完成消息 |
+| `AISystem:save`、`AIJobVehicle` lastJob 读写 | SDK `ai/AISystem.lua:421-444`、`AIJobVehicle.lua:113-151`；1.24 decompiled `AIJobVehicle.lua:434-442` | 原版读档不重启帮手 |
+| `Vehicle:getLastSpeed`、`Foldable` `foldMoveDirection`/`getIsAIReadyToDrive`、`AttacherJoints` `isMoving`、`AITaskDriveTo:update` | SDK `vehicles/Vehicle.lua:2587-2595`、`Foldable.lua:594-608/816-830/2174-2190`、`AttacherJoints.lua:1056-1075/3276-3284/4151-4163`、`ai/tasks/AITaskDriveTo.lua:88-103` | 推进前等待组合停稳 |
 | `AIJobVehicle:aiJobStarted/getJob/getLastJob/getCanStartAIVehicle` | 1.24 decompiled `vehicles/specializations/AIJobVehicle.lua:182-213/273/276`；SDK `:488-520` | 客户端当前作业、规划 |
 | `MissionManager:getMissionsByFarmId`、`AbstractMission:getIsInProgress/getTitle/completion`、`AbstractFieldMission:getField/getWorldPosition` | SDK `missions/MissionManager.lua:525`、`AbstractMission.lua:790/868/300-311`、`missions/field/AbstractFieldMission.lua:86/98` | 合同 |
 | `FieldManager:getFields/getFieldById`、`Field:getId/getAreaHa/getCenterOfFieldWorldPosition`、`FarmlandManager:getFarmlandOwner/getFarmlandAtWorldPosition` | 1.25 decompiled `field/FieldManager.lua:391/394`；1.24 decompiled `field/Field.lua:97/117/138`；SDK `economy/FarmlandManager.lua:407/432` | 田地、目标名称 |
@@ -295,7 +302,7 @@ python map-helper-mod/tools/build.py
 uv run map-helper-mod/tools/make_icon.py --texconv <texconv.exe路径>
 ```
 
-`run.py` 用固定版本 Lupa 执行：l10n 检查（脚本和 GUI 用到的 Mod 文本键与 modDesc 一一对应、27 种语言齐全、格式参数一致、描述 27 种语言）、GUI 引用核对（`work/reference/1.25.0.0/dataS-archive` 存在时：GUI XML 引用的 profile、父 profile、trait、切片、preset、游戏文本和脚本用到的游戏文本都存在）、36 项行为测试、缺少游戏函数时的降级检查（页面、队列、热键分别关闭）和 8 组多人模拟。替身中的 GUI 树由 `tests/guixml.py` 从真实 XML 构建，回调按加载时绑定，选择器回调绑定原函数，列表按数据源填充。
+`run.py` 用固定版本 Lupa 执行：l10n 检查（脚本和 GUI 用到的 Mod 文本键与 modDesc 一一对应、27 种语言齐全、格式参数一致、描述 27 种语言）、GUI 引用核对（`work/reference/1.25.0.0/dataS-archive` 存在时：GUI XML 引用的 profile、父 profile、trait、切片、preset、游戏文本和脚本用到的游戏文本都存在）、57 项行为测试、缺少游戏函数时的降级检查（页面、队列、热键分别关闭）和 10 组多人模拟。替身中的 GUI 树由 `tests/guixml.py` 从真实 XML 构建，回调按加载时绑定，选择器回调绑定原函数，列表按数据源填充。
 
 行为测试覆盖（2026-10-24 新增：过滤选项随车辆类型、每车记忆、各类农具的需求判断与设置开关、四个列表的内容与空状态、每 10 s 重读状态、空闲车辆首个作业自动开始、暂停后加入继续、继续队列、当前作业行取消、卡片回到自己的车辆）：服务器权限、上限与验证；插入为下一个、移动、编辑、删除、清空；开始、成功推进、停止/错误/删除暂停、启动失败；自己座位；忽略非队列作业；车辆删除与易主；全部请求动作和状态事件的序列化；存档往返；加入同步；田地作业设置；**带排队、运行中、删除和编辑过的条目退出存档**；页面注册（第 8 个状态和圆点）、原生容器隐藏、原生表单放入页面并在其他状态恢复、原生“创建作业”仍在状态 6 正常打开；步行/无 AI/无权限的说明；表单隐藏车辆组并保留原生类型切换；地图选择切换车辆、其他农场车辆不切换、“我的车辆”；地点列表（合同只含本农场进行中、本农场田地按编号、作业类型、装载/卸载站点）；由地点预填（田地 → 田地工作或前往、装载站、卸载站保留类型、作业类型）；Z 加入、X 插入为下一个、无效作业提示、队列已满；列表上移/下移/编辑（保存替换、取消、条目开始时结束编辑）/删除/清空；当前作业的描述、距离和合同进度、每秒原地刷新、完成后消失并推进；规划模式；规划出错下一帧恢复；客户端只发请求；X 让给 PF 帮助、余额下方按钮；全局热键在 PLAYER 和 VEHICLE 各注册一次、打开页面、锁定时不打开；钩子与页面幂等；退出存档后原生地图页完全恢复（文字、圆点、选择器回调、容器 profile 与可见性、开始按钮、按键）、未启用 Mod 的存档中遗留回调无效、再次启用时重新创建；关闭菜单交还表单、重新打开恢复页面、选点在切换页面时取消。
 

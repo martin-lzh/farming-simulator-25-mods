@@ -8,6 +8,9 @@ MH.MOD_DIRECTORY = g_currentModDirectory
 MH.LOG_PREFIX = "[Map Helper]"
 MH.MAX_ENTRIES = 10
 MH.ADVANCE_DELAY = 1500
+-- After ADVANCE_DELAY the next job waits up to this long for the combination to settle.
+MH.SETTLE_TIMEOUT = 20000
+MH.REST_SPEED = 1
 MH.SAVE_FILENAME = "mapHelper.xml"
 MH.SAVE_VERSION = 1
 
@@ -304,6 +307,24 @@ function MH.findEntry(queue, entryId)
     return nil, nil
 end
 
+-- The queue follows the job the vehicle's worker drives now and continues after it.
+-- AIJobVehicle:aiJobStarted sets the vehicle's job before AISystem:startJobInternal
+-- publishes AI_JOB_STARTED (1.24 decompiled vehicles/specializations/AIJobVehicle.lua:182-188,
+-- SDK ai/AISystem.lua:561-566).
+function MH.followCurrentJob(queue)
+    local vehicle = queue.vehicle
+    if queue.running or not vehicle:getIsAIActive() or vehicle.getJob == nil then
+        return false
+    end
+    local current = vehicle:getJob()
+    if current == nil then
+        return false
+    end
+    queue.running = true
+    queue.runningJob = current
+    return true
+end
+
 function MH.serverAdd(vehicle, job, insertNext, connection)
     local queue = MH.getQueue(vehicle, true)
     if #queue.entries >= MH.MAX_ENTRIES or not MH.getIsValidRequestJob(vehicle, job, queue.farmId) then
@@ -315,13 +336,7 @@ function MH.serverAdd(vehicle, job, insertNext, connection)
     MH.setPause(queue, MH.PAUSE.NONE)
     -- Added while a worker drives: the queue follows that job and continues after it,
     -- whether it came from the queue or was started directly.
-    if not queue.running and vehicle:getIsAIActive() and vehicle.getJob ~= nil then
-        local current = vehicle:getJob()
-        if current ~= nil then
-            queue.running = true
-            queue.runningJob = current
-        end
-    end
+    MH.followCurrentJob(queue)
     -- Auto-start: nobody drives the vehicle and the queue is idle or paused, so the queue
     -- starts (or resumes) with its first entry right away. Between two queued jobs (delay)
     -- the queue is already running and simply continues.
@@ -508,6 +523,55 @@ function MH:onAIJobStopped(job, aiMessage)
     end
 end
 
+-- MessageType.AI_JOB_STARTED, published by AISystem:startJobInternal for every job start,
+-- whoever asks for it (SDK ai/AISystem.lua:561-566). The game itself never restarts a job
+-- after loading: the vehicle saves only lastJob, the template for the job menu, and
+-- AISystem:save no jobs (1.24 decompiled vehicles/specializations/AIJobVehicle.lua:434-442,
+-- SDK AIJobVehicle.lua:113-151, ai/AISystem.lua:421-444). A worker that drives after
+-- loading was started by the player or another Mod; a loaded queue that waits (not running,
+-- not paused) continues after that job, as after one running when a job is added. A paused
+-- queue keeps waiting for Resume.
+function MH:onAIJobStarted(job)
+    if not MH.missionActive or not MH.getIsServer() or job == nil then
+        return
+    end
+    local queue = MH.queues[MH.getJobVehicle(job)]
+    if queue ~= nil and #queue.entries > 0 and queue.pause == MH.PAUSE.NONE and MH.followCurrentJob(queue) then
+        MH.publish(queue)
+    end
+end
+
+-- Before the queue starts its next job on its own, the combination has to settle: the vehicle
+-- stands (Vehicle:getLastSpeed in km/h, SDK vehicles/Vehicle.lua:2587-2595; AIDrivable counts
+-- below 1 km/h as standing, specializations/AIDrivable.lua:265), no implement still moves its
+-- fold or fold middle position (Foldable:setFoldState sets foldMoveDirection, Foldable:onUpdate
+-- resets it to 0 at the target, specializations/Foldable.lua:816-830/594-608) and no attacher
+-- joint still lowers or raises its implement (AttacherJoints:setJointMoveDown sets isMoving,
+-- onUpdateTick clears it and moves the joint only while the vehicle is active,
+-- AttacherJoints.lua:3276-3284/1056-1075; same check as getIsAutomaticShiftingAllowed, :4151-4163).
+function MH.getIsCombinationMoving(vehicle)
+    local rootVehicle = vehicle:getRootVehicle()
+    if rootVehicle:getLastSpeed() >= MH.REST_SPEED then
+        return true
+    end
+    for _, child in ipairs(rootVehicle:getChildVehicles()) do
+        local foldable = child.spec_foldable
+        if foldable ~= nil and foldable.foldMoveDirection ~= 0 then
+            return true
+        end
+        local attacherJoints = child.spec_attacherJoints
+        if attacherJoints ~= nil and child:getIsActive() then
+            for _, implement in pairs(attacherJoints.attachedImplements) do
+                local jointDesc = attacherJoints.attacherJoints[implement.jointDescIndex]
+                if jointDesc ~= nil and jointDesc.isMoving then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 function MH:update(dt)
     -- Undo a planning shadow left behind by an error while the job menu was built.
     if MHMapFrame ~= nil then
@@ -526,12 +590,14 @@ function MH:update(dt)
                 MH.setPause(queue, MH.PAUSE.NONE)
                 MH.publish(queue)
             elseif queue.delay ~= nil then
+                -- Below 0 the delay counts the extra wait for the combination to settle.
                 queue.delay = queue.delay - dt
                 if queue.delay <= 0 then
-                    queue.delay = nil
                     if vehicle:getIsAIActive() then
+                        queue.delay = nil
                         MH.pauseQueue(queue, MH.PAUSE.STOPPED)
-                    else
+                    elseif queue.delay <= -MH.SETTLE_TIMEOUT or not MH.getIsCombinationMoving(vehicle) then
+                        queue.delay = nil
                         MH.startNext(queue)
                     end
                 end
@@ -735,6 +801,11 @@ function MH.loadFromXMLFile(filename)
                 table.insert(queue.entries, {id = MH.allocateEntryId(), job = job})
                 loaded = loaded + 1
             end)
+            -- A worker already driving the vehicle (started before the queues load): the
+            -- queue continues after it, as for one started later (MH:onAIJobStarted).
+            if #queue.entries > 0 then
+                MH.followCurrentJob(queue)
+            end
             MH.pruneQueue(queue)
         end)
     end
@@ -751,6 +822,7 @@ function MH.onMissionStarted(mission)
     if not MH.features.queue then
         return
     end
+    g_messageCenter:subscribe(MessageType.AI_JOB_STARTED, MH.onAIJobStarted, MH)
     g_messageCenter:subscribe(MessageType.AI_JOB_STOPPED, MH.onAIJobStopped, MH)
     mission:addUpdateable(MH)
     if mission:getIsServer() then

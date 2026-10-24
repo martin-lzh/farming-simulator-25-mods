@@ -83,7 +83,7 @@ registeredEvents = {}
 function InitEventClass(class, name) registeredEvents[name] = (registeredEvents[name] or 0) + 1 end
 
 FarmManager = {SPECTATOR_FARM_ID = 0, FARM_ID_SEND_NUM_BITS = 4}
-MessageType = {AI_JOB_STOPPED = 133}
+MessageType = {AI_JOB_STARTED = 131, AI_JOB_STOPPED = 133}
 g_messageCenter = {subscribers = {}}
 function g_messageCenter:subscribe(messageType, callback, target)
     table.insert(self.subscribers, {type = messageType, callback = callback, target = target})
@@ -393,6 +393,9 @@ function AISystem:startJob(job, farmId)
         vehicle.aiSettings = job.pendingData
         job.pendingData, job.pendingVehicle = nil, nil
     end
+    -- AISystem:startJobInternal: job:start (which sets the vehicle's job), then AI_JOB_STARTED
+    -- for every start (SDK ai/AISystem.lua:561-566).
+    g_messageCenter:publish(MessageType.AI_JOB_STARTED, job, farmId)
 end
 function AISystem:stopJobInternal(job, aiMessage)
     local vehicle = job.vehicleParameter:getVehicle()
@@ -983,6 +986,11 @@ function mockVehicle(networkId, farmId, uniqueId)
     vehicle.hotspot = {vehicle = vehicle, getVehicle = function(h) return h.vehicle end}
     function vehicle:getOwnerFarmId() return self.farmId end
     function vehicle:getIsAIActive() return self.aiJob ~= nil end
+    -- Vehicle:getLastSpeed (km/h from lastSpeed in m/ms); Vehicle:getIsActive, true while a
+    -- worker drives (AIJobVehicle:getIsActive) or someone sits in it.
+    vehicle.lastSpeed = 0
+    function vehicle:getLastSpeed() return self.lastSpeed * 3600 end
+    function vehicle:getIsActive() return self.aiJob ~= nil or self.isEntered == true end
     -- AIFieldWorker: the implement list follows canFieldWork; isActive is true while field work runs.
     vehicle.spec_aiFieldWorker = setmetatable({isActive = false}, {__index = function(_, key)
         if key == "aiImplementList" then return vehicle.canFieldWork and {{}} or {} end

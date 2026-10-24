@@ -89,7 +89,8 @@ end
 test("feature checks pass against the doubles and both events are registered", function()
     assert(MH.features.queue and MH.features.page and MH.features.hotkey and MH.features.fieldNeeds)
     assert(registeredEvents.MHQueueRequestEvent >= 1 and registeredEvents.MHQueueStateEvent >= 1)
-    assert(g_messageCenter.subscribers[1].type == MessageType.AI_JOB_STOPPED)
+    assert(g_messageCenter.subscribers[1].type == MessageType.AI_JOB_STARTED)
+    assert(g_messageCenter.subscribers[2].type == MessageType.AI_JOB_STOPPED)
     assert(g_currentMission.updateables[MH] == MH)
 end)
 
@@ -203,6 +204,54 @@ test("queue advances only after a successful finish", function()
     assert(MH.queues[vehicle] == nil)
     local note = g_currentMission.notifications[#g_currentMission.notifications]
     assert(note.kind == "ok" and note.text == "Tractor 7 finished")
+end)
+
+test("the next job waits until the vehicle stands and no implement folds or lowers", function()
+    local vehicle = mockVehicle(7)
+    local sprayer = attachImplement(vehicle, {spec_foldable = {foldMoveDirection = 0}})
+    local jobs = {newJob(vehicle, 1, 1), newJob(vehicle, 2, 2), newJob(vehicle, 3, 3)}
+    for _, job in ipairs(jobs) do MH.requestAdd(vehicle, job) end
+    local started = g_currentMission.aiSystem.started
+    -- The job ends while the boom folds and the tractor still rolls.
+    sprayer.spec_foldable.foldMoveDirection = 1
+    vehicle.lastSpeed = 3 / 3600
+    g_currentMission.aiSystem:stopJob(jobs[1], AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    vehicle.lastSpeed = 0
+    update(5000)
+    assert(#started == 1, "waits while the boom folds")
+    sprayer.spec_foldable.foldMoveDirection = 0
+    vehicle.lastSpeed = 3 / 3600
+    update(100)
+    assert(#started == 1, "waits while the vehicle rolls")
+    vehicle.lastSpeed = 0
+    vehicle.isEntered = true
+    vehicle.spec_attacherJoints = {attacherJoints = {{isMoving = true}}, attachedImplements = {{jointDescIndex = 1, object = sprayer}}}
+    update(100)
+    assert(#started == 1, "waits while the hitch raises the implement")
+    vehicle.spec_attacherJoints.attacherJoints[1].isMoving = false
+    update(100)
+    assert(#started == 2 and started[2] == jobs[2], "starts once everything stands still")
+    -- A fold that never ends holds the queue only up to the limit.
+    sprayer.spec_foldable.foldMoveDirection = -1
+    g_currentMission.aiSystem:stopJob(jobs[2], AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY)
+    update(MH.SETTLE_TIMEOUT - 100)
+    assert(#started == 2)
+    update(100)
+    assert(#started == 3 and started[3] == jobs[3])
+    -- A worker started meanwhile still pauses the queue.
+    local other = mockVehicle(8)
+    attachImplement(other, {spec_foldable = {foldMoveDirection = 1}})
+    local first = newJob(other)
+    MH.requestAdd(other, first)
+    MH.requestAdd(other, newJob(other))
+    g_currentMission.aiSystem:stopJob(first, AIMessageSuccessFinishedJob.new())
+    update(MH.ADVANCE_DELAY + 1000)
+    g_currentMission.aiSystem:startJob(newJob(other), 1)
+    update(100)
+    local queue = MH.queues[other]
+    assert(queue.pause == MH.PAUSE.STOPPED and #queue.entries == 1 and not queue.running)
 end)
 
 test("stop by the player, errors and deletion pause the queue", function()
@@ -381,6 +430,51 @@ test("save and load round trip restores queues and drops what no longer exists",
     assert(logged.infos[1]:find("Dropped 2"), logged.infos[1])
     local queue = MH.queues[reloaded]
     assert(not queue.running and queue.pause == MH.PAUSE.NONE, "a loaded queue waits for Resume")
+end)
+
+test("after loading, the queue continues after the next worker on its vehicle", function()
+    -- Saved while the worker drove the first of three jobs: the two waiting jobs are saved.
+    local vehicle = mockVehicle(7, 1, "vehicleA")
+    for x = 1, 3 do MH.requestAdd(vehicle, newJob(vehicle, x, x)) end
+    FSCareerMissionInfo.saveToXMLFile(g_currentMission.missionInfo)
+    local function reload(beforeQueues)
+        FSBaseMission.delete(g_currentMission)
+        objects = {}
+        local reloaded = mockVehicle(42, 1, "vehicleA")
+        g_currentMission = newMission(true)
+        if beforeQueues ~= nil then beforeQueues(reloaded) end
+        FSBaseMission.onStartMission(g_currentMission)
+        return reloaded, MH.queues[reloaded], g_currentMission.aiSystem.started
+    end
+    local function finishAndAdvance(job)
+        g_currentMission.aiSystem:stopJob(job, AIMessageSuccessFinishedJob.new())
+        update(MH.ADVANCE_DELAY)
+    end
+    -- A worker started after the queues loaded (by the player or a Mod that restarts workers).
+    local reloaded, queue, started = reload()
+    assert(#queue.entries == 2 and not queue.running, "a loaded queue waits")
+    local restarted = newJob(reloaded, 1, 1)
+    g_currentMission.aiSystem:startJob(restarted, 1)
+    assert(queue.running and queue.runningJob == restarted and #queue.entries == 2)
+    finishAndAdvance(restarted)
+    assert(#started == 2 and started[2].positionAngleParameter.x == 2, "the next job starts by itself")
+    finishAndAdvance(started[2])
+    assert(#started == 3 and started[3].positionAngleParameter.x == 3)
+    -- A worker already driving when the queues load.
+    local early
+    reloaded, queue, started = reload(function(v)
+        early = newJob(v, 1, 1)
+        g_currentMission.aiSystem:startJob(early, 1)
+    end)
+    assert(queue.running and queue.runningJob == early)
+    finishAndAdvance(early)
+    assert(#started == 2 and started[2].positionAngleParameter.x == 2)
+    -- Resume: the first waiting job runs, then the next one follows.
+    reloaded, queue, started = reload()
+    MH.requestStart(reloaded)
+    assert(#started == 1 and started[1].positionAngleParameter.x == 2)
+    finishAndAdvance(started[1])
+    assert(#started == 2 and started[2].positionAngleParameter.x == 3)
 end)
 
 test("saving with no queues overwrites stale queue data", function()
