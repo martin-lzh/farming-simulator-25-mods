@@ -1069,8 +1069,10 @@ function g_missionManager:getMissionsByFarmId(farmId)
     end
     return result
 end
-function mockContract(field, farmId, title, completion, status)
-    local contract = {field = field, farmId = farmId, title = title, completion = completion, status = status or "running"}
+function mockContract(field, farmId, title, completion, status, typeName)
+    -- type is the registered mission type (MissionManager:registerMissionType), e.g. plowMission.
+    local contract = {field = field, farmId = farmId, title = title, completion = completion, status = status or "running",
+        type = typeName ~= nil and {name = typeName} or nil}
     function contract:getIsInProgress() return self.status == "running" end
     function contract:getField() return self.field end
     function contract:getWorldPosition() return self.field:getIndicatorPosition() end

@@ -685,16 +685,20 @@ test("the lists: fields needing the work, my fields with their state, contracts 
     mockField(2, 200, 200, 2, 1, {limeLevel = 0})
     mockField(4, 400, 400, 1, 2)
     mockContract(mockField(5, 500, 500, 1, 0, {groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 2}),
-        1, "Sowing", 0.1)
-    mockContract(mockField(6, 600, 600, 1, 0), 1, "Plowing", 0.42)
+        1, "Sowing", 0.1, nil, "sowMission")
+    -- A ploughing contract on a field the farm doesn't own (the maintainer's case).
+    mockContract(mockField(6, 600, 600, 1, 0, {groundType = FieldGroundType.CULTIVATED}), 1, "Plowing", 0.42, nil, "plowMission")
     mockContract(mockField(7, 700, 700, 1, 0), 2, "Other farm", 0.5)
     mockContract(mockField(8, 800, 800, 1, 0), 1, "Not accepted", 0, "created")
     g_currentMission.stations.loading = {mockStation(600, "Silo", 50, 60)}
     g_currentMission.stations.unloading = {mockStation(601, "Mill", 70, 80)}
     local frame, page = openPage()
     local selector = page.mhFilterSelector
-    assert(placeTexts(page) == "Field No. 2|contract_field_plow_title", placeTexts(page))
-    assert(page.mhPlacesList.cells[1][1]:getAttribute("icon").imageSlice == "gui.storeAttribute_seeding")
+    -- The contract comes first, by its type even though the field state alone wouldn't need it.
+    assert(placeTexts(page) == "Plowing - Field No. 6|contract_field_plow_title - 42 %;Field No. 2|contract_field_plow_title",
+        placeTexts(page))
+    assert(page.mhPlacesList.cells[1][1]:getAttribute("icon").imageSlice == "gui.ingameMap_contracts")
+    assert(page.mhPlacesList.cells[1][2]:getAttribute("icon").imageSlice == "gui.storeAttribute_seeding")
     assert(not page.mhPlacesEmpty.visible)
     selector:setState(2, true)
     assert(placeTexts(page) == "Field No. 1|ui_growthMapPlowed;Field No. 2|ui_growthMapNeedsLime;Field No. 3|ui_growthMapReadyToHarvest",
@@ -709,9 +713,11 @@ test("the lists: fields needing the work, my fields with their state, contracts 
     selector:setState(1, true)
     field1.state.groundType = FieldGroundType.STUBBLE_TILLAGE
     InGameMenuMapFrame.update(frame, MHPage.REFRESH_INTERVAL)
-    assert(placeTexts(page) == "Field No. 2|contract_field_plow_title")
+    local contractRow = "Plowing - Field No. 6|contract_field_plow_title - 42 %;"
+    assert(placeTexts(page) == contractRow .. "Field No. 2|contract_field_plow_title")
     InGameMenuMapFrame.update(frame, MHPage.PLACES_INTERVAL)
-    assert(placeTexts(page) == "Field No. 1|contract_field_plow_title;Field No. 2|contract_field_plow_title", placeTexts(page))
+    assert(placeTexts(page) == contractRow .. "Field No. 1|contract_field_plow_title;Field No. 2|contract_field_plow_title",
+        placeTexts(page))
 end)
 
 test("implements attached while the page is open update the filter and keep the choice", function()
@@ -1143,6 +1149,17 @@ test("vehicles that never take a worker are recognised up front", function()
     assert(MH.getSupportsAI(reel))
     reel.spec_aiJobVehicle.supportsAIJobs = false
     assert(not MH.getSupportsAI(reel), "e.g. the Emergency pack's hose reel")
+end)
+
+test("contracts count for the needs list only when the combination does their work", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    mockContract(mockField(10, 1000, 1000, 1, 0), 1, "Cultivating", 0.2, nil, "cultivateMission")
+    mockContract(mockField(41, 4100, 4100, 1, 0), 1, "Plowing", 0.3, nil, "plowMission")
+    mockContract(mockField(36, 3600, 3600, 1, 0), 1, "Baling", 0, nil, "baleMission")
+    local _, page = openPage()
+    assert(placeTexts(page) == "Cultivating - Field No. 10|contract_field_cultivate_title - 20 %", placeTexts(page))
 end)
 
 print(string.format("%d behavioral tests passed", passed))

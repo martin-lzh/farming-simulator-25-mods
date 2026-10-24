@@ -601,8 +601,15 @@ function MHPage:reloadPlaces()
         local available = self:getAvailableTypes()
         local fieldJob = AIJobType.FIELDWORK ~= nil and available[AIJobType.FIELDWORK] and AIJobType.FIELDWORK
             or (AIJobType.GOTO ~= nil and available[AIJobType.GOTO] and AIJobType.GOTO or nil)
-        if key == MHPage.FILTER.NEEDS or key == MHPage.FILTER.FIELDS then
-            places = self:getFieldPlaces(farmId, fieldJob, key == MHPage.FILTER.NEEDS)
+        if key == MHPage.FILTER.NEEDS then
+            -- Accepted contracts this combination can do come first (they have a deadline),
+            -- then own fields that need the work. Contract fields belong to someone else.
+            places = self:getContractPlaces(farmId, fieldJob, true)
+            for _, item in ipairs(self:getFieldPlaces(farmId, fieldJob, true)) do
+                table.insert(places, item)
+            end
+        elseif key == MHPage.FILTER.FIELDS then
+            places = self:getFieldPlaces(farmId, fieldJob, false)
         elseif key == MHPage.FILTER.CONTRACTS then
             places = self:getContractPlaces(farmId, fieldJob)
         else
@@ -677,7 +684,36 @@ end
 -- Contracts of the farm that are in progress and belong to a field (MissionManager:
 -- getMissionsByFarmId, AbstractMission:getIsInProgress, AbstractFieldMission). Contracts
 -- whose field needs the combination's work come first and name that work.
-function MHPage:getContractPlaces(farmId, jobTypeIndex)
+-- The work a contract asks for, by mission type (MissionManager:registerMissionType names,
+-- decompiled missions/field/*Mission.lua NAME). Baling, wrapping and tedding contracts have
+-- no work the page recognises.
+MHPage.CONTRACT_WORK = {
+    PLOWMISSION = "PLOW", CULTIVATEMISSION = "CULTIVATE", SOWMISSION = "SOW", FERTILIZEMISSION = "FERTILIZE",
+    HERBICIDEMISSION = "HERBICIDE", WEEDMISSION = "WEED", HOEMISSION = "WEED", HARVESTMISSION = "HARVEST",
+    MOWMISSION = "MOW", STONEPICKMISSION = "STONES"
+}
+
+-- The contract's work when this combination can do it: the work by contract type, a weeder
+-- for weeding and a hoe for hoeing, and for harvesting and mowing the contract's crop.
+function MHPage:getContractWork(mission)
+    local typeName = mission.type ~= nil and mission.type.name or nil
+    local work = typeName ~= nil and MHPage.CONTRACT_WORK[string.upper(typeName)] or nil
+    local data = work ~= nil and self.works ~= nil and self.works[work] or nil
+    if data == nil then
+        return nil
+    end
+    local upper = string.upper(typeName)
+    if (upper == "HOEMISSION" and data.hoe ~= true) or (upper == "WEEDMISSION" and data.weeder ~= true) then
+        return nil
+    end
+    if (work == "HARVEST" or work == "MOW") and mission.fruitTypeIndex ~= nil and data.fruits ~= nil
+        and data.fruits[mission.fruitTypeIndex] == nil then
+        return nil
+    end
+    return work
+end
+
+function MHPage:getContractPlaces(farmId, jobTypeIndex, onlyNeeded)
     local workable, other = {}, {}
     if g_missionManager == nil then
         return workable
@@ -693,13 +729,13 @@ function MHPage:getContractPlaces(farmId, jobTypeIndex)
             if field.getId ~= nil and field:getId() ~= nil then
                 name = string.format("%s - %s %s", name, g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
             end
-            local needs = MHFieldNeeds.getNeeds(MHFieldNeeds.readState(x, z), self.works, self.workList)
+            local work = self:getContractWork(mission)
             local percent = MHPage.formatPercent(mission.completion)
             local item = {name = name, icon = MHPage.ICON.CONTRACT, x = x, z = z, jobTypeIndex = jobTypeIndex}
-            if #needs > 0 then
-                item.info = string.format("%s - %s", MHFieldNeeds.getWorkText(needs[1]), percent)
+            if work ~= nil then
+                item.info = string.format("%s - %s", MHFieldNeeds.getWorkText(work), percent)
                 table.insert(workable, item)
-            else
+            elseif not onlyNeeded then
                 item.info = percent
                 table.insert(other, item)
             end

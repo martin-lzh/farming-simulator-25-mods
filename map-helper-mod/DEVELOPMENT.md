@@ -86,10 +86,12 @@ GUI 预览实验室（`tools/gui_lab/`，由集成方维护）渲染方法：
 
 | 选项 | 何时提供 | 内容 |
 | --- | --- | --- |
-| 需要此作业的田地（`mh_filterNeeds`） | 识别出组合至少一种田间作业且田地状态可读（`MH.features.fieldNeeds`） | 本农场田地中需要组合作业的；信息栏为需要的作业（最多两项） |
+| 需要此作业的田地（`mh_filterNeeds`） | 识别出组合至少一种田间作业且田地状态可读（`MH.features.fieldNeeds`） | 先列本农场进行中合同里、组合能完成其作业的（按合同类型判断，见下），再列本农场田地中需要组合作业的；信息栏为需要的作业（最多两项） |
 | 我的田地（`mh_filterFields`） | 总是 | 本农场全部田地；信息栏为状态文字，读不到状态时为面积 |
 | 合同（`ui_contracts`） | 总是 | 本农场进行中的田地合同；组合能做的排在前面，信息栏“作业 - 百分比”，其余只显示百分比 |
 | 站点（`ui_stations`） | 车辆可执行 LOAD_AND_DELIVER 或 DELIVER | 有效的装载/卸载站点 |
+
+合同的作业按合同类型（`mission.type.name`，`MissionManager:registerMissionType`，SDK `missions/MissionManager.lua:706-721`；服务器 `:266/:395`、客户端 `AbstractMission:readStream` `:264` 都有）对应：plowMission→犁地、cultivateMission→耕地、sowMission→播种、fertilizeMission→施肥、herbicideMission→除草剂、weedMission→除草机、hoeMission→锄、harvestMission→收割、mowMission→割草、stonePickMission→捡石（类型名见 decompiled `missions/field/*Mission.lua` 的 `NAME`）；收割和割草还要求合同作物（`mission.fruitTypeIndex`）在组合的作物表中；打捆、包膜、翻晒合同没有可识别的作业。合同田地不属于本农场，只按田地状态扫描本农场田地时不会出现：2026-10-24 维护者游戏内反馈犁和耕耘机的列表为空，存档中正好有进行中的犁地合同（41 号田）和耕地合同（10、53 号田），而本农场田地按状态都不需要（存档关闭了犁地要求）。“合同任务”过滤也用同一判断。
 
 默认：有“需要此作业的田地”时选它，否则“我的田地”（例如卡车、没有挂农具的拖拉机）。每台车辆的选择存在 `MHPage.filterByVehicle`（本局游戏内，拆除时清空）。空列表显示对应说明（`mh_emptyNeeds/Fields/Contracts/Stations`）。田地状态在切换车辆、切换过滤和每 10 s（`MHPage.PLACES_INTERVAL`，页面显示时）读取一次，不是每帧。
 

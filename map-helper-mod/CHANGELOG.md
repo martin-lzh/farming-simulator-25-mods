@@ -12,6 +12,8 @@
 - 选择器决定地点列表显示的内容：需要车辆及其农具作业的田地、所有田地及其状态、你的合同，或运送作业用的站点。每台车辆的选择会被记住。
 - Fields needing the work covers plowing, cultivating, sowing, lime, fertilizer, herbicide, weeding, rolling, mulching, mowing, harvesting, removing foliage and stone picking. Contracts the vehicle can work on come first.
 - “需要此作业的田地”涵盖犁地、耕地、播种、施石灰、施肥、喷除草剂、除草、镇压、粉碎残茬、割草、收割、去除茎叶和捡石头。车辆能做的合同排在前面。
+- Fields needing this work also lists your accepted contracts whose job the vehicle can do, first; contract fields are not yours, so they were missing before.
+- “需要此作业的田地”也会列出车辆能完成的已接合同，并排在最前；合同田地不属于你，之前因此没有显示。
 - Click a place to move the map there and fill in the job.
 - 点击一个地点，地图会移到该处并填好作业。
 - Jobs are set up with the game's own job settings, including picking the target on the map. Add to queue (Z) puts the job at the end, Insert as next (X) puts it first.
