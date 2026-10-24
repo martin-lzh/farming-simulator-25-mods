@@ -95,9 +95,9 @@
       "visible": true,
       "absolute": {
         "x": 154,
-        "y": 440,
+        "y": 648,
         "width": 373,
-        "height": 333
+        "height": 125
       }
     },
     "buttonStartJobContainer": {
@@ -116,7 +116,7 @@
       "visible": false
     },
     "createTextTemplate": {
-      "visible": true
+      "visible": false
     },
     "createTitleTemplate": {
       "text": "位置"
@@ -139,7 +139,10 @@
     "mhResumeContainer": {
       "visible": false
     },
-    "mhResumeText": "继续队列"
+    "mhResumeText": "继续队列",
+    "mhPlacesBox": {
+      "size": "100% 330px"
+    }
   },
   "lists": {
     "mhPlacesList": [
@@ -159,6 +162,34 @@
       },
       {
         "name": "田地编号 9",
+        "info": "耕地, 需要石灰",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 14",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 22",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 25",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 31",
         "info": "耕地, 需要石灰",
         "icon": {
           "imageSliceId": "gui.storeAttribute_seeding"

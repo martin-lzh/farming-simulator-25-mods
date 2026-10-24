@@ -449,13 +449,26 @@ function MF.returnFalse()
     return false
 end
 
+-- Field work also asks AIFieldWorker:getCanStartFieldWork, which is false while the field
+-- worker runs (spec.isActive, decompiled vehicles/specializations/AIFieldWorker.lua:320-327).
+-- Without its shadow, jobs planned while the vehicle worked a field fell back to Go to and
+-- only drove there (maintainer's report, 2026-10-25). The shadow answers like an idle worker.
+function MF.getCanStartFieldWorkIdle(vehicle)
+    local spec = vehicle.spec_aiFieldWorker
+    return spec ~= nil and spec.aiImplementList ~= nil and #spec.aiImplementList > 0
+end
+
 function MF.withPlanning(vehicle, planning, func)
     if not planning then
         return func()
     end
     MF.restorePlanning()
-    MF.planningShadow = {vehicle = vehicle, previous = rawget(vehicle, "getIsAIActive")}
+    MF.planningShadow = {vehicle = vehicle, previous = rawget(vehicle, "getIsAIActive"),
+        previousCanStart = rawget(vehicle, "getCanStartFieldWork"), shadowsCanStart = vehicle.spec_aiFieldWorker ~= nil}
     vehicle.getIsAIActive = MF.returnFalse
+    if MF.planningShadow.shadowsCanStart then
+        vehicle.getCanStartFieldWork = MF.getCanStartFieldWorkIdle
+    end
     local result = func()
     MF.restorePlanning()
     return result
@@ -466,5 +479,8 @@ function MF.restorePlanning()
     if shadow ~= nil then
         MF.planningShadow = nil
         shadow.vehicle.getIsAIActive = shadow.previous
+        if shadow.shadowsCanStart then
+            shadow.vehicle.getCanStartFieldWork = shadow.previousCanStart
+        end
     end
 end

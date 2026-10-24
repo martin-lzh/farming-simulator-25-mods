@@ -20,6 +20,8 @@
 - 双击田地或合同，可直接把该处的田地工作加入队列。
 - Places a worker is already working are marked Worker on it, places waiting in a queue Queued; both come last in the work and contract lists.
 - 已有帮手在作业的地点标为“帮手作业中”，在队列中等待的标为“已在队列”；两者在作业和合同列表中排在最后。
+- The job form takes only the height its job type needs; with field work the places list shows about ten rows.
+- 作业表单只占用该作业类型需要的高度；田地工作时地点列表可显示约十行。
 - Click a place to move the map there and fill in the job.
 - 点击一个地点，地图会移到该处并填好作业。
 - Jobs are set up with the game's own job settings, including picking the target on the map. Add to queue (Z) puts the job at the end, Insert as next (X) puts it first.

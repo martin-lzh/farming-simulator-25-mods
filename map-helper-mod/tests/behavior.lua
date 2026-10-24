@@ -1247,4 +1247,45 @@ test("places a worker already has are marked and listed last", function()
     assert(placeTexts(page):find("^Field No. 3|mh_claimQueued") ~= nil, placeTexts(page))
 end)
 
+test("the form takes what its job type needs and the places list the rest", function()
+    local vehicle = seat(mockVehicle(7))
+    vehicle.canFieldWork, vehicle.canDeliver = true, true
+    mockField(3, 300, 300, 1, 1)
+    local frame, page = openPage()
+    local px = g_pixelSizeScaledY
+    local function placesPx() return math.floor(page.mhPlacesBox.size[2] / px + 0.5) end
+    local function formPx() return math.floor(frame.createJobContainer.size[2] / px + 0.5) end
+    -- Field work (and Go to): job type + position title + position = 120 px; the vehicle group is hidden.
+    assert(page:selectJobType(AIJobType.FIELDWORK) and formPx() == 120, formPx())
+    assert(placesPx() == 597 - 120 - 8 - 139, placesPx())
+    -- The form's bottom stays just above Add to queue.
+    local top = -frame.createJobContainer.position[2] / px
+    assert(math.abs(top + formPx() - (145 + 597)) < 0.5, top)
+    -- A longer form takes more and gives the list less, at most 320 px.
+    assert(page:selectJobType(AIJobType.LOAD_AND_DELIVER))
+    assert(formPx() > 120 and formPx() <= 320 and placesPx() == 597 - formPx() - 8 - 139, formPx())
+    page:selectJobType(AIJobType.FIELDWORK)
+    assert(formPx() == 120 and placesPx() == 330)
+end)
+
+test("jobs planned while the vehicle works a field stay field work", function()
+    local vehicle = seat(mockVehicle(7))
+    vehicle.canFieldWork = true
+    attachImplement(vehicle, {spec_cultivator = {}})
+    mockField(3, 300, 300, 1, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(4, 400, 400, 1, 1, {groundType = FieldGroundType.PLOWED})
+    -- The first job runs and the field worker is busy (the maintainer's case): before the fix
+    -- field work read as unavailable and the next places became Go to.
+    g_currentMission.aiSystem:startJob(newJob(vehicle, 300, 300, AIJobType.FIELDWORK), 1)
+    vehicle.spec_aiFieldWorker.isActive = true
+    local frame, page = openPage()
+    page.mhPlacesList:doubleClick(1, 1)
+    local entries = MH.getEntries(vehicle)
+    assert(#entries == 1 and entries[1].job.jobTypeIndex == AIJobType.FIELDWORK, "queued as field work")
+    assert(page.places[1].jobTypeIndex == AIJobType.FIELDWORK)
+    -- The shadows are gone again.
+    assert(rawget(vehicle, "getCanStartFieldWork") ~= nil and not vehicle:getCanStartFieldWork(), "the worker is still busy")
+    assert(vehicle:getIsAIActive())
+end)
+
 print(string.format("%d behavioral tests passed", passed))

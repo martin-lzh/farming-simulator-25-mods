@@ -808,7 +808,11 @@ end
 function InGameMenuMapFrame:generateJobTypes()
     self.jobTypeInstances = {
         [AIJobType.GOTO] = {class = MockJob.class, getIsAvailableForVehicle = function(_, vehicle) return not vehicle:getIsAIActive() end},
-        [AIJobType.FIELDWORK] = {class = MockJob.class, getIsAvailableForVehicle = function(_, vehicle) return vehicle.canFieldWork == true and not vehicle:getIsAIActive() end},
+        -- AIJobFieldWork:getIsAvailableForVehicle: getCanStartFieldWork (false while the field worker
+        -- runs) and AIJobVehicle:getCanStartAIVehicle (false while AI is active).
+        [AIJobType.FIELDWORK] = {class = MockJob.class, getIsAvailableForVehicle = function(_, vehicle)
+            return vehicle.getCanStartFieldWork ~= nil and vehicle:getCanStartFieldWork() and not vehicle:getIsAIActive()
+        end},
         [AIJobType.CONVEYOR] = {class = MockJob.class, getIsAvailableForVehicle = function() return false end},
         [AIJobType.DELIVER] = {class = MockJob.class, getIsAvailableForVehicle = function(_, vehicle) return vehicle.canDeliver == true and not vehicle:getIsAIActive() end},
         [AIJobType.LOAD_AND_DELIVER] = {class = MockJob.class, getIsAvailableForVehicle = function(_, vehicle) return vehicle.canDeliver == true and not vehicle:getIsAIActive() end}
@@ -854,10 +858,13 @@ function InGameMenuMapFrame:setActiveJobTypeSelection(jobTypeIndex)
         self.currentJob.builtWhileAIActive = self.currentJobVehicle:getIsAIActive()
         self.currentJobElements = {}
         for _, group in ipairs(self.currentJob:getGroupedParameters()) do
+            -- Every row of the native form is 40 px (fs25_aiCreateJobParameterTitle/-Button/-MultiTextOption).
             local title = mockElement("title", "Text")
+            title.absSize = {0.2, 40 * g_pixelSizeScaledY}
             self.jobMenuLayout:addElement(title)
             for _, parameter in ipairs(group:getParameters()) do
                 local row = mockElement("row", "Button")
+                row.absSize = {0.2, 40 * g_pixelSizeScaledY}
                 row.aiParameter = parameter
                 self.jobMenuLayout:addElement(row)
                 table.insert(self.currentJobElements, row)
@@ -929,6 +936,7 @@ function mockFrame()
     frame.createJobContainer.visible = false
     frame.jobTypeElement = mockMultiTextOption("jobTypeElement")
     frame.jobTypeElement.target = frame
+    frame.jobTypeElement.absSize = {0.2, 40 * g_pixelSizeScaledY}
     frame.jobMenuLayout = mockElement("jobMenuLayout", "BoxLayout")
     frame.buttonStartJobContainer = mockElement("buttonStartJobContainer")
     frame.createJobContainer:addElement(frame.jobTypeElement)
@@ -966,6 +974,15 @@ function mockVehicle(networkId, farmId, uniqueId)
     vehicle.hotspot = {vehicle = vehicle, getVehicle = function(h) return h.vehicle end}
     function vehicle:getOwnerFarmId() return self.farmId end
     function vehicle:getIsAIActive() return self.aiJob ~= nil end
+    -- AIFieldWorker: the implement list follows canFieldWork; isActive is true while field work runs.
+    vehicle.spec_aiFieldWorker = setmetatable({isActive = false}, {__index = function(_, key)
+        if key == "aiImplementList" then return vehicle.canFieldWork and {{}} or {} end
+    end})
+    function vehicle:getCanStartFieldWork()
+        local spec = self.spec_aiFieldWorker
+        if spec.isActive then return false end
+        return #spec.aiImplementList > 0
+    end
     function vehicle:getJob() return self.aiJob end
     function vehicle:getName() return "Tractor " .. self.networkId end
     function vehicle:getImageFilename() return "store/tractor" .. self.networkId .. ".dds" end

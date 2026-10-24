@@ -193,6 +193,54 @@ function MHPage:placeNativeForm()
     if frame.createJobEmptyText ~= nil then
         frame.createJobEmptyText:setVisible(false)
     end
+    self:fitLayout()
+end
+
+-- The form takes the height its job type needs and the places list the rest. Reference
+-- pixels inside the page (MapHelperPage.xml): the places box starts at PLACES_TOP, the form
+-- ends at FORM_BOTTOM just above Add to queue. The native form is 40 px per row: the job type
+-- selector plus a title and a row per parameter (InGameMenuMapFrame:setActiveJobTypeSelection,
+-- decompiled gui/InGameMenuMapFrame.lua:1403-1451). Load and deliver needs the most, 320 px;
+-- field work and Go to need 120 px. Both boxes are anchored at their top edge (pivot 0 1), so
+-- a new size keeps the top.
+MHPage.PAGE_TOP = 145
+MHPage.PLACES_TOP = 139
+MHPage.FORM_BOTTOM = 597
+MHPage.FORM_GAP = 8
+MHPage.FORM_MIN = 40
+MHPage.FORM_MAX = 320
+
+function MHPage:getFormHeight()
+    local frame = self.frame
+    local container = frame.createJobContainer
+    if container == nil or not self.formPlaced or not container:getIsVisible() or frame.jobTypeElement == nil
+        or frame.jobMenuLayout == nil then
+        return MHPage.FORM_MAX
+    end
+    local used = frame.jobTypeElement.absSize[2]
+    for _, element in ipairs(frame.jobMenuLayout.elements) do
+        if element:getIsVisible() then
+            used = used + element.absSize[2]
+        end
+    end
+    return math.max(MHPage.FORM_MIN, math.min(MHPage.FORM_MAX, math.ceil(used / g_pixelSizeScaledY - 0.5)))
+end
+
+function MHPage:fitLayout()
+    local px = g_pixelSizeScaledY
+    local height = self:getFormHeight()
+    local formTop = MHPage.FORM_BOTTOM - height
+    local container = self.frame.createJobContainer
+    if container ~= nil and self.formPlaced then
+        container:setSize(nil, height * px)
+        container:setPosition(nil, -(MHPage.PAGE_TOP + formTop) * px)
+    end
+    local placesHeight = formTop - MHPage.FORM_GAP - MHPage.PLACES_TOP
+    if self.placesHeight ~= placesHeight then
+        self.placesHeight = placesHeight
+        self.mhPlacesBox:setSize(nil, placesHeight * px)
+        self.mhPlacesList:reloadData()
+    end
 end
 
 -- Empties the form like InGameMenuMapFrame:setJobMenuVisible(false) does, without its focus
@@ -393,6 +441,7 @@ function MHPage:onFormBuilt()
         position = position + #parameters + 1
     end
     layout:invalidateLayout()
+    self:fitLayout()
     self:refreshButtons()
 end
 
