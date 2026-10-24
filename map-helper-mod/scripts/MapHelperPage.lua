@@ -627,6 +627,17 @@ function MHPage.getNeedsText(needs)
     return table.concat(texts, ", ")
 end
 
+-- The point the game keeps a field's state at: Field:updateState reads FieldState at the
+-- field's own position (decompiled field/Field.lua:94-96, 194-199), which is also the target
+-- inside the field for a job. The name sign (getIndicatorPosition) is only where the number
+-- is drawn and often lies on a headland or an edge strip that was never worked.
+function MHPage.getFieldPoint(field)
+    if field ~= nil and field.getCenterOfFieldWorldPosition ~= nil then
+        return field:getCenterOfFieldWorldPosition()
+    end
+    return nil, nil
+end
+
 -- Fields on farmland the farm owns, by number (as InGameMenuMobileMapFrame:updateFields). Each
 -- is read at its name marker; onlyNeeded keeps the fields that need the combination's work.
 function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
@@ -644,7 +655,7 @@ function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
         return a:getId() < b:getId()
     end)
     for _, field in ipairs(fields) do
-        local x, z = field:getIndicatorPosition()
+        local x, z = MHPage.getFieldPoint(field)
         local state = MHFieldNeeds.readState(x, z)
         local name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
         local item = {name = name, icon = MHPage.ICON.FIELD, x = x, z = z, jobTypeIndex = jobTypeIndex}
@@ -673,8 +684,11 @@ function MHPage:getContractPlaces(farmId, jobTypeIndex)
     end
     for _, mission in ipairs(g_missionManager:getMissionsByFarmId(farmId)) do
         if mission.farmId == farmId and mission:getIsInProgress() and mission.getField ~= nil and mission:getField() ~= nil then
-            local x, z = mission:getWorldPosition()
             local field = mission:getField()
+            local x, z = MHPage.getFieldPoint(field)
+            if x == nil then
+                x, z = mission:getWorldPosition()
+            end
             local name = mission:getTitle()
             if field.getId ~= nil and field:getId() ~= nil then
                 name = string.format("%s - %s %s", name, g_i18n:getText("ui_fieldNo"), tostring(field:getId()))

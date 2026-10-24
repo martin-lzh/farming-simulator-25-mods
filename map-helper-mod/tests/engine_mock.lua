@@ -1053,7 +1053,10 @@ function mockField(id, x, z, area, ownerFarmId, state)
     for key, value in pairs(state or {}) do field.state[key] = value end
     function field:getId() return self.farmland.id end
     function field:getAreaHa() return self.areaHa end
-    function field:getIndicatorPosition() return self.posX, self.posZ end
+    function field:getCenterOfFieldWorldPosition() return self.posX, self.posZ end
+    -- As on real maps, the name sign stands off the worked area (here outside every field
+    -- square), so a state read there finds no field ground.
+    function field:getIndicatorPosition() return self.posX + 80, self.posZ + 80 end
     table.insert(g_fieldManager.fields, field)
     g_farmlandManager.owners[id] = ownerFarmId
     return field
