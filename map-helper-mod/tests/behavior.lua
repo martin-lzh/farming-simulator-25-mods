@@ -8,6 +8,8 @@ local function test(name, body)
     g_inputBinding.events = {}
     g_inputBinding.currentContext, g_inputBinding.registrationContext = "PLAYER", nil
     g_fieldManager.fields, g_farmlandManager.owners, g_missionManager.missions = {}, {}, {}
+    workedStrips = {}
+    MHFieldNeeds.mergeCache = {}
     logged.warnings, logged.infos = {}, {}
     MH.onMissionDeleted(nil)
     g_currentMission = newMission(true)
@@ -1166,6 +1168,31 @@ test("contracts count for the needs list only when the combination does their wo
     mockContract(mockField(36, 3600, 3600, 1, 0), 1, "Baling", 0, nil, "baleMission")
     local _, page = openPage()
     assert(placeTexts(page) == "Cultivating - Field No. 10|contract_field_cultivate_title - 20 %", placeTexts(page))
+end)
+
+test("merged fields show as one row", function()
+    local tractor = seat(mockVehicle(7))
+    tractor.canFieldWork = true
+    attachImplement(tractor, {spec_cultivator = {}})
+    -- Fields 3, 4 and 5 side by side; the strips between 3-4 and 4-5 were worked into one area
+    -- (the maintainer's case). Field 6 next to them keeps its grass strip.
+    mockField(3, 300, 900, 2, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(4, 400, 900, 1.5, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(5, 500, 900, 1, 1, {groundType = FieldGroundType.PLOWED})
+    mockField(6, 600, 900, 1, 1, {groundType = FieldGroundType.PLOWED})
+    workedStrips = {{330, 880, 470, 920}}
+    local frame, page = openPage()
+    assert(placeTexts(page) == "Field No. 3 + 4 + 5|contract_field_cultivate_title;Field No. 6|contract_field_cultivate_title",
+        placeTexts(page))
+    -- My fields: one row with the total area when the state has no text.
+    page.mhFilterSelector:setState(2, true)
+    assert(placeTexts(page):find("Field No. 3 + 4 + 5|", 1, true) ~= nil, placeTexts(page))
+    -- Without the worked strips the fields are separate again (once the cached result expires).
+    workedStrips = {}
+    g_time = (g_time or 0) + MHFieldNeeds.MERGE_CACHE_TIME
+    page.mhFilterSelector:setState(1, true)
+    assert(placeTexts(page) == "Field No. 3|contract_field_cultivate_title;Field No. 4|contract_field_cultivate_title;"
+        .. "Field No. 5|contract_field_cultivate_title;Field No. 6|contract_field_cultivate_title", placeTexts(page))
 end)
 
 print(string.format("%d behavioral tests passed", passed))

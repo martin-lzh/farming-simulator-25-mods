@@ -183,6 +183,51 @@ function FN.getSprayWork(sprayer)
     return FN.WORK.FERTILIZE, sprayType
 end
 
+-- Merged fields: the game keeps one Field per field number, also after the player worked the
+-- strip between two fields into one area. Two fields count as merged when the ground is field
+-- ground all along the straight line between their points (the ground type layer, read like
+-- FieldState:update, decompiled field/FieldState.lua:110-111). A concave field whose line
+-- leaves it just stays separate.
+FN.MERGE_STEP = 4
+FN.MERGE_MAX_DISTANCE = 800
+-- A merge only changes when a strip is worked, so each pair's result is kept for a minute
+-- (the field list refreshes every 10 s).
+FN.MERGE_CACHE_TIME = 60000
+FN.mergeCache = {}
+
+function FN.getIsGroundConnected(x1, z1, x2, z2)
+    local now = g_time or 0
+    local key = string.format("%.1f,%.1f,%.1f,%.1f", x1 or 0, z1 or 0, x2 or 0, z2 or 0)
+    local cached = FN.mergeCache[key]
+    if cached ~= nil and now - cached.time < FN.MERGE_CACHE_TIME then
+        return cached.connected
+    end
+    local connected = FN.readIsGroundConnected(x1, z1, x2, z2)
+    FN.mergeCache[key] = {connected = connected, time = now}
+    return connected
+end
+
+function FN.readIsGroundConnected(x1, z1, x2, z2)
+    local system = g_currentMission ~= nil and g_currentMission.fieldGroundSystem or nil
+    if system == nil or system.getValueAtWorldPos == nil or x1 == nil or x2 == nil then
+        return false
+    end
+    local dx, dz = x2 - x1, z2 - z1
+    local distance = math.sqrt(dx * dx + dz * dz)
+    if distance > FN.MERGE_MAX_DISTANCE then
+        return false
+    end
+    local steps = math.max(1, math.ceil(distance / FN.MERGE_STEP))
+    for i = 0, steps do
+        local t = i / steps
+        local value = system:getValueAtWorldPos(FieldDensityMap.GROUND_TYPE, x1 + dx * t, 0, z1 + dz * t)
+        if FieldGroundType.getTypeByValue(value) == FieldGroundType.NONE then
+            return false
+        end
+    end
+    return true
+end
+
 -- The field state at a point, copied out of a FieldState so the caller can keep it.
 function FN.readState(x, z)
     if not MapHelper.features.fieldNeeds or x == nil or z == nil then

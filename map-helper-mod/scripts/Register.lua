@@ -78,7 +78,7 @@ local fieldNeedsMissing = findMissing({
     {FieldState, "FieldState", {"new", "update"}},
     {FieldGroundType, "FieldGroundType", {"NONE", "PLOWED", "CULTIVATED", "SEEDBED"}},
     {FruitType, "FruitType", {"UNKNOWN"}},
-    {FieldDensityMap, "FieldDensityMap", {"SPRAY_LEVEL"}},
+    {FieldDensityMap, "FieldDensityMap", {"SPRAY_LEVEL", "GROUND_TYPE"}},
     {g_fruitTypeManager, "g_fruitTypeManager", {"getFruitTypeByIndex"}}
 })
 MH.features.fieldNeeds = fieldNeedsMissing == nil

@@ -664,8 +664,8 @@ function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
     for _, field in ipairs(fields) do
         local x, z = MHPage.getFieldPoint(field)
         local state = MHFieldNeeds.readState(x, z)
-        local name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), tostring(field:getId()))
-        local item = {name = name, icon = MHPage.ICON.FIELD, x = x, z = z, jobTypeIndex = jobTypeIndex}
+        local item = {ids = {field:getId()}, area = field:getAreaHa(), icon = MHPage.ICON.FIELD, x = x, z = z,
+            jobTypeIndex = jobTypeIndex}
         if onlyNeeded then
             local needs = MHFieldNeeds.getNeeds(state, self.works, self.workList)
             if #needs > 0 then
@@ -673,12 +673,58 @@ function MHPage:getFieldPlaces(farmId, jobTypeIndex, onlyNeeded)
                 table.insert(items, item)
             end
         else
-            local stateText = MHFieldNeeds.getStateText(state)
-            item.info = stateText ~= "" and stateText or g_i18n:formatArea(field:getAreaHa(), 2)
+            item.stateText = MHFieldNeeds.getStateText(state)
             table.insert(items, item)
         end
     end
+    items = MHPage.mergeFieldItems(items)
+    for _, item in ipairs(items) do
+        local ids = {}
+        for _, id in ipairs(item.ids) do
+            table.insert(ids, tostring(id))
+        end
+        item.name = string.format("%s %s", g_i18n:getText("ui_fieldNo"), table.concat(ids, " + "))
+        if not onlyNeeded then
+            item.info = item.stateText ~= "" and item.stateText or g_i18n:formatArea(item.area, 2)
+        end
+    end
     return items
+end
+
+-- Merged fields become one row "Field No. 3 + 4 + 5" at the first field's point, with the
+-- first field's needs or state and the total area. Fields are joined when the ground between
+-- their points is field ground (MHFieldNeeds.getIsGroundConnected), also through a third one.
+function MHPage.mergeFieldItems(items)
+    local groupOf = {}
+    for i = 1, #items do
+        groupOf[i] = i
+    end
+    local function find(i)
+        while groupOf[i] ~= i do
+            i = groupOf[i]
+        end
+        return i
+    end
+    for i = 1, #items do
+        for j = i + 1, #items do
+            if find(i) ~= find(j) and MHFieldNeeds.getIsGroundConnected(items[i].x, items[i].z, items[j].x, items[j].z) then
+                groupOf[find(j)] = find(i)
+            end
+        end
+    end
+    local merged, byRoot = {}, {}
+    for i, item in ipairs(items) do
+        local root = find(i)
+        local group = byRoot[root]
+        if group == nil then
+            byRoot[root] = item
+            table.insert(merged, item)
+        else
+            table.insert(group.ids, item.ids[1])
+            group.area = (group.area or 0) + (item.area or 0)
+        end
+    end
+    return merged
 end
 
 -- Contracts of the farm that are in progress and belong to a field (MissionManager:
