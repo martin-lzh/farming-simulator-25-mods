@@ -20,6 +20,7 @@ MODS = {
     "animal-products-manager": "AnimalProductsManager",
     "fill-type-selector": "FillTypeSelector",
     "map-helper": "MapHelper",
+    "production-overflow": "ProductionOverflow",
 }
 VERSION = r"(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){3}"
 GAME = "Farming Simulator 25 1.24 (PC)"
