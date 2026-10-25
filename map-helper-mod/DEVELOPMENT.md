@@ -5,7 +5,7 @@
 面向 PC 版 FS25 1.25.0.0（安装目录 `VERSION` 为 1.25.0.0），modDesc descVersion 114，与动物产品管理一致。首个正式版为 1.0.0.0（见“1.0.0.0 发布准备”）；之后的改动记录在 CHANGELOG 的 Unreleased。
 
 - 1.0.0.0：维护者 2026-10-25 确认已实机测试，未提供逐项记录（包括主机/客户端和专用服务器），下方 MAP-xx 清单不据此逐项标为通过。
-- 封面 `assets/cover.jpg`（1920×1080）2026-10-25 由 Codex CLI 图像生成制作，以动物产品管理的封面为风格参考，原图和提示词记录在被忽略的 `outputs/map-helper/cover/`；README 顶部显示。游戏内截图尚缺，维护者之后提供。
+- 封面 `assets/cover.jpg`（1920×1080）2026-10-25 由 Codex CLI 图像生成制作，以动物产品管理的封面为风格参考，原图和提示词记录在被忽略的 `outputs/map-helper/cover/`；README 顶部显示。README 截图在 `assets/screenshots/`：维护者 2026-10-25 的游戏内截图（英文界面，FS25 1.25 PC，2000×1250），转为 JPEG 并用红框标出重点按钮和行，不进 ZIP。共 4 张：01 地图底栏按钮、02 需要此作业的田地、04 队列暂停、05 暂停消息；维护者确认够用，未拍多个等待作业的队列。
 - 仓库级接入：已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表。`tools/check_syntax.py` 用 `git ls-files` 列文件，删除的文件在暂存前会报“文件不存在”，暂存删除后即正常。
 
 开发记录（各条为当日状态）：
