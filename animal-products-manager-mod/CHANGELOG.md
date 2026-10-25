@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Distributing is now two modes: "Distributing, store rest automatically" and "Distributing, sell rest automatically". Both deliver to your own production points first, once per in-game hour.
+- “分配”拆分为两个挡位：“分配，剩余自动储存”和“分配，剩余自动出售”。两者都在每游戏小时先送往自己农场的生产点。
+- Distributing, store rest automatically: whatever doesn't fit is stored as in Storing. Milk stays in the tank, and eggs, wool and other pallet products now become pallets instead of piling up in the barn. New output waits until the next in-game hour so it can be delivered first.
+- 分配，剩余自动储存：放不下的产品按储存处理。牛奶留在储罐，鸡蛋、羊毛等托盘类产品现在会生成托盘，不再积压在畜舍中。新产出会等到下一游戏小时优先分配。
+- Distributing, sell rest automatically: whatever doesn't fit is sold at the same price as Selling. If none of your production points accepts the product, everything is sold.
+- 分配，剩余自动出售：放不下的产品按出售挡位的价格卖出。本农场没有生产点接收该产品时，全部卖出。
+- Products you had set to Distributing now use Distributing, store rest automatically. Eggs, wool and other pallet products that piled up in the barn are delivered in the next in-game hour, and whatever is left then becomes pallets.
+- 之前设为“分配”的产品改用“分配，剩余自动储存”。积压在畜舍中的鸡蛋、羊毛等托盘类产品会在下一游戏小时先分配，剩下的随后生成托盘。
+- The mode selector in the Product destinations dialog is wider for the longer mode names, and the in-game Mod description and dialog help text describe the new modes in all 27 languages.
+- 产品去向弹窗的挡位选择框加宽，以容纳更长的挡位名称；游戏内 Mod 简介和弹窗说明文字以全部 27 种语言介绍新挡位。
+
 ## 1.0.0.3 — 2026-10-20
 
 - Avoids a shortcut conflict with the new animal worker button in Farming Simulator 25 1.25. Use the key shown next to Product destinations.
