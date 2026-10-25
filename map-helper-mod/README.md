@@ -1,5 +1,7 @@
 # Map Helper · 地图助手
 
+![Map Helper](assets/cover.jpg)
+
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=map-helper-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
