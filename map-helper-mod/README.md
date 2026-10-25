@@ -25,12 +25,12 @@ Plan your workers' jobs straight from the map. Map Helper adds a page to the lef
 
 1. Get into the vehicle you want to plan for and press **Left Alt + M**. The map opens on the Map Helper page. This also works on foot; then click one of your vehicles on the map. If the map is already open, click **Map Helper** in the button bar at the bottom of the screen or press the key shown next to it (X by default).
 
-   <!-- SCREENSHOT assets/screenshots/01-map-button-bar-map-helper.jpg | Map page with Map Helper and its X key in the bottom button bar | 地图页面底部按钮栏中的“地图助手”及其 X 键 -->
+   ![Map page with Map Helper and its X key in the bottom button bar](assets/screenshots/01-map-button-bar-map-helper.jpg)
 
 2. Check the vehicle card at the top of the page. It shows the vehicle's name, whether a worker is driving it, and whether jobs are waiting or the queue is paused. To plan for another of your vehicles, click it on the map. Click the card to go back to your own vehicle.
 3. Choose what the list shows with the selector above it (see [Places](#places)), then click a place. The map moves there and the job below is filled in: a field or contract gets **Fieldwork** there (**GoTo** if the vehicle can't do fieldwork), a station gets **Load and Deliver** or **Deliver**.
 
-   <!-- SCREENSHOT assets/screenshots/02-page-fields-needing-this-work.jpg | Map Helper page with Fields needing this work selected and a field filled in as Fieldwork | 地图助手页面选中“需要此作业的田地”，点击田地后填好田地工作 -->
+   ![Map Helper page with Fields needing this work selected and a field filled in as Fieldwork](assets/screenshots/02-page-fields-needing-this-work.jpg)
 
 4. Check the job. These are the game's own job settings, the same as in **Create job**: job type, target and direction (picked on the map), stations, fill type and looping. Then click **Add to queue** (Z) to add it at the end, or **Insert as next** (X) to run it next. If no worker is driving the vehicle, the job starts right away. If something is missing, the game's own warning tells you what.
 5. Add more jobs the same way. They wait in the **Command queue** and start one after another.
@@ -71,7 +71,9 @@ Fieldwork uses the worker settings the vehicle has when that job starts. If you 
 
 When you stop a job, or a job can't be finished (for example out of fuel or seed, blocked, or the field isn't ready), the queue pauses. The waiting jobs stay, the card shows the reason and you get a message. Fix the problem, then click **Resume** or add a job: the queue continues with its first waiting job. The queue also pauses when the next job can't start, for example because too many workers are active.
 
-<!-- SCREENSHOT assets/screenshots/04-queue-paused-resume.jpg | Vehicle card showing Queue paused with the reason, and the Resume button next to Command queue | 车辆卡片显示“队列已暂停”及原因，“指令队列”旁显示“继续队列” -->
+![Vehicle card showing Queue paused with the reason, and the Resume button next to Command queue](assets/screenshots/04-queue-paused-resume.jpg)
+
+![In-game message after the worker was stopped: the command queue paused with one job waiting](assets/screenshots/05-queue-paused-message.jpg)
 
 Queues are saved with the game. After loading, a queue waits until you click **Resume** or add a job. If a worker starts on the vehicle first, for example one who carries on with fieldwork from before you saved, the queue continues after that job.
 
@@ -117,12 +119,12 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 1. 坐进要安排作业的载具，按 **左 Alt + M**，地图会直接打开地图助手页面。步行时也可以按，然后在地图上点击你的一台载具。如果地图已经打开，点击屏幕底部按钮栏中的 **地图助手**，或按旁边显示的按键（默认为 X）。
 
-   <!-- SCREENSHOT assets/screenshots/01-map-button-bar-map-helper.jpg | Map page with Map Helper and its X key in the bottom button bar | 地图页面底部按钮栏中的“地图助手”及其 X 键 -->
+   ![地图页面底部按钮栏中的“地图助手”及其 X 键](assets/screenshots/01-map-button-bar-map-helper.jpg)
 
 2. 看一下页面顶部的载具卡片：载具名称、是否有帮手在驾驶、是否有作业在等待、队列是否暂停。要为你的其他载具安排作业，在地图上点击那台载具；点击卡片即可回到你自己的载具。
 3. 用列表上方的选择器决定列表显示什么（见[地点](#地点)），然后点击一个地点。地图会移到该处，下方的作业随之填好：田地或合同设为在该处 **田地工作**（载具不能做田地工作时设为 **前往**），站点设为 **装载和运送** 或 **运送**。
 
-   <!-- SCREENSHOT assets/screenshots/02-page-fields-needing-this-work.jpg | Map Helper page with Fields needing this work selected and a field filled in as Fieldwork | 地图助手页面选中“需要此作业的田地”，点击田地后填好田地工作 -->
+   ![地图助手页面选中“需要此作业的田地”，点击田地后填好田地工作](assets/screenshots/02-page-fields-needing-this-work.jpg)
 
 4. 检查作业。这里就是游戏自带的作业设置，与 **创建作业** 中相同：作业类型、目标位置和方向（在地图上选择）、站点、装填类型和循环。然后点击 **加入队列**（Z）排到最后，或点击 **插入为下一个**（X）让它下一个执行。没有帮手驾驶这台载具时，作业会立即开始。缺少什么设置，游戏自带的提示会告诉你。
 5. 用同样的方法继续添加。作业在 **指令队列** 中等待，依次自动开始。
@@ -163,7 +165,9 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 你停止了作业，或作业无法完成（例如燃料或种子用完、被挡住、田地未准备好）时，队列会暂停：等待中的作业保留，卡片显示原因，并弹出提示。解决问题后点击 **继续队列** 或加入一个作业，队列从第一个等待中的作业继续。下一个作业无法开始时（例如活跃帮手太多），队列同样会暂停。
 
-<!-- SCREENSHOT assets/screenshots/04-queue-paused-resume.jpg | Vehicle card showing Queue paused with the reason, and the Resume button next to Command queue | 载具卡片显示“队列已暂停”及原因，“指令队列”旁显示“继续队列” -->
+![载具卡片显示“队列已暂停”及原因，“指令队列”旁显示“继续队列”](assets/screenshots/04-queue-paused-resume.jpg)
+
+![帮手被停止后的游戏内消息：指令队列已暂停，还有 1 个等待作业](assets/screenshots/05-queue-paused-message.jpg)
 
 队列随存档保存。读档后，队列会等你点击 **继续队列** 或加入作业。如果在此之前载具上已有帮手开始工作（例如接着做存档前田地工作的帮手），队列会在这个作业结束后继续。
 
