@@ -50,8 +50,6 @@
 - 在地图助手页面打开时挂上或卸下农具，作业类型也会随之更新：几秒内点击田地会相应地填为田地工作（或前往）。
 - Fields needing this work only lists fields where the work can be done now: no lime or rolling on growing crops, stone picking only on worked soil, mulching on harvested or withered crops that haven't been mulched yet, herbicide also on harvested grain and root crops before harvest, and sowing only when the selected seed is in season (rice only on rice fields).
 - “需要此作业的田地”只列出现在就能做这项作业的田地：生长中的作物上不施石灰、不镇压，只在整过的土地上捡石头，粉碎收获后或枯萎、尚未粉碎过的作物，除草剂也用于收获后的谷物和收获前的根茎作物，所选种子在播种季节内才列出播种（水稻只在稻田）。
-- The Map Helper key now shows in the button bar at the bottom of the map instead of a button below the balance.
-- 地图助手的按键现在显示在地图底部的按钮栏中，不再是余额下方的按钮。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
 
