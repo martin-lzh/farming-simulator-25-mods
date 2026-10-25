@@ -5,8 +5,13 @@
 面向 PC 版 FS25 1.25.0.0，modDesc descVersion 114。玩家 README 只写功能和操作；验收状态集中记录在这里。
 
 - 2026-10-21 首次实现：离线行为测试和多人模拟通过，三个脚本通过本机 fs-luau-compile 编译。尚未在游戏内测试，下方 FTS-01 至 FTS-14 全部待维护者执行。
-- modDesc 中的 `0.1.0.0` 只是占位，首个正式版本号由维护者决定；CHANGELOG 中的 `0.1.0.0` 标题同样待调整。
-- 本 Mod 尚未登记到 `tools/ci.py` 的 `MODS`，CI 不会构建或测试它。
+- 1.0.0.0：维护者 2026-10-25 确认已实机测试，未提供逐项记录（包括主机/客户端），下方 FTS 清单不据此逐项标为通过。
+- 首个正式版为 1.0.0.0（见“1.0.0.0 发布准备”），已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表；之后的改动记录在 CHANGELOG 的 Unreleased。
+- 截图和封面图尚缺：README 没有截图，维护者之后提供游戏内截图。
+
+## 1.0.0.0 发布准备
+
+2026-10-25：维护者确认已实机测试（“已经实机测试过了都”，与 Map Helper、Production Overflow 一并确认，未提供逐项记录），要求以正式版发布 1.0.0.0，与这两个 Mod 的 1.0.0.0 及 Animal Products Manager 1.0.0.4 一起并入 PR #6（dev → main）。维护者决定按现状发布：Alt+Y 保持为备用默认键，料箱用完后不沿用最后装过的类型（见“维护者决定”）。发布提交 6f482b4 只改 `modDesc.xml` 版本、`release.json`、CHANGELOG 标题和 README，脚本与已测构建一致，包内只有版本号不同；`FS25_FillTypeSelector.zip` SHA256 `ad3fccedd67b98ab6c7f3d21db698389342517eb3d89cf2187b54390e39da234`。CHANGELOG 的 Unreleased 条目移到 `## 1.0.0.0 — 2026-10-25`，空的 `0.1.0.0` 占位标题已删除。已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表，CI Release plan 显示 `fill-type-selector-v1.0.0.0` 为新的正式版。`release.json` 为正式版（`"prerelease": false`），合并由维护者执行。截图和封面图待维护者提供。
 
 ## 功能与决定
 
@@ -151,8 +156,10 @@ python fill-type-selector-mod/tools/build.py
 - `tests/`：原创引擎替身及行为、多人测试；不会加载或执行反编译文件。
 - `tools/build.py`：白名单打包，不安装；`tools/make_icon.py`：绘制图标。
 
-## 待维护者决定
+## 维护者决定
 
-- 首个版本号（当前占位 0.1.0.0）及是否登记到 `tools/ci.py` 和根 README。
-- Alt+Y 作为新动作默认键是否合适（德语键盘上 Y/Z 位置互换，按游戏的键位名显示）。
-- 带肥播种机或撒肥机在没有选择时完全保持原版；是否希望“料箱用完后自动沿用最后装过的类型”。当前不沿用。
+2026-10-25 发布 1.0.0.0 时决定，按现状发布：
+
+- 首个版本号为 1.0.0.0 正式版，已登记到 `tools/ci.py` 和根 README。
+- Alt+Y 保持为新动作的备用默认键（德语键盘上 Y/Z 位置互换，按游戏的键位名显示）。
+- 料箱用完后不自动沿用最后装过的类型：带肥播种机或撒肥机在没有选择时完全保持原版。

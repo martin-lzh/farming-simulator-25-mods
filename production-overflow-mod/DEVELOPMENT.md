@@ -5,9 +5,14 @@
 面向 PC 版 FS25 1.25.0.0，modDesc descVersion 114。玩家 README 只写功能和操作；验收状态集中记录在这里。
 
 - 2026-10-25 首次实现：离线行为测试和多人模拟通过，四个脚本通过本机 `work/tools/fs-utils-bin/fs-luau-compile.exe` 编译。尚未在游戏内测试，下方 POF-01 至 POF-18 全部待维护者执行。
-- 版本按仓库新 Mod 的惯例（Fill Type Selector、Map Helper）用 `0.1.0.0` 占位，`release.json` 为 `"prerelease": true`；CHANGELOG 的 `0.1.0.0` 标题暂时为空，首个正式版本号由维护者决定。
-- 名称（Production Overflow / 生产余量处理）是工作名，维护者可能更改；改名涉及的位置见“改名”一节。
-- 已登记到 `tools/ci.py` 的 `MODS`。根 README 的 Mod 列表在首次发布时再加（与另外两个未发布的 Mod 相同）。
+- 1.0.0.0：维护者 2026-10-25 确认已实机测试，未提供逐项记录（包括主机/客户端），下方 POF 清单不据此逐项标为通过。
+- 首个正式版为 1.0.0.0（见“1.0.0.0 发布准备”），已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表；之后的改动记录在 CHANGELOG 的 Unreleased。
+- 名称 Production Overflow / 生产余量处理 由维护者 2026-10-25 确定，不再是工作名。
+- 截图和封面图尚缺：README 没有截图，维护者之后提供游戏内截图。
+
+## 1.0.0.0 发布准备
+
+2026-10-25：维护者确认已实机测试（“已经实机测试过了都”，与 Map Helper、Fill Type Selector 一并确认，未提供逐项记录），确定名称 Production Overflow / 生产余量处理，要求以正式版发布 1.0.0.0，与这两个 Mod 的 1.0.0.0 及 Animal Products Manager 1.0.0.4 一起并入 PR #6（dev → main）。发布提交 6f482b4 只改 `modDesc.xml` 版本、`release.json`（`"prerelease": true` 改为 `false`）、CHANGELOG 标题和 README，脚本与已测构建一致，包内只有版本号不同；`FS25_ProductionOverflow.zip` SHA256 `1cdea1c528da8c5150d197705b730f129d54ae9b5babfc9b582ce22919e4f3db`。CHANGELOG 的 Unreleased 条目移到 `## 1.0.0.0 — 2026-10-25`，空的 `0.1.0.0` 占位标题已删除。已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表，CI Release plan 显示 `production-overflow-v1.0.0.0` 为新的正式版。合并由维护者执行。截图和封面图待维护者提供。
 
 ## 功能与决定
 
@@ -166,9 +171,9 @@
 
 ## 改名
 
-工作名可能更改。显示名在 `modDesc.xml` 的 `<title>`、README 标题、`release.json` 的 `displayName`。ZIP 名和存档键另有影响：
+名称已于 2026-10-25 确定，本节只说明以后若要改名涉及的位置。显示名在 `modDesc.xml` 的 `<title>`、README 标题、`release.json` 的 `displayName`。ZIP 名和存档键另有影响：
 
-- ZIP 名 `FS25_ProductionOverflow`（`tools/ci.py` 的 `MODS`、`tools/build.py` 的 `OUTPUT`）同时是 Mod 名，决定存档键 `FS25_ProductionOverflow.productionOverflow`、l10n 环境和钩子键。发布前改名无影响；发布后改 ZIP 名，玩家的新模式会退回原版“分配”。
+- ZIP 名 `FS25_ProductionOverflow`（`tools/ci.py` 的 `MODS`、`tools/build.py` 的 `OUTPUT`）同时是 Mod 名，决定存档键 `FS25_ProductionOverflow.productionOverflow`、l10n 环境和钩子键。1.0.0.0 发布后改 ZIP 名，玩家的新模式会退回原版“分配”。
 - 目录 `production-overflow-mod/` 与 `MODS` 的 slug 对应标签名 `production-overflow-v*`，README 中的发布链接也用它。
 - 脚本中的 `ProductionOverflow`、`ProductionOverflowPlaceable`、`POModeEvent`、`po_*` 文本键只在代码内部使用，不必随显示名改。
 
@@ -222,6 +227,7 @@ python production-overflow-mod/tools/build.py
 
 ## 待确认
 
-- 名称是否保留 Production Overflow / 生产余量处理。
+名称已确定（见“当前验收状态”）。以下两项维护者尚未另行表态，1.0.0.0 按括号中的当前行为发布：
+
 - “剩余自动出售”是否也应对价格为 0 的物料出售（目前与原版“出售”一致：照样清空，收入为 0）。
 - 生产点易主后是否应把新模式重置为原版“分配”（目前与原版模式一样保留）。
