@@ -31,13 +31,13 @@ Your barns keep filling tanks and stacking pallets of milk, eggs and wool that y
 
 3. The dialog lists each product the animals in that barn produce. Pick a mode for each product.
 
-   <!-- SCREENSHOT assets/screenshots/02-chicken-coop-eggs-distributing-store-rest.jpg | Product destinations dialog for a chicken coop with Eggs set to Distributing, store rest automatically | 鸡舍的产品去向弹窗，鸡蛋设为“分配，剩余自动储存” -->
+   ![Product destinations dialog for a chicken coop with Eggs set to Distributing, store rest automatically](assets/screenshots/02-chicken-coop-eggs-distributing-store-rest.jpg)
 
 4. Press **OK** to save. **Back** closes the dialog without changing anything.
 
 A barn with several products shows one row for each, and each row has its own mode:
 
-<!-- SCREENSHOT assets/screenshots/03-cow-barn-milk-distributing-sell-rest.jpg | Product destinations dialog for a cow barn with Milk set to Distributing, sell rest automatically and Buffalo Milk set to Selling | 牛棚的产品去向弹窗，牛奶设为“分配，剩余自动出售”，水牛奶设为“出售” -->
+![Product destinations dialog for a cow barn with Milk set to Distributing, sell rest automatically and Buffalo Milk set to Distributing, store rest automatically](assets/screenshots/03-cow-barn-milk-distributing-sell-rest.jpg)
 
 The list matches the animals in the barn: goats only show goat milk, sheep only show wool. Young animals or a pause in production don't hide a product, so you can set it in advance. When the animals in a barn change, reopen the dialog to see the new list. A barn whose animals produce nothing has no Product destinations button. If you stop keeping an animal, its product's setting is kept and applies again when you keep that animal again.
 
@@ -103,13 +103,13 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 3. 弹窗列出该畜舍动物产出的每种产品，为每种产品选择一个挡位。
 
-   <!-- SCREENSHOT assets/screenshots/02-chicken-coop-eggs-distributing-store-rest.jpg | Product destinations dialog for a chicken coop with Eggs set to Distributing, store rest automatically | 鸡舍的产品去向弹窗，鸡蛋设为“分配，剩余自动储存” -->
+   ![鸡舍的产品去向弹窗，鸡蛋设为“分配，剩余自动储存”](assets/screenshots/02-chicken-coop-eggs-distributing-store-rest.jpg)
 
 4. 按“好”保存。按“返回”关闭弹窗，不改动任何设置。
 
 有多种产品的畜舍每种产品占一行，各自设置挡位：
 
-<!-- SCREENSHOT assets/screenshots/03-cow-barn-milk-distributing-sell-rest.jpg | Product destinations dialog for a cow barn with Milk set to Distributing, sell rest automatically and Buffalo Milk set to Selling | 牛棚的产品去向弹窗，牛奶设为“分配，剩余自动出售”，水牛奶设为“出售” -->
+![牛棚的产品去向弹窗，牛奶设为“分配，剩余自动出售”，水牛奶设为“分配，剩余自动储存”](assets/screenshots/03-cow-barn-milk-distributing-sell-rest.jpg)
 
 列表跟着畜舍里的动物走：只养山羊就只有山羊奶，只养绵羊就只有羊毛。幼龄动物或暂时停产不会让产品从列表中消失，可以提前设好。畜舍里的动物有变化后，重新打开弹窗就能看到新的列表。动物没有任何产出的畜舍不显示“产品去向”按钮。不再饲养某种动物时，它的产品设置会保留，以后再养时继续生效。
 
