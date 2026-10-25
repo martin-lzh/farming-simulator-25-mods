@@ -30,7 +30,7 @@ Plan worker jobs for your vehicles straight from the map. Map Helper adds a page
 
 | Choice | What the list shows |
 | --- | --- |
-| Fields needing this work | First your accepted contracts whose job the vehicle and its tools can do (for example a ploughing contract when a plough is attached), then your own fields that need what they do: for example plowing on stubble, sowing on prepared soil, lime, fertilizer or herbicide (by what is in the sprayer), weeding, rolling, mulching stubble, mowing ready grass, harvesting the crops the header takes, removing foliage, stone picking. Each row names the work. |
+| Fields needing this work | First your accepted contracts whose job the vehicle and its tools can do (for example a ploughing contract when a plough is attached), then your own fields that need what they do: for example plowing on stubble, sowing on prepared soil, lime, fertilizer or herbicide (by what is in the sprayer), weeding, rolling, mulching stubble, mowing ready grass, harvesting the crops the header takes, removing foliage, stone picking. Only fields where the work can be done now are listed: no lime on a growing crop, sowing only when the selected seed is in season (rice only on rice fields), stones only on worked soil. Each row names the work. |
 | My fields | All your fields with their state, such as Ready to harvest, Growing, Needs lime or Plowed. |
 | Contracts | Your accepted field contracts with their progress. Contracts this vehicle can work on come first and name the work. |
 | Stations | Where the vehicle can load or deliver. Only offered when it can do delivery jobs. |
@@ -107,7 +107,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 | 选项 | 列表内容 |
 | --- | --- |
-| 需要此作业的田地 | 先列出已接合同中这台车辆及其农具能完成的（例如挂着犁时的犁地合同），再列出你的田地中需要这台车辆及其农具作业的那些：例如在收割后的田地上犁地、在整好的土地上播种、按喷洒机里装的东西施石灰、施肥或除草剂、除草、镇压、粉碎残茬、割成熟的草、收割割台能收的作物、去除茎叶、捡石头。每一行写明需要的作业。 |
+| 需要此作业的田地 | 先列出已接合同中这台车辆及其农具能完成的（例如挂着犁时的犁地合同），再列出你的田地中需要这台车辆及其农具作业的那些：例如在收割后的田地上犁地、在整好的土地上播种、按喷洒机里装的东西施石灰、施肥或除草剂、除草、镇压、粉碎残茬、割成熟的草、收割割台能收的作物、去除茎叶、捡石头。只列出现在就能做这项作业的田地：生长中的作物上不施石灰，所选种子在播种季节内才列出播种（水稻只在稻田），整过的土地上才捡石头。每一行写明需要的作业。 |
 | 我的田地 | 你所有的田地及其状态，例如可收获、生长中、需要石灰、已犁地。 |
 | 合同 | 已接受的田地合同及其进度。这台车辆能做的合同排在前面并写明作业。 |
 | 站点 | 车辆可以装货或卸货的地方。只在车辆能执行运送类作业时提供。 |

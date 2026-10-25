@@ -1,10 +1,13 @@
 -- Which field work a vehicle combination does, and whether a field needs it.
 --
--- The field state is read at one point per field (its name marker), the same way the map's
--- field info box reads the point under the cursor: FieldState.new() + FieldState:update(x, z)
--- (1.25 decompiled gui/InGameMenuMapFrame.lua:674-677). The conditions follow that box
--- (:710-780) and the requirements the implements give the AI (SDK vehicles/specializations).
--- Unknown or missing data never hides a field: it just gets no need.
+-- The field state is read at one point per field (the field's own position, where the game
+-- keeps the field's state), the same way the map's field info box reads the point under the
+-- cursor: FieldState.new() + FieldState:update(x, z) (1.25 decompiled
+-- gui/InGameMenuMapFrame.lua:674-677). A field needs a work when the work would change it now:
+-- the conditions follow the game's own work areas (1.25 decompiled utils/FSDensityMapUtil.lua,
+-- DMU below) and the requirements the implements give the AI (SDK vehicles/specializations).
+-- "My fields" keeps the info box's own wording (:710-780). Unknown or missing data never hides
+-- a field.
 MHFieldNeeds = {}
 local FN = MHFieldNeeds
 
@@ -82,6 +85,15 @@ function FN.getWorks(vehicle)
             for _, fruitTypeIndex in ipairs(child.spec_sowingMachine.seeds or {}) do
                 sow.fruits = sow.fruits or {}
                 sow.fruits[fruitTypeIndex] = true
+            end
+            -- The seed it sows now (spec.seeds[spec.currentSeed], SDK SowingMachine.lua:228/331/405-407)
+            -- and whether it may sow outside the season (getCanPlantOutsideSeason, :725-727, false for
+            -- the game's own machines), for the field needs. The first seeder of the combination counts.
+            local seeds, currentSeed = child.spec_sowingMachine.seeds, child.spec_sowingMachine.currentSeed
+            local seed = seeds ~= nil and currentSeed ~= nil and seeds[currentSeed] or nil
+            if sow.seed == nil and seed ~= nil then
+                sow.seed = seed
+                sow.outsideSeason = child.getCanPlantOutsideSeason ~= nil and child:getCanPlantOutsideSeason() == true
             end
         end
         if child.spec_roller ~= nil and child.spec_roller.isSoilRoller then
@@ -291,14 +303,30 @@ function FN.readState(x, z)
         return nil
     end
     local state = {}
+    -- stubbleShredLevel: SDK field/FieldState.lua:49, read by FieldState:update (1.24 decompiled :118).
     for _, key in ipairs({"fruitTypeIndex", "growthState", "groundType", "sprayType", "sprayLevel", "limeLevel",
-        "plowLevel", "rollerLevel", "weedState", "stoneLevel"}) do
+        "plowLevel", "rollerLevel", "weedState", "stoneLevel", "stubbleShredLevel"}) do
         state[key] = fieldState[key]
     end
     if state.fruitTypeIndex ~= nil and state.fruitTypeIndex ~= FruitType.UNKNOWN then
         state.fruit = g_fruitTypeManager:getFruitTypeByIndex(state.fruitTypeIndex)
     end
+    state.fieldType = FN.readFieldType(x, z)
     return state
+end
+
+-- The field type (default or rice field) at a point: FSDensityMapUtil.getFieldTypeAtWorldPos
+-- (DMU:2888-2895), the check the sowing machine makes (SDK SowingMachine.lua:541-555). It reads
+-- the FIELD_TYPE layer without a nil check, so it is only asked when the map has that layer
+-- (FieldGroundSystem:getDensityMapData returns nil otherwise, 1.24 decompiled
+-- field/FieldGroundSystem.lua:500-507).
+function FN.readFieldType(x, z)
+    local system = g_currentMission ~= nil and g_currentMission.fieldGroundSystem or nil
+    if FSDensityMapUtil == nil or FSDensityMapUtil.getFieldTypeAtWorldPos == nil or FieldDensityMap.FIELD_TYPE == nil
+        or system == nil or system.getDensityMapData == nil or system:getDensityMapData(FieldDensityMap.FIELD_TYPE) == nil then
+        return nil
+    end
+    return FSDensityMapUtil.getFieldTypeAtWorldPos(x, z)
 end
 
 -- The crop's state in the map info box's order (MF:716-726): cut, withered, growing,
@@ -343,6 +371,73 @@ local function getHasGroundType(list, groundType)
     return false
 end
 
+-- Whether a ground type's density map value lies in one of the field ground system's ranges;
+-- nil when the range or the value can't be read.
+local function getIsInGroundRange(groundType, first, last)
+    if groundType == nil or first == nil or last == nil or FieldGroundType.getValueByType == nil then
+        return nil
+    end
+    local value = FieldGroundType.getValueByType(groundType)
+    if value == nil then
+        return nil
+    end
+    return value >= first and value <= last
+end
+
+-- Sowable ground: worked soil ready for a seeder, stubble tillage to ridge
+-- (FieldGroundSystem:getSowableRange, 1.24 decompiled field/FieldGroundSystem.lua:195-196/485-487;
+-- FieldGroundType.getValueByType, field/FieldGroundType.lua:19-21). The game's work areas test
+-- this range for lime, rolling, herbicide, weeding and stones. Without the range: the seeder's
+-- AI ground types, the same list (SowingMachine.AI_REQUIRED_GROUND_TYPES).
+function FN.getIsSowableGround(groundType)
+    local system = g_currentMission ~= nil and g_currentMission.fieldGroundSystem or nil
+    if system ~= nil and system.getSowableRange ~= nil then
+        local result = getIsInGroundRange(groundType, system:getSowableRange())
+        if result ~= nil then
+            return result
+        end
+    end
+    return SowingMachine ~= nil and getHasGroundType(SowingMachine.AI_REQUIRED_GROUND_TYPES, groundType)
+end
+
+-- Sown ground: sown, direct sown, planted or ridge sown (FieldGroundSystem:getSowingRange,
+-- 1.24 decompiled field/FieldGroundSystem.lua:197-198/488-490); the same four types without it.
+function FN.getIsSowingGround(groundType)
+    local system = g_currentMission ~= nil and g_currentMission.fieldGroundSystem or nil
+    if system ~= nil and system.getSowingRange ~= nil then
+        local result = getIsInGroundRange(groundType, system:getSowingRange())
+        if result ~= nil then
+            return result
+        end
+    end
+    return groundType ~= nil and (groundType == FieldGroundType.SOWN or groundType == FieldGroundType.DIRECT_SOWN
+        or groundType == FieldGroundType.PLANTED or groundType == FieldGroundType.RIDGE_SOWN)
+end
+
+-- Whether the combination's seeder can sow its selected seed here now. The sowing machine plants
+-- nothing outside the seed's planting periods (FruitTypeDesc:getIsPlantableInPeriod with the
+-- save's growth mode and the current period, 1.25 decompiled fruits/FruitTypeDesc.lua:707-709;
+-- SDK SowingMachine.lua:1017-1036) and its AI stops with "wrong season" (:851-866); a seed that
+-- needs a field type (rice) is not planted elsewhere and the AI stops there (:541-555).
+function FN.getCanSowSeed(state, data)
+    local desc = data.seed ~= nil and g_fruitTypeManager:getFruitTypeByIndex(data.seed) or nil
+    if desc == nil then
+        return true
+    end
+    local mission = g_currentMission
+    local info = mission ~= nil and mission.missionInfo or nil
+    local environment = mission ~= nil and mission.environment or nil
+    if not data.outsideSeason and desc.getIsPlantableInPeriod ~= nil and info ~= nil and info.growthMode ~= nil
+        and environment ~= nil and environment.currentPeriod ~= nil
+        and not desc:getIsPlantableInPeriod(info.growthMode, environment.currentPeriod) then
+        return false
+    end
+    if desc.seedRequiredFieldType ~= nil and state.fieldType ~= nil and state.fieldType ~= desc.seedRequiredFieldType then
+        return false
+    end
+    return true
+end
+
 -- Weed states a tool can treat: the source states of its weed replacement table
 -- (WeedSystem:getWeederReplacements(isHoe) / getHerbicideReplacements, as the implements give
 -- them to the AI: SDK Weeder.lua:209-229, Sprayer.lua:722-741).
@@ -364,10 +459,12 @@ local function getHasSprayMarker(state, sprayType)
     return FieldSprayType.getTypeByValue(sprayType.sprayGroundType) == state.sprayType
 end
 
--- Whether a field in this state needs one work, with the combination's data for that work.
--- Field info box conditions: lime (useLimeCounter, limeRequired, limeLevel == 0), plowing
--- (plowingRequiredEnabled, plowLevel == 0), rolling (useRolling, rollerLevel > 0), weeds
--- (weedsEnabled, weedState > 0).
+-- Whether a field in this state needs one work and the work can be done now, with the
+-- combination's data for that work. The settings come from the field info box (lime:
+-- useLimeCounter, limeRequired, limeLevel == 0; plowing: plowingRequiredEnabled, plowLevel == 0;
+-- rolling: useRolling, rollerLevel > 0; weeds: weedsEnabled, weedState > 0, MF:744-772); the crop
+-- and ground conditions from the game's work areas (DMU), so a field is only listed when the work
+-- would change it (no lime on a growing crop, for example).
 function FN.getNeedsWork(state, work, data)
     local mission = g_currentMission
     local info = mission ~= nil and mission.missionInfo or {}
@@ -388,37 +485,73 @@ function FN.getNeedsWork(state, work, data)
         if not bare or SowingMachine == nil then
             return false
         end
-        return getHasGroundType(SowingMachine.AI_REQUIRED_GROUND_TYPES, groundType)
+        local ground = getHasGroundType(SowingMachine.AI_REQUIRED_GROUND_TYPES, groundType)
             or (data.direct == true and getHasGroundType(SowingMachine.AI_OUTPUT_GROUND_TYPES, groundType))
+        return ground and FN.getCanSowSeed(state, data)
     elseif work == FN.WORK.ROLL then
-        -- Soil rolling only before the crop's second growth state (Roller.lua:210-219).
-        return gameplay.useRolling == true and (state.rollerLevel or 0) > 0 and (fruit == nil or growthState <= 1)
+        -- Soil rolling (DMU:250-325): sowable ground with or without a crop, or sown ground while
+        -- the crop is in its first growth state; the roller AI keeps off crops from the second state
+        -- on (SDK Roller.lua:205-216). Crops that need no rolling (needsRolling, SDK
+        -- FruitTypeDesc.lua:533) get no roller level when sown (DMU:2081) and are skipped.
+        if gameplay.useRolling ~= true or (state.rollerLevel or 0) <= 0 or (fruit ~= nil and fruit.needsRolling == false) then
+            return false
+        end
+        return FN.getIsSowableGround(groundType) or (fruit ~= nil and growthState == 1 and FN.getIsSowingGround(groundType))
     elseif work == FN.WORK.LIME then
-        -- The AI skips ground that already has this spray type (Sprayer.lua:753-758).
+        -- Lime takes on field ground without a crop, with a crop in its first growth state or past
+        -- harvest (withered, harvested), and on sowable ground (DMU:1398-1466: 1417, 1440, 1443,
+        -- 1446); the straw/maize chopper ground of :1421 is left out. The AI skips ground that
+        -- already has this spray type (Sprayer.lua:753-758).
         local sprayType = data.sprayType
         return gameplay.useLimeCounter == true and info.limeRequired == true and state.limeLevel == 0
             and not getHasSprayMarker(state, sprayType)
+            and (fruit == nil or growthState <= 1 or growthState > fruit.maxHarvestingGrowthState
+                or FN.getIsSowableGround(groundType))
     elseif work == FN.WORK.FERTILIZE then
-        -- The AI skips the maximum spray level and ground that already has this fertilizer's
-        -- spray type (Sprayer.lua:744-751).
+        -- Fertilizer takes on field ground except crops from their first to their last harvest
+        -- state (DMU:1336-1397, 1354); withered crops are left out too. The AI skips the maximum
+        -- spray level and ground that already has this fertilizer's spray type (Sprayer.lua:744-751).
         local maxLevel = mission.fieldGroundSystem ~= nil and mission.fieldGroundSystem:getMaxValue(FieldDensityMap.SPRAY_LEVEL) or 0
         local sprayType = data.sprayType
-        return (state.sprayLevel or 0) < maxLevel and status ~= "withered" and status ~= "harvestable"
-            and not getHasSprayMarker(state, sprayType)
+        return (state.sprayLevel or 0) < maxLevel and status ~= "withered" and not getHasSprayMarker(state, sprayType)
+            and (fruit == nil or growthState < fruit.minHarvestingGrowthState or growthState > fruit.maxHarvestingGrowthState)
     elseif work == FN.WORK.HERBICIDE then
-        return info.weedsEnabled == true and (state.weedState or 0) > 0 and (fruit == nil or status == "growing")
-            and weedSystem ~= nil and getTreatsWeedState(weedSystem:getHerbicideReplacements(), state.weedState)
+        -- Herbicide takes on sowable ground, on crops before their first harvest state and on the
+        -- state wheels leave (DMU:1467-1545: 1508, 1515, 1522-1524); the cutState + 1 case of
+        -- :1519 is left out.
+        if info.weedsEnabled ~= true or (state.weedState or 0) <= 0 or weedSystem == nil
+            or not getTreatsWeedState(weedSystem:getHerbicideReplacements(), state.weedState) then
+            return false
+        end
+        return FN.getIsSowableGround(groundType)
+            or (fruit ~= nil and growthState >= 1 and growthState < fruit.minHarvestingGrowthState)
+            or (fruit ~= nil and fruit.wheelDestructionState ~= nil and growthState == fruit.wheelDestructionState)
     elseif work == FN.WORK.WEED then
+        -- Weeder and hoe: crops in their weeder states (stricter than the game's 0..max, which also
+        -- takes the cut state, DMU:1587-1589), or sowable ground (:1573).
         if info.weedsEnabled ~= true or (state.weedState or 0) <= 0 or weedSystem == nil then
             return false
         end
-        local byWeeder = data.weeder == true and (fruit == nil or fruit:getIsWeedable(growthState))
+        local sowable = FN.getIsSowableGround(groundType)
+        local byWeeder = data.weeder == true and (fruit == nil or fruit:getIsWeedable(growthState) or sowable)
             and getTreatsWeedState(weedSystem:getWeederReplacements(false), state.weedState)
-        local byHoe = data.hoe == true and (fruit == nil or fruit:getIsHoeable(growthState))
+        local byHoe = data.hoe == true and (fruit == nil or fruit:getIsHoeable(growthState) or sowable)
             and getTreatsWeedState(weedSystem:getWeederReplacements(true), state.weedState)
         return byWeeder or byHoe
     elseif work == FN.WORK.MULCH then
-        return fruit ~= nil and fruit.mulchedState ~= nil and fruit.mulchedState ~= 0 and status == "cut"
+        -- The mulcher works crops that allow cultivation in states 2..cutState other than their
+        -- mulched state (DMU:1761-1814, 1786-1788) and, with stubble shredding
+        -- (Platform.gameplay.useStubbleShred, true on PC, 1.25 decompiled platform/Platform.lua:181),
+        -- raises the stubble shred level by one (:1796), which the harvest rewards at level 1
+        -- (DMU:141, 171-176). Listed: harvested or withered crops not shredded yet; the mulcher
+        -- would also destroy a growing crop.
+        if fruit == nil or fruit.isCultivationAllowed == false or (status ~= "cut" and status ~= "withered") then
+            return false
+        end
+        if growthState < 2 or growthState > (fruit.cutState or 0) or growthState == fruit.mulchedState then
+            return false
+        end
+        return gameplay.useStubbleShred ~= true or (state.stubbleShredLevel or 0) == 0
     elseif work == FN.WORK.PREPARE then
         return fruit ~= nil and data.fruits ~= nil and data.fruits[state.fruitTypeIndex] ~= nil and status == "preparable"
     elseif work == FN.WORK.MOW then
@@ -441,8 +574,9 @@ function FN.getNeedsWork(state, work, data)
         end
         return growthState >= minState and growthState <= fruit.maxHarvestingGrowthState
     elseif work == FN.WORK.STONES then
+        -- The stone picker works sowable ground only (DMU:535-591, 558; AI: SDK StonePicker.lua:139-145).
         local stones = mission.stoneSystem
-        if not info.stonesEnabled or stones == nil or not bare then
+        if not info.stonesEnabled or stones == nil or not FN.getIsSowableGround(groundType) then
             return false
         end
         -- StoneSystem:getStoneLevelAtWorldPos returns the map value minus the mask value; the
@@ -480,8 +614,9 @@ FN.GROWTH_TEXT = {
 
 -- A short state for the "My fields" list, with the game's own field info texts. The crop
 -- state follows the info box's order (FN.getGrowthStatus); ready to harvest, remove foliage
--- and withered come before the soil warnings (lime, plowing, rolling), growing and harvested
--- after them, then the ground type.
+-- and withered come before the soil warnings, growing and harvested after them, then the ground
+-- type. The soil warnings are the info box's own (MF:744-753): needs lime and needs rolling
+-- whatever the crop, unlike the needs list, which only lists what can be done now.
 function FN.getStateText(state)
     if state == nil then
         return ""
@@ -490,14 +625,15 @@ function FN.getStateText(state)
     if status == "harvestable" or status == "preparable" or status == "withered" then
         return g_i18n:getText(FN.GROWTH_TEXT[status])
     end
-    if FN.getNeedsWork(state, FN.WORK.LIME) then
+    local info = g_currentMission ~= nil and g_currentMission.missionInfo or {}
+    local gameplay = Platform ~= nil and Platform.gameplay or {}
+    if gameplay.useLimeCounter == true and info.limeRequired == true and state.limeLevel == 0 then
         return g_i18n:getText("ui_growthMapNeedsLime")
     end
-    local info = g_currentMission ~= nil and g_currentMission.missionInfo or {}
     if getIsBare(state) and info.plowingRequiredEnabled and state.plowLevel == 0 then
         return g_i18n:getText("ui_growthMapNeedsPlowing")
     end
-    if FN.getNeedsWork(state, FN.WORK.ROLL) then
+    if gameplay.useRolling == true and (state.rollerLevel or 0) > 0 then
         return g_i18n:getText("ui_growthMapNeedsRolling")
     end
     if status ~= nil then

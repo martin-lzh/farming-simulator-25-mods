@@ -1054,8 +1054,22 @@ FieldGroundType = {NONE = 1, STUBBLE_TILLAGE = 2, CULTIVATED = 3, SEEDBED = 4, P
     SOWN = 8, DIRECT_SOWN = 9, PLANTED = 10, RIDGE_SOWN = 11, ROLLER_LINES = 12, HARVEST_READY = 13,
     HARVEST_READY_OTHER = 14, GRASS = 15, GRASS_CUT = 16}
 FruitType = {UNKNOWN = 0}
-FieldDensityMap = {SPRAY_LEVEL = "SPRAY_LEVEL"}
-Platform = {gameplay = {useRolling = true, useLimeCounter = true, hasWeeder = true}}
+FieldDensityMap = {SPRAY_LEVEL = "SPRAY_LEVEL", FIELD_TYPE = "FIELD_TYPE", STUBBLE_SHRED_LEVEL = "STUBBLE_SHRED_LEVEL"}
+-- PC gameplay (1.25 decompiled platform/Platform.lua: useStubbleShred :181).
+Platform = {gameplay = {useRolling = true, useLimeCounter = true, hasWeeder = true, useStubbleShred = true}}
+GrowthMode = {SEASONAL = 1, DAILY = 2, DISABLED = 3}
+-- Ground type values as in maps_fieldGround.xml: stubble tillage 1 .. ridge 6 are sowable,
+-- sown 7 .. ridge sown 10 are the sowing range (FieldGroundSystem:getSowableRange/getSowingRange).
+function FieldGroundType.getValueByType(groundType) return groundType - 1 end
+-- Field types (1.24 decompiled field/FieldType.lua); a field's own fieldType, else default.
+FieldType = {DEFAULT = 1, RICE = 2}
+FSDensityMapUtil = {}
+function FSDensityMapUtil.getFieldTypeAtWorldPos(x, z)
+    for _, field in ipairs(g_fieldManager.fields) do
+        if math.abs(field.posX - x) <= 50 and math.abs(field.posZ - z) <= 50 then return field.fieldType or FieldType.DEFAULT end
+    end
+    return FieldType.DEFAULT
+end
 SowingMachine = {AI_REQUIRED_GROUND_TYPES = {FieldGroundType.STUBBLE_TILLAGE, FieldGroundType.CULTIVATED,
     FieldGroundType.SEEDBED, FieldGroundType.PLOWED, FieldGroundType.ROLLED_SEEDBED, FieldGroundType.RIDGE},
     AI_OUTPUT_GROUND_TYPES = {FieldGroundType.SOWN, FieldGroundType.DIRECT_SOWN, FieldGroundType.PLANTED,
@@ -1099,32 +1113,51 @@ function FieldState:update(x, z)
         end
     end
 end
--- Fruits with the FruitTypeDesc checks the Mod uses: wheat (growing 1-3, harvest 4,
--- withered 5, cut 6, mulched 7), grass (growing 1-2, harvest 3), potato (foliage 4, harvest 5).
--- getIsHarvestable includes the forage states, like the game's harvest transitions
--- (FruitTypeDesc.lua:483/695); getIsGrowing ends before minHarvestingGrowthState (:713).
+-- Fruits with the FruitTypeDesc fields and checks the Mod uses, their foliage states shortened
+-- from data/foliage/*/*.xml but in the same order:
+-- - wheat: growing 1-3, harvest 4, withered 5, harvested 6 (cut and the state wheels leave), no
+--   mulched state (wheat.xml); sown in autumn (periods 7-8);
+-- - grass: growing 1-2, harvest 3, cut 4, which is also its mulched state (grass.xml);
+-- - potato: growing 1-3, foliage 4, withered 5, harvested 6, ready to harvest 7 once the foliage
+--   is cut, so its cut state lies before its harvest state; needs no rolling (potato.xml);
+-- - maize: forage 3, harvest 4, withered 5, cut 6; sown in spring (periods 3-4);
+-- - rice: like wheat, but sown only on rice fields and without rolling (rice.xml).
+-- getIsGrowing ends before the first harvest or foliage state (1.25 decompiled
+-- fruits/FruitTypeDesc.lua:713-719); getIsHarvestable includes the forage states (:695);
+-- getIsPlantableInPeriod is true outside the seasonal growth mode (:707-709).
 local function fruit(index, title, ranges)
     local desc = {index = index, title = title, mulchedState = ranges.mulched or 0,
         minHarvestingGrowthState = ranges.minHarvest, maxHarvestingGrowthState = ranges.maxHarvest,
-        minForageGrowthState = ranges.minForage or 0}
-    function desc:getIsGrowing(gs) return gs > 0 and gs < ranges.minHarvest and gs ~= ranges.prepare end
+        minForageGrowthState = ranges.minForage or 0, cutState = ranges.cut, witheredState = ranges.withered,
+        wheelDestructionState = ranges.wheel, isCultivationAllowed = true, needsRolling = ranges.needsRolling ~= false,
+        seedRequiredFieldType = ranges.fieldType}
+    local lastGrowing = math.min(ranges.minHarvest, ranges.prepare or math.huge) - 1
+    function desc:getIsGrowing(gs) return gs > 0 and gs <= lastGrowing end
     function desc:getIsHarvestable(gs) return gs >= (ranges.minForage or ranges.minHarvest) and gs <= ranges.maxHarvest end
     function desc:getIsPreparable(gs) return gs == ranges.prepare end
     function desc:getIsWithered(gs) return gs == ranges.withered end
     function desc:getIsCut(gs) return gs == ranges.cut end
     function desc:getIsWeedable(gs) return gs > 0 and gs <= 2 end
     function desc:getIsHoeable(gs) return gs > 0 and gs <= 2 end
+    function desc:getIsPlantableInPeriod(growthMode, period)
+        return growthMode ~= GrowthMode.SEASONAL or (ranges.planting or {})[period] == true
+    end
     return desc
 end
-FRUIT = {WHEAT = 1, GRASS = 2, POTATO = 3, MAIZE = 4}
+FRUIT = {WHEAT = 1, GRASS = 2, POTATO = 3, MAIZE = 4, RICE = 5}
 -- Fill types here are their names, as in the spray type double below.
 FillType = FillType or {}
 FillType.STRAW, FillType.GRASS_WINDROW = "STRAW", "GRASS_WINDROW"
+local autumn, spring, always = {[7] = true, [8] = true}, {[3] = true, [4] = true}, {}
+for period = 1, 12 do always[period] = true end
 g_fruitTypeManager = {fruits = {
-    fruit(1, "Wheat", {minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, mulched = 7}),
-    fruit(2, "Grass", {minHarvest = 3, maxHarvest = 3, cut = 4}),
-    fruit(3, "Potato", {minHarvest = 5, maxHarvest = 5, prepare = 4, cut = 6}),
-    fruit(4, "Maize", {minForage = 3, minHarvest = 4, maxHarvest = 4, cut = 6})
+    fruit(1, "Wheat", {minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, wheel = 6, planting = autumn}),
+    fruit(2, "Grass", {minHarvest = 3, maxHarvest = 3, cut = 4, mulched = 4, planting = always}),
+    fruit(3, "Potato", {minHarvest = 7, maxHarvest = 7, prepare = 4, withered = 5, cut = 6, needsRolling = false,
+        planting = spring}),
+    fruit(4, "Maize", {minForage = 3, minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, planting = spring}),
+    fruit(5, "Rice", {minHarvest = 4, maxHarvest = 4, withered = 5, cut = 6, needsRolling = false, fieldType = FieldType.RICE,
+        planting = spring})
 }}
 function g_fruitTypeManager:getFruitTypeByIndex(index) return self.fruits[index] end
 g_sprayTypeManager = {}
@@ -1158,7 +1191,7 @@ end
 function mockField(id, x, z, area, ownerFarmId, state)
     local field = {farmland = {id = id}, posX = x, posZ = z, areaHa = area}
     field.state = {groundType = FieldGroundType.STUBBLE_TILLAGE, fruitTypeIndex = 0, growthState = 0, sprayLevel = 0,
-        limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0}
+        limeLevel = 1, plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0, stubbleShredLevel = 0}
     for key, value in pairs(state or {}) do field.state[key] = value end
     function field:getId() return self.farmland.id end
     function field:getAreaHa() return self.areaHa end
@@ -1208,11 +1241,18 @@ function newMission(isServer)
         end
     end}
     mission.missionInfo = {isValid = true, savegameDirectory = "savegame1", plowingRequiredEnabled = true,
-        limeRequired = true, weedsEnabled = true, stonesEnabled = true}
+        limeRequired = true, weedsEnabled = true, stonesEnabled = true, growthMode = GrowthMode.SEASONAL}
+    -- Early autumn (Environment.currentPeriod, SeasonPeriod 1 = early spring).
+    mission.environment = {currentPeriod = 7}
     mission.fieldGroundSystem = {
         getMaxValue = function(_, layer) assert(layer == "SPRAY_LEVEL"); return 2 end,
         getValueAtWorldPos = function(_, layer, x, _, z) assert(layer == "GROUND_TYPE"); return groundValueAt(x, z) end,
-        getDensityMapData = function(_, layer) assert(layer == "GROUND_TYPE"); return "groundTypeMap", 0, 4 end
+        getDensityMapData = function(_, layer)
+            if layer == "FIELD_TYPE" then return "fieldTypeMap", 0, 1 end
+            assert(layer == "GROUND_TYPE"); return "groundTypeMap", 0, 4
+        end,
+        getSowableRange = function() return 1, 6 end,
+        getSowingRange = function() return 7, 10 end
     }
     -- A 2 km map with a ground type layer of 4096 cells: half a metre per cell.
     mission.terrainSize = 2048

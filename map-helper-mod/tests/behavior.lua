@@ -736,9 +736,10 @@ test("field needs follow what each implement can do", function()
     assert(FN.getNeedsWork(cultivated, W.SOW, plain.SOW) and not FN.getNeedsWork(growing, W.SOW, direct.SOW))
     assert(not FN.getNeedsWork(harvested, W.SOW, plain.SOW), "a normal seeder needs worked soil")
     assert(FN.getNeedsWork(harvested, W.SOW, direct.SOW) and FN.getNeedsWork(harvested, W.SOW, combined.SOW))
-    -- Field info box conditions; soil rolling only before the second growth state.
+    -- Field info box conditions; on sown ground soil rolling only before the second growth state.
     assert(FN.getNeedsWork(state({rollerLevel = 1}), W.ROLL) and not FN.getNeedsWork(stubble, W.ROLL))
-    assert(not FN.getNeedsWork(state({rollerLevel = 1, fruitTypeIndex = FRUIT.WHEAT, growthState = 2}), W.ROLL))
+    assert(not FN.getNeedsWork(state({rollerLevel = 1, groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT,
+        growthState = 2}), W.ROLL))
     local _, limeWorks = works({spec_sprayer = {}}, "LIME")
     assert(FN.getNeedsWork(state({limeLevel = 0}), W.LIME, limeWorks.LIME) and not FN.getNeedsWork(stubble, W.LIME))
     assert(not FN.getNeedsWork(state({limeLevel = 0, sprayType = FieldSprayType.LIME}), W.LIME, limeWorks.LIME),
@@ -769,7 +770,8 @@ test("field needs follow what each implement can do", function()
     assert(not FN.getNeedsWork(weedy(1, 3), W.WEED, weeder.WEED), "too late in the crop for the weeder")
     -- Crops: mulching stubble, the topper's own crops, mower and header ranges.
     assert(FN.getNeedsWork(state({fruitTypeIndex = FRUIT.WHEAT, growthState = 6}), W.MULCH) and not FN.getNeedsWork(growing, W.MULCH))
-    assert(not FN.getNeedsWork(state({fruitTypeIndex = FRUIT.GRASS, growthState = 4}), W.MULCH), "grass has no mulched state")
+    assert(not FN.getNeedsWork(state({fruitTypeIndex = FRUIT.GRASS, growthState = 4}), W.MULCH),
+        "cut grass already is in its mulched state")
     local _, topper = works({spec_fruitPreparer = {fruitTypes = {FRUIT.POTATO}}})
     local _, otherTopper = works({spec_fruitPreparer = {fruitTypes = {FRUIT.WHEAT}}})
     local foliage = state({fruitTypeIndex = FRUIT.POTATO, growthState = 4})
@@ -796,6 +798,119 @@ test("field needs follow what each implement can do", function()
     g_currentMission.missionInfo.limeRequired, g_currentMission.missionInfo.weedsEnabled = false, false
     assert(not FN.getNeedsWork(state({limeLevel = 0}), W.LIME) and not FN.getNeedsWork(weedy(2, 2), W.HERBICIDE))
     assert(#FN.getNeeds(nil, {}, {"PLOW"}) == 0, "a point outside every field has no need")
+end)
+
+test("fields needing this work only lists work that can be done now", function()
+    local FN = MHFieldNeeds
+    local W = FN.WORK
+    local G = FieldGroundType
+    local function state(values)
+        local result = {groundType = G.STUBBLE_TILLAGE, fruitTypeIndex = 0, growthState = 0, sprayLevel = 0, limeLevel = 1,
+            plowLevel = 1, rollerLevel = 0, weedState = 0, stoneLevel = 0, stubbleShredLevel = 0, sprayType = FieldSprayType.NONE}
+        for key, value in pairs(values) do result[key] = value end
+        result.fruit = g_fruitTypeManager:getFruitTypeByIndex(result.fruitTypeIndex)
+        return result
+    end
+    local function crop(fruitTypeIndex, growthState, groundType, values)
+        local result = {groundType = groundType or G.SOWN, fruitTypeIndex = fruitTypeIndex, growthState = growthState}
+        for key, value in pairs(values or {}) do result[key] = value end
+        return state(result)
+    end
+    local function works(specs, fill)
+        local vehicle = mockVehicle(300 + math.random(1000))
+        local implement = attachImplement(vehicle, specs)
+        implement.fillTypes[1] = fill
+        return FN.getWorks(vehicle), implement
+    end
+    local needs = FN.getNeedsWork
+    -- Lime: not on a crop between its second and its harvest state; on stubble, sowable ground, a
+    -- first-state crop and after harvest it is. "My fields" keeps the info box's warning.
+    local lime = works({spec_sprayer = {}}, "LIME").LIME
+    local midWheat = crop(FRUIT.WHEAT, 3, G.SOWN, {limeLevel = 0})
+    assert(not needs(midWheat, W.LIME, lime), "no lime on growing wheat")
+    assert(not needs(crop(FRUIT.WHEAT, 4, G.SOWN, {limeLevel = 0}), W.LIME, lime), "no lime on ripe wheat")
+    assert(needs(crop(FRUIT.WHEAT, 1, G.SOWN, {limeLevel = 0}), W.LIME, lime), "just sown")
+    assert(needs(crop(FRUIT.WHEAT, 6, G.HARVEST_READY, {limeLevel = 0}), W.LIME, lime), "harvested")
+    assert(needs(state({limeLevel = 0, groundType = G.PLOWED}), W.LIME, lime))
+    -- A harvested potato field lies before the potato's harvest state on sown ground: only once worked.
+    assert(not needs(crop(FRUIT.POTATO, 6, G.SOWN, {limeLevel = 0}), W.LIME, lime))
+    assert(needs(crop(FRUIT.POTATO, 6, G.CULTIVATED, {limeLevel = 0}), W.LIME, lime))
+    assert(FN.getStateText(midWheat) == "ui_growthMapNeedsLime", FN.getStateText(midWheat))
+    -- Rolling: sowable ground, or sown ground in the crop's first state; not for crops that need no
+    -- rolling, not on harvested ground. "My fields" warns whatever the crop.
+    assert(needs(state({rollerLevel = 1, groundType = G.SEEDBED}), W.ROLL))
+    assert(needs(crop(FRUIT.WHEAT, 1, G.SOWN, {rollerLevel = 1}), W.ROLL))
+    local rolledLate = crop(FRUIT.WHEAT, 2, G.SOWN, {rollerLevel = 1})
+    assert(not needs(rolledLate, W.ROLL) and FN.getStateText(rolledLate) == "ui_growthMapNeedsRolling", FN.getStateText(rolledLate))
+    assert(not needs(crop(FRUIT.POTATO, 1, G.RIDGE_SOWN, {rollerLevel = 1}), W.ROLL), "potatoes need no rolling")
+    assert(not needs(state({rollerLevel = 1, groundType = G.HARVEST_READY}), W.ROLL), "harvested ground is not rolled")
+    -- Stones: picked on sowable ground only, not on stubble that wasn't worked.
+    assert(needs(state({stoneLevel = 2, groundType = G.CULTIVATED}), W.STONES))
+    assert(not needs(crop(FRUIT.WHEAT, 6, G.HARVEST_READY, {stoneLevel = 2}), W.STONES))
+    -- Mulching: harvested and withered crops that are not shredded yet; growing crops never.
+    local stubble = crop(FRUIT.WHEAT, 6, G.HARVEST_READY)
+    assert(needs(stubble, W.MULCH) and needs(crop(FRUIT.WHEAT, 5), W.MULCH), "harvested and withered wheat")
+    assert(not needs(crop(FRUIT.WHEAT, 2), W.MULCH) and not needs(crop(FRUIT.WHEAT, 4), W.MULCH))
+    local shredded = crop(FRUIT.WHEAT, 6, G.HARVEST_READY, {stubbleShredLevel = 1})
+    assert(not needs(shredded, W.MULCH), "already mulched once")
+    Platform.gameplay.useStubbleShred = false
+    assert(needs(shredded, W.MULCH), "without stubble shredding the level doesn't count")
+    Platform.gameplay.useStubbleShred = true
+    -- Fertilizer: not between the first and last harvest state, not on withered crops; the root
+    -- crop's foliage stage and harvested crops take it.
+    local fertilizer = works({spec_sprayer = {}}, "FERTILIZER").FERTILIZE
+    assert(not needs(crop(FRUIT.WHEAT, 4), W.FERTILIZE, fertilizer) and not needs(crop(FRUIT.WHEAT, 5), W.FERTILIZE, fertilizer))
+    assert(needs(crop(FRUIT.WHEAT, 6), W.FERTILIZE, fertilizer) and needs(crop(FRUIT.POTATO, 4), W.FERTILIZE, fertilizer))
+    -- Herbicide: crops before their harvest state (also the potato's foliage stage), the state wheels
+    -- leave on harvested wheat and sowable ground; not on unworked ground without a crop or ripe crops.
+    assert(needs(crop(FRUIT.POTATO, 4, G.RIDGE_SOWN, {weedState = 2}), W.HERBICIDE))
+    assert(needs(crop(FRUIT.WHEAT, 6, G.HARVEST_READY, {weedState = 2}), W.HERBICIDE))
+    assert(needs(state({weedState = 2, groundType = G.CULTIVATED}), W.HERBICIDE))
+    assert(not needs(state({weedState = 2, groundType = G.HARVEST_READY}), W.HERBICIDE))
+    assert(not needs(crop(FRUIT.WHEAT, 4, G.SOWN, {weedState = 2}), W.HERBICIDE))
+    -- Sowing: the selected seed must be in season (wheat in autumn), unless the machine may sow
+    -- outside it or growth isn't seasonal; rice only on rice fields.
+    local seederVehicle = mockVehicle(299)
+    local seeder = attachImplement(seederVehicle,
+        {spec_sowingMachine = {seeds = {FRUIT.MAIZE, FRUIT.WHEAT, FRUIT.RICE}, currentSeed = 2}})
+    local sow = FN.getWorks(seederVehicle).SOW
+    assert(sow.seed == FRUIT.WHEAT and not sow.outsideSeason and sow.fruits[FRUIT.MAIZE] and sow.fruits[FRUIT.RICE],
+        "the selected seed counts; sowing contracts still see every seed")
+    local cultivated = state({groundType = G.CULTIVATED})
+    assert(needs(cultivated, W.SOW, sow), "wheat in early autumn")
+    g_currentMission.environment.currentPeriod = 3
+    assert(not needs(cultivated, W.SOW, sow), "no wheat in early spring")
+    g_currentMission.missionInfo.growthMode = GrowthMode.DAILY
+    assert(needs(cultivated, W.SOW, sow), "growth is not seasonal")
+    g_currentMission.missionInfo.growthMode = GrowthMode.SEASONAL
+    function seeder:getCanPlantOutsideSeason() return true end
+    local anytime = FN.getWorks(seederVehicle).SOW
+    assert(anytime.outsideSeason and needs(cultivated, W.SOW, anytime), "a machine that may sow outside the season")
+    -- Rice (in season in spring) only on rice fields; the field type is read with the state.
+    seeder.getCanPlantOutsideSeason = nil
+    seeder.spec_sowingMachine.currentSeed = 3
+    local rice = FN.getWorks(seederVehicle).SOW
+    mockField(9, 900, 900, 1, 1, {groundType = G.CULTIVATED}).fieldType = FieldType.RICE
+    mockField(10, 1000, 1000, 1, 1, {groundType = G.CULTIVATED})
+    assert(rice.seed == FRUIT.RICE and needs(FN.readState(900, 900), W.SOW, rice))
+    assert(not needs(FN.readState(1000, 1000), W.SOW, rice), "rice only on a rice field")
+    -- Without the ground ranges the seeder's ground types stand in for sowable ground.
+    g_currentMission.fieldGroundSystem.getSowableRange, g_currentMission.fieldGroundSystem.getSowingRange = nil, nil
+    assert(FN.getIsSowableGround(G.RIDGE) and not FN.getIsSowableGround(G.SOWN) and not FN.getIsSowableGround(G.HARVEST_READY))
+    assert(FN.getIsSowingGround(G.RIDGE_SOWN) and not FN.getIsSowingGround(G.ROLLER_LINES))
+end)
+
+test("a field that needs lime under a growing crop is not offered to the lime spreader", function()
+    local tractor = seat(mockVehicle(7))
+    local spreader = attachImplement(tractor, {spec_sprayer = {}})
+    spreader.fillTypes[1] = "LIME"
+    mockField(1, 100, 100, 1, 1, {groundType = FieldGroundType.SOWN, fruitTypeIndex = FRUIT.WHEAT, growthState = 3, limeLevel = 0})
+    mockField(2, 200, 200, 1, 1, {groundType = FieldGroundType.HARVEST_READY, fruitTypeIndex = FRUIT.WHEAT, growthState = 6,
+        limeLevel = 0})
+    local _, page = openPage()
+    assert(placeTexts(page) == "Field No. 2|ui_growthMapNeedsLime", placeTexts(page))
+    page.mhFilterSelector:setState(2, true)
+    assert(placeTexts(page) == "Field No. 1|ui_growthMapNeedsLime;Field No. 2|ui_growthMapNeedsLime", placeTexts(page))
 end)
 
 test("a sprayer sprays what its tank, a front tank or the fill type choice supplies", function()
