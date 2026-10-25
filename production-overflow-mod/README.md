@@ -27,7 +27,7 @@ A factory set to Distributing delivers its products to your other production poi
 2. Select your production point, then the production whose output you want to change.
 3. Press **Change output mode** until the mode you want is shown, as in the base game. After Distributing come the two new modes, then Storing again. The product list shows the chosen mode by name.
 
-   <!-- SCREENSHOT assets/screenshots/01-production-chains-store-rest-mode.jpg | Production Chains page with a bakery selected, Change output mode in the bottom bar and the product set to Distributing, store rest automatically | “生产链”页面选中面包房，底栏显示“更改输出模式”，产品设为“分配，剩余自动储存” -->
+   ![Production Chains page: Strawberries in a greenhouse set to Distributing, store rest automatically, with Change output mode in the bottom bar](assets/screenshots/01-production-chains-store-rest-mode.jpg)
 
 | Mode | What happens |
 | --- | --- |
@@ -39,9 +39,7 @@ A factory set to Distributing delivers its products to your other production poi
 
 If none of your production points accepts the product, the whole stock becomes pallets or is sold.
 
-<!-- SCREENSHOT assets/screenshots/02-store-rest-pallets-at-factory.jpg | Full pallets of bread at the bakery's pallet area after the hourly delivery | 整点分配后，面包房托盘区出现的满托盘面包 -->
-
-<!-- SCREENSHOT assets/screenshots/03-production-chains-sell-rest-liquid.jpg | Production Chains page with a product that is not made on pallets set to Distributing, sell rest automatically | “生产链”页面中，一种不以托盘产出的产品设为“分配，剩余自动出售” -->
+![Production Chains page: butter in a dairy set to Distributing, sell rest automatically, next to products on Storing and Selling](assets/screenshots/03-production-chains-sell-rest.jpg)
 
 ### Good to know
 
@@ -90,7 +88,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 2. 选择你的生产点，再选择要修改产出的那项生产。
 3. 与原版一样，按“更改输出模式”，直到显示想要的模式。“分配”之后依次是两个新模式，然后回到“储存”。产品列表会显示所选模式的名称。
 
-   <!-- SCREENSHOT assets/screenshots/01-production-chains-store-rest-mode.jpg | Production Chains page with a bakery selected, Change output mode in the bottom bar and the product set to Distributing, store rest automatically | “生产链”页面选中面包房，底栏显示“更改输出模式”，产品设为“分配，剩余自动储存” -->
+   ![“生产链”页面：草莓设为“分配，剩余自动储存”，底栏显示“更改输出模式”](assets/screenshots/01-production-chains-store-rest-mode.jpg)
 
 | 模式 | 效果 |
 | --- | --- |
@@ -102,9 +100,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 本农场没有生产点接收该产品时，全部库存都会生成托盘或卖出。
 
-<!-- SCREENSHOT assets/screenshots/02-store-rest-pallets-at-factory.jpg | Full pallets of bread at the bakery's pallet area after the hourly delivery | 整点分配后，面包房托盘区出现的满托盘面包 -->
-
-<!-- SCREENSHOT assets/screenshots/03-production-chains-sell-rest-liquid.jpg | Production Chains page with a product that is not made on pallets set to Distributing, sell rest automatically | “生产链”页面中，一种不以托盘产出的产品设为“分配，剩余自动出售” -->
+![“生产链”页面：黄油设为“分配，剩余自动出售”，其他产品为储存或出售](assets/screenshots/03-production-chains-sell-rest.jpg)
 
 ### 注意事项
 

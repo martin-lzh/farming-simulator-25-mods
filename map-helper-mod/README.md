@@ -35,8 +35,6 @@ Plan your workers' jobs straight from the map. Map Helper adds a page to the lef
 4. Check the job. These are the game's own job settings, the same as in **Create job**: job type, target and direction (picked on the map), stations, fill type and looping. Then click **Add to queue** (Z) to add it at the end, or **Insert as next** (X) to run it next. If no worker is driving the vehicle, the job starts right away. If something is missing, the game's own warning tells you what.
 5. Add more jobs the same way. They wait in the **Command queue** and start one after another.
 
-   <!-- SCREENSHOT assets/screenshots/03-command-queue-with-waiting-jobs.jpg | Command queue with the current job, its distance to the target and three numbered waiting jobs | 指令队列：当前作业及离目标的距离，下面是三个编号的等待作业 -->
-
 Tip: double-click a field or contract to add Fieldwork there in one step.
 
 ### Places
@@ -128,8 +126,6 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 4. 检查作业。这里就是游戏自带的作业设置，与 **创建作业** 中相同：作业类型、目标位置和方向（在地图上选择）、站点、装填类型和循环。然后点击 **加入队列**（Z）排到最后，或点击 **插入为下一个**（X）让它下一个执行。没有帮手驾驶这台载具时，作业会立即开始。缺少什么设置，游戏自带的提示会告诉你。
 5. 用同样的方法继续添加。作业在 **指令队列** 中等待，依次自动开始。
-
-   <!-- SCREENSHOT assets/screenshots/03-command-queue-with-waiting-jobs.jpg | Command queue with the current job, its distance to the target and three numbered waiting jobs | 指令队列：当前作业及离目标的距离，下面是三个编号的等待作业 -->
 
 小技巧：双击田地或合同，可以一步把该处的田地工作加入队列。
 

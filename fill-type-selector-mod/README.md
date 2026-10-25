@@ -30,17 +30,11 @@ In the base game, an AI worker with an empty spreader or sprayer picks fertilize
 
 3. If the implement or the combination already uses Y, the key is **Alt+Y** and switches forward only. This is the case with a seeder that has several seeds, with Precision Farming, and with a tool carrier or hose reel from the Pumps N' Hoses Pack. To change the key, open Settings → Controls and look for **Select fertilizer (when Y is in use)** under Fill Type Selector.
 
-   <!-- SCREENSHOT assets/screenshots/02-alt-y-with-precision-farming.jpg | With Precision Farming, Y keeps its Precision Farming function and the F1 help shows Select fertilizer on Alt+Y | 开启精准农业时，Y 保留精准农业的功能，F1 帮助中“选择肥料”显示为 Alt+Y -->
-
 Implements that can only take one type don't get the key. With two implements attached that both have a choice, the key works on the selected one.
 
 ### AI workers and automatic buying
 
 Turn on **AI Worker Refill - Fertilizer** in Settings → Game Settings. A worker with an empty implement then buys the type you chose, lime and herbicide included, at the game's usual refill price. It works only the parts of the field that need that type, for example it skips land that already has lime.
-
-<!-- SCREENSHOT assets/screenshots/03-game-settings-ai-worker-refill.jpg | Game Settings with AI Worker Refill - Fertilizer turned on, and the Manure and Slurry refill options below it | “游戏设置”中开启了“AI 帮手补充 - 肥料”，下方是粪肥和水肥的补充选项 -->
-
-<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空散布机在田里撒石灰 -->
 
 - With the setting off, the worker stops when the tank is empty, as in the base game.
 - Lime-only spreaders don't need the key: the worker buys lime for them.
@@ -94,17 +88,11 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 3. 如果机具或组合已经占用了 Y，按键改为 **Alt+Y**，只能向前切换。可选多种种子的播种机、精准农业，以及 Pumps N' Hoses Pack 的工具架和脐带软管卷筒都属于这种情况。要修改按键，打开“设置 → 控制”，在“肥料选择”下找到“选择肥料（Y 已被占用时）”。
 
-   <!-- SCREENSHOT assets/screenshots/02-alt-y-with-precision-farming.jpg | With Precision Farming, Y keeps its Precision Farming function and the F1 help shows Select fertilizer on Alt+Y | 开启精准农业时，Y 保留精准农业的功能，F1 帮助中“选择肥料”显示为 Alt+Y -->
-
 只能装一种类型的机具不会出现此按键。同时挂着两台都能选择的机具时，按键作用于当前选中的那台。
 
 ### AI 帮手与自动购买
 
 在“设置 → 游戏设置”中开启“AI 帮手补充 - 肥料”。料箱为空时，帮手会按游戏通常的补充价格购买你选择的类型，包括石灰和除草剂，并且只处理田里需要这种类型的区域，例如跳过已经撒过石灰的地块。
-
-<!-- SCREENSHOT assets/screenshots/03-game-settings-ai-worker-refill.jpg | Game Settings with AI Worker Refill - Fertilizer turned on, and the Manure and Slurry refill options below it | “游戏设置”中开启了“AI 帮手补充 - 肥料”，下方是粪肥和水肥的补充选项 -->
-
-<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空散布机在田里撒石灰 -->
 
 - 关闭该设置时，与原版相同，料箱空了帮手就会停下。
 - 只能装石灰的散布机不需要按键，帮手会直接买石灰。
