@@ -1227,4 +1227,3 @@ def finish_layout(builder: GuiBuilder, root: Element) -> None:
         invalidate_layout(box)
     for box in boxes:
         invalidate_layout(box)
-
