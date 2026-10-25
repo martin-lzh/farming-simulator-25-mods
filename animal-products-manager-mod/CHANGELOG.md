@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.4 — 2026-10-25
+
 - Distributing is now two modes: "Distributing, store rest automatically" and "Distributing, sell rest automatically". Both deliver to your own production points first, once per in-game hour.
 - “分配”拆分为两个挡位：“分配，剩余自动储存”和“分配，剩余自动出售”。两者都在每游戏小时先送往自己农场的生产点。
 - Distributing, store rest automatically: whatever doesn't fit is stored as in Storing. Milk stays in the tank, and eggs, wool and other pallet products now become pallets instead of piling up in the barn. New output waits until the next in-game hour so it can be delivered first.
