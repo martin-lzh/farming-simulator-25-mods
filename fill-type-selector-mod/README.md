@@ -26,7 +26,7 @@ In the base game, an AI worker with an empty spreader or sprayer picks fertilize
 1. Get into the tractor with the empty spreader or sprayer attached.
 2. Press **Y** to switch between the types the implement can apply; **Shift+Y** goes back. The help (F1) shows **Select fertilizer**, followed by your choice, for example **Select fertilizer (Lime)**. The fill level display of the empty tank shows your choice too.
 
-   <!-- SCREENSHOT assets/screenshots/01-empty-spreader-lime-selected.jpg | Empty fertilizer and lime spreader with Lime selected: the F1 help shows Select fertilizer (Lime) and the empty tank shows Lime | 空的肥料和石灰撒布机选择了石灰：F1 帮助显示“选择肥料 (石灰)”，空料箱显示石灰 -->
+   <!-- SCREENSHOT assets/screenshots/01-empty-spreader-lime-selected.jpg | Empty fertilizer and lime spreader with Lime selected: the F1 help shows Select fertilizer (Lime) and the empty tank shows Lime | 空的肥料和石灰散布机选择了石灰：F1 帮助显示“选择肥料 (石灰)”，空料箱显示石灰 -->
 
 3. If the implement or the combination already uses Y, the key is **Alt+Y** and switches forward only. This is the case with a seeder that has several seeds, with Precision Farming, and with a tool carrier or hose reel from the Pumps N' Hoses Pack. To change the key, open Settings → Controls and look for **Select fertilizer (when Y is in use)** under Fill Type Selector.
 
@@ -40,7 +40,7 @@ Turn on **AI Worker Refill - Fertilizer** in Settings → Game Settings. A worke
 
 <!-- SCREENSHOT assets/screenshots/03-game-settings-ai-worker-refill.jpg | Game Settings with AI Worker Refill - Fertilizer turned on, and the Manure and Slurry refill options below it | “游戏设置”中开启了“AI 帮手补充 - 肥料”，下方是粪肥和水肥的补充选项 -->
 
-<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空撒布机在田里撒石灰 -->
+<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空散布机在田里撒石灰 -->
 
 - With the setting off, the worker stops when the tank is empty, as in the base game.
 - Lime-only spreaders don't need the key: the worker buys lime for them.
@@ -82,16 +82,16 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 **下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）
 
-原版中，料箱为空时 AI 帮手会自己挑肥料，却从不选石灰：只能撒石灰的撒布机直接停工，能撒肥料和石灰的撒肥机总是买肥料。装上本 Mod 后，可以像在播种机上选种子一样，为空的撒肥机、喷雾机或石灰撒布机选好要施用的类型，帮手就会买这一种。
+原版中，料箱为空时 AI 帮手会自己挑肥料，却从不选石灰：只能撒石灰的散布机直接停工，能撒肥料和石灰的肥料散布机总是买肥料。装上本 Mod 后，可以像在播种机上选种子一样，为空的肥料散布机、喷洒机或石灰散布机选好要施用的类型，帮手就会买这一种。
 
 ### 使用方法
 
-1. 坐进挂着空撒肥机或喷雾机的拖拉机。
+1. 坐进挂着空肥料散布机或喷洒机的拖拉机。
 2. 按 **Y** 在机具能施用的类型之间切换，**Shift+Y** 反向切换。帮助（F1）中显示“选择肥料”，后面括号里是当前选择，例如“选择肥料 (石灰)”。空料箱的料量显示也会显示所选类型。
 
-   <!-- SCREENSHOT assets/screenshots/01-empty-spreader-lime-selected.jpg | Empty fertilizer and lime spreader with Lime selected: the F1 help shows Select fertilizer (Lime) and the empty tank shows Lime | 空的肥料和石灰撒布机选择了石灰：F1 帮助显示“选择肥料 (石灰)”，空料箱显示石灰 -->
+   <!-- SCREENSHOT assets/screenshots/01-empty-spreader-lime-selected.jpg | Empty fertilizer and lime spreader with Lime selected: the F1 help shows Select fertilizer (Lime) and the empty tank shows Lime | 空的肥料和石灰散布机选择了石灰：F1 帮助显示“选择肥料 (石灰)”，空料箱显示石灰 -->
 
-3. 如果机具或组合已经占用了 Y，按键改为 **Alt+Y**，只能向前切换。可选多种种子的播种机、精准农业，以及 Pumps N' Hoses Pack 的工具架和软管卷盘都属于这种情况。要修改按键，打开“设置 → 控制”，在“肥料选择”下找到“选择肥料（Y 已被占用时）”。
+3. 如果机具或组合已经占用了 Y，按键改为 **Alt+Y**，只能向前切换。可选多种种子的播种机、精准农业，以及 Pumps N' Hoses Pack 的工具架和脐带软管卷筒都属于这种情况。要修改按键，打开“设置 → 控制”，在“肥料选择”下找到“选择肥料（Y 已被占用时）”。
 
    <!-- SCREENSHOT assets/screenshots/02-alt-y-with-precision-farming.jpg | With Precision Farming, Y keeps its Precision Farming function and the F1 help shows Select fertilizer on Alt+Y | 开启精准农业时，Y 保留精准农业的功能，F1 帮助中“选择肥料”显示为 Alt+Y -->
 
@@ -103,21 +103,21 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 <!-- SCREENSHOT assets/screenshots/03-game-settings-ai-worker-refill.jpg | Game Settings with AI Worker Refill - Fertilizer turned on, and the Manure and Slurry refill options below it | “游戏设置”中开启了“AI 帮手补充 - 肥料”，下方是粪肥和水肥的补充选项 -->
 
-<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空撒布机在田里撒石灰 -->
+<!-- SCREENSHOT assets/screenshots/04-ai-worker-spreading-lime.jpg | AI worker spreading lime on a field with an empty spreader set to Lime | AI 帮手用选择了石灰的空散布机在田里撒石灰 -->
 
 - 关闭该设置时，与原版相同，料箱空了帮手就会停下。
-- 只能装石灰的撒布机不需要按键，帮手会直接买石灰。
-- 也能撒石灰的粪肥撒布机：石灰按“AI 帮手补充 - 肥料”购买，粪肥按“AI 帮手补充 - 粪肥”购买。
-- 能装水肥和沼渣的罐车：可以选择帮手用哪一种。“AI 帮手补充 - 水肥”设为“购买”时，帮手购买所选类型；设为你的某个水肥储存设施时，先从那里调取所选类型，用完后再用另一种。
-- 没有做选择时，帮手按原版方式补充：喷雾机买液态肥料，撒肥机买固态肥料，罐车用水肥。
+- 只能装石灰的散布机不需要按键，帮手会直接买石灰。
+- 也能撒石灰的粪肥散布机：石灰按“AI 帮手补充 - 肥料”购买，粪肥按“AI 帮手补充 - 粪肥”购买。
+- 能装水肥和沼渣的水肥罐车：可以选择帮手用哪一种。“AI 帮手补充 - 水肥”设为“购买”时，帮手购买所选类型；设为你的某个水肥储存设施时，先从那里调取所选类型，用完后再用另一种。
+- 没有做选择时，帮手按原版方式补充：喷洒机买液态肥料，散布机买固态肥料，水肥罐车用水肥。
 
 ### 注意事项
 
 - 料箱里有东西时按实际内容施用，选择被锁定，按键隐藏；料箱再次清空后，你的选择重新生效。
-- 与原版相同，连接的储箱（例如前置料箱）里有东西时会先用它，而不是你的选择。
-- 只能选择机具本身能施撒的类型：固态肥料、液态肥料、石灰、除草剂、粪肥、水肥或沼渣。带粪肥撒布装置的通用拖车虽然能装石灰，但只能撒粪肥，所以不能选石灰。
-- 撒石灰时作业宽度不同的撒肥机，选择石灰后会换成石灰的作业宽度，和料箱里装着石灰时一样。
-- 安装 Pumps N' Hoses Pack 时，粪肥撒布机还可以选择已分离粪肥。“AI 帮手补充 - 粪肥”设为“购买”时帮手会买它；设为粪堆时改用粪堆里的粪肥。通过软管供料的拖管施肥机没有可选项。
+- 与原版相同，连接的额外储罐（例如前罐）里有东西时会先用它，而不是你的选择。
+- 只能选择机具本身能施撒的类型：固态肥料、液态肥料、石灰、除草剂、粪肥、水肥或沼渣。带粪肥撒播机的通用拖车虽然能装石灰，但只能撒粪肥，所以不能选石灰。
+- 撒石灰时工作宽度不同的散布机，选择石灰后会换成石灰的工作宽度，和料箱里装着石灰时一样。
+- 安装 Pumps N' Hoses Pack 时，粪肥散布机还可以选择已分离粪肥。“AI 帮手补充 - 粪肥”设为“购买”时帮手会买它；设为粪肥堆时改用粪肥堆里的粪肥。通过软管供料的拖管施肥机没有可选项。
 
 ### 多人游戏
 

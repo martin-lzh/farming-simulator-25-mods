@@ -82,11 +82,11 @@ Abra o menu do jogo, vá em Cadeias de produção, selecione uma produção e us
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
         <ct><![CDATA[說明：
 在生產選單的「存放中」「出售中」「分配中」之外新增兩種輸出模式。適用於工廠把產品分配給你的其他生產站、這些生產站已滿、工廠本身倉儲也快滿的情況。
-- 分配中，剩餘自動存放：每遊戲小時照常分配，之後工廠裡剩下的產品依「存放中」產生棧板。只產生滿棧板，不足一個棧板的餘量留到下一小時。只對以棧板產出的產品提供。
+- 分配中，剩餘自動存放：每遊戲小時照常分配，之後工廠裡剩下的產品依「存放中」產生托盤。只產生滿托盤，不足一個托盤的餘量留到下一小時。只對以托盤產出的產品提供。
 - 分配中，剩餘自動出售：每遊戲小時照常分配，之後把剩餘部分依「出售中」的價格賣出。
 「分配中」本身與原版相同。
 
-多人遊戲：所有玩家都需要安裝本 Mod。有「管理生產站」權限的農場成員可以變更模式；出售和產生棧板只由伺服器處理。
+多人模式：所有玩家都需要安裝本 Mod。有「管理生產站」權限的農場成員可以變更模式；出售和產生托盤只由伺服器處理。
 
 快速鍵：
 開啟遊戲選單，進入「生產鏈」，選擇一項生產，依原版方式使用「變更輸出模式」。新模式排在「分配中」之後。
@@ -98,7 +98,7 @@ Přidává do nabídky výroby vedle režimů Uskladňování, Prodávání a Di
 - Distribuování, zbytek automaticky prodat: jednou za herní hodinu se produkt rozdělí jako obvykle a zbytek se prodá za cenu Prodávání.
 Samotné Distribuování funguje jako v základní hře.
 
-Hra více hráčů: Mod potřebují všichni. Členové farmy s oprávněním spravovat výrobní body mohou režimy měnit; prodává a palety vytváří jen server.
+Hra pro více hráčů: Mod potřebují všichni. Členové farmy s oprávněním spravovat výrobní body mohou režimy měnit; prodává a palety vytváří jen server.
 
 Klávesové zkratky:
 Otevřete herní nabídku, přejděte do Výrobních řetězců, vyberte výrobu a použijte „Změnit režim výstupu“ jako v základní hře. Nové režimy následují po Distribuování.
@@ -118,11 +118,11 @@ Genvejstaster:
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
         <ea><![CDATA[Descripción:
 Agrega dos modos de salida al menú de producción, además de Almacenando, Vendiendo y En distribución. Sirven cuando una fábrica distribuye sus productos a tus otros puntos de producción, estos están llenos y el almacenamiento de la propia fábrica también se está llenando.
-- En distribución, el resto se almacena automáticamente: una vez por hora del juego, el producto se distribuye como siempre. Lo que queda en la fábrica se convierte en tarimas, como en Almacenando. Solo se hacen tarimas llenas; un resto menor espera a la siguiente hora. Solo está disponible para productos que salen en tarimas.
+- En distribución, el resto se almacena automáticamente: una vez por hora del juego, el producto se distribuye como siempre. Lo que queda en la fábrica se convierte en palés, como en Almacenando. Solo se hacen palés llenos; un resto menor espera a la siguiente hora. Solo está disponible para productos que salen en palés.
 - En distribución, el resto se vende automáticamente: una vez por hora del juego, el producto se distribuye como siempre y el resto se vende al precio de Vendiendo.
 En distribución funciona como en el juego base.
 
-Multijugador: todos necesitan el Mod. Los miembros de la granja con permiso para gestionar puntos de producción pueden cambiar los modos; solo el servidor vende y crea tarimas.
+Multijugador: todos necesitan el Mod. Los miembros de la granja con permiso para gestionar puntos de producción pueden cambiar los modos; solo el servidor vende y crea palés.
 
 Teclas de acceso rápido:
 Abre el menú del juego, ve a Cadenas de producción, selecciona una producción y usa "Cambiar modo de salida", como en el juego base. Los nuevos modos vienen después de En distribución.
@@ -165,7 +165,7 @@ Avaa pelivalikko, siirry kohtaan Tuotantoketjut, valitse tuotanto ja käytä per
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
         <fr><![CDATA[Description :
-Ajoute deux modes de sortie au menu de production, en plus de Stockage, Vente et Distribution. Ils sont utiles quand une usine distribue ses produits à vos autres points de production, que ceux-ci sont pleins et que le stockage de l'usine se remplit aussi.
+Ajoute au menu de production deux nouveaux modes, en plus de Stockage, Vente et Distribution. Ils sont utiles quand une usine distribue ses produits à vos autres points de production, que ceux-ci sont pleins et que le stockage de l'usine se remplit aussi.
 - Distribution, reste stocké automatiquement : une fois par heure de jeu, le produit est distribué comme d'habitude. Ce qui reste dans l'usine devient ensuite des palettes, comme en Stockage. Seules des palettes pleines sont créées ; un reste plus petit attend l'heure suivante. Proposé uniquement pour les produits qui sortent sur palettes.
 - Distribution, reste vendu automatiquement : une fois par heure de jeu, le produit est distribué comme d'habitude, puis le reste est vendu au prix de Vente.
 La Distribution elle-même fonctionne comme dans le jeu de base.
@@ -182,7 +182,7 @@ A termelési menüben a Tárolás, Értékesítés és Elosztás mellé két új
 - Elosztás, a maradék automatikus értékesítése: játékóránként egyszer a termék a szokásos módon szétosztásra kerül, majd a maradékot az Értékesítés árán eladja.
 Maga az Elosztás az alapjátékhoz hasonlóan működik.
 
-Többjátékos mód: mindenkinek szüksége van a modra. A termelési pontok kezelésére jogosult gazdaságtagok módosíthatják a módokat; csak a szerver ad el és készít raklapot.
+Többrésztvevős játék: mindenkinek szüksége van a modra. A termelési pontok kezelésére jogosult gazdaságtagok módosíthatják a módokat; csak a szerver ad el és készít raklapot.
 
 Gyorsbillentyűk:
 Nyisd meg a játékmenüt, lépj a Termelési láncok oldalra, válassz egy termelést, és az alapjátékhoz hasonlóan használd a „Kimeneti mód módosítása” gombot. Az új módok az Elosztás után következnek.
@@ -201,7 +201,7 @@ Buka menu game, masuk ke Rantai Produksi, pilih produksi, lalu gunakan "Ubah mod
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
         <it><![CDATA[Descrizione:
-Aggiunge due modalità di uscita al menu di produzione, oltre a Immagazzinamento, Vendita e Distribuzione. Sono utili quando un impianto distribuisce i suoi prodotti agli altri tuoi punti di produzione, questi sono pieni e anche il magazzino dell'impianto si sta riempiendo.
+Aggiunge al menu di produzione due nuove modalità, oltre a Immagazzinamento, Vendita e Distribuzione. Sono utili quando un impianto distribuisce i suoi prodotti agli altri tuoi punti di produzione, questi sono pieni e anche il magazzino dell'impianto si sta riempiendo.
 - Distribuzione, resto immagazzinato automaticamente: una volta per ora di gioco il prodotto viene distribuito come al solito. Ciò che resta nell'impianto diventa poi pallet, come in Immagazzinamento. Vengono creati solo pallet pieni; un resto più piccolo attende l'ora successiva. Disponibile solo per i prodotti che escono su pallet.
 - Distribuzione, resto venduto automaticamente: una volta per ora di gioco il prodotto viene distribuito come al solito, poi il resto viene venduto al prezzo di Vendita.
 La Distribuzione funziona come nel gioco base.
@@ -230,7 +230,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 - 배포, 나머지 자동 판매: 게임 시간으로 매시간 평소처럼 배포한 뒤, 나머지를 판매 모드와 같은 가격에 판매합니다.
 배포 자체는 기본 게임과 같습니다.
 
-멀티플레이: 모든 플레이어에게 이 모드가 필요합니다. 생산지 관리 권한이 있는 농장 구성원이 모드를 바꿀 수 있으며, 판매와 팔레트 생성은 서버만 처리합니다.
+멀티플레이어: 모든 플레이어에게 이 모드가 필요합니다. 생산지 관리 권한이 있는 농장 구성원이 모드를 바꿀 수 있으며, 판매와 팔레트 생성은 서버만 처리합니다.
 
 단축키:
 게임 메뉴를 열고 생산망으로 이동해 생산을 선택한 뒤, 기본 게임처럼 "출력 모드 변경"을 사용하세요. 새 모드는 배포 다음에 나옵니다.
@@ -266,7 +266,7 @@ Dodaje do menu produkcji dwa tryby obok Przechowywania, Sprzedaży i Dystrybucji
 - Dystrybucja, reszta automatycznie sprzedawana: raz na godzinę w grze produkt jest rozsyłany jak zwykle, a resztę sprzedaje się po cenie Sprzedaży.
 Sama Dystrybucja działa jak w podstawowej grze.
 
-Tryb wieloosobowy: wszyscy potrzebują moda. Członkowie gospodarstwa z uprawnieniem do zarządzania punktami produkcyjnymi mogą zmieniać tryby; tylko serwer sprzedaje i tworzy palety.
+Gra wieloosobowa: wszyscy potrzebują moda. Członkowie gospodarstwa z uprawnieniem do zarządzania punktami produkcyjnymi mogą zmieniać tryby; tylko serwer sprzedaje i tworzy palety.
 
 Skróty klawiszowe:
 Otwórz menu gry, przejdź do Łańcuchów produkcji, wybierz produkcję i użyj „Zmień tryb produkcji”, jak w podstawowej grze. Nowe tryby następują po Dystrybucji.
@@ -309,24 +309,24 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
         <sv><![CDATA[Beskrivning:
-Lägger till två utmatningslägen i produktionsmenyn utöver Lagrar, Säljer och Distribuerar. De hjälper när en fabrik fördelar sina produkter till dina andra produktionsanläggningar, dessa är fulla och fabrikens eget lager också fylls.
+Lägger till två utmatningslägen i produktionsmenyn utöver Lagrar, Säljer och Distribuerar. De hjälper när en fabrik fördelar sina produkter till dina andra produktionsplatser, dessa är fulla och fabrikens eget lager också fylls.
 - Distribuerar, resten lagras automatiskt: en gång per timme i spelet fördelas produkten som vanligt. Det som blir kvar i fabriken blir sedan pallar, som med Lagrar. Bara fulla pallar skapas; en mindre rest väntar till nästa timme. Erbjuds bara för produkter som kommer ut på pallar.
 - Distribuerar, resten säljs automatiskt: en gång per timme i spelet fördelas produkten som vanligt, och resten säljs till priset för Säljer.
 Distribuerar fungerar som i grundspelet.
 
-Flerspelarläge: alla behöver modden. Gårdsmedlemmar som får hantera produktionsanläggningar kan ändra lägena; bara servern säljer och skapar pallar.
+Flerspelarläge: alla behöver modden. Gårdsmedlemmar med tillståndet ”Hantera produktionspoäng” kan ändra lägena; bara servern säljer och skapar pallar.
 
 Snabbtangenter:
 Öppna spelmenyn, gå till Produktionskedjor, välj en produktion och använd ”Ändra utmatningsläge” som i grundspelet. De nya lägena kommer efter Distribuerar.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
         <tr><![CDATA[Açıklama:
-Üretim menüsüne Depolanıyor, Satılıyor ve Dağıtılıyor seçeneklerinin yanına iki çıkış modu ekler. Bir fabrika ürünlerini diğer üretim tesislerinize dağıtırken bu tesisler dolduğunda ve fabrikanın kendi deposu da dolmaya başladığında işe yarar.
+Üretim menüsüne Depolanıyor, Satılıyor ve Dağıtılıyor seçeneklerinin yanına iki çıkış modu ekler. Bir fabrika ürünlerini diğer üretim noktalarınıza dağıtırken bu noktalar dolduğunda ve fabrikanın kendi deposu da dolmaya başladığında işe yarar.
 - Dağıtılıyor, kalan otomatik depolanır: her oyun saatinde ürün her zamanki gibi dağıtılır. Fabrikada kalan kısım daha sonra Depolanıyor modundaki gibi palete dönüşür. Yalnızca dolu paletler oluşturulur; daha küçük bir kalan bir sonraki saati bekler. Yalnızca paletle çıkan ürünlerde sunulur.
 - Dağıtılıyor, kalan otomatik satılır: her oyun saatinde ürün her zamanki gibi dağıtılır, ardından kalan Satılıyor fiyatından satılır.
 Dağıtılıyor modu temel oyundaki gibi çalışır.
 
-Çok oyunculu: herkesin bu moda ihtiyacı vardır. Üretim tesislerini yönetme izni olan çiftlik üyeleri modları değiştirebilir; satışı ve paletleri yalnızca sunucu yapar.
+Çok oyunculu: herkesin bu moda ihtiyacı vardır. "Üretim Puanlarını Yönet" iznine sahip çiftlik üyeleri modları değiştirebilir; satışı ve paletleri yalnızca sunucu yapar.
 
 Kısayol tuşları:
 Oyun menüsünü açın, Üretim Zincirleri'ne gidin, bir üretim seçin ve temel oyundaki gibi "Çıkış modunu değiştir"i kullanın. Yeni modlar Dağıtılıyor'dan sonra gelir.
@@ -334,11 +334,11 @@ Oyun menüsünü açın, Üretim Zincirleri'ne gidin, bir üretim seçin ve teme
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
         <uk><![CDATA[Опис:
 Додає до меню виробництва два режими виведення на додачу до Зберігання, Продажу та Дистрибуції. Вони допомагають, коли виробництво розподіляє продукцію між іншими вашими точками виробництва, ті вже заповнені, а власний склад виробництва теж наповнюється.
-- Дистрибуція, автоматичне зберігання залишку: раз на ігрову годину продукція розподіляється як зазвичай. Те, що залишилося на виробництві, потім перетворюється на піддони, як при Зберіганні. Створюються лише повні піддони; менший залишок чекає наступної години. Доступно лише для продукції, що виходить на піддонах.
+- Дистрибуція, автоматичне зберігання залишку: раз на ігрову годину продукція розподіляється як зазвичай. Те, що залишилося на виробництві, потім перетворюється на палети, як при Зберіганні. Створюються лише повні палети; менший залишок чекає наступної години. Доступно лише для продукції, що виходить на палетах.
 - Дистрибуція, автоматичний продаж залишку: раз на ігрову годину продукція розподіляється як зазвичай, потім залишок продається за ціною Продажу.
 Сама Дистрибуція працює як в основній грі.
 
-Мережева гра: мод потрібен усім. Члени ферми з правом керувати точками виробництва можуть змінювати режими; продає та створює піддони лише сервер.
+Багатоосібна гра: мод потрібен усім. Члени ферми з правом керувати точками виробництва можуть змінювати режими; продає та створює палети лише сервер.
 
 Гарячі клавіші:
 Відкрийте ігрове меню, перейдіть до «Виробничих ланцюгів», виберіть виробництво і, як в основній грі, скористайтеся «Змінити режим виведення». Нові режими йдуть після Дистрибуції.
@@ -346,11 +346,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
         <vi><![CDATA[Mô tả:
 Thêm hai chế độ đầu ra vào menu sản xuất, bên cạnh Đang lưu trữ, Đang bán và Đang phân phối. Chúng hữu ích khi nhà máy phân phối sản phẩm đến các điểm sản xuất khác của bạn, các điểm đó đã đầy và kho của chính nhà máy cũng sắp đầy.
-- Đang phân phối, tự động lưu trữ phần còn lại: mỗi giờ trong game, sản phẩm được phân phối như bình thường. Phần còn lại trong nhà máy sau đó thành pallet, giống chế độ Đang lưu trữ. Chỉ tạo pallet đầy; phần dư nhỏ hơn chờ đến giờ tiếp theo. Chỉ có cho sản phẩm xuất ra bằng pallet.
+- Đang phân phối, tự động lưu trữ phần còn lại: mỗi giờ trong game, sản phẩm được phân phối như bình thường. Phần còn lại trong nhà máy sau đó thành kệ kê hàng, giống chế độ Đang lưu trữ. Chỉ tạo kệ kê hàng đầy; phần dư nhỏ hơn chờ đến giờ tiếp theo. Chỉ có cho sản phẩm xuất ra bằng kệ kê hàng.
 - Đang phân phối, tự động bán phần còn lại: mỗi giờ trong game, sản phẩm được phân phối như bình thường, sau đó phần còn lại được bán theo giá của Đang bán.
 Bản thân Đang phân phối vẫn như game gốc.
 
-Nhiều người chơi: mọi người đều cần Mod. Thành viên trang trại có quyền quản lý điểm sản xuất có thể đổi chế độ; chỉ máy chủ bán và tạo pallet.
+Chế độ Nhiều người chơi: mọi người đều cần Mod. Thành viên trang trại có quyền quản lý điểm sản xuất có thể đổi chế độ; chỉ máy chủ bán và tạo kệ kê hàng.
 
 Phím tắt:
 Mở menu game, vào Chuỗi sản xuất, chọn một dây chuyền sản xuất và dùng "Thay đổi chế độ đầu ra" như game gốc. Các chế độ mới nằm sau Đang phân phối.
@@ -379,7 +379,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
             <ea>En distribución, el resto se almacena automáticamente</ea>
             <es>Distribuyendo, el resto se almacena automáticamente</es>
             <fc>Distribution, reste stocké automatiquement</fc>
-            <fi>Levitys, loput varastoidaan automaattisesti</fi>
+            <fi>Levitys, loput säilytetään automaattisesti</fi>
             <fr>Distribution, reste stocké automatiquement</fr>
             <hu>Elosztás, a maradék automatikus tárolása</hu>
             <id>Mendistribusikan, sisanya disimpan otomatis</id>

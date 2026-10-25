@@ -490,7 +490,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
             <ea>Se procesa cada hora del juego, con precios de venta automática y gastos de envío. Distribuye primero a las fábricas de tu granja; el resto se almacena o se vende según lo elegido. Las tarimas existentes se transportan manualmente.</ea>
             <es>Se procesa cada hora del juego, con precios de venta automática y gastos de transporte. Distribuye primero a las fábricas de tu granja; el resto se almacena o se vende según lo elegido. Los palés existentes se transportan manualmente.</es>
             <fc>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution d'abord aux usines de votre ferme; le reste est stocké ou vendu selon votre choix. Transportez les palettes existantes manuellement.</fc>
-            <fi>Käsittely pelin jokaisena tuntina automaattisilla myyntihinnoilla ja kuljetusmaksuilla. Jakelu toimittaa ensin tilasi tuotantolaitoksille; loput varastoidaan tai myydään valintasi mukaan. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
+            <fi>Käsittely pelin jokaisena tuntina automaattisilla myyntihinnoilla ja kuljetusmaksuilla. Levitys toimittaa ensin tilasi tuotantolaitoksille; loput säilytetään tai myydään valintasi mukaan. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
             <fr>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution d'abord aux usines de votre ferme ; le reste est stocké ou vendu selon votre choix. Transportez les palettes existantes manuellement.</fr>
             <hu>Feldolgozás minden játékórában, automatikus eladási árakkal és szállítási díjakkal. Az elosztás először a saját gazdaság üzemeit látja el; a maradékot a választás szerint tárolja vagy eladja. A meglévő raklapokat kézzel kell elszállítani.</hu>
             <id>Diproses setiap jam dalam game dengan harga jual otomatis dan biaya pengiriman. Distribusi memasok fasilitas produksi pertanian Anda terlebih dahulu; sisanya disimpan atau dijual sesuai pilihan. Palet yang sudah ada harus diangkut manual.</id>
@@ -519,7 +519,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
             <ea>En distribución, el resto se almacena automáticamente</ea>
             <es>Distribuyendo, el resto se almacena automáticamente</es>
             <fc>Distribution, reste stocké automatiquement</fc>
-            <fi>Levitys, loput varastoidaan automaattisesti</fi>
+            <fi>Levitys, loput säilytetään automaattisesti</fi>
             <fr>Distribution, reste stocké automatiquement</fr>
             <hu>Elosztás, a maradék automatikus tárolása</hu>
             <id>Mendistribusikan, sisanya disimpan otomatis</id>
