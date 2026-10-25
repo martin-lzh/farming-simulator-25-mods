@@ -42,7 +42,7 @@ If a job is stopped or can't be finished, the queue pauses and you get a message
 Multiplayer: farm members allowed to hire workers can use the queue. The server runs it, and it is saved with the game.
 
 Hotkeys:
-Left Alt + M opens the map on the Map Helper page; you can change it in the controls. On the map, click Map Helper below your balance or press X. On the page, Z adds the job to the queue and X inserts it as next. The keys are shown on the buttons, and controllers have their own default buttons.
+Left Alt + M opens the map on the Map Helper page; you can change it in the controls. On the map, Map Helper in the button bar at the bottom and its key (X by default) switch to the page. On the page, Z adds the job to the queue and X inserts it as next. The keys are shown on the buttons, and controllers have their own default buttons.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
         <de><![CDATA[Beschreibung:
@@ -55,11 +55,11 @@ Wird ein Job abgebrochen oder kann er nicht beendet werden, hält die Warteschla
 Mehrspieler: Hofmitglieder mit dem Recht, KI-Helfer einzustellen, können die Warteschlange nutzen. Der Server führt sie aus, und sie wird mit dem Spielstand gespeichert.
 
 Tastenbelegung:
-Linke Alt + M öffnet die Karte auf der Kartenassistent-Seite; du kannst die Taste in der Steuerung ändern. Klicke auf der Karte unter deinem Kontostand auf „Kartenassistent“ oder drücke X. Auf der Seite fügt Z den Job zur Warteschlange hinzu und X reiht ihn als Nächstes ein. Die Tasten stehen auf den Schaltflächen, Controller haben eigene Standardtasten.
+Linke Alt + M öffnet die Karte auf der Kartenassistent-Seite; du kannst die Taste in der Steuerung ändern. Auf der Karte wechseln „Kartenassistent“ in der Schaltflächenleiste unten und die zugehörige Taste (standardmäßig X) zur Seite. Auf der Seite fügt Z den Job zur Warteschlange hinzu und X reiht ihn als Nächstes ein. Die Tasten stehen auf den Schaltflächen, Controller haben eigene Standardtasten.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
         <cs><![CDATA[说明：
-在游戏菜单地图左侧的边栏中加入“地图助手”页面，与地图筛选和“在岗帮手”并列。它作用于你当前驾驶的车辆，或你在地图上选中的你的车辆：
+在游戏菜单地图左侧的边栏中加入“地图助手”页面，与地图筛选和“活跃帮手”并列。它作用于你当前驾驶的车辆，或你在地图上选中的你的车辆：
 - 地点：用选择器决定列表显示的内容：需要这台车辆作业的田地、所有田地及其状态、进行中的合同，或它可以装货或卸货的站点。点击一项，地图会移到该处并填好作业。
 - 作业：游戏自带的作业设置，包括在地图上选择目标。“加入队列”把作业排到最后，“插入为下一个”把它排到最前。
 - 指令队列：这台车辆的待办清单。加入的第一个作业会立即开始。当前作业显示进度，完成的作业自动消失，下一个自动开始。等待中的作业随时可以移动、编辑或删除，帮手驾驶时也可以；对当前作业点“删除”会取消它。
@@ -68,7 +68,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
 多人游戏：有雇佣帮手权限的农场成员可以使用队列。队列由服务器执行，并随存档保存。
 
 快捷键：
-左 Alt + M 打开地图并显示地图助手页面，可在控制设置中更改。在地图上点击余额下方的“地图助手”或按 X。在页面上，Z 把作业加入队列，X 把作业插入为下一个。按键显示在按钮上，手柄有自己的默认按键。
+左 Alt + M 打开地图并显示地图助手页面，可在控制设置中更改。在地图上，底部按钮栏中的“地图助手”及其按键（默认为 X）切换到该页面。在页面上，Z 把作业加入队列，X 把作业插入为下一个。按键显示在按钮上，手柄有自己的默认按键。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
         <br><![CDATA[Descrição:
@@ -81,11 +81,11 @@ Se uma tarefa for interrompida ou não puder ser concluída, a fila pausa e voc�
 Multijogador: membros da fazenda com permissão para contratar ajudantes podem usar a fila. O servidor a executa e ela é salva com o jogo.
 
 Teclas de atalho:
-Alt esquerdo + M abre o mapa na página Assistente De Mapa; você pode mudar a tecla nos controles. No mapa, clique em Assistente De Mapa abaixo do seu saldo ou pressione X. Na página, Z adiciona a tarefa à fila e X a insere como próxima. As teclas aparecem nos botões, e os controles têm seus próprios botões padrão.
+Alt esquerdo + M abre o mapa na página Assistente De Mapa; você pode mudar a tecla nos controles. No mapa, Assistente De Mapa na barra de botões inferior e a tecla dele (X por padrão) alternam para a página. Na página, Z adiciona a tarefa à fila e X a insere como próxima. As teclas aparecem nos botões, e os controles têm seus próprios botões padrão.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
         <ct><![CDATA[說明：
-在遊戲選單地圖左側的側欄中加入「地圖助手」頁面，與地圖篩選和「在崗幫手」並列。它作用於你目前駕駛的車輛，或你在地圖上選取的你的車輛：
+在遊戲選單地圖左側的側欄中加入「地圖助手」頁面，與地圖篩選和「工作中的人工智慧幫手」並列。它作用於你目前駕駛的車輛，或你在地圖上選取的你的車輛：
 - 地點：用選擇器決定清單顯示的內容：需要這台車輛作業的田地、所有田地及其狀態、進行中的合約，或它可以裝貨或卸貨的站點。點選一項，地圖會移到該處並填好工作。
 - 工作：遊戲內建的工作設定，包括在地圖上選擇目標。「加入佇列」把工作排到最後，「插入為下一個」把它排到最前。
 - 指令佇列：這台車輛的待辦清單。加入的第一個工作會立即開始。目前的工作會顯示進度，完成的工作自動消失，下一個自動開始。等待中的工作隨時可以移動、編輯或刪除，幫手駕駛時也可以；對目前的工作點「刪除」會取消它。
@@ -94,7 +94,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
 多人遊戲：有僱用幫手權限的農場成員可以使用佇列。佇列由伺服器執行，並隨存檔儲存。
 
 快捷鍵：
-左 Alt + M 開啟地圖並顯示地圖助手頁面，可在控制設定中變更。在地圖上點選餘額下方的「地圖助手」或按 X。在頁面上，Z 把工作加入佇列，X 把工作插入為下一個。按鍵顯示在按鈕上，手把有自己的預設按鍵。
+左 Alt + M 開啟地圖並顯示地圖助手頁面，可在控制設定中變更。在地圖上，底部按鈕列中的「地圖助手」及其按鍵（預設為 X）切換到該頁面。在頁面上，Z 把工作加入佇列，X 把工作插入為下一個。按鍵顯示在按鈕上，手把有自己的預設按鍵。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
         <cz><![CDATA[Popis:
@@ -107,7 +107,7 @@ Pokud je úkol zastaven nebo jej nelze dokončit, fronta se pozastaví a dostane
 Hra více hráčů: členové farmy s oprávněním najímat pracovníky mohou frontu používat. Spouští ji server a ukládá se spolu s hrou.
 
 Klávesové zkratky:
-Levý Alt + M otevře mapu na stránce Pomocník Mapy; klávesu můžete změnit v ovládání. Na mapě klikněte na Pomocník Mapy pod zůstatkem nebo stiskněte X. Na stránce Z přidá úkol do fronty a X jej vloží jako další. Klávesy jsou zobrazeny na tlačítkách, ovladače mají vlastní výchozí tlačítka.
+Levý Alt + M otevře mapu na stránce Pomocník Mapy; klávesu můžete změnit v ovládání. Na mapě na stránku přepnou Pomocník Mapy ve spodní liště tlačítek a jeho klávesa (výchozí X). Na stránce Z přidá úkol do fronty a X jej vloží jako další. Klávesy jsou zobrazeny na tlačítkách, ovladače mají vlastní výchozí tlačítka.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
         <da><![CDATA[Beskrivelse:
@@ -120,7 +120,7 @@ Hvis et job stoppes eller ikke kan gøres færdigt, sættes køen på pause, og 
 Multiplayer: gårdmedlemmer med tilladelse til at ansætte arbejdere kan bruge køen. Serveren kører den, og den gemmes med spillet.
 
 Genvejstaster:
-Venstre Alt + M åbner kortet på Kortassistent-siden; du kan ændre tasten i styringen. På kortet skal du klikke på Kortassistent under din saldo eller trykke på X. På siden føjer Z jobbet til køen, og X indsætter det som næste. Tasterne vises på knapperne, og controllere har deres egne standardknapper.
+Venstre Alt + M åbner kortet på Kortassistent-siden; du kan ændre tasten i styringen. På kortet skifter Kortassistent i knaplinjen nederst og dens tast (X som standard) til siden. På siden føjer Z jobbet til køen, og X indsætter det som næste. Tasterne vises på knapperne, og controllere har deres egne standardknapper.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
         <ea><![CDATA[Descripción:
@@ -133,7 +133,7 @@ Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un me
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
 
 Teclas de acceso rápido:
-Alt izquierdo + M abre el mapa en la página Asistente De Mapa; puedes cambiar la tecla en los controles. En el mapa, haz clic en Asistente De Mapa debajo de tu saldo o presiona X. En la página, Z agrega el trabajo a la cola y X lo inserta como siguiente. Las teclas se muestran en los botones y los controles tienen sus propios botones predeterminados.
+Alt izquierdo + M abre el mapa en la página Asistente De Mapa; puedes cambiar la tecla en los controles. En el mapa, Asistente De Mapa en la barra de botones inferior y su tecla (X de forma predeterminada) cambian a la página. En la página, Z agrega el trabajo a la cola y X lo inserta como siguiente. Las teclas se muestran en los botones y los controles tienen sus propios botones predeterminados.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
         <es><![CDATA[Descripción:
@@ -146,7 +146,7 @@ Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un me
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
 
 Teclas de acceso rápido:
-Alt izquierdo + M abre el mapa en la página Asistente De Mapa; puedes cambiar la tecla en los controles. En el mapa, haz clic en Asistente De Mapa debajo de tu saldo o pulsa X. En la página, Z añade el trabajo a la cola y X lo inserta como siguiente. Las teclas aparecen en los botones y los mandos tienen sus propios botones predeterminados.
+Alt izquierdo + M abre el mapa en la página Asistente De Mapa; puedes cambiar la tecla en los controles. En el mapa, Asistente De Mapa en la barra de botones inferior y su tecla (X por defecto) cambian a la página. En la página, Z añade el trabajo a la cola y X lo inserta como siguiente. Las teclas aparecen en los botones y los mandos tienen sus propios botones predeterminados.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
         <fc><![CDATA[Description :
@@ -159,7 +159,7 @@ Si un travail est arrêté ou ne peut pas être terminé, la file se met en paus
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est enregistrée avec la partie.
 
 Raccourcis :
-Alt gauche + M ouvre la carte sur la page Assistant De Carte ; vous pouvez changer la touche dans les commandes. Sur la carte, cliquez sur Assistant De Carte sous votre solde ou appuyez sur X. Sur la page, Z ajoute le travail à la file et X l'insère en suivant. Les touches sont affichées sur les boutons, et les manettes ont leurs propres boutons par défaut.
+Alt gauche + M ouvre la carte sur la page Assistant De Carte ; vous pouvez changer la touche dans les commandes. Sur la carte, Assistant De Carte dans la barre de boutons en bas et sa touche (X par défaut) basculent vers la page. Sur la page, Z ajoute le travail à la file et X l'insère en suivant. Les touches sont affichées sur les boutons, et les manettes ont leurs propres boutons par défaut.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
         <fi><![CDATA[Kuvaus:
@@ -172,7 +172,7 @@ Jos työ keskeytetään tai sitä ei voi suorittaa loppuun, jono pysähtyy ja sa
 Moninpeli: tilan jäsenet, joilla on oikeus palkata työntekijöitä, voivat käyttää jonoa. Palvelin suorittaa sen, ja se tallennetaan pelin mukana.
 
 Pikanäppäimet:
-Vasen Alt + M avaa kartan Kartta-Avustaja-sivulle; voit vaihtaa näppäimen ohjausasetuksissa. Napsauta kartalla saldosi alla olevaa Kartta-Avustajaa tai paina X. Sivulla Z lisää työn jonoon ja X lisää sen seuraavaksi. Näppäimet näkyvät painikkeissa, ja ohjaimilla on omat oletuspainikkeensa.
+Vasen Alt + M avaa kartan Kartta-Avustaja-sivulle; voit vaihtaa näppäimen ohjausasetuksissa. Kartalla alareunan painikepalkin Kartta-Avustaja ja sen näppäin (oletuksena X) vaihtavat sivulle. Sivulla Z lisää työn jonoon ja X lisää sen seuraavaksi. Näppäimet näkyvät painikkeissa, ja ohjaimilla on omat oletuspainikkeensa.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
         <fr><![CDATA[Description :
@@ -185,7 +185,7 @@ Si une tâche est arrêtée ou ne peut pas être terminée, la file se met en pa
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
 
 Raccourcis :
-Alt gauche + M ouvre la carte sur la page Assistant De Carte ; vous pouvez changer la touche dans les commandes. Sur la carte, cliquez sur Assistant De Carte sous votre solde ou appuyez sur X. Sur la page, Z ajoute la tâche à la file et X l'insère en suivant. Les touches sont affichées sur les boutons, et les manettes ont leurs propres boutons par défaut.
+Alt gauche + M ouvre la carte sur la page Assistant De Carte ; vous pouvez changer la touche dans les commandes. Sur la carte, Assistant De Carte dans la barre de boutons en bas et sa touche (X par défaut) basculent vers la page. Sur la page, Z ajoute la tâche à la file et X l'insère en suivant. Les touches sont affichées sur les boutons, et les manettes ont leurs propres boutons par défaut.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
         <hu><![CDATA[Leírás:
@@ -198,7 +198,7 @@ Ha egy feladatot leállítanak, vagy nem fejezhető be, a sor szünetel, és üz
 Többjátékos mód: a gazdaság segítőfelvételi joggal rendelkező tagjai használhatják a sort. A szerver futtatja, és a játékkal együtt mentődik.
 
 Gyorsbillentyűk:
-A bal Alt + M a Térképsegéd oldalon nyitja meg a térképet; a billentyűt az irányításban módosíthatod. A térképen kattints az egyenleged alatti Térképsegéd gombra, vagy nyomd meg az X-et. Az oldalon a Z a sorhoz adja a feladatot, az X pedig következőnek szúrja be. A billentyűk a gombokon láthatók, a kontrollereknek saját alapértelmezett gombjaik vannak.
+A bal Alt + M a Térképsegéd oldalon nyitja meg a térképet; a billentyűt az irányításban módosíthatod. A térképen az alsó gombsorban lévő Térképsegéd és a billentyűje (alapértelmezés szerint X) erre az oldalra vált. Az oldalon a Z a sorhoz adja a feladatot, az X pedig következőnek szúrja be. A billentyűk a gombokon láthatók, a kontrollereknek saját alapértelmezett gombjaik vannak.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
         <id><![CDATA[Deskripsi:
@@ -211,7 +211,7 @@ Jika pekerjaan dihentikan atau tidak dapat diselesaikan, antrean dijeda dan Anda
 Multipemain: anggota peternakan yang boleh mempekerjakan pekerja dapat menggunakan antrean. Server menjalankannya, dan antrean disimpan bersama permainan.
 
 Tombol pintas:
-Alt kiri + M membuka peta di halaman Asisten Peta; Anda dapat mengubahnya di pengaturan kontrol. Di peta, klik Asisten Peta di bawah saldo Anda atau tekan X. Di halaman ini, Z menambahkan pekerjaan ke antrean dan X menyisipkannya sebagai berikutnya. Tombol ditampilkan pada tombol layar, dan kontroler memiliki tombol bawaan sendiri.
+Alt kiri + M membuka peta di halaman Asisten Peta; Anda dapat mengubahnya di pengaturan kontrol. Di peta, Asisten Peta di bilah tombol bagian bawah dan tombol pintasnya (bawaan X) beralih ke halaman ini. Di halaman ini, Z menambahkan pekerjaan ke antrean dan X menyisipkannya sebagai berikutnya. Tombol ditampilkan pada tombol layar, dan kontroler memiliki tombol bawaan sendiri.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
         <it><![CDATA[Descrizione:
@@ -224,7 +224,7 @@ Se un lavoro viene interrotto o non può essere completato, la coda si mette in 
 Multigiocatore: i membri della fattoria autorizzati ad assumere aiutanti possono usare la coda. La esegue il server e viene salvata con la partita.
 
 Tasti di scelta rapida:
-Alt sinistro + M apre la mappa sulla pagina Assistente Mappa; puoi cambiare il tasto nei comandi. Sulla mappa, fai clic su Assistente Mappa sotto il tuo saldo o premi X. Nella pagina, Z aggiunge il lavoro alla coda e X lo inserisce come prossimo. I tasti sono indicati sui pulsanti, e i controller hanno i propri pulsanti predefiniti.
+Alt sinistro + M apre la mappa sulla pagina Assistente Mappa; puoi cambiare il tasto nei comandi. Sulla mappa, Assistente Mappa nella barra dei pulsanti in basso e il suo tasto (X per impostazione predefinita) passano alla pagina. Nella pagina, Z aggiunge il lavoro alla coda e X lo inserisce come prossimo. I tasti sono indicati sui pulsanti, e i controller hanno i propri pulsanti predefiniti.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
         <jp><![CDATA[説明：
@@ -237,7 +237,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
 マルチプレイ：ヘルパーを雇う権限を持つ農場メンバーがキューを使えます。キューはサーバーが実行し、セーブデータとともに保存されます。
 
 ホットキー：
-左 Alt + M でマップヘルパーページのマップを開きます。キーは操作設定で変更できます。マップでは所持金の下の「マップヘルパー」をクリックするか X を押します。ページでは Z で仕事をキューに追加し、X で次に挿入します。キーはボタンに表示され、コントローラーには専用の標準ボタンがあります。
+左 Alt + M でマップヘルパーページのマップを開きます。キーは操作設定で変更できます。マップでは、下部のボタンバーにある「マップヘルパー」とそのキー（標準は X）でこのページに切り替わります。ページでは Z で仕事をキューに追加し、X で次に挿入します。キーはボタンに表示され、コントローラーには専用の標準ボタンがあります。
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
         <kr><![CDATA[설명:
@@ -250,7 +250,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 멀티플레이: 작업자 고용 권한이 있는 농장 구성원이 대기열을 사용할 수 있습니다. 서버가 실행하며 게임과 함께 저장됩니다.
 
 단축키:
-왼쪽 Alt + M으로 지도 도우미 페이지가 열린 지도를 엽니다. 키는 조작 설정에서 바꿀 수 있습니다. 지도에서 잔액 아래의 지도 도우미를 클릭하거나 X를 누르세요. 페이지에서 Z는 작업을 대기열에 추가하고 X는 다음으로 삽입합니다. 키는 버튼에 표시되며, 컨트롤러에는 자체 기본 버튼이 있습니다.
+왼쪽 Alt + M으로 지도 도우미 페이지가 열린 지도를 엽니다. 키는 조작 설정에서 바꿀 수 있습니다. 지도에서는 하단 버튼 바의 지도 도우미와 해당 키(기본값 X)로 이 페이지로 전환됩니다. 페이지에서 Z는 작업을 대기열에 추가하고 X는 다음으로 삽입합니다. 키는 버튼에 표시되며, 컨트롤러에는 자체 기본 버튼이 있습니다.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
         <nl><![CDATA[Beschrijving:
@@ -263,7 +263,7 @@ Als een klus wordt gestopt of niet kan worden afgerond, pauzeert de wachtrij en 
 Multiplayer: boerderijleden die helpers mogen inhuren, kunnen de wachtrij gebruiken. De server voert hem uit en hij wordt met het spel opgeslagen.
 
 Sneltoetsen:
-Linker Alt + M opent de kaart op de Kaarthulp-pagina; je kunt de toets wijzigen in de besturing. Klik op de kaart op Kaarthulp onder je saldo of druk op X. Op de pagina voegt Z de klus aan de wachtrij toe en voegt X hem als volgende in. De toetsen staan op de knoppen, en controllers hebben hun eigen standaardknoppen.
+Linker Alt + M opent de kaart op de Kaarthulp-pagina; je kunt de toets wijzigen in de besturing. Op de kaart schakelen Kaarthulp in de knoppenbalk onderaan en de bijbehorende toets (standaard X) naar de pagina. Op de pagina voegt Z de klus aan de wachtrij toe en voegt X hem als volgende in. De toetsen staan op de knoppen, en controllers hebben hun eigen standaardknoppen.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
         <no><![CDATA[Beskrivelse:
@@ -276,7 +276,7 @@ Hvis en jobb stoppes eller ikke kan fullføres, settes køen på pause og du få
 Flerspiller: gårdsmedlemmer med tillatelse til å ansette arbeidere kan bruke køen. Serveren kjører den, og den lagres sammen med spillet.
 
 Hurtigtaster:
-Venstre Alt + M åpner kartet på Kartassistent-siden; du kan endre tasten i kontrollene. På kartet klikker du på Kartassistent under saldoen eller trykker på X. På siden legger Z jobben i køen og X setter den inn som neste. Tastene vises på knappene, og kontrollere har egne standardknapper.
+Venstre Alt + M åpner kartet på Kartassistent-siden; du kan endre tasten i kontrollene. På kartet bytter Kartassistent i knappelinjen nederst og tasten for den (X som standard) til siden. På siden legger Z jobben i køen og X setter den inn som neste. Tastene vises på knappene, og kontrollere har egne standardknapper.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
         <pl><![CDATA[Opis:
@@ -289,7 +289,7 @@ Jeśli praca zostanie zatrzymana lub nie da się jej ukończyć, kolejka wstrzym
 Gra wieloosobowa: członkowie gospodarstwa z uprawnieniem do zatrudniania pracowników mogą korzystać z kolejki. Uruchamia ją serwer, a kolejka zapisuje się razem z grą.
 
 Skróty klawiszowe:
-Lewy Alt + M otwiera mapę na stronie Pomocnik Mapy; klawisz możesz zmienić w sterowaniu. Na mapie kliknij Pomocnik Mapy pod saldem lub naciśnij X. Na stronie Z dodaje pracę do kolejki, a X wstawia ją jako następną. Klawisze są widoczne na przyciskach, a kontrolery mają własne domyślne przyciski.
+Lewy Alt + M otwiera mapę na stronie Pomocnik Mapy; klawisz możesz zmienić w sterowaniu. Na mapie Pomocnik Mapy na dolnym pasku przycisków i jego klawisz (domyślnie X) przełączają na tę stronę. Na stronie Z dodaje pracę do kolejki, a X wstawia ją jako następną. Klawisze są widoczne na przyciskach, a kontrolery mają własne domyślne przyciski.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
         <pt><![CDATA[Descrição:
@@ -302,7 +302,7 @@ Se uma tarefa for parada ou não puder ser concluída, a fila fica em pausa e re
 Multijogador: os membros da quinta com permissão para contratar trabalhadores podem usar a fila. O servidor executa-a e ela é guardada com o jogo.
 
 Teclas de atalho:
-Alt esquerdo + M abre o mapa na página Assistente De Mapa; podes mudar a tecla nos controlos. No mapa, clica em Assistente De Mapa por baixo do teu saldo ou prime X. Na página, Z adiciona a tarefa à fila e X insere-a como seguinte. As teclas aparecem nos botões, e os comandos têm os seus próprios botões predefinidos.
+Alt esquerdo + M abre o mapa na página Assistente De Mapa; podes mudar a tecla nos controlos. No mapa, Assistente De Mapa na barra de botões em baixo e a respetiva tecla (X por predefinição) mudam para a página. Na página, Z adiciona a tarefa à fila e X insere-a como seguinte. As teclas aparecem nos botões, e os comandos têm os seus próprios botões predefinidos.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
         <ro><![CDATA[Descriere:
@@ -315,7 +315,7 @@ Dacă o sarcină este oprită sau nu poate fi terminată, coada se oprește temp
 Multiplayer: membrii fermei care au voie să angajeze lucrători pot folosi coada. Serverul o execută și se salvează odată cu jocul.
 
 Taste rapide:
-Alt stânga + M deschide harta pe pagina Asistent De Hartă; poți schimba tasta din controale. Pe hartă, fă clic pe Asistent De Hartă sub sold sau apasă X. Pe pagină, Z adaugă sarcina în coadă, iar X o inserează ca următoarea. Tastele sunt afișate pe butoane, iar controlerele au propriile butoane implicite.
+Alt stânga + M deschide harta pe pagina Asistent De Hartă; poți schimba tasta din controale. Pe hartă, Asistent De Hartă din bara de butoane de jos și tasta sa (implicit X) comută la pagină. Pe pagină, Z adaugă sarcina în coadă, iar X o inserează ca următoarea. Tastele sunt afișate pe butoane, iar controlerele au propriile butoane implicite.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
         <ru><![CDATA[Описание:
@@ -328,7 +328,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 Мультиплеер: участники фермы с правом нанимать работников могут пользоваться очередью. Её выполняет сервер, и она сохраняется вместе с игрой.
 
 Горячие клавиши:
-Левый Alt + M открывает карту на странице «Помощник Карты»; клавишу можно изменить в управлении. На карте нажмите «Помощник Карты» под балансом или клавишу X. На странице Z ставит работу в очередь, а X вставляет её следующей. Клавиши показаны на кнопках, у контроллеров есть свои кнопки по умолчанию.
+Левый Alt + M открывает карту на странице «Помощник Карты»; клавишу можно изменить в управлении. На карте «Помощник Карты» в нижней панели кнопок и его клавиша (по умолчанию X) переключают на эту страницу. На странице Z ставит работу в очередь, а X вставляет её следующей. Клавиши показаны на кнопках, у контроллеров есть свои кнопки по умолчанию.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
         <sv><![CDATA[Beskrivning:
@@ -341,7 +341,7 @@ Om ett jobb stoppas eller inte kan slutföras pausas kön och du får ett meddel
 Flerspelarläge: gårdsmedlemmar som får anlita arbetare kan använda kön. Servern kör den, och den sparas med spelet.
 
 Snabbtangenter:
-Vänster Alt + M öppnar kartan på Kartassistent-sidan; du kan ändra tangenten i kontrollerna. På kartan klickar du på Kartassistent under ditt saldo eller trycker på X. På sidan lägger Z jobbet i kön och X infogar det som nästa. Tangenterna visas på knapparna, och handkontroller har egna standardknappar.
+Vänster Alt + M öppnar kartan på Kartassistent-sidan; du kan ändra tangenten i kontrollerna. På kartan växlar Kartassistent i knappraden längst ned och dess tangent (X som standard) till sidan. På sidan lägger Z jobbet i kön och X infogar det som nästa. Tangenterna visas på knapparna, och handkontroller har egna standardknappar.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
         <tr><![CDATA[Açıklama:
@@ -354,7 +354,7 @@ Bir iş durdurulursa veya tamamlanamazsa sıra duraklar ve bir mesaj alırsını
 Çok oyunculu: işçi kiralama izni olan çiftlik üyeleri sırayı kullanabilir. Sırayı sunucu yürütür ve oyunla birlikte kaydedilir.
 
 Kısayol tuşları:
-Sol Alt + M haritayı Harita Yardımcısı sayfasında açar; tuşu kontrollerden değiştirebilirsiniz. Haritada bakiyenizin altındaki Harita Yardımcısı'na tıklayın veya X'e basın. Sayfada Z işi sıraya ekler, X ise sonraki olarak ekler. Tuşlar düğmelerde gösterilir; kumandaların kendi varsayılan düğmeleri vardır.
+Sol Alt + M haritayı Harita Yardımcısı sayfasında açar; tuşu kontrollerden değiştirebilirsiniz. Haritada alttaki düğme çubuğunda bulunan Harita Yardımcısı ve tuşu (varsayılan olarak X) bu sayfaya geçiş yapar. Sayfada Z işi sıraya ekler, X ise sonraki olarak ekler. Tuşlar düğmelerde gösterilir; kumandaların kendi varsayılan düğmeleri vardır.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
         <uk><![CDATA[Опис:
@@ -367,7 +367,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 Мультиплеєр: учасники ферми з дозволом наймати працівників можуть користуватися чергою. Її виконує сервер, і вона зберігається разом із грою.
 
 Гарячі клавіші:
-Лівий Alt + M відкриває мапу на сторінці «Помічник Мапи»; клавішу можна змінити в керуванні. На мапі натисніть «Помічник Мапи» під балансом або клавішу X. На сторінці Z додає завдання до черги, а X вставляє його наступним. Клавіші показано на кнопках, а контролери мають власні кнопки за замовчуванням.
+Лівий Alt + M відкриває мапу на сторінці «Помічник Мапи»; клавішу можна змінити в керуванні. На мапі «Помічник Мапи» в нижній панелі кнопок і його клавіша (за замовчуванням X) перемикають на цю сторінку. На сторінці Z додає завдання до черги, а X вставляє його наступним. Клавіші показано на кнопках, а контролери мають власні кнопки за замовчуванням.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
         <vi><![CDATA[Mô tả:
@@ -380,7 +380,7 @@ Nếu một công việc bị dừng hoặc không thể hoàn thành, hàng đ�
 Nhiều người chơi: thành viên trang trại được phép thuê công nhân có thể dùng hàng đợi. Máy chủ thực hiện hàng đợi và lưu cùng với trò chơi.
 
 Phím tắt:
-Alt trái + M mở bản đồ ở trang Trợ Lý Bản Đồ; bạn có thể đổi phím trong phần điều khiển. Trên bản đồ, nhấn Trợ Lý Bản Đồ bên dưới số dư hoặc nhấn X. Trên trang, Z thêm công việc vào hàng đợi và X chèn nó làm tiếp theo. Các phím hiển thị trên nút, và tay cầm có nút mặc định riêng.
+Alt trái + M mở bản đồ ở trang Trợ Lý Bản Đồ; bạn có thể đổi phím trong phần điều khiển. Trên bản đồ, Trợ Lý Bản Đồ trên thanh nút ở dưới cùng và phím của nó (mặc định là X) chuyển sang trang này. Trên trang, Z thêm công việc vào hàng đợi và X chèn nó làm tiếp theo. Các phím hiển thị trên nút, và tay cầm có nút mặc định riêng.
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
     </description>

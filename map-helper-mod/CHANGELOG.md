@@ -5,7 +5,7 @@
 ## 1.0.0.0 — 2026-10-25
 
 - First version. Adds a Map Helper page to the left sidebar of the map in the in-game menu, next to the map filters and Active Workers.
-- 首个版本。在游戏菜单地图的左侧边栏加入“地图助手”页面，与地图筛选和“在岗帮手”并列。
+- 首个版本。在游戏菜单地图的左侧边栏加入“地图助手”页面，与地图筛选和“活跃帮手”并列。
 - Left Alt + M opens the map on the Map Helper page, on foot or in a vehicle. On the map, Map Helper in the button bar at the bottom and its key (X by default) switch to the page.
 - 左 Alt + M 直接打开地图并显示地图助手页面，步行或驾驶时都可以。在地图上，底部按钮栏中的“地图助手”及其按键（默认为 X）切换到该页面。
 - The page works with the vehicle you are sitting in. Click another of your vehicles on the map to plan for it; click the vehicle card to go back to yours.
