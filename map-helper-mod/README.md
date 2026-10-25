@@ -91,6 +91,7 @@ Queues are saved with the game. After loading, a queue waits until you click **R
 - On the Precision Farming soil map, X opens its Help and the Map Helper entry is hidden; use Left Alt + M or the arrows at the top of the sidebar. The entry is also hidden while you create a job with the game's own **Create job**.
 - You can change Left Alt + M in the controls (**Open Map Helper**). The keys are shown on the buttons; controllers have their own default buttons.
 - Other Mods that change the map page or the worker menus may not work together with Map Helper; try them in a separate save first.
+- Job Queue by 19mariusz95 also queues worker jobs for a vehicle. You can install both, but plan each vehicle's jobs in only one of them: when the same vehicle has jobs waiting in both, Job Queue starts its next job first and Map Helper's queue pauses. Job Queue works in single player only.
 
 ### Install and update
 
@@ -182,6 +183,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 - 在精准农业的土壤图层上，X 会打开它的“帮助”，底部的“地图助手”也会隐藏；请按左 Alt + M，或用边栏顶部的箭头翻到地图助手页面。用游戏自带的 **创建作业** 创建作业时，这一项同样隐藏。
 - 左 Alt + M 可在控制设置中更改（**打开地图助手**）。按键显示在按钮上，手柄有自己的默认按键。
 - 修改地图页面或帮手菜单的其他 Mod 可能无法与地图助手共用，请先在单独的存档中试用。
+- 19mariusz95 制作的 Job Queue 同样可以为载具排列帮手作业。两个 Mod 可以同时安装，但每台载具只在其中一个里安排作业：同一台载具在两边都有等待的作业时，Job Queue 会先开始它的下一个作业，地图助手的队列则会暂停。Job Queue 只支持单人游戏。
 
 ### 安装与更新
 

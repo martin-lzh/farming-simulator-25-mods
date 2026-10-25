@@ -61,6 +61,7 @@ The list matches the animals in the barn: goats only show goat milk, sheep only 
 - When a barn changes owner, all of its products go back to Storing.
 - Manure, slurry, animal trading and DLC-specific outputs are not handled.
 - Barns from other Mods that handle their own storage or pallets, and other Mods that also sell or deliver animal products automatically, may not work together with this Mod. Try the combination in a separate save first.
+- Distribution Redux by Bones also handles animal products, as part of a farm-wide distribution network. You can use both: products you set to Selling or Distributing here are handled by this Mod first, and Distribution Redux works with what is left. Pallets then follow Distribution Redux's pallet setting, which by default only puts out full pallets. Manage each product in one Mod only and leave it on Storing (or Hold) in the other; if both distribute the same product, you pay both delivery fees.
 
 ### Multiplayer
 
@@ -132,6 +133,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 - 畜舍换了所有者后，所有产品恢复为储存。
 - 不处理粪肥、水肥、动物交易和 DLC 专属产出。
 - 自带仓储或托盘逻辑的其他 Mod 畜舍，以及同样会自动出售或分配动物产品的其他 Mod，可能无法和本 Mod 一起使用。请先在单独的存档中试一试。
+- Bones 制作的 Distribution Redux 也会处理动物产品，它是覆盖整个农场的物流网络。两个 Mod 可以一起使用：在本 Mod 中设为出售或分配的产品由本 Mod 先处理，Distribution Redux 再处理剩下的部分。托盘按 Distribution Redux 的托盘设置生成，默认只放出装满的托盘。每种产品请只用一个 Mod 管理，在另一个里保持储存（或 Hold）；两边都分配同一种产品时，两份运费都会收。
 
 ### 多人游戏
 

@@ -55,6 +55,7 @@ Turn on **AI Worker Refill - Fertilizer** in Settings → Game Settings. A worke
 - You can only choose what the implement is built to spread: fertilizer, liquid fertilizer, lime, herbicide, manure, slurry or digestate. A universal trailer with a manure spreader can load lime but only spreads manure, so lime can't be chosen on it.
 - Spreaders that spread lime with a different working width switch to that width when you choose lime, the same as with lime in the tank.
 - With the Pumps N' Hoses Pack, manure spreaders can also choose separated manure. The worker buys it when **AI Worker Refill - Manure** is set to **Buy**; with a manure heap set there, it uses manure from the heap instead. Drag hose applicators fed through a hose have nothing to choose.
+- AI Worker Refill Split by Joxy replaces **AI Worker Refill - Fertilizer** with separate switches for solid fertilizer, liquid fertilizer, lime and herbicide, for all implements at once. You can use it with this Mod in single player: this Mod decides which type an implement uses, and that Mod's switch for that type decides whether the worker may buy it. Turn on the switch for the type you chose.
 
 ### Multiplayer
 
@@ -118,6 +119,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 - 只能选择机具本身能施撒的类型：固态肥料、液态肥料、石灰、除草剂、粪肥、水肥或沼渣。带粪肥撒播机的通用拖车虽然能装石灰，但只能撒粪肥，所以不能选石灰。
 - 撒石灰时工作宽度不同的散布机，选择石灰后会换成石灰的工作宽度，和料箱里装着石灰时一样。
 - 安装 Pumps N' Hoses Pack 时，粪肥散布机还可以选择已分离粪肥。“AI 帮手补充 - 粪肥”设为“购买”时帮手会买它；设为粪肥堆时改用粪肥堆里的粪肥。通过软管供料的拖管施肥机没有可选项。
+- Joxy 制作的 AI Worker Refill Split 把“AI 帮手补充 - 肥料”拆成固态肥料、液态肥料、石灰和除草剂四个开关，对所有机具统一生效。单人游戏中可以和本 Mod 一起使用：本 Mod 决定机具用哪种类型，该 Mod 中对应类型的开关决定帮手能否购买。请打开你所选类型对应的开关。
 
 ### 多人游戏
 

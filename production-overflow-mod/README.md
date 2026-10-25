@@ -54,6 +54,7 @@ If none of your production points accepts the product, the whole stock becomes p
 - The modes stay when a production point changes owner, like the game's own modes. After you switch to store rest, or after the owner changes, the first pallets come after the next in-game hour.
 - The Pumps n' Hoses biogas productions keep their own distribution and don't get the new modes.
 - Other Mods that change how production points handle their output may not work together with this one. Try them in a separate save first.
+- Distribution Redux by Bones replaces the game's hourly distribution with its own and has its own "Distribute + Sell" and "Distribute + Store" modes. It takes over the distribution that this Mod's modes build on, so the two don't work together: with both installed, this Mod's modes do nothing and **Change output mode** follows Distribution Redux. Use one or the other.
 
 ### Multiplayer
 
@@ -116,6 +117,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 - 与原版模式一样，生产点更换所有者后模式保留。刚切换到剩余自动储存或更换所有者后，要等到下一游戏小时才会开始生成托盘。
 - Pumps n' Hoses 扩展包的沼气生产保留其自身的分配方式，不提供新模式。
 - 其他修改生产点产出处理方式的 Mod 可能无法与本 Mod 共用，请先在单独的存档中试用。
+- Bones 制作的 Distribution Redux 用自己的分配取代了游戏每小时的分配，并自带“Distribute + Sell”和“Distribute + Store”模式。它接管了本 Mod 两种模式所依赖的分配，所以两个 Mod 不能一起使用：同时安装时本 Mod 的模式不起作用，“更改输出模式”会按 Distribution Redux 的顺序切换。请二选一。
 
 ### 多人游戏
 
