@@ -19,7 +19,7 @@ Plan worker jobs for your vehicles straight from the map. Map Helper adds a page
 ### Open the page
 
 - Press **Left Alt + M** anywhere in the game, on foot or in a vehicle. The map opens on the Map Helper page. You can change the key in the controls.
-- Or open the map in the in-game menu and click **Map Helper** below your balance, or press the key shown on it (X by default).
+- Or open the map in the in-game menu and click **Map Helper** in the button bar at the bottom of the screen, or press the key shown there (X by default).
 - Or browse the sidebar pages with the arrows at the top of the sidebar until you reach Map Helper.
 
 ### The page, from top to bottom
@@ -96,7 +96,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 ### 打开页面
 
 - 在游戏中任何时候按 **左 Alt + M**，步行或驾驶时都可以。地图会直接打开地图助手页面。按键可在控制设置中更改。
-- 或者在游戏菜单中打开地图，点击余额下方的 **地图助手**，或按其上显示的按键（默认为 X）。
+- 或者在游戏菜单中打开地图，点击屏幕底部按钮栏中的 **地图助手**，或按其旁显示的按键（默认为 X）。
 - 或者用边栏顶部的箭头翻页，直到地图助手页面。
 
 ### 页面内容（自上而下）

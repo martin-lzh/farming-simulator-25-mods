@@ -6,7 +6,7 @@ profiles in the tests are the ones the game loads. Nothing from the game is read
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-GUI_FILES = ("gui/MapHelperPage.xml", "gui/DrawerToggle.xml")
+GUI_FILES = ("gui/MapHelperPage.xml", "gui/MenuBarButton.xml")
 
 
 def _element(node):

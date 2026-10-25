@@ -1,14 +1,13 @@
 -- Map page integration: the Map Helper page of the map overview sidebar (a new state of
--- mapOverviewSelector, next to the filter pages and Active Workers), the Map Helper button
--- under the balance that switches to it, the page keys and the global hotkey. The page
--- content lives in MHPage (MapHelperPage.lua).
+-- mapOverviewSelector, next to the filter pages and Active Workers), the Map Helper entry in
+-- the map page's button bar that switches to it, the page keys and the global hotkey. The
+-- page content lives in MHPage (MapHelperPage.lua).
 MHMapFrame = {}
 local MF = MHMapFrame
 local MF_mt = {__index = MF}
 
-MF.TOGGLE_XML = "gui/DrawerToggle.xml"
+MF.BAR_BUTTON_XML = "gui/MenuBarButton.xml"
 MF.INPUT_ACTION = "MENU_EXTRA_1"
-MF.TOGGLE_GAP = 10
 -- Frames this Mod added controls to; the in-game menu keeps its frames between missions.
 MF.injected = {}
 
@@ -51,26 +50,14 @@ function MF.inject(frame)
     frame.mapHelper = ext
     table.insert(MF.injected, frame)
 
-    -- The header holds the farm balance (shopMoneyBox) in the top-right corner.
-    local header = frame.shopMoneyBox ~= nil and frame.shopMoneyBox.parent or nil
-    if header ~= nil then
-        ext.toggle = MF.loadElements(MF.TOGGLE_XML, header, ext, "mh_toggleContainer")
-    else
-        MapHelper.warnOnce("noHeader", "Map page header not found; open Map Helper with its key or the sidebar instead")
-    end
-    if ext.toggle ~= nil then
-        ext.toggleText = ext.toggle:getDescendantByName("text")
-        if ext.toggleText ~= nil then
-            ext.toggleText:setText(MapHelper.text("mh_toggle"))
-        end
-        MF.placeToggle(ext)
-    end
-
     if frame.filterBox ~= nil and MHPage ~= nil then
         ext.page = MHPage.new(frame, ext)
         if not ext.page:load() then
             ext.page = nil
         end
+    end
+    if ext.page ~= nil then
+        MF.injectBarButton(ext)
     end
 
     -- The selector's onClick was bound to the original function when the map page was
@@ -172,7 +159,7 @@ function MF.onSelectorChanged(frame, state)
     else
         ext.page:hide()
     end
-    MF.updateToggle(frame)
+    MF.setBarButtonDirty(frame)
 end
 
 function MF.openPage(frame)
@@ -208,44 +195,82 @@ function MF.openFromHotkey()
     return MF.openPage(menu.pageMapOverview)
 end
 
--- Header button ----------------------------------------------------------------------
--- Right-aligns the button with the balance box (shopMoneyBoxBg) and puts it below the box
--- and the AI status line (statusMessage), so it never covers either. Works on absolute
--- positions: GuiElement:setPosition shifts absPosition by the same amount.
-function MF.placeToggle(ext)
+-- Button bar -------------------------------------------------------------------------
+-- The map page has its own button bar at the bottom of the screen (buttonBox: Back, Next,
+-- Previous, the map glyphs and Select). InGameMenu:updateButtonsPanel hides the menu's own
+-- buttonsPanel for this page (hasFullScreenMap), so menu button info does not show here;
+-- the entry is a button in buttonBox, right after Previous. The box lays out right to left
+-- and skips hidden buttons (BoxLayoutElement).
+function MF.injectBarButton(ext)
     local frame = ext.frame
-    local toggle = ext.toggle
-    local balance = frame ~= nil and frame.shopMoneyBoxBg or nil
-    if toggle == nil or balance == nil or balance.absPosition == nil or balance.absSize == nil then
+    local box = frame.buttonBox
+    if box == nil then
+        MapHelper.warnOnce("noButtonBox", "Map page button bar not found; open Map Helper with its key or the sidebar instead")
         return
     end
-    local right = balance.absPosition[1] + balance.absSize[1]
-    local top = balance.absPosition[2]
-    local status = frame.statusMessage
-    if status ~= nil and status.absPosition ~= nil then
-        top = math.min(top, status.absPosition[2])
+    local button = MF.loadElements(MF.BAR_BUTTON_XML, box, ext, "mh_barButton")
+    if button == nil then
+        return
     end
-    top = top - MF.TOGGLE_GAP * g_pixelSizeScaledY
-    local dx = right - (toggle.absPosition[1] + toggle.absSize[1])
-    local dy = top - (toggle.absPosition[2] + toggle.absSize[2])
-    toggle:setPosition(toggle.position[1] + dx, toggle.position[2] + dy)
+    button:setText(MapHelper.text("mh_toggle"))
+    local previous = frame.buttonPrev
+    if previous ~= nil and previous.parent == box then
+        for i, element in ipairs(box.elements) do
+            if element == button then
+                table.remove(box.elements, i)
+                break
+            end
+        end
+        for i, element in ipairs(box.elements) do
+            if element == previous then
+                table.insert(box.elements, i + 1, button)
+                break
+            end
+        end
+    end
+    ext.barButton = button
+    box:invalidateLayout()
 end
 
--- The header button is shown where it can switch to the page: not on the page itself
--- (its key adds jobs there) and not in the native job menu, which locks the selector.
-function MF.updateToggle(frame)
-    local ext = MF.getActiveExtension(frame)
-    if ext == nil or ext.toggle == nil then
-        return
-    end
+-- The entry is shown where it can switch to the page: not on the page itself (its key adds
+-- jobs there and the page shows it on Insert as next), not in the native job menu, which
+-- locks the selector, and not while another visible button shows the same key, such as
+-- Precision Farming's Help on its soil map tab; that one gets the key then.
+function MF.getShowsBarButton(ext)
+    local frame = ext.frame
     local onPage = ext.page ~= nil and ext.page:getIsShown()
     local inJobMenu = frame.mode == InGameMenuMapFrame.AI_MODE_CREATE
-    ext.toggle:setVisible(ext.page ~= nil and not onPage and not inJobMenu)
+    return ext.page ~= nil and not onPage and not inJobMenu and not MF.getHasOtherKeyButton(frame.elements, ext)
+end
+
+function MF.updateBarButton(ext)
+    local button = ext.barButton
+    if button == nil then
+        return
+    end
+    ext.barButtonDirty = false
+    local visible = MF.getShowsBarButton(ext)
+    if button.visible ~= visible then
+        button:setVisible(visible)
+        if button.parent ~= nil then
+            button.parent:invalidateLayout()
+        end
+    end
+end
+
+-- Refreshes the entry now and once more on the next frame (MF.update), after other Mods'
+-- hooks on the same native function have shown or hidden their own buttons.
+function MF.setBarButtonDirty(frame)
+    local ext = MF.getActiveExtension(frame)
+    if ext ~= nil and ext.barButton ~= nil then
+        MF.updateBarButton(ext)
+        ext.barButtonDirty = true
+    end
 end
 
 -- Appended to InGameMenuMapFrame:setJobMenuVisible (native job menu opened or closed).
 function MF.onJobMenuVisible(frame, isVisible)
-    MF.updateToggle(frame)
+    MF.setBarButtonDirty(frame)
 end
 
 -- Keys --------------------------------------------------------------------------------
@@ -256,8 +281,6 @@ function MF.registerInput(frame)
     if ext == nil or g_inputBinding == nil then
         return
     end
-    -- The page layout can change between visits (resolution, UI scale).
-    MF.placeToggle(ext)
     if ext.page ~= nil then
         ext.page.name = frame.name
     end
@@ -272,7 +295,7 @@ function MF.registerInput(frame)
             g_inputBinding:setActionEventTextVisibility(eventId, false)
         end
     end
-    MF.updateToggle(frame)
+    MF.setBarButtonDirty(frame)
 end
 
 -- Another visible button on the map page that shows the same key, such as the Help button
@@ -280,7 +303,7 @@ end
 -- that one, so the key leaves it alone. This Mod's own buttons are not triggerable that way.
 function MF.getHasOtherKeyButton(elements, ext)
     for _, element in ipairs(elements or {}) do
-        if element ~= ext.toggle and (ext.page == nil or element ~= ext.page.root) then
+        if element ~= ext.barButton and (ext.page == nil or element ~= ext.page.root) then
             if element.inputActionName == MF.INPUT_ACTION and element.getIsVisible ~= nil and element:getIsVisible()
                 and not (element.getIsDisabled ~= nil and element:getIsDisabled()) then
                 return true
@@ -313,8 +336,9 @@ function MF.onMenuMapAction1(frame)
     end
 end
 
--- Button callbacks return nothing, so ButtonElement:sendAction treats the click as used.
-function MF:onClickToggle()
+-- Mouse click on the bar entry; the key goes through MF:onKeyAction. Button callbacks return
+-- nothing, so ButtonElement:sendAction treats the click as used.
+function MF:onClickBarButton()
     if self:getIsActive() then
         MF.openPage(self.frame)
     end
@@ -350,13 +374,19 @@ end
 -- Appended to InGameMenuMapFrame:update (runs while the map page is open).
 function MF.update(frame, dt)
     local ext = MF.getActiveExtension(frame)
-    if ext ~= nil and ext.page ~= nil and ext.page:getIsShown() then
+    if ext == nil then
+        return
+    end
+    if ext.barButtonDirty then
+        MF.updateBarButton(ext)
+    end
+    if ext.page ~= nil and ext.page:getIsShown() then
         ext.page:update(dt)
     end
 end
 
 -- Teardown ------------------------------------------------------------------------------
--- Removes the page, the header button, the extra selector state and the key events from
+-- Removes the page, the button bar entry, the extra selector state and the key events from
 -- one frame and gives the native job form back.
 function MF.remove(frame)
     local ext = frame.mapHelper
@@ -403,9 +433,13 @@ function MF.remove(frame)
         end
         ext.dot = nil
     end
-    if ext.toggle ~= nil then
-        ext.toggle:delete()
-        ext.toggle = nil
+    if ext.barButton ~= nil then
+        local box = ext.barButton.parent
+        ext.barButton:delete()
+        ext.barButton = nil
+        if box ~= nil then
+            box:invalidateLayout()
+        end
     end
     ext.page = nil
     ext.frame = nil

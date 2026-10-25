@@ -4,8 +4,8 @@
 
 - First version. Adds a Map Helper page to the left sidebar of the map in the in-game menu, next to the map filters and Active Workers.
 - 首个版本。在游戏菜单地图的左侧边栏加入“地图助手”页面，与地图筛选和“在岗帮手”并列。
-- Left Alt + M opens the map on the Map Helper page, on foot or in a vehicle. On the map, the Map Helper button below your balance and its key (X by default) switch to the page.
-- 左 Alt + M 直接打开地图并显示地图助手页面，步行或驾驶时都可以。在地图上，余额下方的“地图助手”按钮及其按键（默认为 X）切换到该页面。
+- Left Alt + M opens the map on the Map Helper page, on foot or in a vehicle. On the map, Map Helper in the button bar at the bottom and its key (X by default) switch to the page.
+- 左 Alt + M 直接打开地图并显示地图助手页面，步行或驾驶时都可以。在地图上，底部按钮栏中的“地图助手”及其按键（默认为 X）切换到该页面。
 - The page works with the vehicle you are sitting in. Click another of your vehicles on the map to plan for it; click the vehicle card to go back to yours.
 - 页面作用于你当前驾驶的车辆。在地图上点击你的其他车辆即可为它安排作业；点击车辆卡片回到你自己的车辆。
 - A selector chooses what the places list shows: fields needing the work the vehicle and its tools do, all your fields with their state, your contracts, or the stations for delivery jobs. The choice is remembered for each vehicle.
@@ -50,6 +50,8 @@
 - 在地图助手页面打开时挂上或卸下农具，作业类型也会随之更新：几秒内点击田地会相应地填为田地工作（或前往）。
 - Fields needing this work only lists fields where the work can be done now: no lime or rolling on growing crops, stone picking only on worked soil, mulching on harvested or withered crops that haven't been mulched yet, herbicide also on harvested grain and root crops before harvest, and sowing only when the selected seed is in season (rice only on rice fields).
 - “需要此作业的田地”只列出现在就能做这项作业的田地：生长中的作物上不施石灰、不镇压，只在整过的土地上捡石头，粉碎收获后或枯萎、尚未粉碎过的作物，除草剂也用于收获后的谷物和收获前的根茎作物，所选种子在播种季节内才列出播种（水稻只在稻田）。
+- The Map Helper key now shows in the button bar at the bottom of the map instead of a button below the balance.
+- 地图助手的按键现在显示在地图底部的按钮栏中，不再是余额下方的按钮。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
 

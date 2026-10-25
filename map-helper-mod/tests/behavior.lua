@@ -593,10 +593,10 @@ test("the page is a new state of the overview selector and replaces the native c
     assert(frame.createJobContainer.visible and frame.createJobContainer.profile == "mh_nativeForm")
     assert(frame.createJobContainer.anchorDeltasUpdated >= 1 and not frame.buttonStartJobContainer.visible)
     assert(frame.mode == InGameMenuMapFrame.AI_MODE_OVERVIEW and frame.currentJob ~= nil)
-    assert(not ext.toggle.visible, "the header button steps aside on the page")
+    assert(not ext.barButton.visible, "the bar entry steps aside on the page")
     -- Other pages get their containers back; the native form returns to its own place.
     frame.mapOverviewSelector:setState(InGameMenuMapFrame.AI_WORKER_LIST, true)
-    assert(not page.root.visible and frame.workerListContainer.visible and ext.toggle.visible)
+    assert(not page.root.visible and frame.workerListContainer.visible and ext.barButton.visible)
     assert(not frame.createJobContainer.visible and frame.createJobContainer.profile == "fs25_subCategoryListContainer")
     assert(frame.buttonStartJobContainer.visible and frame.currentJob == nil and #frame.jobMenuLayout.elements == 0)
     assert(not ext.dot.getIsSelected())
@@ -607,7 +607,7 @@ test("the page is a new state of the overview selector and replaces the native c
     assert(frame.mapOverviewSelector:getState() == InGameMenuMapFrame.AI_CREATE_JOB and not page.root.visible)
     assert(frame.createJobContainer.visible and frame.createJobContainer.profile == "fs25_subCategoryListContainer")
     assert(frame.buttonStartJobContainer.visible and frame.currentJob ~= nil and frame.currentJobVehicle == g_localPlayer.vehicle)
-    assert(not ext.toggle.visible, "hidden in the native job menu")
+    assert(not ext.barButton.visible, "hidden in the native job menu")
 end)
 
 test("the page shows the vehicle the player sits in and explains when nothing can be planned", function()
@@ -1247,25 +1247,58 @@ test("clients only send requests and wait for the server", function()
 end)
 
 -- Keys ---------------------------------------------------------------------------------------
-test("X on the map opens the page and gives way to Precision Farming's help button", function()
+test("the Map Helper key shows in the map's button bar, opens the page and gives way to Precision Farming's help", function()
     seat(mockVehicle(7))
     local frame = mockFrame()
     g_inGameMenu.pageMapOverview = frame
     InGameMenuMapFrame.onLoadMapFinished(frame)
     frame:onFrameOpen()
     local ext = frame.mapHelper
-    assert(ext.toggle.visible and frame.mapOverviewSelector:getState() == 1)
-    local help = mockElement("pfHelpButton")
-    help.inputActionName = "MENU_EXTRA_1"
-    frame.filterListContainer:addElement(help)
-    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
-    assert(frame.mapOverviewSelector:getState() == 1, "the soil map help button gets the key")
-    help:setVisible(false)
-    g_inputBinding:trigger(InputAction.MENU_EXTRA_1)
-    assert(frame.mapOverviewSelector:getState() == ext.pageIndex and ext.page:getIsShown())
+    local bar, button = frame.buttonBox, ext.barButton
+    -- One entry in the bottom bar, right after Previous, with the page title and the X key;
+    -- nothing is added below the balance any more.
+    assert(button.parent == bar and #bar.elements == 7 and bar.elements[3] == frame.buttonPrev and bar.elements[4] == button)
+    assert(button.text == "mh_toggle" and button.inputActionName == "MENU_EXTRA_1" and button:getDescendantByName("separator") ~= nil)
+    assert(#frame.shopMoneyBox.parent.elements == 1, "no button below the balance")
+    assert(button.visible and frame.mapOverviewSelector:getState() == 1)
+    -- X reaches the Mod once: the menu's global key handling does not trigger the bar entry,
+    -- the Mod's key event does.
+    assert(not button.isTriggerableByGlobalAction)
+    local opens, openPage = 0, MF.openPage
+    MF.openPage = function(...) opens = opens + 1; return openPage(...) end
+    local layouts = bar.layoutCount or 0
+    local triggered = pressMenuKey(frame, InputAction.MENU_EXTRA_1)
+    assert(#triggered == 0 and opens == 1 and ext.page:getIsShown())
+    assert(not button.visible and bar.layoutCount > layouts, "on the page the key shows on Insert as next")
+    -- On the page X inserts the next job; the bar entry stays hidden and is not triggered.
+    triggered = pressMenuKey(frame, InputAction.MENU_EXTRA_1)
+    assert(#triggered == 0 and opens == 1 and not button.visible)
     frame.mapOverviewSelector:setState(1, true)
-    ext.toggle:getDescendantByName("button").onClickCallback(ext)
-    assert(ext.page:getIsShown())
+    assert(button.visible)
+    -- Precision Farming shows its help button on the soil map tab in its own selector hook,
+    -- which may run after this Mod's: the entry is checked again on the next frame.
+    frame.mapOverviewSelector:setState(3, true)
+    local help = mockElement("pfHelpButton", "Button")
+    help.inputActionName = "MENU_EXTRA_1"
+    help.onClickCallback = function() help.clicks = (help.clicks or 0) + 1 end
+    frame.filterListContainer:addElement(help)
+    frame:update(16)
+    assert(not button.visible, "one button shows X at a time")
+    frame:update(16)
+    assert(not button.visible)
+    triggered = pressMenuKey(frame, InputAction.MENU_EXTRA_1)
+    assert(#triggered == 1 and triggered[1] == help and help.clicks == 1, "the soil map help button gets the key")
+    assert(opens == 1 and frame.mapOverviewSelector:getState() == 3)
+    help:setVisible(false)
+    frame.mapOverviewSelector:setState(1, true)
+    assert(button.visible)
+    pressMenuKey(frame, InputAction.MENU_EXTRA_1)
+    assert(opens == 2 and frame.mapOverviewSelector:getState() == ext.pageIndex and ext.page:getIsShown())
+    -- A mouse click on the entry opens the page too.
+    frame.mapOverviewSelector:setState(1, true)
+    button.onClickCallback(button.target)
+    MF.openPage = openPage
+    assert(opens == 3 and ext.page:getIsShown())
 end)
 
 test("the global hotkey opens the map on the Map Helper page, on foot and in vehicles", function()
@@ -1300,13 +1333,10 @@ test("map page hooks are idempotent across repeated registration and loads", fun
     local frame = mockFrame()
     InGameMenuMapFrame.onLoadMapFinished(frame)
     InGameMenuMapFrame.onLoadMapFinished(frame)
-    local header = frame.shopMoneyBox.parent
-    assert(#header.elements == 2, "balance plus one Map Helper button")
+    assert(#frame.buttonBox.elements == 7, "the native bar elements plus one Map Helper entry")
+    assert(#frame.shopMoneyBox.parent.elements == 1, "nothing in the header")
     assert(#frame.filterBox.elements == 7, "the native sidebar elements plus one page")
-    assert(frame.mapHelper.toggle:getDescendantByName("text").text == "mh_toggle")
-    local toggle, balance = frame.mapHelper.toggle, frame.shopMoneyBoxBg
-    assert(math.abs(toggle.absPosition[1] + toggle.absSize[1] - (balance.absPosition[1] + balance.absSize[1])) < 1e-9)
-    assert(toggle.absPosition[2] + toggle.absSize[2] < math.min(balance.absPosition[2], frame.statusMessage.absPosition[2]))
+    assert(frame.mapHelper.barButton.text == "mh_toggle")
     frame:onFrameOpen()
     frame:setupMapOverview()
     assert(#frame.mapSelectorTexts == 8 and #frame.subCategoryDotBox.elements == 8, "one page and one dot per mission")
@@ -1332,11 +1362,12 @@ end)
 test("leaving the save restores the native map page; the next save with the Mod gets a fresh page", function()
     seat(mockVehicle(7))
     local frame, page, ext = openPage()
-    local header = frame.shopMoneyBox.parent
-    local oldToggle = ext.toggle:getDescendantByName("button")
+    local bar = frame.buttonBox
+    local oldButton = ext.barButton
     MH.requestAdd(g_localPlayer.vehicle, newJob(g_localPlayer.vehicle))
     FSBaseMission.delete(g_currentMission)
-    assert(frame.mapHelper == nil and #header.elements == 1 and #frame.filterBox.elements == 6 and page.root == nil)
+    assert(frame.mapHelper == nil and #bar.elements == 6 and #frame.filterBox.elements == 6 and page.root == nil)
+    assert(bar.elements[3] == frame.buttonPrev and bar.elements[4] == frame.mapMoveGlyphText, "the native bar order is back")
     assert(frame.createJobContainer.profile == "fs25_subCategoryListContainer" and not frame.createJobContainer.visible)
     assert(frame.buttonStartJobContainer.visible and frame.createJobContainer.parent == frame.filterBox)
     assert(#frame.mapSelectorTexts == 7 and #frame.subCategoryDotBox.elements == 7 and frame.mapOverviewSelector:getState() == 1)
@@ -1353,9 +1384,9 @@ test("leaving the save restores the native map page; the next save with the Mod 
     frame:reset()
     InGameMenuMapFrame.onLoadMapFinished(frame)
     frame:onFrameOpen()
-    oldToggle.onClickCallback(ext)
+    oldButton.onClickCallback(ext)
     MF.onKeyAction(ext)
-    assert(frame.mapHelper == nil and #header.elements == 1 and #frame.mapSelectorTexts == 7)
+    assert(frame.mapHelper == nil and #bar.elements == 6 and #frame.mapSelectorTexts == 7)
     assert(#g_messageCenter.subscribers == 0 and next(g_currentMission.updateables) == nil)
     FSBaseMission.delete(g_currentMission)
     -- A save with the Mod again: one fresh set of controls and a working page.
@@ -1365,19 +1396,19 @@ test("leaving the save restores the native map page; the next save with the Mod 
     frame:reset()
     InGameMenuMapFrame.onLoadMapFinished(frame)
     frame:onFrameOpen()
-    assert(frame.mapHelper ~= nil and frame.mapHelper ~= ext and #header.elements == 2 and #frame.filterBox.elements == 7)
+    assert(frame.mapHelper ~= nil and frame.mapHelper ~= ext and #bar.elements == 7 and #frame.filterBox.elements == 7)
     assert(#frame.mapSelectorTexts == 8 and #frame.subCategoryDotBox.elements == 8)
-    oldToggle.onClickCallback(ext)
+    oldButton.onClickCallback(ext)
     assert(frame.mapOverviewSelector:getState() == 1, "controls of the previous save stay inert")
-    frame.mapHelper.toggle:getDescendantByName("button").onClickCallback(frame.mapHelper)
+    frame.mapHelper.barButton.onClickCallback(frame.mapHelper)
     assert(frame.mapHelper.page:getIsShown())
     -- Controls left by an earlier copy of the scripts are replaced, not duplicated.
     MF.remove(frame)
-    local stale = {toggle = mockElement("staleToggle")}
-    header:addElement(stale.toggle)
+    local stale = {barButton = mockElement("staleButton", "Button")}
+    bar:addElement(stale.barButton)
     frame.mapHelper = stale
     InGameMenuMapFrame.onLoadMapFinished(frame)
-    assert(stale.toggle == nil and #header.elements == 2 and frame.mapHelper ~= stale)
+    assert(stale.barButton == nil and #bar.elements == 7 and frame.mapHelper ~= stale)
 end)
 
 test("closing the menu gives the native form back and reopening shows the page again", function()

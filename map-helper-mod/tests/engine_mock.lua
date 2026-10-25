@@ -705,6 +705,8 @@ local function buildElement(node, parent, target, profiles)
     element.id, element.profile, element.target = attributes.id, attributes.profile, target
     element.visible = profileValue(profiles, attributes.profile, "visible") ~= "false"
     element.inputActionName = profileValue(profiles, attributes.profile, "inputAction")
+    -- ButtonElement default true; profiles of this Mod set it in their own files.
+    element.isTriggerableByGlobalAction = profileValue(profiles, attributes.profile, "isTriggerableByGlobalAction") ~= "false"
     if attributes.text ~= nil then
         local key = attributes.text:match("^%$l10n_(.+)$")
         element.text = key ~= nil and g_i18n:getText(key) or attributes.text
@@ -788,6 +790,33 @@ function g_inputBinding:trigger(action, context)
     for _, event in ipairs(self.events) do
         if event.action == action and (context == nil or event.context == context) then event.callback(event.target, action, 1) end
     end
+end
+
+-- A menu key on the map page as the game handles it: Gui registers the menu actions
+-- (Gui.NAV_ACTIONS, MENU_EXTRA_1 among them) in the map page's context too
+-- (Gui:enterMenuContext), and the in-game menu passes them to the first visible button with
+-- that action that is triggerable by global actions (ScreenElement.callButtonsWithAction,
+-- 1.24 decompiled gui/elements/ScreenElement.lua:74-87). Events registered for the action
+-- (InputBinding) run as well. Returns the buttons the menu triggered.
+local function callButtonsWithAction(elements, action, triggered)
+    for _, element in ipairs(elements or {}) do
+        if element.typeName == "Button" and element.isTriggerableByGlobalAction ~= false and element:getIsVisible()
+            and not element:getIsDisabled() and element.inputActionName == action then
+            table.insert(triggered, element)
+            element.onClickCallback(element.target, element)
+            return true
+        end
+        if callButtonsWithAction(element.elements, action, triggered) then
+            return true
+        end
+    end
+    return false
+end
+function pressMenuKey(frame, action)
+    local triggered = {}
+    callButtonsWithAction(frame.elements, action, triggered)
+    g_inputBinding:trigger(action)
+    return triggered
 end
 
 IngameMapElement = {panToHotspot = function() end, setCenterToWorldPosition = function() end}
@@ -984,13 +1013,20 @@ function mockFrame()
     frame.aiLoadingMarkerHotspot = hotspotMock("loading")
     frame.aiUnloadingMarkerHotspot = hotspotMock("unloading")
     frame.shopMoneyBox = mockElement("shopMoneyBox")
-    frame.shopMoneyBoxBg = mockElement("shopMoneyBoxBg")
-    frame.shopMoneyBoxBg.absPosition, frame.shopMoneyBoxBg.absSize = {0.75, 0.85}, {0.2, 0.06}
-    frame.statusMessage = mockElement("statusMessage")
-    frame.statusMessage.absPosition = {0.9, 0.82}
     local header = mockElement("header")
     header:addElement(frame.shopMoneyBox)
     root:addElement(header)
+    -- The page's own button bar at the bottom (buttonBox, a BoxLayout filled right to left).
+    frame.buttonBox = mockElement("buttonBox", "BoxLayout")
+    for _, entry in ipairs({{"buttonBack", "Button", "MENU_BACK"}, {"buttonNext", "Button", "MENU_PAGE_NEXT"},
+        {"buttonPrev", "Button", "MENU_PAGE_PREV"}, {"mapMoveGlyphText", "Text"}, {"mapMoveGlyph", "InputGlyph"},
+        {"buttonSelectIngame", "Button", "INGAMEMAP_ACCEPT"}}) do
+        local element = mockElement(entry[1], entry[2])
+        element.inputActionName = entry[3]
+        frame[entry[1]] = element
+        frame.buttonBox:addElement(element)
+    end
+    root:addElement(frame.buttonBox)
     frame.ingameMap = {
         panToHotspot = function(map, hotspot) map.pannedTo = hotspot end,
         setCenterToWorldPosition = function(map, x, z) map.centered = {x, z} end

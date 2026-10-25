@@ -7,7 +7,7 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT.parent / "outputs/FS25_MapHelper.zip"
-GUI_FILES = ("gui/DrawerToggle.xml", "gui/MapHelperPage.xml")
+GUI_FILES = ("gui/MenuBarButton.xml", "gui/MapHelperPage.xml")
 
 
 def check_icon(desc):
