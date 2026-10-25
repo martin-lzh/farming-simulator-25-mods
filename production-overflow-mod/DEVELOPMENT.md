@@ -225,9 +225,9 @@ python production-overflow-mod/tools/build.py
 - `scripts/Register.lua`：接口检查、在原版类上安装钩子、给生产点放置物类型添加 specialization。
 - `scripts/ProductionOverflowPlaceable.lua`：放置物 specialization，创建状态、存档和加入同步。
 
-## 待确认
+## 维护者决定
 
-名称已确定（见“当前验收状态”）。以下两项维护者尚未另行表态，1.0.0.0 按括号中的当前行为发布：
+名称已确定（见“当前验收状态”）。2026-10-25 维护者对以下两项表态，均与 1.0.0.0 的现有行为一致，代码不变：
 
-- “剩余自动出售”是否也应对价格为 0 的物料出售（目前与原版“出售”一致：照样清空，收入为 0）。
-- 生产点易主后是否应把新模式重置为原版“分配”（目前与原版模式一样保留）。
+- “剩余自动出售”对价格为 0 的物料照样出售（清空，收入为 0），与原版“出售”一致。维护者：玩家自己选了这个模式就尊重这个选择。
+- 生产点易主后新模式保留，与原版一致：维护者要求按游戏现有处理。1.25 `ProductionPoint:setOwnerFarmId`（decompiled `objects/ProductionPoint.lua:502-524`）只结算费用、按是否有主切换生产状态，并把新主人传给装卸站和仓储，不改 `outputFillTypeIdsDirectSell`/`outputFillTypeIdsAutoDeliver`，原版模式随生产点保留。本 Mod 的 `PO.onOwnerChanged` 同样保留新模式，只放回暂扣的产量并清空 `released`。
