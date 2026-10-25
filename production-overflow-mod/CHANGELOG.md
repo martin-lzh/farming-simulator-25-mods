@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.0 — 2026-10-25
+
 - First version. Adds two output modes to the production menu, after Distributing: "Distributing, store rest automatically" and "Distributing, sell rest automatically". Choose them with Change output mode, per production point and product.
 - 首个版本。在生产菜单的“分配”之后新增两种输出模式：“分配，剩余自动储存”和“分配，剩余自动出售”。用“更改输出模式”为每个生产点的每种产品选择。
 - Both deliver to your own production points first, once per in-game hour, exactly like Distributing.
@@ -18,5 +20,3 @@
 - 卸载 Mod 后，设为新模式的产出改为“分配”。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
-
-## 0.1.0.0 — 2026-10-25

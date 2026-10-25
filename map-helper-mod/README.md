@@ -1,6 +1,7 @@
 # Map Helper · 地图助手
 
 <p align="center">
+  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=map-helper-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
@@ -12,7 +13,9 @@
 
 ## English
 
-Version 0.1.0.0 · Farming Simulator 25 1.25 (PC)
+Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
+
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true) (`FS25_MapHelper.zip` under **Assets**)
 
 Plan worker jobs for your vehicles straight from the map. Map Helper adds a page to the left sidebar of the map, next to the map filters and Active Workers. It shows which of your fields need the work your vehicle does, lets you set up jobs with the game's own job settings and keeps them in a to-do list: when one job is done, the next one starts by itself.
 
@@ -89,7 +92,9 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ## 中文
 
-版本 0.1.0.0 · 模拟农场 25 1.25（PC）
+版本 1.0.0.0 · 模拟农场 25 1.25（PC）
+
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true)（在 **Assets** 下载 `FS25_MapHelper.zip`）
 
 直接在地图上为你的车辆安排帮手作业。地图助手在地图左侧边栏加入一个页面，与地图筛选和“在岗帮手”并列。它列出哪些田地需要你的车辆所做的作业，让你用游戏自带的作业设置安排作业，并把作业放进待办清单：一个作业完成后，下一个会自动开始。
 

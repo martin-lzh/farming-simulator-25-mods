@@ -13,7 +13,7 @@
 
 ## English
 
-Version 0.1.0.0 · Farming Simulator 25 1.25 (PC)
+Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
 **Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**)
 
@@ -66,7 +66,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ## 中文
 
-版本 0.1.0.0 · 模拟农场 25 1.25（PC）
+版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
 **下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）
 

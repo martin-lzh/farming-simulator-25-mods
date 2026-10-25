@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.0 — 2026-10-25
+
 - First version. Choose what an empty fertilizer spreader, sprayer or lime spreader will apply with Y (Shift+Y goes back), like choosing seeds on a seeder; the empty tank shows your choice.
 - 首个版本。像在播种机上选种子一样，按 Y（Shift+Y 反向）为空的撒肥机、喷雾机或石灰撒布机选择要施用的类型；空料箱上会显示所选类型。
 - If the implement or combination already uses Y, such as a seeder with several seeds or Precision Farming, the key is Alt+Y.
@@ -20,5 +22,3 @@
 - 支持多人游戏：选择会同步并随车辆保存，购买费用只由服务器结算。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
-
-## 0.1.0.0 — 2026-10-21

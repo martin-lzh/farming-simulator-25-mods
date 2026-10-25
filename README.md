@@ -28,12 +28,15 @@ Original Mods for **Farming Simulator 25** on PC, made by Zhaohan Liu.
 | Mod | What it does | Version | Download |
 | --- | --- | --- | --- |
 | [Animal Products Manager](animal-products-manager-mod/README.md#english) | Choose whether each husbandry product is stored, sold automatically or delivered to your own production points | 1.0.0.3 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [Changes](animal-products-manager-mod/CHANGELOG.md) |
+| [Fill Type Selector](fill-type-selector-mod/README.md#english) | Choose what an empty fertilizer spreader, sprayer, lime spreader or slurry tanker applies, also for AI workers | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0) · [Changes](fill-type-selector-mod/CHANGELOG.md) |
+| [Map Helper](map-helper-mod/README.md#english) | Plan worker jobs straight from the map and keep them in a to-do list that runs one after another | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/map-helper-v1.0.0.0) · [Changes](map-helper-mod/CHANGELOG.md) |
+| [Production Overflow](production-overflow-mod/README.md#english) | Adds Distributing modes that store or sell automatically what your own production points can't take | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0) · [Changes](production-overflow-mod/CHANGELOG.md) |
 
 Click the Mod name for how to use it, multiplayer notes and removal steps.
 
 ### Getting started
 
-1. Download `FS25_AnimalProductsManager.zip` from the GitHub release (under **Assets**, not **Source code**) or from the Nexus page.
+1. Download the Mod's ZIP, such as `FS25_MapHelper.zip`, from its GitHub release (under **Assets**, not **Source code**) or from its Nexus page.
 2. Put the ZIP in `Documents\My Games\FarmingSimulator2025\mods`.
 3. Activate the Mod when you load a save.
 
@@ -73,12 +76,15 @@ License: PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for 
 | Mod | 功能 | 版本 | 下载 |
 | --- | --- | --- | --- |
 | [动物产品管理（Animal Products Manager）](animal-products-manager-mod/README.md#中文) | 为每种畜舍产品选择储存、自动出售或送往自己农场的生产点 | 1.0.0.3 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.3) · [Nexus](https://www.nexusmods.com/farmingsimulator25/mods/220) · [更新记录](animal-products-manager-mod/CHANGELOG.md) |
+| [肥料选择（Fill Type Selector）](fill-type-selector-mod/README.md#中文) | 为空的撒肥机、喷雾机、石灰撒布机或液肥罐车选择施用类型，AI 帮手同样适用 | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0) · [更新记录](fill-type-selector-mod/CHANGELOG.md) |
+| [地图助手（Map Helper）](map-helper-mod/README.md#中文) | 直接在地图上安排帮手作业，放进待办清单依次执行 | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/map-helper-v1.0.0.0) · [更新记录](map-helper-mod/CHANGELOG.md) |
+| [生产余量处理（Production Overflow）](production-overflow-mod/README.md#中文) | 新增分配模式：你自己的生产点放不下的产品自动存成托盘或卖掉 | 1.0.0.0 | [GitHub](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0) · [更新记录](production-overflow-mod/CHANGELOG.md) |
 
 点击 Mod 名称可查看使用方法、多人游戏说明和卸载步骤。
 
 ### 开始使用
 
-1. 从 GitHub 发布页（**Assets** 下，不要选 **Source code**）或 Nexus 页面下载 `FS25_AnimalProductsManager.zip`。
+1. 从 Mod 的 GitHub 发布页（**Assets** 下，不要选 **Source code**）或 Nexus 页面下载它的 ZIP，例如 `FS25_MapHelper.zip`。
 2. 把 ZIP 放进 `文档\My Games\FarmingSimulator2025\mods`。
 3. 载入存档时勾选本 Mod。
 

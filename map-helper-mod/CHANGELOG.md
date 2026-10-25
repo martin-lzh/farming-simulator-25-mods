@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.0 — 2026-10-25
+
 - First version. Adds a Map Helper page to the left sidebar of the map in the in-game menu, next to the map filters and Active Workers.
 - 首个版本。在游戏菜单地图的左侧边栏加入“地图助手”页面，与地图筛选和“在岗帮手”并列。
 - Left Alt + M opens the map on the Map Helper page, on foot or in a vehicle. On the map, Map Helper in the button bar at the bottom and its key (X by default) switch to the page.
@@ -52,5 +54,3 @@
 - “需要此作业的田地”只列出现在就能做这项作业的田地：生长中的作物上不施石灰、不镇压，只在整过的土地上捡石头，粉碎收获后或枯萎、尚未粉碎过的作物，除草剂也用于收获后的谷物和收获前的根茎作物，所选种子在播种季节内才列出播种（水稻只在稻田）。
 - Available in all 27 game languages.
 - 支持全部 27 种游戏语言。
-
-## 0.1.0.0 — 2026-10-21
