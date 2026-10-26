@@ -29,6 +29,8 @@ In the base game, an AI worker with an empty spreader or sprayer picks fertilize
 
    ![Empty sprayer with Herbicide selected: the F1 help shows Select fertilizer (Herbicide) on Y and the empty tank shows Herbicide](assets/screenshots/01-empty-sprayer-herbicide-selected.jpg)
 
+   ![Empty fertilizer spreader with Lime selected: the F1 help shows Select fertilizer (Lime) on Y and the empty tank shows Lime](assets/screenshots/02-empty-spreader-lime-selected.jpg)
+
 3. If the implement or the combination already uses Y, the key is **Alt+Y** and switches forward only. This is the case with a seeder that has several seeds, with Precision Farming, and with a tool carrier or hose reel from the Pumps N' Hoses Pack. To change the key, open Settings → Controls and look for **Select fertilizer (when Y is in use)** under Fill Type Selector.
 
 Implements that can only take one type don't get the key. With two implements attached that both have a choice, the key works on the selected one.
@@ -86,6 +88,8 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 2. 按 **Y** 在机具能施用的类型之间切换，**Shift+Y** 反向切换。帮助（F1）中显示“选择肥料”，后面括号里是当前选择，例如“选择肥料 (石灰)”。空料箱的料量显示也会显示所选类型。
 
    ![空喷洒机选择了除草剂：F1 帮助中 Y 键显示“选择肥料 (除草剂)”，空料箱显示除草剂](assets/screenshots/01-empty-sprayer-herbicide-selected.jpg)
+
+   ![空肥料散布机选择了石灰：F1 帮助中 Y 键显示“选择肥料 (石灰)”，空料箱显示石灰](assets/screenshots/02-empty-spreader-lime-selected.jpg)
 
 3. 如果机具或组合已经占用了 Y，按键改为 **Alt+Y**，只能向前切换。可选多种种子的播种机、精准农业，以及 Pumps N' Hoses Pack 的工具架和脐带软管卷筒都属于这种情况。要修改按键，打开“设置 → 控制”，在“肥料选择”下找到“选择肥料（Y 已被占用时）”。
 
