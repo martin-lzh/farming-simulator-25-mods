@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=fill-type-selector-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://www.nexusmods.com/farmingsimulator25/mods/227"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
@@ -17,7 +18,7 @@
 
 Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 In the base game, an AI worker with an empty spreader or sprayer picks fertilizer by itself and never lime: a lime-only spreader stops at once, and a spreader for fertilizer and lime always buys fertilizer. With this Mod you choose what an empty fertilizer spreader, sprayer or lime spreader applies, the same way you choose seeds on a seeder, and the worker buys exactly that.
 
@@ -75,7 +76,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 原版中，料箱为空时 AI 帮手会自己挑肥料，却从不选石灰：只能撒石灰的散布机直接停工，能撒肥料和石灰的肥料散布机总是买肥料。装上本 Mod 后，可以像在播种机上选种子一样，为空的肥料散布机、喷洒机或石灰散布机选好要施用的类型，帮手就会买这一种。
 

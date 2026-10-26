@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=production-overflow&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=production-overflow-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://www.nexusmods.com/farmingsimulator25/mods/228"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
@@ -17,7 +18,7 @@
 
 Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=production-overflow&expanded=true) (`FS25_ProductionOverflow.zip` under **Assets**)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=production-overflow&expanded=true) (`FS25_ProductionOverflow.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
 
 A factory set to Distributing delivers its products to your other production points once per in-game hour. When those are full, the rest stays in the factory, its storage fills up and production stops. This Mod adds two output modes that deal with that rest: turn it into pallets, or sell it.
 
@@ -78,7 +79,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=production-overflow&expanded=true)（在 **Assets** 下载 `FS25_ProductionOverflow.zip`）
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=production-overflow&expanded=true)（在 **Assets** 下载 `FS25_ProductionOverflow.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
 
 设为“分配”的工厂每游戏小时把产品送往你自己的其他生产点。这些生产点满了以后，剩余产品留在工厂，工厂仓储也会装满，生产随之停止。本 Mod 新增两种输出模式来处理这部分剩余：生成托盘，或者卖掉。
 
