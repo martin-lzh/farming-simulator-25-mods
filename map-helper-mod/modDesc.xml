@@ -36,7 +36,7 @@
 Adds a Map Helper page to the left sidebar of the map in the in-game menu, next to the map filters and Active Workers. It works with the vehicle you are sitting in, or with one of your vehicles you select on the map:
 - Places: a selector picks what the list shows: fields that need the work this vehicle does, all your fields with their state, your running contracts, or the stations it can load at or deliver to. Click one to move the map there and fill in the job.
 - Job: the game's own job settings, including picking a target on the map. Add to queue puts the job at the end, Insert as next puts it first.
-- Command queue: a to-do list for the vehicle. The first job you add starts right away. The current job shows its progress, finished jobs disappear and the next one starts by itself. Move, edit or delete waiting jobs at any time, also while a worker is driving; Delete on the current job cancels it.
+- Command queue: a to-do list for the vehicle. The first job you add starts right away. The current job shows its progress, finished jobs disappear and the next one starts by itself. Move, edit or delete waiting jobs at any time, also while a worker is driving; on the current job, Delete becomes Cancel Job and stops the worker.
 If a job is stopped or can't be finished, the queue pauses and you get a message. Resume, or adding a job, continues it.
 
 Multiplayer: farm members allowed to hire workers can use the queue. The server runs it, and it is saved with the game.
@@ -49,7 +49,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
 Fügt der linken Seitenleiste der Karte im Spielmenü eine Kartenassistent-Seite hinzu, neben den Kartenfiltern und den aktiven KI-Helfern. Sie wirkt auf das Fahrzeug, in dem du sitzt, oder auf eines deiner Fahrzeuge, das du auf der Karte auswählst:
 - Orte: Eine Auswahl legt fest, was die Liste zeigt: Felder, die die Arbeit dieses Fahrzeugs brauchen, alle deine Felder mit ihrem Zustand, deine laufenden Aufträge oder die Stationen, an denen es laden oder abliefern kann. Klicke auf einen Eintrag, um die Karte dorthin zu verschieben und den Job auszufüllen.
 - Job: die Job-Einstellungen des Spiels, einschließlich der Zielauswahl auf der Karte. „Zur Warteschlange“ hängt den Job hinten an, „Als Nächstes einreihen“ setzt ihn an die erste Stelle.
-- Befehlswarteschlange: eine Aufgabenliste für das Fahrzeug. Der erste Job, den du hinzufügst, startet sofort. Der aktuelle Job zeigt seinen Fortschritt, erledigte Jobs verschwinden und der nächste startet von selbst. Wartende Jobs kannst du jederzeit verschieben, bearbeiten oder löschen, auch während ein KI-Helfer fährt; Löschen beim aktuellen Job bricht ihn ab.
+- Befehlswarteschlange: eine Aufgabenliste für das Fahrzeug. Der erste Job, den du hinzufügst, startet sofort. Der aktuelle Job zeigt seinen Fortschritt, erledigte Jobs verschwinden und der nächste startet von selbst. Wartende Jobs kannst du jederzeit verschieben, bearbeiten oder löschen, auch während ein KI-Helfer fährt; beim aktuellen Job wird „Löschen“ zu „Job abbrechen“ und hält den KI-Helfer an.
 Wird ein Job abgebrochen oder kann er nicht beendet werden, hält die Warteschlange an und du erhältst eine Meldung. „Fortsetzen“ oder ein neuer Job setzt sie fort.
 
 Mehrspieler: Hofmitglieder mit dem Recht, KI-Helfer einzustellen, können die Warteschlange nutzen. Der Server führt sie aus, und sie wird mit dem Spielstand gespeichert.
@@ -62,7 +62,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
 在游戏菜单地图左侧的边栏中加入“地图助手”页面，与地图筛选器和“活跃帮手”并列。它作用于你当前驾驶的载具，或你在地图上选中的你的载具：
 - 地点：用选择器决定列表显示的内容：需要这台载具作业的田地、所有田地及其状态、进行中的合同，或它可以装货或卸货的站点。点击一项，地图会移到该处并填好作业。
 - 作业：游戏自带的作业设置，包括在地图上选择目标。“加入队列”把作业排到最后，“插入为下一个”把它排到最前。
-- 指令队列：这台载具的待办清单。加入的第一个作业会立即开始。当前作业显示进度，完成的作业自动消失，下一个自动开始。等待中的作业随时可以移动、编辑或删除，帮手驾驶时也可以；对当前作业点“删除”会取消它。
+- 指令队列：这台载具的待办清单。加入的第一个作业会立即开始。当前作业显示进度，完成的作业自动消失，下一个自动开始。等待中的作业随时可以移动、编辑或删除，帮手驾驶时也可以；在当前作业上，“删除”会变成“取消作业”，点击会让帮手停下。
 作业被停止或无法完成时，队列暂停并提示你。点击“继续队列”或加入新作业即可继续。
 
 多人游戏：拥有“雇佣 AI 帮手”权限的农场成员可以使用队列。队列由服务器执行，并随存档保存。
@@ -75,7 +75,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
 Adiciona uma página Assistente De Mapa à barra lateral esquerda do mapa no menu do jogo, ao lado dos filtros do mapa e dos funcionários ativos. Ela funciona com o veículo em que você está ou com um dos seus veículos que você seleciona no mapa:
 - Locais: um seletor escolhe o que a lista mostra: campos que precisam do trabalho deste veículo, todos os seus campos com o estado deles, seus contratos em andamento ou as estações onde ele pode carregar ou entregar. Clique em um item para mover o mapa até ele e preencher a tarefa.
 - Tarefa: as configurações de tarefa do próprio jogo, incluindo a escolha do destino no mapa. Adicionar à fila coloca a tarefa no fim, Inserir como próximo a coloca em primeiro.
-- Fila de comandos: uma lista de afazeres do veículo. A primeira tarefa adicionada começa na hora. A tarefa atual mostra o progresso, as tarefas concluídas somem e a próxima começa sozinha. Mova, edite ou exclua tarefas em espera a qualquer momento, inclusive enquanto um funcionário dirige; Excluir na tarefa atual a cancela.
+- Fila de comandos: uma lista de afazeres do veículo. A primeira tarefa adicionada começa na hora. A tarefa atual mostra o progresso, as tarefas concluídas somem e a próxima começa sozinha. Mova, edite ou exclua tarefas em espera a qualquer momento, inclusive enquanto um funcionário dirige; na tarefa atual, Excluir vira Cancelar tarefa e faz o funcionário parar.
 Se uma tarefa for interrompida ou não puder ser concluída, a fila pausa e você recebe uma mensagem. Retomar, ou adicionar uma tarefa, continua a fila.
 
 Multijogador: membros da fazenda com permissão para contratar funcionários podem usar a fila. O servidor a executa e ela é salva com o jogo.
@@ -88,7 +88,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
 在遊戲選單地圖左側的側欄中加入「地圖助手」頁面，與地圖篩選器和「工作中的人工智慧幫手」並列。它作用於你目前駕駛的機具，或你在地圖上選取的你的機具：
 - 地點：用選擇器決定清單顯示的內容：需要這台機具作業的田地、所有田地及其狀態、進行中的合約，或它可以裝貨或卸貨的站點。點選一項，地圖會移到該處並填好工作。
 - 工作：遊戲內建的工作設定，包括在地圖上選擇目標。「加入佇列」把工作排到最後，「插入為下一個」把它排到最前。
-- 指令佇列：這台機具的待辦清單。加入的第一個工作會立即開始。目前的工作會顯示進度，完成的工作自動消失，下一個自動開始。等待中的工作隨時可以移動、編輯或刪除，幫手駕駛時也可以；對目前的工作點「刪除」會取消它。
+- 指令佇列：這台機具的待辦清單。加入的第一個工作會立即開始。目前的工作會顯示進度，完成的工作自動消失，下一個自動開始。等待中的工作隨時可以移動、編輯或刪除，幫手駕駛時也可以；在目前的工作上，「刪除」會變成「取消工作」，點選會讓幫手停下。
 工作被停止或無法完成時，佇列會暫停並提示你。點選「繼續佇列」或加入新工作即可繼續。
 
 多人遊戲：擁有「僱用人工智慧幫手」權限的農場成員可以使用佇列。佇列由伺服器執行，並隨存檔儲存。
@@ -101,7 +101,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
 Přidá stránku Pomocník Mapy do levého postranního panelu mapy v herní nabídce, vedle filtrů mapy a aktivních pracovníků. Pracuje s vozidlem, ve kterém sedíte, nebo s některým z vašich vozidel, které vyberete na mapě:
 - Místa: přepínač určuje, co seznam ukazuje: pole, která potřebují práci tohoto vozidla, všechna vaše pole s jejich stavem, vaše probíhající zakázky nebo stanice, kde může nakládat či vykládat. Klikněte na položku a mapa se na ni přesune a úkol se vyplní.
 - Úkol: nastavení úkolu přímo ze hry včetně výběru cíle na mapě. Přidat do fronty zařadí úkol na konec, Vložit jako další jej zařadí na začátek.
-- Fronta příkazů: seznam úkolů vozidla. První přidaný úkol začne hned. Aktuální úkol ukazuje svůj postup, hotové úkoly zmizí a další začne sám. Čekající úkoly můžete kdykoli přesunout, upravit nebo smazat, i když pracovník řídí; Smazat u aktuálního úkolu jej zruší.
+- Fronta příkazů: seznam úkolů vozidla. První přidaný úkol začne hned. Aktuální úkol ukazuje svůj postup, hotové úkoly zmizí a další začne sám. Čekající úkoly můžete kdykoli přesunout, upravit nebo smazat, i když pracovník řídí; u aktuálního úkolu se Smazat změní na Zrušit úkol a zastaví pracovníka.
 Pokud je úkol zastaven nebo jej nelze dokončit, fronta se pozastaví a dostanete zprávu. Pokračovat nebo přidání úkolu ji opět spustí.
 
 Hra více hráčů: členové farmy s oprávněním najímat pracovníky mohou frontu používat. Spouští ji server a ukládá se spolu s hrou.
@@ -114,7 +114,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
 Tilføjer en Kortassistent-side i kortets venstre sidepanel i spilmenuen, ved siden af kortfiltrene og Aktive arbejdere. Den virker på det køretøj, du sidder i, eller på et af dine køretøjer, som du vælger på kortet:
 - Steder: en vælger bestemmer, hvad listen viser: marker, der trænger til dette køretøjs arbejde, alle dine marker med deres tilstand, dine igangværende kontrakter eller stationerne, hvor det kan læsse eller levere. Klik på et punkt for at flytte kortet dertil og udfylde jobbet.
 - Job: spillets egne jobindstillinger, inklusive valg af mål på kortet. Føj til kø sætter jobbet sidst, Indsæt som næste sætter det først.
-- Kommandokø: en huskeliste for køretøjet. Det første job, du tilføjer, starter med det samme. Det aktuelle job viser sit fremskridt, færdige job forsvinder, og det næste starter af sig selv. Flyt, rediger eller slet ventende job når som helst, også mens en arbejder kører; Slet på det aktuelle job annullerer det.
+- Kommandokø: en huskeliste for køretøjet. Det første job, du tilføjer, starter med det samme. Det aktuelle job viser sit fremskridt, færdige job forsvinder, og det næste starter af sig selv. Flyt, rediger eller slet ventende job når som helst, også mens en arbejder kører; på det aktuelle job skifter Slet til Annuller job, som stopper arbejderen.
 Hvis et job stoppes eller ikke kan gøres færdigt, sættes køen på pause, og du får en besked. Fortsæt, eller et nyt job, sætter den i gang igen.
 
 Multiplayer: gårdmedlemmer med tilladelse til at ansætte arbejdere kan bruge køen. Serveren kører den, og den gemmes med spillet.
@@ -127,7 +127,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
 Agrega una página Asistente De Mapa a la barra lateral izquierda del mapa en el menú del juego, junto a los filtros del mapa y los ayudantes activos. Funciona con el vehículo en el que vas o con uno de tus vehículos que selecciones en el mapa:
 - Lugares: un selector elige lo que muestra la lista: campos que necesitan el trabajo de este vehículo, todos tus campos con su estado, tus contratos en curso o las estaciones donde puede cargar o entregar. Haz clic en uno para mover el mapa hasta allí y completar el trabajo.
 - Trabajo: la configuración de trabajos del propio juego, incluida la selección del destino en el mapa. Agregar a la cola pone el trabajo al final, Insertar como siguiente lo pone primero.
-- Cola de órdenes: una lista de tareas del vehículo. El primer trabajo que agregas empieza de inmediato. El trabajo actual muestra su progreso, los terminados desaparecen y el siguiente empieza solo. Mueve, edita o elimina trabajos en espera en cualquier momento, incluso mientras conduce un ayudante; Eliminar en el trabajo actual lo cancela.
+- Cola de órdenes: una lista de tareas del vehículo. El primer trabajo que agregas empieza de inmediato. El trabajo actual muestra su progreso, los terminados desaparecen y el siguiente empieza solo. Mueve, edita o elimina trabajos en espera en cualquier momento, incluso mientras conduce un ayudante; en el trabajo actual, Eliminar pasa a ser Cancelar trabajo y detiene al ayudante.
 Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje. Reanudar, o agregar un trabajo, la continúa.
 
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
@@ -140,7 +140,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
 Añade una página Asistente De Mapa a la barra lateral izquierda del mapa en el menú del juego, junto a los filtros del mapa y los ayudantes activos. Funciona con el vehículo en el que vas o con uno de tus vehículos que selecciones en el mapa:
 - Lugares: un selector elige lo que muestra la lista: campos que necesitan el trabajo de este vehículo, todos tus campos con su estado, tus contratos en curso o las estaciones donde puede cargar o entregar. Haz clic en uno para mover el mapa hasta allí y rellenar el trabajo.
 - Trabajo: los ajustes de trabajo del propio juego, incluida la elección del destino en el mapa. Añadir a la cola pone el trabajo al final, Insertar como siguiente lo pone el primero.
-- Cola de órdenes: una lista de tareas del vehículo. El primer trabajo que añades empieza enseguida. El trabajo actual muestra su progreso, los terminados desaparecen y el siguiente empieza solo. Mueve, edita o suprime trabajos en espera en cualquier momento, también mientras conduce un ayudante; Suprimir en el trabajo actual lo cancela.
+- Cola de órdenes: una lista de tareas del vehículo. El primer trabajo que añades empieza enseguida. El trabajo actual muestra su progreso, los terminados desaparecen y el siguiente empieza solo. Mueve, edita o suprime trabajos en espera en cualquier momento, también mientras conduce un ayudante; en el trabajo actual, Suprimir pasa a ser Cancelar trabajo y detiene al ayudante.
 Si un trabajo se detiene o no puede terminarse, la cola se pausa y recibes un mensaje. Reanudar, o añadir un trabajo, la continúa.
 
 Multijugador: los miembros de la granja con permiso para contratar ayudantes pueden usar la cola. El servidor la ejecuta y se guarda con la partida.
@@ -153,7 +153,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
 Ajoute une page Assistant De Carte au panneau latéral gauche de la carte dans le menu du jeu, à côté des filtres de la carte et des ouvriers actifs. Elle agit sur le véhicule dans lequel vous êtes assis, ou sur l'un de vos véhicules que vous sélectionnez sur la carte :
 - Lieux : un sélecteur choisit ce que la liste affiche : les champs qui ont besoin du travail de ce véhicule, tous vos champs avec leur état, vos contrats en cours ou les sites où il peut charger ou livrer. Cliquez sur un lieu pour y déplacer la carte et remplir le travail.
 - Travail : les réglages de travail du jeu, y compris le choix de la cible sur la carte. Ajouter à la file place le travail à la fin, Insérer en suivant le place en premier.
-- File de commandes : une liste de tâches pour le véhicule. Le premier travail ajouté démarre aussitôt. Le travail en cours affiche sa progression, les travaux terminés disparaissent et le suivant démarre tout seul. Déplacez, modifiez ou supprimez les travaux en attente à tout moment, même pendant qu'un ouvrier conduit; Supprimer sur le travail en cours l'annule.
+- File de commandes : une liste de tâches pour le véhicule. Le premier travail ajouté démarre aussitôt. Le travail en cours affiche sa progression, les travaux terminés disparaissent et le suivant démarre tout seul. Déplacez, modifiez ou supprimez les travaux en attente à tout moment, même pendant qu'un ouvrier conduit; sur le travail en cours, Supprimer devient Annuler le travail et arrête l'ouvrier.
 Si un travail est arrêté ou ne peut pas être terminé, la file se met en pause et vous recevez un message. Reprendre, ou ajouter un travail, la relance.
 
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est enregistrée avec la partie.
@@ -166,7 +166,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
 Lisää pelivalikon kartan vasempaan sivupalkkiin Kartta-Avustaja-sivun karttasuodattimien ja aktiivisten työntekijöiden rinnalle. Se toimii työkoneelle, jossa istut, tai omalle työkoneellesi, jonka valitset kartalta:
 - Paikat: valitsin määrää, mitä lista näyttää: pellot, jotka tarvitsevat tämän työkoneen työtä, kaikki peltosi tiloineen, käynnissä olevat toimeksiantosi tai asemat, joilla se voi lastata tai toimittaa. Napsauta kohdetta, niin kartta siirtyy sinne ja työ täytetään.
 - Työ: pelin omat työasetukset, myös kohteen valinta kartalta. Lisää jonoon lisää työn viimeiseksi, Lisää seuraavaksi lisää sen ensimmäiseksi.
-- Komentojono: työkoneen tehtävälista. Ensimmäinen lisäämäsi työ alkaa heti. Nykyinen työ näyttää edistymisensä, valmiit työt katoavat ja seuraava alkaa itsestään. Siirrä, muokkaa tai poista odottavia töitä milloin tahansa, myös työntekijän ajaessa; Poista nykyisen työn kohdalla peruu sen.
+- Komentojono: työkoneen tehtävälista. Ensimmäinen lisäämäsi työ alkaa heti. Nykyinen työ näyttää edistymisensä, valmiit työt katoavat ja seuraava alkaa itsestään. Siirrä, muokkaa tai poista odottavia töitä milloin tahansa, myös työntekijän ajaessa; nykyisen työn kohdalla Poista-painikkeen tilalla on Peruuta työ, joka pysäyttää työntekijän.
 Jos työ keskeytetään tai sitä ei voi suorittaa loppuun, jono pysähtyy ja saat ilmoituksen. Jatka tai uuden työn lisääminen jatkaa sitä.
 
 Moninpeli: tilan jäsenet, joilla on oikeus palkata työntekijöitä, voivat käyttää jonoa. Palvelin suorittaa sen, ja se tallennetaan pelin mukana.
@@ -179,7 +179,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
 Ajoute une page Assistant De Carte au panneau latéral gauche de la carte dans le menu du jeu, à côté des filtres de la carte et des ouvriers actifs. Elle agit sur le véhicule dans lequel vous êtes assis, ou sur l'un de vos véhicules que vous sélectionnez sur la carte :
 - Lieux : un sélecteur choisit ce que la liste affiche : les champs qui ont besoin du travail de ce véhicule, tous vos champs avec leur état, vos contrats en cours ou les stations où il peut charger ou livrer. Cliquez sur un lieu pour y déplacer la carte et remplir la tâche.
 - Tâche : les réglages de tâche du jeu, y compris le choix de la cible sur la carte. Ajouter à la file place la tâche à la fin, Insérer en suivant la place en premier.
-- File de commandes : une liste de choses à faire pour le véhicule. La première tâche ajoutée démarre aussitôt. La tâche en cours affiche sa progression, les tâches terminées disparaissent et la suivante démarre toute seule. Déplacez, modifiez ou supprimez les tâches en attente à tout moment, même pendant qu'un ouvrier conduit ; Supprimer sur la tâche en cours l'annule.
+- File de commandes : une liste de choses à faire pour le véhicule. La première tâche ajoutée démarre aussitôt. La tâche en cours affiche sa progression, les tâches terminées disparaissent et la suivante démarre toute seule. Déplacez, modifiez ou supprimez les tâches en attente à tout moment, même pendant qu'un ouvrier conduit ; sur la tâche en cours, Supprimer devient Annuler la tâche et arrête l'ouvrier.
 Si une tâche est arrêtée ou ne peut pas être terminée, la file se met en pause et vous recevez un message. Reprendre, ou ajouter une tâche, la relance.
 
 Multijoueur : les membres de la ferme autorisés à engager des ouvriers peuvent utiliser la file. Le serveur l'exécute et elle est sauvegardée avec la partie.
@@ -192,7 +192,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
 A játékmenü térképének bal oldali sávjába Térképsegéd oldalt ad a térképszűrők és az aktív segítők mellé. A járművel működik, amelyben ülsz, vagy egy saját járműveddel, amelyet a térképen kiválasztasz:
 - Helyek: egy választó dönti el, mit mutat a lista: a jármű munkáját igénylő területeket, az összes területedet az állapotukkal, a folyamatban lévő megbízásaidat vagy az állomásokat, ahol rakodni vagy szállítani tud. Kattints egy elemre, és a térkép odaugrik, a feladat pedig kitöltődik.
 - Feladat: a játék saját feladatbeállításai, a cél térképen való kiválasztásával együtt. A Sorhoz adás a végére teszi a feladatot, a Beszúrás következőnek az elejére.
-- Parancssor: a jármű teendőlistája. Az első hozzáadott feladat azonnal elindul. Az aktuális feladat mutatja a haladását, a kész feladatok eltűnnek, és a következő magától elindul. A várakozó feladatokat bármikor áthelyezheted, szerkesztheted vagy törölheted, akkor is, amikor segítő vezet; a Törlés az aktuális feladatnál megszakítja azt.
+- Parancssor: a jármű teendőlistája. Az első hozzáadott feladat azonnal elindul. Az aktuális feladat mutatja a haladását, a kész feladatok eltűnnek, és a következő magától elindul. A várakozó feladatokat bármikor áthelyezheted, szerkesztheted vagy törölheted, akkor is, amikor segítő vezet; az aktuális feladatnál a Törlés helyén Feladat törlése áll, ez leállítja a segítőt.
 Ha egy feladatot leállítanak, vagy nem fejezhető be, a sor szünetel, és üzenetet kapsz. A Folytatás vagy egy új feladat hozzáadása folytatja.
 
 Többjátékos mód: a gazdaság segítőfelvételi joggal rendelkező tagjai használhatják a sort. A szerver futtatja, és a játékkal együtt mentődik.
@@ -205,7 +205,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
 Menambahkan halaman Asisten Peta ke bilah samping kiri peta di menu permainan, di samping filter peta dan pekerja aktif. Halaman ini bekerja untuk kendaraan yang Anda kendarai, atau salah satu kendaraan Anda yang dipilih di peta:
 - Tempat: sebuah pemilih menentukan isi daftar: ladang yang butuh pekerjaan kendaraan ini, semua ladang Anda beserta kondisinya, kontrak yang sedang berjalan, atau stasiun tempat kendaraan dapat memuat atau mengantar. Klik salah satunya untuk memindahkan peta ke sana dan mengisi pekerjaan.
 - Pekerjaan: pengaturan pekerjaan bawaan permainan, termasuk memilih target di peta. Tambah ke antrean menaruh pekerjaan di akhir, Sisipkan berikutnya menaruhnya di depan.
-- Antrean perintah: daftar tugas untuk kendaraan. Pekerjaan pertama yang Anda tambahkan langsung dimulai. Pekerjaan saat ini menampilkan kemajuannya, pekerjaan yang selesai menghilang, dan berikutnya dimulai sendiri. Pindahkan, ubah, atau hapus pekerjaan yang menunggu kapan saja, juga saat pekerja mengemudi; Hapus pada pekerjaan saat ini membatalkannya.
+- Antrean perintah: daftar tugas untuk kendaraan. Pekerjaan pertama yang Anda tambahkan langsung dimulai. Pekerjaan saat ini menampilkan kemajuannya, pekerjaan yang selesai menghilang, dan berikutnya dimulai sendiri. Pindahkan, ubah, atau hapus pekerjaan yang menunggu kapan saja, juga saat pekerja mengemudi; pada pekerjaan saat ini, Hapus berubah menjadi Batalkan Pekerjaan dan menghentikan pekerja.
 Jika pekerjaan dihentikan atau tidak dapat diselesaikan, antrean dijeda dan Anda menerima pesan. Lanjutkan, atau menambah pekerjaan, akan melanjutkannya.
 
 Multipemain: anggota pertanian yang boleh mempekerjakan pekerja dapat menggunakan antrean. Server menjalankannya, dan antrean disimpan bersama permainan.
@@ -218,7 +218,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
 Aggiunge una pagina Assistente Mappa alla barra laterale sinistra della mappa nel menu di gioco, accanto ai filtri della mappa e agli aiutanti attivi. Funziona con il veicolo su cui sei seduto o con uno dei tuoi veicoli selezionato sulla mappa:
 - Luoghi: un selettore sceglie cosa mostra l'elenco: i campi che richiedono il lavoro di questo veicolo, tutti i tuoi campi con il loro stato, i tuoi contratti in corso o le stazioni dove può caricare o consegnare. Fai clic su una voce per spostare lì la mappa e compilare il lavoro.
 - Lavoro: le impostazioni di lavoro del gioco, compresa la scelta della destinazione sulla mappa. Aggiungi alla coda mette il lavoro in fondo, Inserisci come prossimo lo mette per primo.
-- Coda di comandi: una lista di cose da fare per il veicolo. Il primo lavoro aggiunto parte subito. Il lavoro attuale mostra il suo avanzamento, i lavori finiti scompaiono e il successivo parte da solo. Sposta, modifica o elimina i lavori in attesa in qualsiasi momento, anche mentre un aiutante guida; Elimina sul lavoro attuale lo annulla.
+- Coda di comandi: una lista di cose da fare per il veicolo. Il primo lavoro aggiunto parte subito. Il lavoro attuale mostra il suo avanzamento, i lavori finiti scompaiono e il successivo parte da solo. Sposta, modifica o elimina i lavori in attesa in qualsiasi momento, anche mentre un aiutante guida; sul lavoro attuale, Elimina diventa Annulla lavoro e ferma l'aiutante.
 Se un lavoro viene interrotto o non può essere completato, la coda si mette in pausa e ricevi un messaggio. Riprendi, o aggiungere un lavoro, la fa ripartire.
 
 Multigiocatore: i membri della fattoria autorizzati ad assumere aiutanti possono usare la coda. La esegue il server e viene salvata con la partita.
@@ -231,7 +231,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
 ゲームメニューのマップ左側のサイドバーに、マップフィルターや作業中のヘルパーと並ぶ「マップヘルパー」ページを追加します。乗っている車両、またはマップで選択した自分の車両に対して働きます：
 - 場所：セレクターでリストの内容を選びます。この車両の作業が必要な畑、状態付きのすべての畑、進行中の契約、積み込みや納品ができる施設。クリックするとマップがその場所へ移動し、仕事が入力されます。
 - 仕事：マップ上での目標の選択を含む、ゲーム本来の仕事設定。「キューに追加」は仕事を最後に、「次に挿入」は先頭に入れます。
-- コマンドキュー：車両のやることリスト。最初に追加した仕事はすぐに始まります。現在の仕事は進行状況を表示し、終わった仕事は消え、次の仕事が自動で始まります。待機中の仕事はいつでも移動・編集・削除でき、ヘルパーの運転中も可能です。現在の仕事で「削除」を押すと中止します。
+- コマンドキュー：車両のやることリスト。最初に追加した仕事はすぐに始まります。現在の仕事は進行状況を表示し、終わった仕事は消え、次の仕事が自動で始まります。待機中の仕事はいつでも移動・編集・削除でき、ヘルパーの運転中も可能です。現在の仕事では「削除」が「仕事をキャンセル」に変わり、押すとヘルパーが停止します。
 仕事が停止された、または完了できなかった場合、キューは一時停止し、メッセージが表示されます。「再開」または仕事の追加で続行します。
 
 マルチプレイ：ヘルパーを雇う権限を持つ農場メンバーがキューを使えます。キューはサーバーが実行し、セーブデータとともに保存されます。
@@ -244,7 +244,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 게임 메뉴 맵의 왼쪽 사이드바에 맵 필터와 활성 작업자 옆으로 맵 도우미 페이지를 추가합니다. 탑승한 차량 또는 맵에서 선택한 내 차량에 작동합니다:
 - 장소: 선택기로 목록 내용을 고릅니다. 이 차량의 작업이 필요한 경작지, 상태가 표시된 모든 경작지, 진행 중인 계약, 적재하거나 납품할 수 있는 스테이션. 하나를 클릭하면 맵이 그곳으로 이동하고 작업이 입력됩니다.
 - 작업: 맵에서 목표를 고르는 기능을 포함한 게임 기본 작업 설정. ‘대기열에 추가’는 작업을 맨 뒤에, ‘다음으로 삽입’은 맨 앞에 넣습니다.
-- 명령 대기열: 차량의 할 일 목록. 처음 추가한 작업은 바로 시작됩니다. 현재 작업은 진행 상황을 보여 주고, 끝난 작업은 사라지며 다음 작업이 자동으로 시작됩니다. 대기 중인 작업은 작업자가 운전하는 동안에도 언제든 이동, 편집, 삭제할 수 있으며, 현재 작업에서 ‘삭제’를 누르면 취소됩니다.
+- 명령 대기열: 차량의 할 일 목록. 처음 추가한 작업은 바로 시작됩니다. 현재 작업은 진행 상황을 보여 주고, 끝난 작업은 사라지며 다음 작업이 자동으로 시작됩니다. 대기 중인 작업은 작업자가 운전하는 동안에도 언제든 이동, 편집, 삭제할 수 있으며, 현재 작업에서는 ‘삭제’가 ‘작업 취소’로 바뀌고 누르면 작업자가 멈춥니다.
 작업이 중지되거나 끝낼 수 없으면 대기열이 일시 정지되고 메시지가 표시됩니다. ‘재개’하거나 작업을 추가하면 계속됩니다.
 
 멀티플레이: 작업자 고용 권한이 있는 농장 구성원이 대기열을 사용할 수 있습니다. 서버가 실행하며 게임과 함께 저장됩니다.
@@ -257,7 +257,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
 Voegt een Kaarthulp-pagina toe aan de linkerzijbalk van de kaart in het spelmenu, naast de kaartfilters en de actieve helpers. Hij werkt met het voertuig waarin je zit, of met een van je voertuigen die je op de kaart selecteert:
 - Plaatsen: een keuzeschakelaar bepaalt wat de lijst toont: velden die het werk van dit voertuig nodig hebben, al je velden met hun toestand, je lopende contracten of de stations waar het kan laden of leveren. Klik op een item om de kaart erheen te verplaatsen en de klus in te vullen.
 - Klus: de eigen klusinstellingen van het spel, inclusief het kiezen van een doel op de kaart. Aan wachtrij toevoegen zet de klus achteraan, Als volgende invoegen zet hem vooraan.
-- Opdrachtenwachtrij: een takenlijst voor het voertuig. De eerste klus die je toevoegt, start meteen. De huidige klus toont zijn voortgang, afgeronde klussen verdwijnen en de volgende start vanzelf. Verplaats, bewerk of verwijder wachtende klussen op elk moment, ook terwijl een helper rijdt; Verwijderen bij de huidige klus breekt die af.
+- Opdrachtenwachtrij: een takenlijst voor het voertuig. De eerste klus die je toevoegt, start meteen. De huidige klus toont zijn voortgang, afgeronde klussen verdwijnen en de volgende start vanzelf. Verplaats, bewerk of verwijder wachtende klussen op elk moment, ook terwijl een helper rijdt; bij de huidige klus verandert Verwijderen in Taak annuleren, dat de helper stopt.
 Als een klus wordt gestopt of niet kan worden afgerond, pauzeert de wachtrij en krijg je een melding. Hervatten, of een klus toevoegen, zet hem voort.
 
 Multiplayer: boerderijleden die helpers mogen inhuren, kunnen de wachtrij gebruiken. De server voert hem uit en hij wordt met het spel opgeslagen.
@@ -270,7 +270,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
 Legger til en Kartassistent-side i kartets venstre sidepanel i spillmenyen, ved siden av kartfiltrene og de aktive arbeiderne. Den virker på kjøretøyet du sitter i, eller på et av kjøretøyene dine som du velger på kartet:
 - Steder: en velger bestemmer hva listen viser: åkere som trenger dette kjøretøyets arbeid, alle åkrene dine med tilstand, kontraktene dine som pågår, eller stasjonene der det kan laste eller levere. Klikk på et punkt for å flytte kartet dit og fylle ut jobben.
 - Jobb: spillets egne jobbinnstillinger, inkludert valg av mål på kartet. Legg i kø setter jobben sist, Sett inn som neste setter den først.
-- Kommandokø: en gjøremålsliste for kjøretøyet. Den første jobben du legger til, starter med en gang. Gjeldende jobb viser fremdriften, ferdige jobber forsvinner og den neste starter av seg selv. Flytt, rediger eller slett ventende jobber når som helst, også mens en arbeider kjører; Slett på gjeldende jobb avbryter den.
+- Kommandokø: en gjøremålsliste for kjøretøyet. Den første jobben du legger til, starter med en gang. Gjeldende jobb viser fremdriften, ferdige jobber forsvinner og den neste starter av seg selv. Flytt, rediger eller slett ventende jobber når som helst, også mens en arbeider kjører; på gjeldende jobb byttes Slett ut med Avbryt jobb, som stopper arbeideren.
 Hvis en jobb stoppes eller ikke kan fullføres, settes køen på pause og du får en melding. Fortsett, eller en ny jobb, setter den i gang igjen.
 
 Flerspiller: gårdsmedlemmer med tillatelse til å ansette arbeidere kan bruke køen. Serveren kjører den, og den lagres sammen med spillet.
@@ -283,7 +283,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
 Dodaje stronę Pomocnik Mapy do lewego panelu bocznego mapy w menu gry, obok filtrów mapy i aktywnych pracowników. Działa z pojazdem, w którym siedzisz, albo z jednym z twoich pojazdów wybranym na mapie:
 - Miejsca: przełącznik wybiera, co pokazuje lista: pola wymagające pracy tego pojazdu, wszystkie twoje pola z ich stanem, trwające zlecenia albo stacje, w których może ładować lub dostarczać. Kliknij pozycję, aby przesunąć tam mapę i wypełnić pracę.
 - Praca: ustawienia pracy z gry, w tym wybór celu na mapie. Dodaj do kolejki ustawia pracę na końcu, Wstaw jako następne ustawia ją na początku.
-- Kolejka poleceń: lista zadań pojazdu. Pierwsza dodana praca zaczyna się od razu. Bieżąca praca pokazuje postęp, ukończone prace znikają, a następna zaczyna się sama. Oczekujące prace możesz w każdej chwili przenieść, edytować lub usunąć, także gdy jedzie pracownik; Usuń przy bieżącej pracy ją anuluje.
+- Kolejka poleceń: lista zadań pojazdu. Pierwsza dodana praca zaczyna się od razu. Bieżąca praca pokazuje postęp, ukończone prace znikają, a następna zaczyna się sama. Oczekujące prace możesz w każdej chwili przenieść, edytować lub usunąć, także gdy jedzie pracownik; przy bieżącej pracy Usuń zmienia się w Anuluj pracę i zatrzymuje pracownika.
 Jeśli praca zostanie zatrzymana lub nie da się jej ukończyć, kolejka wstrzymuje się i dostajesz komunikat. Wznów albo dodanie pracy ją kontynuuje.
 
 Gra wieloosobowa: członkowie gospodarstwa z uprawnieniem do zatrudniania pracowników mogą korzystać z kolejki. Uruchamia ją serwer, a kolejka zapisuje się razem z grą.
@@ -296,7 +296,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
 Adiciona uma página Assistente De Mapa à barra lateral esquerda do mapa no menu do jogo, ao lado dos filtros do mapa e dos trabalhadores ativos. Funciona com o veículo em que estás sentado ou com um dos teus veículos que selecionas no mapa:
 - Locais: um seletor escolhe o que a lista mostra: campos que precisam do trabalho deste veículo, todos os teus campos com o seu estado, os teus contratos em curso ou as estações onde pode carregar ou entregar. Clica num local para mover o mapa até lá e preencher a tarefa.
 - Tarefa: as definições de tarefa do próprio jogo, incluindo a escolha do destino no mapa. Adicionar à fila coloca a tarefa no fim, Inserir como seguinte coloca-a em primeiro.
-- Fila de comandos: uma lista de afazeres do veículo. A primeira tarefa que adicionas começa logo. A tarefa atual mostra o progresso, as tarefas concluídas desaparecem e a seguinte começa sozinha. Move, edita ou elimina tarefas em espera a qualquer momento, também enquanto um trabalhador conduz; Eliminar na tarefa atual cancela-a.
+- Fila de comandos: uma lista de afazeres do veículo. A primeira tarefa que adicionas começa logo. A tarefa atual mostra o progresso, as tarefas concluídas desaparecem e a seguinte começa sozinha. Move, edita ou elimina tarefas em espera a qualquer momento, também enquanto um trabalhador conduz; na tarefa atual, Eliminar passa a Cancelar trabalho e faz parar o trabalhador.
 Se uma tarefa for parada ou não puder ser concluída, a fila fica em pausa e recebes uma mensagem. Retomar, ou adicionar uma tarefa, continua a fila.
 
 Multijogador: os membros da quinta com permissão para contratar trabalhadores podem usar a fila. O servidor executa-a e ela é guardada com o jogo.
@@ -309,7 +309,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
 Adaugă o pagină Asistent De Hartă în bara laterală stângă a hărții din meniul jocului, lângă filtrele hărții și lucrătorii activi. Funcționează cu vehiculul în care stai sau cu unul dintre vehiculele tale selectat pe hartă:
 - Locuri: un selector alege ce arată lista: parcelele care au nevoie de lucrarea acestui vehicul, toate parcelele tale cu starea lor, contractele tale în desfășurare sau posturile unde poate încărca sau livra. Fă clic pe un loc ca harta să se mute acolo și sarcina să fie completată.
 - Sarcină: setările de sarcină ale jocului, inclusiv alegerea țintei pe hartă. Adaugă în coadă pune sarcina la final, Inserează ca următoarea o pune prima.
-- Coadă de comenzi: o listă de sarcini pentru vehicul. Prima sarcină adăugată pornește imediat. Sarcina curentă își arată progresul, sarcinile terminate dispar, iar următoarea pornește singură. Mută, editează sau șterge sarcinile în așteptare oricând, chiar și când conduce un lucrător; Ștergerea sarcinii curente o anulează.
+- Coadă de comenzi: o listă de sarcini pentru vehicul. Prima sarcină adăugată pornește imediat. Sarcina curentă își arată progresul, sarcinile terminate dispar, iar următoarea pornește singură. Mută, editează sau șterge sarcinile în așteptare oricând, chiar și când conduce un lucrător; la sarcina curentă, Șterge devine Anulează sarcina și oprește lucrătorul.
 Dacă o sarcină este oprită sau nu poate fi terminată, coada se oprește temporar și primești un mesaj. Reia sau adăugarea unei sarcini o continuă.
 
 Multiplayer: membrii fermei care au voie să angajeze lucrători pot folosi coada. Serverul o execută și se salvează odată cu jocul.
@@ -322,7 +322,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 Добавляет страницу «Помощник Карты» в левую боковую панель карты в игровом меню, рядом с фильтрами карты и действующими работниками. Она работает с техникой, в которой вы сидите, или с вашей техникой, выбранной на карте:
 - Места: переключатель выбирает, что показывает список: поля, которым нужна работа этой техники, все ваши поля с их состоянием, текущие контракты или станции, где она может загружаться или сдавать груз. Нажмите на место, чтобы перейти к нему на карте и заполнить работу.
 - Работа: игровые настройки работы, включая выбор цели на карте. «В очередь» ставит работу в конец, «Вставить следующей» — в начало.
-- Очередь команд: список дел для техники. Первая добавленная работа начинается сразу. Текущая работа показывает ход выполнения, выполненные работы исчезают, а следующая запускается сама. Ожидающие работы можно в любое время перемещать, изменять или удалять, даже пока работник за рулём; «Удалить» на текущей работе отменяет её.
+- Очередь команд: список дел для техники. Первая добавленная работа начинается сразу. Текущая работа показывает ход выполнения, выполненные работы исчезают, а следующая запускается сама. Ожидающие работы можно в любое время перемещать, изменять или удалять, даже пока работник за рулём; у текущей работы кнопка «Удалить» становится «Отменить работу» и останавливает работника.
 Если работа остановлена или не может быть завершена, очередь приостанавливается, и вы получаете сообщение. «Продолжить» или новая работа возобновляет её.
 
 Мультиплеер: участники фермы с правом нанимать работников могут пользоваться очередью. Её выполняет сервер, и она сохраняется вместе с игрой.
@@ -335,7 +335,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
 Lägger till en Kartassistent-sida i kartans vänstra sidopanel i spelmenyn, bredvid kartfiltren och de aktiva arbetarna. Den fungerar med fordonet du sitter i, eller med ett av dina fordon som du väljer på kartan:
 - Platser: en väljare bestämmer vad listan visar: fält som behöver detta fordons arbete, alla dina fält med deras tillstånd, dina pågående kontrakt eller stationerna där det kan lasta eller leverera. Klicka på en plats för att flytta kartan dit och fylla i jobbet.
 - Jobb: spelets egna jobbinställningar, inklusive val av mål på kartan. Lägg i kö lägger jobbet sist, Infoga som nästa lägger det först.
-- Kommandokö: en att göra-lista för fordonet. Det första jobbet du lägger till startar direkt. Det aktuella jobbet visar sina framsteg, klara jobb försvinner och nästa startar av sig självt. Flytta, redigera eller ta bort väntande jobb när som helst, även medan en arbetare kör; Ta bort på det aktuella jobbet avbryter det.
+- Kommandokö: en att göra-lista för fordonet. Det första jobbet du lägger till startar direkt. Det aktuella jobbet visar sina framsteg, klara jobb försvinner och nästa startar av sig självt. Flytta, redigera eller ta bort väntande jobb när som helst, även medan en arbetare kör; på det aktuella jobbet byts Ta bort mot Avbryt jobb, som stoppar arbetaren.
 Om ett jobb stoppas eller inte kan slutföras pausas kön och du får ett meddelande. Fortsätt, eller ett nytt jobb, sätter igång den igen.
 
 Flerspelarläge: gårdsmedlemmar som får anlita arbetare kan använda kön. Servern kör den, och den sparas med spelet.
@@ -348,7 +348,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
 Oyun menüsündeki haritanın sol kenar çubuğuna, harita filtrelerinin ve aktif yardımcıların yanına bir Harita Yardımcısı sayfası ekler. Bindiğiniz araçla veya haritada seçtiğiniz araçlarınızdan biriyle çalışır:
 - Yerler: bir seçici listenin ne göstereceğini belirler: bu aracın işine ihtiyaç duyan tarlalar, durumlarıyla tüm tarlalarınız, devam eden kontratlarınız veya yükleme ya da teslim yapabileceği istasyonlar. Haritayı oraya taşımak ve işi doldurmak için birine tıklayın.
 - İş: haritada hedef seçme dahil oyunun kendi iş ayarları. Sıraya ekle işi sona koyar, Sonraki olarak ekle başa koyar.
-- Komut sırası: araç için bir yapılacaklar listesi. Eklediğiniz ilk iş hemen başlar. Mevcut iş ilerlemesini gösterir, biten işler kaybolur ve sonraki kendiliğinden başlar. Bekleyen işleri istediğiniz zaman, bir yardımcı sürerken bile taşıyabilir, düzenleyebilir veya silebilirsiniz; mevcut işte Sil onu iptal eder.
+- Komut sırası: araç için bir yapılacaklar listesi. Eklediğiniz ilk iş hemen başlar. Mevcut iş ilerlemesini gösterir, biten işler kaybolur ve sonraki kendiliğinden başlar. Bekleyen işleri istediğiniz zaman, bir yardımcı sürerken bile taşıyabilir, düzenleyebilir veya silebilirsiniz; mevcut işte Sil düğmesi İşi iptal et olarak değişir ve yardımcıyı durdurur.
 Bir iş durdurulursa veya tamamlanamazsa sıra duraklar ve bir mesaj alırsınız. Devam et veya yeni bir iş eklemek sırayı sürdürür.
 
 Çok oyunculu: yardımcı kiralama izni olan çiftlik üyeleri sırayı kullanabilir. Sırayı sunucu yürütür ve oyunla birlikte kaydedilir.
@@ -361,7 +361,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 Додає сторінку «Помічник Мапи» до лівої бічної панелі мапи в ігровому меню, поруч із фільтрами мапи та активними працівниками. Вона працює з технікою, у якій ви сидите, або з вашою технікою, вибраною на мапі:
 - Місця: перемикач визначає, що показує список: поля, яким потрібна робота цієї техніки, усі ваші поля з їхнім станом, поточні контракти або станції, де вона може завантажуватися чи доставляти. Натисніть місце, щоб перемістити туди мапу й заповнити завдання.
 - Завдання: ігрові налаштування завдання, зокрема вибір цілі на мапі. «Додати до черги» ставить завдання в кінець, «Вставити наступним» — на початок.
-- Черга команд: список справ для техніки. Перше додане завдання починається одразу. Поточне завдання показує поступ, виконані завдання зникають, а наступне починається саме. Завдання в очікуванні можна будь-коли переміщувати, змінювати або видаляти, навіть коли кермує працівник; «Видалити» на поточному завданні скасовує його.
+- Черга команд: список справ для техніки. Перше додане завдання починається одразу. Поточне завдання показує поступ, виконані завдання зникають, а наступне починається саме. Завдання в очікуванні можна будь-коли переміщувати, змінювати або видаляти, навіть коли кермує працівник; у поточного завдання кнопка «Видалити» стає «Скасувати завдання» і зупиняє працівника.
 Якщо завдання зупинено або його неможливо завершити, черга призупиняється, і ви отримуєте повідомлення. «Продовжити» або нове завдання відновлює її.
 
 Мультиплеєр: учасники ферми з дозволом наймати працівників можуть користуватися чергою. Її виконує сервер, і вона зберігається разом із грою.
@@ -374,7 +374,7 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
 Thêm trang Trợ Lý Bản Đồ vào thanh bên trái của bản đồ trong menu trò chơi, cạnh các bộ lọc bản đồ và công nhân đang hoạt động. Trang này dùng cho xe bạn đang ngồi, hoặc một xe của bạn được chọn trên bản đồ:
 - Địa điểm: bộ chọn quyết định danh sách hiển thị gì: ruộng cần công việc của xe này, tất cả ruộng của bạn kèm tình trạng, hợp đồng đang thực hiện, hoặc các trạm nơi nó có thể chất hàng hay giao hàng. Nhấn vào một mục để đưa bản đồ tới đó và điền sẵn công việc.
 - Công việc: phần thiết lập công việc của trò chơi, gồm cả chọn mục tiêu trên bản đồ. Thêm vào hàng đợi đặt công việc ở cuối, Chèn làm tiếp theo đặt nó lên đầu.
-- Hàng đợi lệnh: danh sách việc cần làm của xe. Công việc đầu tiên bạn thêm sẽ bắt đầu ngay. Công việc hiện tại hiển thị tiến độ, công việc đã xong tự biến mất và công việc tiếp theo tự bắt đầu. Bạn có thể di chuyển, sửa hoặc xóa công việc đang chờ bất cứ lúc nào, kể cả khi công nhân đang lái; Xóa ở công việc hiện tại sẽ hủy nó.
+- Hàng đợi lệnh: danh sách việc cần làm của xe. Công việc đầu tiên bạn thêm sẽ bắt đầu ngay. Công việc hiện tại hiển thị tiến độ, công việc đã xong tự biến mất và công việc tiếp theo tự bắt đầu. Bạn có thể di chuyển, sửa hoặc xóa công việc đang chờ bất cứ lúc nào, kể cả khi công nhân đang lái; ở công việc hiện tại, Xóa đổi thành Hủy công việc và sẽ dừng công nhân.
 Nếu một công việc bị dừng hoặc không thể hoàn thành, hàng đợi tạm dừng và bạn nhận được thông báo. Tiếp tục, hoặc thêm một công việc, sẽ chạy lại hàng đợi.
 
 Nhiều người chơi: thành viên trang trại được phép thuê công nhân có thể dùng hàng đợi. Máy chủ thực hiện hàng đợi và lưu cùng với trò chơi.
