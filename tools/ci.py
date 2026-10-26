@@ -23,7 +23,7 @@ MODS = {
     "production-overflow": "ProductionOverflow",
 }
 VERSION = r"(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){3}"
-GAME = "Farming Simulator 25 1.24 (PC)"
+GAME = "Farming Simulator 25 1.25 (PC)"
 # Files that never enter a package and never affect validation or tests; CI skips
 # build and test when a change touches only these (tools/changes.py). Packages hold
 # only .lua, .xml and .dds files, so Mod images can never be packaged. The Mod
