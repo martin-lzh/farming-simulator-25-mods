@@ -42,6 +42,8 @@ If none of your production points accepts the product, the whole stock becomes p
 
 ![Production Chains page: butter in a dairy set to Distributing, sell rest automatically, next to products on Storing and Selling](assets/screenshots/03-production-chains-sell-rest.jpg)
 
+![Production Chains page: barley, oat, sorghum and wheat flour in a grain mill set to Distributing, sell rest automatically, while both rice flours stay on Storing](assets/screenshots/04-production-chains-grain-mill-flours.jpg)
+
 ### Good to know
 
 - Distributing, store rest automatically is only offered for products that come out on pallets. For other products, such as liquids you pick up at the factory, the button goes from Distributing straight to Distributing, sell rest automatically.
@@ -102,6 +104,8 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 本农场没有生产点接收该产品时，全部库存都会生成托盘或卖出。
 
 ![“生产链”页面：黄油设为“分配，剩余自动出售”，其他产品为储存或出售](assets/screenshots/03-production-chains-sell-rest.jpg)
+
+![“生产链”页面：磨坊的大麦粉、燕麦粉、高粱粉和小麦粉设为“分配，剩余自动出售”，两种米粉保持“储存”](assets/screenshots/04-production-chains-grain-mill-flours.jpg)
 
 ### 注意事项
 
