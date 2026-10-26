@@ -13,6 +13,8 @@
 
 2026-10-25：维护者确认已实机测试（“已经实机测试过了都”，与 Map Helper、Production Overflow 一并确认，未提供逐项记录），要求以正式版发布 1.0.0.0，与这两个 Mod 的 1.0.0.0 及 Animal Products Manager 1.0.0.4 一起并入 PR #6（dev → main）。维护者决定按现状发布：Alt+Y 保持为备用默认键，料箱用完后不沿用最后装过的类型（见“维护者决定”）。发布提交 6f482b4 只改 `modDesc.xml` 版本、`release.json`、CHANGELOG 标题和 README，脚本与已测构建一致，包内只有版本号不同；`FS25_FillTypeSelector.zip` SHA256 `ad3fccedd67b98ab6c7f3d21db698389342517eb3d89cf2187b54390e39da234`。CHANGELOG 的 Unreleased 条目移到 `## 1.0.0.0 — 2026-10-25`，空的 `0.1.0.0` 占位标题已删除。已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表，CI Release plan 显示 `fill-type-selector-v1.0.0.0` 为新的正式版。`release.json` 为正式版（`"prerelease": false`），合并由维护者执行。截图和封面图待维护者提供。
 
+
+2026-10-26 最终构建：维护者确认 2026-10-25 安装进游戏的构建（200ea8a，按维护者要求替换了四个 Mod 的 ZIP）实机测试没有问题，同意固定 SHA256。最终包在 06e2879，SHA256 `7e6cfdbf96ac30178e56c6b61e1f2f0c553a1db91d8e01c3233223de42080ca2`，与测试的包完全相同。
 ## 功能与决定
 
 问题：原版 `Sprayer:getExternalFill` 在料箱为空（`FillType.UNKNOWN`）时只会按“液态肥料 → 固态肥料 → 除草剂”挑选购买类型，从不选石灰。因此纯石灰撒布机空箱时 AI 帮手直接因缺料停机，肥料+石灰撒布机空箱时总是买肥料；玩家只能先装一点石灰“标记”料箱（外部购买时不消耗料箱内容，所以标记一直有效）。

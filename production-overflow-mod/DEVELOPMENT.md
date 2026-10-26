@@ -14,6 +14,8 @@
 
 2026-10-25：维护者确认已实机测试（“已经实机测试过了都”，与 Map Helper、Fill Type Selector 一并确认，未提供逐项记录），确定名称 Production Overflow / 生产余量处理，要求以正式版发布 1.0.0.0，与这两个 Mod 的 1.0.0.0 及 Animal Products Manager 1.0.0.4 一起并入 PR #6（dev → main）。发布提交 6f482b4 只改 `modDesc.xml` 版本、`release.json`（`"prerelease": true` 改为 `false`）、CHANGELOG 标题和 README，脚本与已测构建一致，包内只有版本号不同；`FS25_ProductionOverflow.zip` SHA256 `1cdea1c528da8c5150d197705b730f129d54ae9b5babfc9b582ce22919e4f3db`。CHANGELOG 的 Unreleased 条目移到 `## 1.0.0.0 — 2026-10-25`，空的 `0.1.0.0` 占位标题已删除。已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表，CI Release plan 显示 `production-overflow-v1.0.0.0` 为新的正式版。合并由维护者执行。截图和封面图待维护者提供。
 
+
+2026-10-26 最终构建：维护者确认 2026-10-25 安装进游戏的构建（200ea8a，按维护者要求替换了四个 Mod 的 ZIP）实机测试没有问题，同意固定 SHA256。最终包在 06e2879，SHA256 `1eb46b02123cc78ee017b46f5c435efbbe7f2245dd5027468bf2f6dbd619909c`，与测试的包完全相同。
 ## 功能与决定
 
 维护者批准的设计：在原版生产菜单（`InGameMenuProductionFrame` 的“更改输出模式”）中，按生产点和产出物料新增两种模式，原版“分配”不变。
