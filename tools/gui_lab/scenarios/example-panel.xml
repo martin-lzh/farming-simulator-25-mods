@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample sidebar page for the GUI preview lab (original, not a game file). It is injected
+     under the map page's filterBox the way a Mod does it: loadProfileSet + loadGuiRec. -->
+<GUI>
+    <GuiElement profile="lab_page" id="labPage">
+        <Text profile="lab_title" id="labTitle" text="Sample page"/>
+        <BoxLayout profile="lab_actions" id="labActions">
+            <Button profile="lab_action" id="labFirst" text="First action">
+                <ThreePartBitmap profile="fs25_mapButtonBg"/>
+            </Button>
+            <Button profile="lab_action" id="labSecond" text="Second action">
+                <ThreePartBitmap profile="fs25_mapButtonBg"/>
+            </Button>
+        </BoxLayout>
+        <ScrollingLayout profile="lab_rows" id="labRows">
+            <Text profile="lab_row" text="Row one"/>
+            <Text profile="lab_row" text="Row two"/>
+            <Text profile="lab_row" text="Row three"/>
+        </ScrollingLayout>
+        <MadeUpElement profile="lab_unknown" id="labUnknown"/>
+    </GuiElement>
+    <GUIProfiles>
+        <Profile name="lab_page" extends="emptyPanel" with="anchorTopStretchingX">
+            <height value="600px"/>
+            <absoluteSizeOffset value="52px 0px"/>
+            <position value="0px -145px"/>
+        </Profile>
+        <Profile name="lab_title" extends="fs25_textDefault" with="anchorTopStretchingX">
+            <size value="100% 30px"/>
+            <textSize value="22px"/>
+            <textBold value="true"/>
+            <textUpperCase value="true"/>
+        </Profile>
+        <Profile name="lab_actions" extends="emptyPanel" with="anchorTopStretchingX">
+            <height value="80px"/>
+            <position value="0px -40px"/>
+            <flowDirection value="vertical"/>
+            <elementSpacing value="8px"/>
+        </Profile>
+        <Profile name="lab_action" extends="fs25_mapButton">
+            <size value="358px 30px"/>
+            <textSize value="16px"/>
+            <textBold value="true"/>
+            <textAlignment value="left"/>
+            <textOffset value="10px 0px"/>
+            <inputAction value="MENU_EXTRA_1"/>
+        </Profile>
+        <Profile name="lab_rows" extends="emptyPanel" with="anchorTopStretchingX">
+            <height value="200px"/>
+            <position value="0px -140px"/>
+            <flowDirection value="vertical"/>
+        </Profile>
+        <Profile name="lab_row" extends="fs25_textDefault">
+            <size value="358px 30px"/>
+            <textSize value="18px"/>
+        </Profile>
+        <Profile name="lab_unknown" extends="emptyPanel" with="anchorBottomStretchingX">
+            <height value="60px"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>

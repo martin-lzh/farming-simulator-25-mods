@@ -1,6 +1,7 @@
 APMProductDialog = {}
 local APMProductDialog_mt = Class(APMProductDialog, MessageDialog)
-local dialogName = g_currentModName .. "_ProductDestinations"
+local modName = g_currentModName
+local dialogName = modName .. "_ProductDestinations"
 local dialogFile = g_currentModDirectory .. "gui/ProductDialog.xml"
 
 function APMProductDialog.new()
@@ -44,7 +45,8 @@ function APMProductDialog:onOpen()
     local texts = {
         g_i18n:getText("ui_production_output_storing"),
         g_i18n:getText("ui_production_output_selling"),
-        g_i18n:getText("ui_production_output_distributing")
+        g_i18n:getText("apm_mode_distribute_store", modName),
+        g_i18n:getText("apm_mode_distribute_sell", modName)
     }
     for _, entry in ipairs(self.entries) do
         local element = self.rowTemplate:clone(self.productRows)

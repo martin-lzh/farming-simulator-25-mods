@@ -1,0 +1,297 @@
+{
+  "name": "map-helper-page-1080",
+  "title": "Map page, Map Helper page (map-helper-mod)",
+  "screen": [
+    1920,
+    1080
+  ],
+  "language": "cs",
+  "background": "#000000",
+  "map": {
+    "color": "#33502c"
+  },
+  "base": "$ref/gui/InGameMenu.xml",
+  "injections": [
+    {
+      "file": "$ref/gui/InGameMenuMapFrame.xml",
+      "parent": "pagingElement"
+    },
+    {
+      "file": "map-helper-mod/gui/MapHelperPage.xml",
+      "parent": "filterBox"
+    }
+  ],
+  "overrides": {
+    "mhPage": {
+      "visible": true
+    },
+    "buttonsPanel": {
+      "visible": false
+    },
+    "ingameMap": {
+      "absolute": {
+        "x": 130,
+        "y": 0,
+        "width": 1790,
+        "height": 1040
+      }
+    },
+    "filterListContainer": {
+      "visible": false
+    },
+    "createJobEmptyText": {
+      "visible": false
+    },
+    "workerListContainer": {
+      "visible": false
+    },
+    "limitReachedWarning": {
+      "visible": false
+    },
+    "mapOverviewSelector": {
+      "texts": [
+        "$l10n_ui_mapOverviewFruitTypes",
+        "$l10n_ui_mapOverviewGrowth",
+        "$l10n_ui_mapOverviewSoil",
+        "$l10n_ui_mapOverviewHotspots",
+        "$l10n_ui_farmlandScreen",
+        "$l10n_button_createJob",
+        "$l10n_ui_activeAIJobs",
+        "地图助手"
+      ],
+      "state": 8
+    },
+    "currentBalanceText": {
+      "text": "437,370 €"
+    },
+    "mapMoveGlyphText": {
+      "text": "$l10n_ui_ingameMenuMapPan"
+    },
+    "mapMoveGlyph": {
+      "key": "RMB"
+    },
+    "mapZoomGlyphText": {
+      "text": "$l10n_ui_ingameMenuMapZoom"
+    },
+    "mapZoomGlyph": {
+      "key": "Wheel"
+    },
+    "mhVehicleTitle": "FASTRAC 2135 4WS",
+    "mhVehicleStatus": "帮手正在驾驶此车辆。",
+    "mhVehicleInfo": "等待中的作业：2",
+    "mhAddText": "加入队列",
+    "mhNextText": "插入为下一项",
+    "mhQueueTitle": "指令队列",
+    "mhClearText": "清空队列",
+    "mhEditText": "编辑",
+    "mhRemoveText": "$l10n_button_cancelJob",
+    "mhQueueEmpty": {
+      "visible": false
+    },
+    "mhFormEmptyText": {
+      "visible": false
+    },
+    "createJobContainer": {
+      "visible": true,
+      "absolute": {
+        "x": 148,
+        "y": 622,
+        "width": 358,
+        "height": 120
+      }
+    },
+    "buttonStartJobContainer": {
+      "visible": false
+    },
+    "jobTypeElement": {
+      "texts": [
+        "田地工作"
+      ],
+      "state": 1
+    },
+    "createMultiOptionTemplate": {
+      "visible": false
+    },
+    "createPositionTemplate": {
+      "visible": false
+    },
+    "createTextTemplate": {
+      "visible": false
+    },
+    "createTitleTemplate": {
+      "text": "位置"
+    },
+    "createPositionRotationTemplate": {
+      "text": "< 812 , 433 | 90° >"
+    },
+    "mhFilterSelector": {
+      "texts": [
+        "需要此作业的田地",
+        "我的田地",
+        "$l10n_ui_contracts",
+        "$l10n_ui_stations"
+      ],
+      "state": 1
+    },
+    "mhPlacesEmpty": {
+      "visible": false
+    },
+    "mhResumeContainer": {
+      "visible": false
+    },
+    "mhResumeText": "继续队列",
+    "mhPlacesBox": {
+      "size": "100% 330px"
+    }
+  },
+  "lists": {
+    "mhPlacesList": [
+      {
+        "name": "耕地合同 - 田地编号 53",
+        "info": "耕地 - 50 %",
+        "icon": {
+          "imageSliceId": "gui.ingameMap_contracts"
+        }
+      },
+      {
+        "name": "田地编号 3 + 4 + 5",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 9",
+        "info": "耕地, 需要石灰",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 14",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 22",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 25",
+        "info": "耕地",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "田地编号 31",
+        "info": "耕地, 需要石灰",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      },
+      {
+        "name": "耕地合同 - 田地编号 10",
+        "info": "帮手作业中 · 20 %",
+        "icon": {
+          "imageSliceId": "gui.ingameMap_contracts"
+        }
+      },
+      {
+        "name": "田地编号 12",
+        "info": "已在队列",
+        "icon": {
+          "imageSliceId": "gui.storeAttribute_seeding"
+        }
+      }
+    ],
+    "mhQueueList": [
+      {
+        "index": "",
+        "title": "田地工作 - 正在田地中作业",
+        "text": "距离：120 m  ·  合同进度：50 %",
+        "badgeIcon": {
+          "visible": true
+        }
+      },
+      {
+        "index": "1",
+        "title": "田地工作",
+        "text": "田地编号 12",
+        "badgeIcon": {
+          "visible": false
+        }
+      },
+      {
+        "index": "2",
+        "title": "前往",
+        "text": "412, 1180",
+        "badgeIcon": {
+          "visible": false
+        }
+      }
+    ],
+    "pagingTabList": [
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_map"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_calendar"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_prices"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_finances"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_animals"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_contracts"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_productionChains"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_statistics"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_handToolsOverview"
+        }
+      },
+      {
+        "tabButton": {
+          "iconSliceId": "gui.icon_ingameMenu_options"
+        }
+      }
+    ]
+  },
+  "listSelection": {
+    "mhPlacesList": 1,
+    "mhQueueList": 1,
+    "pagingTabList": 1
+  }
+}

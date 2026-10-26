@@ -19,6 +19,7 @@ function APM:onOwnerChanged()
         self.apmState.ownerFarmId = owner
         if changed then
             self.apmState.modes = {}
+            self.apmState.released = {}
             if self.isServer and self.updatePallets ~= nil then
                 self:updatePallets()
             end
@@ -48,12 +49,16 @@ end
 
 function APM.registerSavegameXMLPaths(schema, key)
     schema:register(XMLValueType.STRING, key .. ".product(?)#fillType", "Animal output fill type")
-    schema:register(XMLValueType.INT, key .. ".product(?)#mode", "0 store, 1 sell, 2 distribute", 0)
+    schema:register(XMLValueType.INT, key .. ".product(?)#mode", "0 store, 1 sell, 2 distribute and store the rest, 3 distribute and sell the rest", 0)
     schema:register(XMLValueType.FLOAT, key .. ".product(?)#refundLiters", "Product awaiting return after a rejected transfer", 0)
+    schema:register(XMLValueType.FLOAT, key .. ".product(?)#releasedLiters", "Pallet output left after the last hourly distribution, still to become pallets", 0)
 end
 
 function APM:onLoad()
-    self.apmState = {modes = {}, refunds = {}, hidden = {}, deleted = false, ready = false, processing = false, palletDepth = 0}
+    -- released: pallet output left over after an hourly distribution in mode 2,
+    -- which the native spawner may turn into pallets. Server only.
+    self.apmState = {modes = {}, refunds = {}, hidden = {}, released = {}, deleted = false, ready = false,
+        processing = false, palletDepth = 0}
 end
 
 function APM:onDelete()
@@ -119,6 +124,11 @@ function APM.applyMode(placeable, fillType, mode)
     if not APMDistribution.isMode(mode) or not APM.supports(placeable, fillType) then
         return false
     end
+    -- Released output belongs to one hourly result of mode 2. Any other mode
+    -- handles all pending output itself; a new mode 2 waits for its own hour.
+    if APM.mode(placeable, fillType) ~= mode then
+        placeable.apmState.released[fillType] = nil
+    end
     placeable.apmState.modes[fillType] = mode
     if placeable.isServer and mode == APMDistribution.KEEP and placeable.updatePallets ~= nil then
         placeable:updatePallets()
@@ -155,6 +165,10 @@ function APM:saveToXMLFile(xmlFile, key)
             xmlFile:setValue(entry .. "#fillType", g_fillTypeManager:getFillTypeNameByIndex(fillType))
             xmlFile:setValue(entry .. "#mode", mode)
             xmlFile:setValue(entry .. "#refundLiters", refund)
+            local released = APM.released(self, fillType)
+            if released > 0 then
+                xmlFile:setValue(entry .. "#releasedLiters", released)
+            end
             index = index + 1
         end
     end
@@ -163,6 +177,7 @@ end
 function APM:loadFromXMLFile(xmlFile, key, reset)
     self.apmState.modes = {}
     self.apmState.refunds = {}
+    self.apmState.released = {}
     if reset then
         return
     end
@@ -174,6 +189,12 @@ function APM:loadFromXMLFile(xmlFile, key, reset)
             local refund = xmlFile:getValue(entry .. "#refundLiters", 0)
             if APMDistribution.isFinite(refund) and refund > 0 then
                 self.apmState.refunds[fillType] = refund
+            end
+            -- Native pending liters are saved separately and still contain this
+            -- amount; it only limits what may become pallets.
+            local released = xmlFile:getValue(entry .. "#releasedLiters", 0)
+            if mode == APMDistribution.DISTRIBUTE_STORE and APMDistribution.isFinite(released) and released > 0 then
+                self.apmState.released[fillType] = released
             end
         end
     end
@@ -209,6 +230,9 @@ function APM.recoverAbortedCalls(placeable, intoBuffer)
     end
     if state.palletDepth > 0 and state.palletFrame ~= g_updateLoopIndex then
         local pallets = placeable.spec_husbandryPallets
+        -- Pending stock still holds only the visible part; what is left of it
+        -- is what is left released.
+        APM.clampReleased(placeable)
         for fillType, amount in pairs(state.hidden) do
             if intoBuffer or pallets == nil then
                 state.refunds[fillType] = (state.refunds[fillType] or 0) + amount
@@ -221,7 +245,27 @@ function APM.recoverAbortedCalls(placeable, intoBuffer)
     end
 end
 
+-- Released liters still waiting in native pending stock, never more than it holds.
+function APM.released(placeable, fillType)
+    local pallets = placeable.spec_husbandryPallets
+    local released = placeable.apmState.released[fillType] or 0
+    if pallets == nil or released <= 0 then return 0 end
+    return math.max(math.min(released, pallets.pendingLiters[fillType] or 0), 0)
+end
+
+-- The native spawner only takes from visible pending stock, and in mode 2 only
+-- released liters are visible. Whatever it consumed is no longer released.
+function APM.clampReleased(placeable)
+    local state = placeable.apmState
+    for fillType in pairs(state.released) do
+        local released = APM.released(placeable, fillType)
+        state.released[fillType] = released > 0 and released or nil
+    end
+end
+
 -- Keep native spawner bookkeeping and callbacks, hiding only managed pending stock.
+-- Mode 2 leaves its released liters visible; output produced after the hourly
+-- distribution stays hidden until the next one.
 -- Hidden stock is recorded in the state, so an error in the spawner cannot lose it.
 function APM.withStoredPalletsHidden(placeable, superFunc, ...)
     if placeable.apmState == nil or not placeable.isServer then
@@ -234,13 +278,21 @@ function APM.withStoredPalletsHidden(placeable, superFunc, ...)
     state.palletFrame = g_updateLoopIndex
     local hidden = {}
     for fillType, amount in pairs(pending) do
-        if APM.mode(placeable, fillType) ~= APMDistribution.KEEP and amount ~= 0 then
-            hidden[fillType] = amount
-            state.hidden[fillType] = (state.hidden[fillType] or 0) + amount
-            pending[fillType] = 0
+        local mode = APM.mode(placeable, fillType)
+        if mode ~= APMDistribution.KEEP and amount ~= 0 then
+            local visible = 0
+            if mode == APMDistribution.DISTRIBUTE_STORE then
+                visible = APM.released(placeable, fillType)
+            end
+            if amount ~= visible then
+                hidden[fillType] = amount - visible
+                state.hidden[fillType] = (state.hidden[fillType] or 0) + amount - visible
+                pending[fillType] = visible
+            end
         end
     end
     local result = superFunc(placeable, ...)
+    APM.clampReleased(placeable)
     local resume = false
     for fillType, amount in pairs(hidden) do
         pending[fillType] = pending[fillType] + amount
@@ -414,36 +466,58 @@ function APM:processHour()
         return
     end
     state.processing = g_updateLoopIndex
-    APM.processOutputs(self)
+    local spawn = APM.processOutputs(self)
     state.processing = false
+    -- Released output becomes pallets the native way, after the settlement.
+    if spawn and self.updatePallets ~= nil then
+        self:updatePallets()
+    end
 end
 
+-- Returns true when released pallet output is waiting for the native spawner.
 function APM:processOutputs()
     local mission = g_currentMission
     local farmId = self:getOwnerFarmId()
+    local state = self.apmState
+    local spawn = false
+    local function sell(source, fillType)
+        APMDistribution.sell(source,
+            mission.economyManager:getPricePerLiter(fillType) * ProductionPoint.DIRECT_SELL_PRICE_FACTOR,
+            function(revenue, onPaid) APM.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS, onPaid) end)
+    end
+    local function distribute(source, fillType)
+        APMDistribution.distribute(source, APM.targets(self, fillType), function(target, amount)
+            local distance = calcDistanceFrom(self.rootNode, target.point.owningPlaceable.rootNode)
+            local rate = distance * ProductionPoint.DIRECT_DELIVERY_PRICE
+            if rate <= 0 then return amount end
+            local paid = -APM.changeMoney(farmId, -amount * rate, MoneyType.PRODUCTION_COSTS)
+            return paid / rate
+        end)
+    end
     for _, fillType in ipairs(APM.products(self)) do
         local mode = APM.mode(self, fillType)
-        if mode == APMDistribution.KEEP and (self.apmState.refunds[fillType] or 0) > 0 then
-            local source = APM.source(self, fillType)
-            if source ~= nil then source.restore() end
-        end
-        if mode ~= APMDistribution.KEEP then
-            local source = APM.source(self, fillType)
-            if source ~= nil then
-                if mode == APMDistribution.SELL then
-                    APMDistribution.sell(source,
-                        mission.economyManager:getPricePerLiter(fillType) * ProductionPoint.DIRECT_SELL_PRICE_FACTOR,
-                        function(revenue, onPaid) APM.changeMoney(farmId, revenue, MoneyType.SOLD_PRODUCTS, onPaid) end)
-                elseif mode == APMDistribution.DISTRIBUTE then
-                    APMDistribution.distribute(source, APM.targets(self, fillType), function(target, amount)
-                        local distance = calcDistanceFrom(self.rootNode, target.point.owningPlaceable.rootNode)
-                        local rate = distance * ProductionPoint.DIRECT_DELIVERY_PRICE
-                        if rate <= 0 then return amount end
-                        local paid = -APM.changeMoney(farmId, -amount * rate, MoneyType.PRODUCTION_COSTS)
-                        return paid / rate
-                    end)
+        local source = APM.source(self, fillType)
+        if source ~= nil then
+            if mode == APMDistribution.KEEP then
+                if (state.refunds[fillType] or 0) > 0 then source.restore() end
+            elseif mode == APMDistribution.SELL then
+                sell(source, fillType)
+            elseif mode == APMDistribution.DISTRIBUTE_SELL then
+                distribute(source, fillType)
+                sell(source, fillType)
+            elseif mode == APMDistribution.DISTRIBUTE_STORE then
+                distribute(source, fillType)
+                -- Store the rest natively: liquids stay in the tank, and the pallet
+                -- output left now (not what is produced later) may become pallets.
+                source.restore()
+                local pallets = self.spec_husbandryPallets
+                local pending = pallets ~= nil and pallets.pendingLiters[fillType]
+                if pending then
+                    state.released[fillType] = pending > 0 and pending or nil
+                    spawn = spawn or pending > 5
                 end
             end
         end
     end
+    return spawn
 end

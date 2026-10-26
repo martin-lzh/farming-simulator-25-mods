@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modDesc descVersion="114">
     <author>Zhaohan Liu</author>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
     <title>
         <en>Animal Products Manager</en>
         <de>Tierprodukte-Manager</de>
@@ -33,10 +33,11 @@
     </title>
     <description>
         <en><![CDATA[Description:
-Choose what happens to the products of each husbandry, such as milk, goat milk, buffalo milk, eggs and wool. Each product gets one of three modes:
+Choose what happens to the products of each husbandry, such as milk, goat milk, buffalo milk, eggs and wool. Each product gets one of four modes:
 - Storing (default): same as the base game. The tank fills and pallets appear.
 - Selling: once per in-game hour, the stock is sold automatically at the current price times the game's automatic-sale rate (90%).
-- Distributing: once per in-game hour, the stock is delivered to your own farm's production points that accept it, split by their free space. The normal delivery fee applies; whatever doesn't fit stays in the barn.
+- Distributing, store rest automatically: once per in-game hour, the stock is delivered to your own farm's production points that accept it, split by their free space. The normal delivery fee applies. Whatever doesn't fit is stored as in Storing.
+- Distributing, sell rest automatically: delivers the same way, then sells whatever doesn't fit as in Selling.
 
 The dialog only lists what the animals in that barn produce. Pallets already on the ground or on trailers are not touched and still need manual transport. Feed, animal health and production are unchanged. When a barn changes owner, all of its products go back to Storing.
 
@@ -47,10 +48,11 @@ Open the in-game menu, go to the Animals page and select a husbandry. Click "Pro
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></en>
         <de><![CDATA[Beschreibung:
-Lege für jeden Tierstall fest, was mit seinen Produkten wie Milch, Ziegenmilch, Büffelmilch, Eiern und Wolle passiert. Jedes Produkt erhält einen von drei Modi:
+Lege für jeden Tierstall fest, was mit seinen Produkten wie Milch, Ziegenmilch, Büffelmilch, Eiern und Wolle passiert. Jedes Produkt erhält einen von vier Modi:
 - Behalten (Standard): wie im Grundspiel. Der Tank füllt sich und Paletten erscheinen.
 - Verkaufen: einmal pro Spielstunde wird der Bestand automatisch zum aktuellen Preis mal dem Satz für automatischen Verkauf des Spiels (90 %) verkauft.
-- Verteilen: einmal pro Spielstunde wird der Bestand an die Produktionen deines eigenen Hofs geliefert, die ihn annehmen, aufgeteilt nach ihrem freien Platz. Es gelten die normalen Lieferkosten; was nicht passt, bleibt im Stall.
+- Verteilen, Rest automatisch behalten: einmal pro Spielstunde wird der Bestand an die Produktionen deines eigenen Hofs geliefert, die ihn annehmen, aufgeteilt nach ihrem freien Platz. Es gelten die normalen Lieferkosten. Was nicht passt, wird wie bei Behalten gelagert.
+- Verteilen, Rest automatisch verkaufen: liefert genauso und verkauft dann, was nicht passt, wie bei Verkaufen.
 
 Der Dialog zeigt nur, was die Tiere in diesem Stall produzieren. Paletten, die bereits auf dem Boden oder auf Anhängern stehen, bleiben unberührt und müssen weiterhin selbst transportiert werden. Futter, Tiergesundheit und Produktion bleiben unverändert. Wechselt ein Stall den Besitzer, stehen alle seine Produkte wieder auf Behalten.
 
@@ -61,10 +63,11 @@ Tastenbelegung:
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
         <cs><![CDATA[说明：
-为每个畜舍的产品（如牛奶、山羊奶、水牛奶、鸡蛋和羊毛）选择去向。每种产品有三种挡位：
+为每个畜舍的产品（如牛奶、山羊奶、水牛奶、鸡蛋和羊毛）选择去向。每种产品有四种挡位：
 - 储存（默认）：与原版相同，储罐蓄积，生成托盘。
 - 出售：每游戏小时按当前价格乘游戏自动出售比例（90%）自动卖出库存。
-- 分配：每游戏小时把库存送往本农场接收该产品的生产点，按各自空余容量分配，按原版规则收取运费；放不下的留在畜舍。
+- 分配，剩余自动储存：每游戏小时把库存送往本农场接收该产品的生产点，按各自空余容量分配，按原版规则收取运费；放不下的按储存挡位处理。
+- 分配，剩余自动出售：同样分配，放不下的按出售挡位卖出。
 
 弹窗只列出该畜舍动物实际产出的产品。地上或拖车上已有的托盘不受影响，仍需手动运输。饲料、动物健康和产量不变。畜舍易主时，所有产品恢复为储存。
 
@@ -75,10 +78,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></de>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cs>
         <br><![CDATA[Descrição:
-Escolha o que acontece com os produtos de cada criação, como leite, leite de cabra, leite de búfala, ovos e lã. Cada produto recebe um de três modos:
+Escolha o que acontece com os produtos de cada criação, como leite, leite de cabra, leite de búfala, ovos e lã. Cada produto recebe um de quatro modos:
 - Armazenando (padrão): igual ao jogo base. O tanque enche e os paletes aparecem.
 - Vendendo: uma vez por hora do jogo, o estoque é vendido automaticamente pelo preço atual vezes a taxa de venda automática do jogo (90%).
-- Distribuindo: uma vez por hora do jogo, o estoque é entregue às produções da sua própria fazenda que o aceitam, dividido conforme o espaço livre. Aplica-se o frete normal; o que não couber fica na criação.
+- Distribuindo, resto armazenado automaticamente: uma vez por hora do jogo, o estoque é entregue às produções da sua própria fazenda que o aceitam, dividido conforme o espaço livre. Aplica-se o frete normal. O que não couber é armazenado como em Armazenando.
+- Distribuindo, resto vendido automaticamente: entrega da mesma forma e depois vende o que não couber como em Vendendo.
 
 A janela mostra apenas o que os animais daquela criação produzem. Paletes que já estão no chão ou em reboques não são afetados e continuam precisando de transporte manual. Ração, saúde dos animais e produção não mudam. Quando uma criação muda de dono, todos os produtos voltam para Armazenando.
 
@@ -89,10 +93,11 @@ Abra o menu do jogo, vá para a página Animais e selecione uma criação. Cliqu
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
         <ct><![CDATA[說明：
-為每個畜舍的產品（如牛奶、山羊奶、水牛奶、雞蛋和羊毛）選擇去向。每種產品有三種模式：
+為每個畜舍的產品（如牛奶、山羊奶、水牛奶、雞蛋和羊毛）選擇去向。每種產品有四種模式：
 - 存放中（預設）：與原版相同，儲槽蓄積，產生棧板。
 - 出售中：每遊戲小時以目前價格乘以遊戲自動出售比例（90%）自動賣出庫存。
-- 分配中：每遊戲小時將庫存送往本農場接收該產品的生產點，依各自剩餘容量分配，依原版規則收取運費；放不下的留在畜舍。
+- 分配中，剩餘自動存放：每遊戲小時將庫存送往本農場接收該產品的生產點，依各自剩餘容量分配，依原版規則收取運費；放不下的依存放模式處理。
+- 分配中，剩餘自動出售：同樣分配，放不下的依出售模式賣出。
 
 視窗只列出該畜舍動物實際產出的產品。地上或拖車上現有的棧板不受影響，仍需手動搬運。飼料、動物健康和產量不變。畜舍易主時，所有產品恢復為存放。
 
@@ -103,10 +108,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></br>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ct>
         <cz><![CDATA[Popis:
-Zvolte, co se stane s produkty jednotlivých chovů, například s mlékem, kozím mlékem, buvolím mlékem, vejci a vlnou. Každý produkt dostane jeden ze tří režimů:
+Zvolte, co se stane s produkty jednotlivých chovů, například s mlékem, kozím mlékem, buvolím mlékem, vejci a vlnou. Každý produkt dostane jeden ze čtyř režimů:
 - Uskladňování (výchozí): stejně jako v základní hře. Nádrž se plní a objevují se palety.
 - Prodávání: jednou za herní hodinu se zásoba automaticky prodá za aktuální cenu vynásobenou sazbou automatického prodeje hry (90 %).
-- Distribuování: jednou za herní hodinu se zásoba doručí do výroben vaší vlastní farmy, které ji přijímají, rozdělená podle volného místa. Platí běžné dopravné; co se nevejde, zůstane v chovu.
+- Distribuování, zbytek automaticky uskladnit: jednou za herní hodinu se zásoba doručí do výroben vaší vlastní farmy, které ji přijímají, rozdělená podle volného místa. Platí běžné dopravné. Co se nevejde, se uskladní jako při Uskladňování.
+- Distribuování, zbytek automaticky prodat: doručuje stejně a co se nevejde, prodá jako při Prodávání.
 
 Okno zobrazuje jen to, co zvířata v daném chovu produkují. Palety, které už stojí na zemi nebo na přívěsech, zůstávají beze změny a je nutné je dál přepravovat ručně. Krmivo, zdraví zvířat a produkce se nemění. Když chov změní majitele, všechny jeho produkty se vrátí na Uskladňování.
 
@@ -117,10 +123,11 @@ Otevřete herní nabídku, přejděte na stránku Zvířata a vyberte chov. Klik
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></cz>
         <da><![CDATA[Beskrivelse:
-Vælg, hvad der sker med produkterne fra hvert dyrehold, f.eks. mælk, gedemælk, bøffelmælk, æg og uld. Hvert produkt får en af tre tilstande:
+Vælg, hvad der sker med produkterne fra hvert dyrehold, f.eks. mælk, gedemælk, bøffelmælk, æg og uld. Hvert produkt får en af fire tilstande:
 - Opbevarer (standard): som i grundspillet. Tanken fyldes, og der kommer paller.
 - Sælger: én gang i timen i spillet sælges lageret automatisk til den aktuelle pris gange spillets automatiske salgssats (90 %).
-- Distribuerer: én gang i timen i spillet leveres lageret til din egen gårds produktioner, der tager imod det, fordelt efter deres ledige plads. Den normale fragtomkostning gælder; det, der ikke er plads til, bliver i dyreholdet.
+- Distribuerer, resten opbevares automatisk: én gang i timen i spillet leveres lageret til din egen gårds produktioner, der tager imod det, fordelt efter deres ledige plads. Den normale fragtomkostning gælder. Det, der ikke er plads til, opbevares som ved Opbevarer.
+- Distribuerer, resten sælges automatisk: leverer på samme måde og sælger derefter det, der ikke er plads til, som ved Sælger.
 
 Vinduet viser kun, hvad dyrene i det pågældende dyrehold producerer. Paller, der allerede står på jorden eller på vogne, røres ikke og skal stadig transporteres manuelt. Foder, dyrenes sundhed og produktion ændres ikke. Når et dyrehold skifter ejer, går alle produkter tilbage til Opbevarer.
 
@@ -131,10 +138,11 @@ Genvejstaster:
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></da>
         <ea><![CDATA[Descripción:
-Elige qué pasa con los productos de cada recinto, como leche, leche de cabra, leche de búfala, huevos y lana. Cada producto tiene uno de tres modos:
+Elige qué pasa con los productos de cada recinto, como leche, leche de cabra, leche de búfala, huevos y lana. Cada producto tiene uno de cuatro modos:
 - Almacenando (predeterminado): igual que en el juego base. El tanque se llena y aparecen tarimas.
 - Vendiendo: una vez por hora de juego, el inventario se vende automáticamente al precio actual por la tasa de venta automática del juego (90 %).
-- En distribución: una vez por hora de juego, el inventario se entrega a las fábricas de tu propia granja que lo aceptan, repartido según su espacio libre. Se aplican los gastos de envío normales; lo que no quepa se queda en el recinto.
+- En distribución, el resto se almacena automáticamente: una vez por hora de juego, el inventario se entrega a las fábricas de tu propia granja que lo aceptan, repartido según su espacio libre. Se aplican los gastos de envío normales. Lo que no quepa se almacena como en Almacenando.
+- En distribución, el resto se vende automáticamente: entrega de la misma forma y luego vende lo que no quepa como en Vendiendo.
 
 La ventana solo muestra lo que producen los animales de ese recinto. Las tarimas que ya están en el suelo o en remolques no se tocan y siguen necesitando transporte manual. El alimento, la salud de los animales y la producción no cambian. Si un recinto cambia de dueño, todos sus productos vuelven a Almacenando.
 
@@ -145,10 +153,11 @@ Abre el menú del juego, ve a la página Animales y selecciona un recinto. Haz c
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ea>
         <es><![CDATA[Descripción:
-Elige qué pasa con los productos de cada recinto, como leche, leche de cabra, leche de búfala, huevos y lana. Cada producto tiene uno de tres modos:
+Elige qué pasa con los productos de cada recinto, como leche, leche de cabra, leche de búfala, huevos y lana. Cada producto tiene uno de cuatro modos:
 - Almacenando (predeterminado): igual que en el juego base. El tanque se llena y aparecen palés.
 - Vendiendo: una vez por hora de juego, las existencias se venden automáticamente al precio actual por la tasa de venta automática del juego (90 %).
-- Distribuyendo: una vez por hora de juego, las existencias se entregan a las fábricas de tu propia granja que las aceptan, repartidas según su espacio libre. Se aplican los gastos de transporte normales; lo que no quepa se queda en el recinto.
+- Distribuyendo, el resto se almacena automáticamente: una vez por hora de juego, las existencias se entregan a las fábricas de tu propia granja que las aceptan, repartidas según su espacio libre. Se aplican los gastos de transporte normales. Lo que no quepa se almacena como en Almacenando.
+- Distribuyendo, el resto se vende automáticamente: entrega de la misma forma y luego vende lo que no quepa como en Vendiendo.
 
 La ventana solo muestra lo que producen los animales de ese recinto. Los palés que ya están en el suelo o en remolques no se tocan y siguen necesitando transporte manual. El pienso, la salud de los animales y la producción no cambian. Si un recinto cambia de propietario, todos sus productos vuelven a Almacenando.
 
@@ -159,10 +168,11 @@ Abre el menú del juego, ve a la página Animales y selecciona un recinto. Haz c
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></es>
         <fc><![CDATA[Description :
-Choisissez ce que deviennent les produits de chaque élevage, comme le lait, le lait de chèvre, le lait de bufflonne, les œufs et la laine. Chaque produit reçoit l'un des trois modes :
+Choisissez ce que deviennent les produits de chaque élevage, comme le lait, le lait de chèvre, le lait de bufflonne, les œufs et la laine. Chaque produit reçoit l'un des quatre modes :
 - Stockage (par défaut) : comme dans le jeu de base. La cuve se remplit et des palettes apparaissent.
 - Vente : une fois par heure de jeu, le stock est vendu automatiquement au prix actuel multiplié par le taux de vente automatique du jeu (90 %).
-- Distribution : une fois par heure de jeu, le stock est livré aux usines de votre propre ferme qui l'acceptent, réparti selon leur place libre. Les frais de livraison normaux s'appliquent ; ce qui ne rentre pas reste dans l'élevage.
+- Distribution, reste stocké automatiquement : une fois par heure de jeu, le stock est livré aux usines de votre propre ferme qui l'acceptent, réparti selon leur place libre. Les frais de livraison normaux s'appliquent. Ce qui ne rentre pas est stocké comme en Stockage.
+- Distribution, reste vendu automatiquement : livre de la même façon, puis vend ce qui ne rentre pas comme en Vente.
 
 La fenêtre n'affiche que ce que produisent les animaux de cet élevage. Les palettes déjà au sol ou sur des remorques ne sont pas touchées et doivent toujours être transportées manuellement. L'alimentation, la santé des animaux et la production ne changent pas. Quand un élevage change de propriétaire, tous ses produits repassent en Stockage.
 
@@ -173,10 +183,11 @@ Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Cl
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fc>
         <fi><![CDATA[Kuvaus:
-Valitse, mitä kunkin eläinsuojan tuotteille tapahtuu, esimerkiksi maidolle, vuohenmaidolle, puhvelinmaidolle, munille ja villalle. Jokaiselle tuotteelle valitaan yksi kolmesta tilasta:
+Valitse, mitä kunkin eläinsuojan tuotteille tapahtuu, esimerkiksi maidolle, vuohenmaidolle, puhvelinmaidolle, munille ja villalle. Jokaiselle tuotteelle valitaan yksi neljästä tilasta:
 - Säilytys (oletus): kuten peruspelissä. Säiliö täyttyy ja kuormalavoja ilmestyy.
 - Myynti: kerran pelitunnissa varasto myydään automaattisesti nykyiseen hintaan kerrottuna pelin automaattisen myynnin kertoimella (90 %).
-- Levitys: kerran pelitunnissa varasto toimitetaan oman tilasi niille tuotantolaitoksille, jotka ottavat sen vastaan, vapaan tilan mukaan jaettuna. Tavalliset kuljetusmaksut peritään; mikä ei mahdu, jää eläinsuojaan.
+- Levitys, loput varastoidaan automaattisesti: kerran pelitunnissa varasto toimitetaan oman tilasi niille tuotantolaitoksille, jotka ottavat sen vastaan, vapaan tilan mukaan jaettuna. Tavalliset kuljetusmaksut peritään. Mikä ei mahdu, varastoidaan kuten Säilytys-tilassa.
+- Levitys, loput myydään automaattisesti: toimittaa samalla tavalla ja myy sitten sen, mikä ei mahdu, kuten Myynti-tilassa.
 
 Ikkuna näyttää vain sen, mitä kyseisen eläinsuojan eläimet tuottavat. Maassa tai perävaunuissa jo olevia kuormalavoja ei kosketa, ja ne on edelleen kuljetettava itse. Rehu, eläinten terveys ja tuotanto eivät muutu. Kun eläinsuoja vaihtaa omistajaa, kaikki sen tuotteet palaavat Säilytys-tilaan.
 
@@ -187,10 +198,11 @@ Avaa pelivalikko, siirry Eläimet-sivulle ja valitse eläinsuoja. Napsauta alapa
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fi>
         <fr><![CDATA[Description :
-Choisissez ce que deviennent les produits de chaque élevage, comme le lait, le lait de chèvre, le lait de bufflonne, les œufs et la laine. Chaque produit reçoit l'un des trois modes :
+Choisissez ce que deviennent les produits de chaque élevage, comme le lait, le lait de chèvre, le lait de bufflonne, les œufs et la laine. Chaque produit reçoit l'un des quatre modes :
 - Stockage (par défaut) : comme dans le jeu de base. La cuve se remplit et des palettes apparaissent.
 - Vente : une fois par heure de jeu, le stock est vendu automatiquement au prix actuel multiplié par le taux de vente automatique du jeu (90 %).
-- Distribution : une fois par heure de jeu, le stock est livré aux usines de votre propre ferme qui l'acceptent, réparti selon leur place libre. Les frais de livraison normaux s'appliquent ; ce qui ne rentre pas reste dans l'élevage.
+- Distribution, reste stocké automatiquement : une fois par heure de jeu, le stock est livré aux usines de votre propre ferme qui l'acceptent, réparti selon leur place libre. Les frais de livraison normaux s'appliquent. Ce qui ne rentre pas est stocké comme en Stockage.
+- Distribution, reste vendu automatiquement : livre de la même façon, puis vend ce qui ne rentre pas comme en Vente.
 
 La fenêtre n'affiche que ce que produisent les animaux de cet élevage. Les palettes déjà au sol ou sur des remorques ne sont pas touchées et doivent toujours être transportées manuellement. L'alimentation, la santé des animaux et la production ne changent pas. Quand un élevage change de propriétaire, tous ses produits repassent en Stockage.
 
@@ -201,10 +213,11 @@ Ouvrez le menu du jeu, allez à la page Animaux et sélectionnez un élevage. Cl
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></fr>
         <hu><![CDATA[Leírás:
-Döntsd el, mi történjen az egyes állattartó helyek termékeivel, például a tejjel, kecsketejjel, bivalytejjel, tojással és gyapjúval. Minden termék három mód egyikét kapja:
+Döntsd el, mi történjen az egyes állattartó helyek termékeivel, például a tejjel, kecsketejjel, bivalytejjel, tojással és gyapjúval. Minden termék négy mód egyikét kapja:
 - Tárolás (alapértelmezett): mint az alapjátékban. A tartály megtelik, és raklapok jelennek meg.
 - Értékesítés: játékóránként egyszer a készlet automatikusan elkel az aktuális ár és a játék automatikus eladási arányának (90%) szorzatán.
-- Elosztás: játékóránként egyszer a készlet a saját gazdaságod azon üzemeibe kerül, amelyek átveszik, a szabad helyük arányában elosztva. A szokásos szállítási díj érvényes; ami nem fér el, az állattartó helyen marad.
+- Elosztás, a maradék automatikus tárolása: játékóránként egyszer a készlet a saját gazdaságod azon üzemeibe kerül, amelyek átveszik, a szabad helyük arányában elosztva. A szokásos szállítási díj érvényes. Ami nem fér el, azt a Tárolás módhoz hasonlóan tárolja.
+- Elosztás, a maradék automatikus értékesítése: ugyanígy szállít, majd ami nem fér el, azt az Értékesítés módhoz hasonlóan eladja.
 
 Az ablak csak azt mutatja, amit az adott hely állatai termelnek. A földön vagy pótkocsikon lévő raklapokhoz nem nyúl, ezeket továbbra is kézzel kell elszállítani. A takarmány, az állatok egészsége és a termelés nem változik. Ha egy állattartó hely tulajdonost vált, minden terméke visszaáll Tárolásra.
 
@@ -215,10 +228,11 @@ Nyisd meg a játékmenüt, lépj az Állatok oldalra, és válassz egy állattar
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></hu>
         <id><![CDATA[Deskripsi:
-Pilih apa yang terjadi pada produk setiap kandang, seperti susu, susu kambing, susu kerbau, telur, dan wol. Setiap produk mendapat salah satu dari tiga mode:
+Pilih apa yang terjadi pada produk setiap kandang, seperti susu, susu kambing, susu kerbau, telur, dan wol. Setiap produk mendapat salah satu dari empat mode:
 - Menyimpan (bawaan): sama seperti game dasar. Tangki terisi dan palet muncul.
 - Menjual: sekali setiap jam dalam game, stok dijual otomatis dengan harga saat ini dikali tingkat penjualan otomatis game (90%).
-- Mendistribusikan: sekali setiap jam dalam game, stok dikirim ke fasilitas produksi di pertanian Anda sendiri yang menerimanya, dibagi menurut ruang kosong masing-masing. Biaya pengiriman normal berlaku; yang tidak muat tetap di kandang.
+- Mendistribusikan, sisanya disimpan otomatis: sekali setiap jam dalam game, stok dikirim ke fasilitas produksi di pertanian Anda sendiri yang menerimanya, dibagi menurut ruang kosong masing-masing. Biaya pengiriman normal berlaku. Yang tidak muat disimpan seperti pada Menyimpan.
+- Mendistribusikan, sisanya dijual otomatis: mengirim dengan cara yang sama, lalu menjual yang tidak muat seperti pada Menjual.
 
 Jendela hanya menampilkan apa yang diproduksi hewan di kandang tersebut. Palet yang sudah ada di tanah atau di trailer tidak disentuh dan tetap harus diangkut manual. Pakan, kesehatan hewan, dan produksi tidak berubah. Saat kandang berganti pemilik, semua produknya kembali ke Menyimpan.
 
@@ -229,10 +243,11 @@ Buka menu game, masuk ke halaman Ternak, lalu pilih kandang. Klik "Tujuan produk
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></id>
         <it><![CDATA[Descrizione:
-Scegli cosa succede ai prodotti di ogni allevamento, come latte, latte di capra, latte di bufala, uova e lana. Ogni prodotto ha una di tre modalità:
+Scegli cosa succede ai prodotti di ogni allevamento, come latte, latte di capra, latte di bufala, uova e lana. Ogni prodotto ha una di quattro modalità:
 - Immagazzinamento (predefinita): come nel gioco base. Il serbatoio si riempie e compaiono i pallet.
 - Vendita: una volta per ora di gioco, le scorte vengono vendute automaticamente al prezzo attuale moltiplicato per la percentuale di vendita automatica del gioco (90%).
-- Distribuzione: una volta per ora di gioco, le scorte vengono consegnate agli impianti di produzione della tua fattoria che le accettano, ripartite in base allo spazio libero. Si applicano i normali costi di consegna; ciò che non entra resta nell'allevamento.
+- Distribuzione, resto immagazzinato automaticamente: una volta per ora di gioco, le scorte vengono consegnate agli impianti di produzione della tua fattoria che le accettano, ripartite in base allo spazio libero. Si applicano i normali costi di consegna. Ciò che non entra viene immagazzinato come in Immagazzinamento.
+- Distribuzione, resto venduto automaticamente: consegna allo stesso modo, poi vende ciò che non entra come in Vendita.
 
 La finestra mostra solo ciò che producono gli animali di quell'allevamento. I pallet già a terra o sui rimorchi non vengono toccati e vanno ancora trasportati manualmente. Mangime, salute degli animali e produzione non cambiano. Quando un allevamento cambia proprietario, tutti i prodotti tornano a Immagazzinamento.
 
@@ -243,10 +258,11 @@ Apri il menu di gioco, vai alla pagina Animali e seleziona un allevamento. Fai c
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
         <jp><![CDATA[説明：
-畜舎ごとに、牛乳、ヤギ乳、水牛乳、卵、羊毛などの製品をどう扱うかを選べます。各製品に3つのモードのいずれかを設定します：
+畜舎ごとに、牛乳、ヤギ乳、水牛乳、卵、羊毛などの製品をどう扱うかを選べます。各製品に4つのモードのいずれかを設定します：
 - 貯蔵（初期設定）：ベースゲームと同じです。タンクに貯まり、パレットが出現します。
 - 売却：ゲーム内の1時間ごとに、在庫を現在の価格×ゲームの自動売却率（90%）で自動的に売却します。
-- 供給：ゲーム内の1時間ごとに、在庫をその製品を受け入れる自分の農場の生産施設へ、空き容量に応じて分けて届けます。通常の配送料がかかり、入りきらない分は畜舎に残ります。
+- 供給、残りは自動で貯蔵：ゲーム内の1時間ごとに、在庫をその製品を受け入れる自分の農場の生産施設へ、空き容量に応じて分けて届けます。通常の配送料がかかります。入りきらない分は「貯蔵」と同様に貯蔵されます。
+- 供給、残りは自動で売却：同じように届けた後、入りきらない分を「売却」と同様に売却します。
 
 ウィンドウには、その畜舎の動物が実際に生産する製品だけが表示されます。地面やトレーラー上にある既存のパレットはそのままで、引き続き手動で運搬する必要があります。飼料、動物の健康、生産量は変わりません。畜舎の所有者が変わると、すべての製品が貯蔵に戻ります。
 
@@ -257,10 +273,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></it>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
         <kr><![CDATA[설명:
-우유, 염소젖, 물소젖, 달걀, 양모 등 축사별 생산품을 어떻게 처리할지 선택합니다. 각 생산품에 세 가지 모드 중 하나를 지정합니다:
+우유, 염소젖, 물소젖, 달걀, 양모 등 축사별 생산품을 어떻게 처리할지 선택합니다. 각 생산품에 네 가지 모드 중 하나를 지정합니다:
 - 저장(기본값): 기본 게임과 같습니다. 탱크가 차고 팔레트가 생성됩니다.
 - 판매: 게임 시간으로 매시간 한 번, 재고를 현재 가격에 게임의 자동 판매 비율(90%)을 곱한 금액으로 자동 판매합니다.
-- 배포: 게임 시간으로 매시간 한 번, 재고를 해당 생산품을 받는 내 농장의 생산 시설로 남은 용량에 따라 나누어 보냅니다. 일반 운송비가 적용되며, 들어가지 않는 양은 축사에 남습니다.
+- 배포, 나머지 자동 저장: 게임 시간으로 매시간 한 번, 재고를 해당 생산품을 받는 내 농장의 생산 시설로 남은 용량에 따라 나누어 보냅니다. 일반 운송비가 적용됩니다. 들어가지 않는 양은 '저장'처럼 보관됩니다.
+- 배포, 나머지 자동 판매: 같은 방식으로 보낸 뒤, 들어가지 않는 양은 '판매'처럼 판매합니다.
 
 창에는 해당 축사의 동물이 실제로 생산하는 생산품만 표시됩니다. 이미 바닥이나 트레일러에 있는 팔레트는 건드리지 않으며 계속 직접 운반해야 합니다. 사료, 동물 건강, 생산량은 변하지 않습니다. 축사의 소유자가 바뀌면 모든 생산품이 저장으로 돌아갑니다.
 
@@ -271,10 +288,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></jp>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></kr>
         <nl><![CDATA[Beschrijving:
-Kies wat er gebeurt met de producten van elk dierenverblijf, zoals melk, geitenmelk, buffelmelk, eieren en wol. Elk product krijgt een van drie modi:
+Kies wat er gebeurt met de producten van elk dierenverblijf, zoals melk, geitenmelk, buffelmelk, eieren en wol. Elk product krijgt een van vier modi:
 - Opslaan (standaard): zoals in het basisspel. De tank vult zich en er verschijnen pallets.
 - Verkopen: eens per speluur wordt de voorraad automatisch verkocht tegen de huidige prijs maal het automatische verkooppercentage van het spel (90%).
-- Verspreiden: eens per speluur wordt de voorraad geleverd aan de productielocaties van je eigen boerderij die het accepteren, verdeeld naar hun vrije ruimte. De normale leveringskosten gelden; wat niet past, blijft in het verblijf.
+- Verspreiden, rest automatisch opslaan: eens per speluur wordt de voorraad geleverd aan de productielocaties van je eigen boerderij die het accepteren, verdeeld naar hun vrije ruimte. De normale leveringskosten gelden. Wat niet past, wordt opgeslagen zoals bij Opslaan.
+- Verspreiden, rest automatisch verkopen: levert op dezelfde manier en verkoopt daarna wat niet past zoals bij Verkopen.
 
 Het venster toont alleen wat de dieren in dat verblijf produceren. Pallets die al op de grond of op aanhangers staan, blijven onaangeroerd en moet je nog steeds zelf vervoeren. Voer, diergezondheid en productie veranderen niet. Wisselt een verblijf van eigenaar, dan gaan alle producten terug naar Opslaan.
 
@@ -285,10 +303,11 @@ Open het spelmenu, ga naar de pagina Dieren en selecteer een verblijf. Klik op "
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></nl>
         <no><![CDATA[Beskrivelse:
-Velg hva som skjer med produktene fra hvert dyrehold, for eksempel melk, geitemelk, bøffelmelk, egg og ull. Hvert produkt får én av tre moduser:
+Velg hva som skjer med produktene fra hvert dyrehold, for eksempel melk, geitemelk, bøffelmelk, egg og ull. Hvert produkt får én av fire moduser:
 - Oppbevaring (standard): som i grunnspillet. Tanken fylles, og det dukker opp paller.
 - Salg: én gang i timen i spillet selges lageret automatisk til gjeldende pris ganger spillets automatiske salgssats (90 %).
-- Distribusjon: én gang i timen i spillet leveres lageret til produksjonsanleggene på din egen gård som tar imot det, fordelt etter ledig plass. Vanlige fraktkostnader gjelder; det som ikke får plass, blir værende i dyreholdet.
+- Distribusjon, resten oppbevares automatisk: én gang i timen i spillet leveres lageret til produksjonsanleggene på din egen gård som tar imot det, fordelt etter ledig plass. Vanlige fraktkostnader gjelder. Det som ikke får plass, oppbevares som ved Oppbevaring.
+- Distribusjon, resten selges automatisk: leverer på samme måte og selger deretter det som ikke får plass, som ved Salg.
 
 Vinduet viser bare det dyrene i dette dyreholdet produserer. Paller som allerede står på bakken eller på tilhengere, berøres ikke og må fortsatt transporteres manuelt. Fôr, dyrehelse og produksjon endres ikke. Når et dyrehold bytter eier, går alle produktene tilbake til Oppbevaring.
 
@@ -299,10 +318,11 @@ Hurtigtaster:
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></no>
         <pl><![CDATA[Opis:
-Wybierz, co dzieje się z produktami z każdej zagrody, takimi jak mleko, mleko kozie, mleko bawole, jajka i wełna. Każdy produkt otrzymuje jeden z trzech trybów:
+Wybierz, co dzieje się z produktami z każdej zagrody, takimi jak mleko, mleko kozie, mleko bawole, jajka i wełna. Każdy produkt otrzymuje jeden z czterech trybów:
 - Przechowywanie (domyślnie): jak w podstawowej grze. Zbiornik się zapełnia i pojawiają się palety.
 - Sprzedaż: raz na godzinę gry zapas jest automatycznie sprzedawany po aktualnej cenie pomnożonej przez stawkę sprzedaży automatycznej gry (90%).
-- Dystrybucja: raz na godzinę gry zapas trafia do zakładów twojego własnego gospodarstwa, które go przyjmują, podzielony według wolnego miejsca. Obowiązują zwykłe opłaty za transport; to, co się nie zmieści, zostaje w zagrodzie.
+- Dystrybucja, reszta automatycznie przechowywana: raz na godzinę gry zapas trafia do zakładów twojego własnego gospodarstwa, które go przyjmują, podzielony według wolnego miejsca. Obowiązują zwykłe opłaty za transport. To, co się nie zmieści, jest przechowywane jak w trybie Przechowywanie.
+- Dystrybucja, reszta automatycznie sprzedawana: dostarcza tak samo, a następnie sprzedaje to, co się nie zmieści, jak w trybie Sprzedaż.
 
 Okno pokazuje tylko to, co produkują zwierzęta w tej zagrodzie. Palety leżące już na ziemi lub na przyczepach nie są ruszane i nadal trzeba je przewozić ręcznie. Pasza, zdrowie zwierząt i produkcja się nie zmieniają. Gdy zagroda zmieni właściciela, wszystkie jej produkty wracają do trybu Przechowywanie.
 
@@ -313,10 +333,11 @@ Otwórz menu gry, przejdź na stronę Zwierzęta i wybierz zagrodę. Kliknij „
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pl>
         <pt><![CDATA[Descrição:
-Escolhe o que acontece aos produtos de cada recinto, como leite, leite de cabra, leite de búfala, ovos e lã. Cada produto recebe um de três modos:
+Escolhe o que acontece aos produtos de cada recinto, como leite, leite de cabra, leite de búfala, ovos e lã. Cada produto recebe um de quatro modos:
 - Armazenamento (predefinido): igual ao jogo base. O tanque enche e aparecem paletes.
 - Venda: uma vez por hora de jogo, o stock é vendido automaticamente ao preço atual vezes a taxa de venda automática do jogo (90%).
-- A distribuir: uma vez por hora de jogo, o stock é entregue às unidades de produção da tua própria quinta que o aceitam, repartido pelo espaço livre. Aplicam-se os custos de transporte normais; o que não couber fica no recinto.
+- A distribuir, resto armazenado automaticamente: uma vez por hora de jogo, o stock é entregue às unidades de produção da tua própria quinta que o aceitam, repartido pelo espaço livre. Aplicam-se os custos de transporte normais. O que não couber é armazenado como em Armazenamento.
+- A distribuir, resto vendido automaticamente: entrega da mesma forma e depois vende o que não couber como em Venda.
 
 A janela mostra apenas o que os animais desse recinto produzem. As paletes que já estão no chão ou em reboques não são afetadas e continuam a precisar de transporte manual. Alimentação, saúde dos animais e produção não mudam. Quando um recinto muda de dono, todos os produtos voltam a Armazenamento.
 
@@ -327,10 +348,11 @@ Abre o menu do jogo, vai à página Animais e seleciona um recinto. Clica em "De
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></pt>
         <ro><![CDATA[Descriere:
-Alege ce se întâmplă cu produsele fiecărui adăpost, cum ar fi laptele, laptele de capră, laptele de bivoliță, ouăle și lâna. Fiecare produs primește unul dintre trei moduri:
+Alege ce se întâmplă cu produsele fiecărui adăpost, cum ar fi laptele, laptele de capră, laptele de bivoliță, ouăle și lâna. Fiecare produs primește unul dintre patru moduri:
 - Depozitare (implicit): ca în jocul de bază. Rezervorul se umple și apar paleți.
 - Vânzare: o dată pe oră de joc, stocul se vinde automat la prețul curent înmulțit cu rata de vânzare automată a jocului (90%).
-- Distribuție: o dată pe oră de joc, stocul este livrat unităților de producție ale propriei ferme care îl acceptă, împărțit după spațiul liber. Se aplică taxa de transport obișnuită; ce nu încape rămâne în adăpost.
+- Distribuție, restul depozitat automat: o dată pe oră de joc, stocul este livrat unităților de producție ale propriei ferme care îl acceptă, împărțit după spațiul liber. Se aplică taxa de transport obișnuită. Ce nu încape este depozitat ca la Depozitare.
+- Distribuție, restul vândut automat: livrează la fel, apoi vinde ce nu încape ca la Vânzare.
 
 Fereastra arată doar ce produc animalele din acel adăpost. Paleții aflați deja pe sol sau în remorci nu sunt atinși și trebuie în continuare transportați manual. Hrana, sănătatea animalelor și producția nu se schimbă. Când un adăpost își schimbă proprietarul, toate produsele sale revin la Depozitare.
 
@@ -341,10 +363,11 @@ Deschide meniul jocului, mergi la pagina Animale și selectează un adăpost. F�
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
         <ru><![CDATA[Описание:
-Выберите, что происходит с продукцией каждого загона: молоком, козьим молоком, молоком буйволиц, яйцами и шерстью. Для каждого продукта задаётся один из трёх режимов:
+Выберите, что происходит с продукцией каждого загона: молоком, козьим молоком, молоком буйволиц, яйцами и шерстью. Для каждого продукта задаётся один из четырёх режимов:
 - Хранение (по умолчанию): как в базовой игре. Резервуар наполняется, появляются поддоны.
 - Продажа: раз в игровой час запас автоматически продаётся по текущей цене, умноженной на коэффициент автоматической продажи игры (90%).
-- Распределение: раз в игровой час запас доставляется на производства вашей собственной фермы, которые его принимают, пропорционально свободному месту. Взимается обычная плата за доставку; всё, что не поместилось, остаётся в загоне.
+- Распределение, автоматическое хранение остатка: раз в игровой час запас доставляется на производства вашей собственной фермы, которые его принимают, пропорционально свободному месту. Взимается обычная плата за доставку. Всё, что не поместилось, хранится как в режиме «Хранение».
+- Распределение, автоматическая продажа остатка: доставка та же, а всё, что не поместилось, продаётся как в режиме «Продажа».
 
 Окно показывает только то, что производят животные в этом загоне. Поддоны, которые уже стоят на земле или в прицепах, не затрагиваются, их по-прежнему нужно перевозить вручную. Корм, здоровье животных и продуктивность не меняются. При смене владельца загона все его продукты возвращаются в режим «Хранение».
 
@@ -355,10 +378,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ro>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></ru>
         <sv><![CDATA[Beskrivning:
-Välj vad som händer med produkterna från varje djurhållning, till exempel mjölk, getmjölk, buffelmjölk, ägg och ull. Varje produkt får ett av tre lägen:
+Välj vad som händer med produkterna från varje djurhållning, till exempel mjölk, getmjölk, buffelmjölk, ägg och ull. Varje produkt får ett av fyra lägen:
 - Lagrar (standard): som i grundspelet. Tanken fylls och pallar dyker upp.
 - Säljer: en gång per speltimme säljs lagret automatiskt till aktuellt pris gånger spelets automatiska försäljningssats (90 %).
-- Distribuerar: en gång per speltimme levereras lagret till produktionsanläggningarna på din egen gård som tar emot det, fördelat efter ledigt utrymme. Normala fraktkostnader gäller; det som inte får plats stannar i djurhållningen.
+- Distribuerar, resten lagras automatiskt: en gång per speltimme levereras lagret till produktionsanläggningarna på din egen gård som tar emot det, fördelat efter ledigt utrymme. Normala fraktkostnader gäller. Det som inte får plats lagras som i Lagrar.
+- Distribuerar, resten säljs automatiskt: levererar på samma sätt och säljer sedan det som inte får plats som i Säljer.
 
 Fönstret visar bara vad djuren i den djurhållningen producerar. Pallar som redan står på marken eller på släp påverkas inte och måste fortfarande transporteras manuellt. Foder, djurhälsa och produktion ändras inte. När en djurhållning byter ägare återgår alla produkter till Lagrar.
 
@@ -369,10 +393,11 @@ Snabbtangenter:
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></sv>
         <tr><![CDATA[Açıklama:
-Her barınağın ürünlerine, örneğin süt, keçi sütü, manda sütü, yumurta ve yüne ne olacağını seçin. Her ürün üç moddan birini alır:
+Her barınağın ürünlerine, örneğin süt, keçi sütü, manda sütü, yumurta ve yüne ne olacağını seçin. Her ürün dört moddan birini alır:
 - Depolanıyor (varsayılan): temel oyundaki gibi. Tank dolar ve paletler oluşur.
 - Satılıyor: her oyun saatinde bir kez stok, güncel fiyatın oyunun otomatik satış oranıyla (%90) çarpımı üzerinden otomatik olarak satılır.
-- Dağıtılıyor: her oyun saatinde bir kez stok, kendi çiftliğinizde ürünü kabul eden üretim tesislerine boş alanlarına göre bölünerek teslim edilir. Normal nakliye ücreti uygulanır; sığmayan kısım barınakta kalır.
+- Dağıtılıyor, kalan otomatik depolanır: her oyun saatinde bir kez stok, kendi çiftliğinizde ürünü kabul eden üretim tesislerine boş alanlarına göre bölünerek teslim edilir. Normal nakliye ücreti uygulanır. Sığmayan kısım Depolanıyor modundaki gibi depolanır.
+- Dağıtılıyor, kalan otomatik satılır: aynı şekilde teslim eder, ardından sığmayan kısmı Satılıyor modundaki gibi satar.
 
 Pencere yalnızca o barınaktaki hayvanların ürettiklerini gösterir. Yerde veya römorklarda bulunan paletlere dokunulmaz, bunların hâlâ elle taşınması gerekir. Yem, hayvan sağlığı ve üretim değişmez. Bir barınağın sahibi değiştiğinde tüm ürünleri Depolanıyor moduna döner.
 
@@ -383,10 +408,11 @@ Oyun menüsünü açın, Hayvanlar sayfasına gidin ve bir barınak seçin. Alt 
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
         <uk><![CDATA[Опис:
-Оберіть, що відбувається з продукцією кожного загону: молоком, козячим молоком, молоком буйволиць, яйцями та вовною. Для кожного продукту задається один із трьох режимів:
+Оберіть, що відбувається з продукцією кожного загону: молоком, козячим молоком, молоком буйволиць, яйцями та вовною. Для кожного продукту задається один із чотирьох режимів:
 - Зберігання (за замовчуванням): як у базовій грі. Резервуар наповнюється, з'являються піддони.
 - Продаж: раз на ігрову годину запас автоматично продається за поточною ціною, помноженою на коефіцієнт автоматичного продажу гри (90%).
-- Дистрибуція: раз на ігрову годину запас доставляється на виробництва вашої власної ферми, які його приймають, пропорційно вільному місцю. Стягується звичайна плата за доставку; усе, що не вмістилося, залишається в загоні.
+- Дистрибуція, автоматичне зберігання залишку: раз на ігрову годину запас доставляється на виробництва вашої власної ферми, які його приймають, пропорційно вільному місцю. Стягується звичайна плата за доставку. Усе, що не вмістилося, зберігається як у режимі «Зберігання».
+- Дистрибуція, автоматичний продаж залишку: доставка та сама, а все, що не вмістилося, продається як у режимі «Продаж».
 
 Вікно показує лише те, що виробляють тварини в цьому загоні. Піддони, які вже стоять на землі чи в причепах, не зачіпаються, їх і далі потрібно перевозити вручну. Корм, здоров'я тварин і продуктивність не змінюються. Коли загін змінює власника, усі його продукти повертаються в режим «Зберігання».
 
@@ -397,10 +423,11 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></tr>
 
 GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></uk>
         <vi><![CDATA[Mô tả:
-Chọn điều gì xảy ra với sản phẩm của từng chuồng, như sữa, sữa dê, sữa trâu, trứng và len. Mỗi sản phẩm được đặt một trong ba chế độ:
+Chọn điều gì xảy ra với sản phẩm của từng chuồng, như sữa, sữa dê, sữa trâu, trứng và len. Mỗi sản phẩm được đặt một trong bốn chế độ:
 - Đang lưu trữ (mặc định): giống trò chơi gốc. Bồn chứa đầy dần và pallet xuất hiện.
 - Đang bán: mỗi giờ trong game một lần, hàng tồn được bán tự động theo giá hiện tại nhân với tỷ lệ bán tự động của game (90%).
-- Đang phân phối: mỗi giờ trong game một lần, hàng tồn được giao đến các cơ sở sản xuất của chính trang trại bạn có nhận sản phẩm đó, chia theo chỗ trống của từng nơi. Áp dụng phí vận chuyển thông thường; phần không vừa sẽ ở lại chuồng.
+- Đang phân phối, tự động lưu trữ phần còn lại: mỗi giờ trong game một lần, hàng tồn được giao đến các cơ sở sản xuất của chính trang trại bạn có nhận sản phẩm đó, chia theo chỗ trống của từng nơi. Áp dụng phí vận chuyển thông thường. Phần không vừa được lưu trữ như ở chế độ Đang lưu trữ.
+- Đang phân phối, tự động bán phần còn lại: giao hàng theo cách tương tự, sau đó bán phần không vừa như ở chế độ Đang bán.
 
 Cửa sổ chỉ hiển thị những gì vật nuôi trong chuồng đó sản xuất. Các pallet đã nằm trên mặt đất hoặc trên rơ-moóc không bị ảnh hưởng và vẫn cần vận chuyển thủ công. Thức ăn, sức khỏe vật nuôi và sản lượng không thay đổi. Khi chuồng đổi chủ, mọi sản phẩm của chuồng trở về Đang lưu trữ.
 
@@ -453,33 +480,91 @@ GitHub: https://github.com/martin-lzh/farming-simulator-25-mods]]></vi>
             <vi>Nơi nhận sản phẩm</vi>
         </text>
         <text name="apm_explanation">
-            <en>Runs hourly in game. Uses automatic sale prices and delivery fees. Distribution supplies your farm's productions; excess stays here. Existing pallets require manual transport.</en>
-            <de>Abwicklung jede Spielstunde zu automatischen Verkaufspreisen und Lieferkosten. Verteilung an eigene Produktionen; Überschüsse bleiben hier. Vorhandene Paletten selbst transportieren.</de>
-            <cs>每游戏小时结算，使用自动售价和运费。分配送往本农场工厂，余量留存。已有托盘需手动搬运。</cs>
-            <br>Processamento a cada hora do jogo, com preços de venda automática e frete. Distribui para as produções da sua fazenda; o excedente fica aqui. Transporte os paletes existentes manualmente.</br>
-            <ct>每遊戲小時結算，使用自動售價和運費。分配送往本農場工廠，餘量留存。現有棧板需手動搬運。</ct>
-            <cz>Zpracování každou herní hodinu s cenami automatického prodeje a dopravným. Distribuce zásobuje výrobny vaší farmy; přebytky zůstávají zde. Stávající palety přepravujte ručně.</cz>
-            <da>Behandles hver time i spillet med automatiske salgspriser og fragtomkostninger. Fordeling leverer til din gårds produktioner; overskud bliver her. Eksisterende paller flyttes manuelt.</da>
-            <ea>Se procesa cada hora del juego, con precios de venta automática y gastos de envío. Distribuye a las fábricas de tu granja; el excedente queda aquí. Las tarimas existentes se transportan manualmente.</ea>
-            <es>Se procesa cada hora del juego, con precios de venta automática y gastos de transporte. Distribuye a las fábricas de tu granja; el excedente queda aquí. Los palés existentes se transportan manualmente.</es>
-            <fc>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution aux usines de votre ferme; le surplus reste ici. Transportez les palettes existantes manuellement.</fc>
-            <fi>Käsittely pelin jokaisena tuntina automaattisilla myyntihinnoilla ja kuljetusmaksuilla. Jakelu toimittaa tilasi tuotantolaitoksille; ylijäämä jää tänne. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
-            <fr>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution aux usines de votre ferme ; le surplus reste ici. Transportez les palettes existantes manuellement.</fr>
-            <hu>Feldolgozás minden játékórában, automatikus eladási árakkal és szállítási díjakkal. Az elosztás a saját gazdaság üzemeit látja el; a felesleg itt marad. A meglévő raklapokat kézzel kell elszállítani.</hu>
-            <id>Diproses setiap jam dalam game dengan harga jual otomatis dan biaya pengiriman. Distribusi memasok fasilitas produksi pertanian Anda; sisanya tetap di sini. Palet yang sudah ada harus diangkut manual.</id>
-            <it>Elaborazione ogni ora di gioco, con prezzi di vendita automatica e costi di trasporto. La distribuzione rifornisce gli impianti della tua fattoria; le eccedenze restano qui. Trasporta i pallet esistenti manualmente.</it>
-            <jp>ゲーム内の1時間ごとに処理し、自動売却価格と配送料を適用します。分配先は自分の農場の生産施設で、余剰分はここに残ります。既存のパレットは手動で運搬してください。</jp>
-            <kr>게임 시간으로 매시간 처리하며 자동 판매 가격과 운송비를 적용합니다. 내 농장의 생산 시설로 분배하고 남은 물량은 이곳에 보관합니다. 기존 팔레트는 직접 운반해야 합니다.</kr>
-            <nl>Verwerking elk uur in het spel, met automatische verkoopprijzen en transportkosten. Verdeling levert aan de productielocaties van je boerderij; het overschot blijft hier. Bestaande pallets vervoer je zelf.</nl>
-            <no>Behandles hver time i spillet med automatiske salgspriser og fraktkostnader. Fordeling leverer til gårdens produksjonsanlegg; overskuddet blir her. Eksisterende paller flyttes manuelt.</no>
-            <pl>Obsługa co godzinę w grze, z cenami sprzedaży automatycznej i opłatami za transport. Dystrybucja zaopatruje zakłady twojego gospodarstwa; nadwyżka zostaje tutaj. Istniejące palety przewoź ręcznie.</pl>
-            <pt>Processamento a cada hora do jogo, com preços de venda automática e custos de transporte. Distribui pelas unidades de produção da tua quinta; o excedente fica aqui. Transporta as paletes existentes manualmente.</pt>
-            <ro>Procesare în fiecare oră din joc, la prețurile de vânzare automată și cu taxe de transport. Distribuția aprovizionează unitățile fermei tale; surplusul rămâne aici. Transportă manual paleții existenți.</ro>
-            <ru>Обработка каждый игровой час, с ценами автоматической продажи и платой за доставку. Распределение снабжает производства вашей фермы; излишки остаются здесь. Готовые поддоны перевозите вручную.</ru>
-            <sv>Behandlas varje timme i spelet med automatiska försäljningspriser och fraktkostnader. Fördelning levererar till din gårds produktionsanläggningar; överskottet stannar här. Befintliga pallar flyttas manuellt.</sv>
-            <tr>Her oyun saatinde otomatik satış fiyatları ve nakliye ücretleriyle işlenir. Dağıtım, çiftliğinizin üretim tesislerine yapılır; fazlası burada kalır. Mevcut paletler elle taşınmalıdır.</tr>
-            <uk>Обробка щогодини в грі, за цінами автоматичного продажу та з оплатою доставки. Розподіл постачає продукцію виробництвам вашої ферми; надлишок залишається тут. Готові піддони перевозьте вручну.</uk>
-            <vi>Xử lý mỗi giờ trong game, áp dụng giá bán tự động và phí vận chuyển. Phân phối đến cơ sở sản xuất của trang trại bạn; phần dư giữ lại đây. Các pallet có sẵn cần được vận chuyển thủ công.</vi>
+            <en>Runs hourly in game. Uses automatic sale prices and delivery fees. Distributing supplies your farm's productions first; the rest is stored or sold as chosen. Existing pallets require manual transport.</en>
+            <de>Abwicklung jede Spielstunde zu automatischen Verkaufspreisen und Lieferkosten. Verteilung zuerst an eigene Produktionen; der Rest wird je nach Wahl behalten oder verkauft. Vorhandene Paletten selbst transportieren.</de>
+            <cs>每游戏小时结算，使用自动售价和运费。分配先送往本农场工厂，剩余按所选挡位储存或出售。已有托盘需手动搬运。</cs>
+            <br>Processamento a cada hora do jogo, com preços de venda automática e frete. Distribui primeiro para as produções da sua fazenda; o restante é armazenado ou vendido conforme escolhido. Transporte os paletes existentes manualmente.</br>
+            <ct>每遊戲小時結算，使用自動售價和運費。分配先送往本農場工廠，剩餘依所選模式存放或出售。現有棧板需手動搬運。</ct>
+            <cz>Zpracování každou herní hodinu s cenami automatického prodeje a dopravným. Distribuce nejprve zásobuje výrobny vaší farmy; zbytek se podle volby uskladní nebo prodá. Stávající palety přepravujte ručně.</cz>
+            <da>Behandles hver time i spillet med automatiske salgspriser og fragtomkostninger. Fordeling leverer først til din gårds produktioner; resten opbevares eller sælges efter dit valg. Eksisterende paller flyttes manuelt.</da>
+            <ea>Se procesa cada hora del juego, con precios de venta automática y gastos de envío. Distribuye primero a las fábricas de tu granja; el resto se almacena o se vende según lo elegido. Las tarimas existentes se transportan manualmente.</ea>
+            <es>Se procesa cada hora del juego, con precios de venta automática y gastos de transporte. Distribuye primero a las fábricas de tu granja; el resto se almacena o se vende según lo elegido. Los palés existentes se transportan manualmente.</es>
+            <fc>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution d'abord aux usines de votre ferme; le reste est stocké ou vendu selon votre choix. Transportez les palettes existantes manuellement.</fc>
+            <fi>Käsittely pelin jokaisena tuntina automaattisilla myyntihinnoilla ja kuljetusmaksuilla. Levitys toimittaa ensin tilasi tuotantolaitoksille; loput säilytetään tai myydään valintasi mukaan. Olemassa olevat kuormalavat on kuljetettava itse.</fi>
+            <fr>Traitement chaque heure de jeu, aux prix de vente automatique et avec frais de livraison. Distribution d'abord aux usines de votre ferme ; le reste est stocké ou vendu selon votre choix. Transportez les palettes existantes manuellement.</fr>
+            <hu>Feldolgozás minden játékórában, automatikus eladási árakkal és szállítási díjakkal. Az elosztás először a saját gazdaság üzemeit látja el; a maradékot a választás szerint tárolja vagy eladja. A meglévő raklapokat kézzel kell elszállítani.</hu>
+            <id>Diproses setiap jam dalam game dengan harga jual otomatis dan biaya pengiriman. Distribusi memasok fasilitas produksi pertanian Anda terlebih dahulu; sisanya disimpan atau dijual sesuai pilihan. Palet yang sudah ada harus diangkut manual.</id>
+            <it>Elaborazione ogni ora di gioco, con prezzi di vendita automatica e costi di trasporto. La distribuzione rifornisce prima gli impianti della tua fattoria; il resto viene immagazzinato o venduto come scelto. Trasporta i pallet esistenti manualmente.</it>
+            <jp>ゲーム内の1時間ごとに処理し、自動売却価格と配送料を適用します。まず自分の農場の生産施設に分配し、残りは選択に応じて貯蔵または売却します。既存のパレットは手動で運搬してください。</jp>
+            <kr>게임 시간으로 매시간 처리하며 자동 판매 가격과 운송비를 적용합니다. 먼저 내 농장의 생산 시설로 분배하고, 남은 물량은 선택에 따라 저장하거나 판매합니다. 기존 팔레트는 직접 운반해야 합니다.</kr>
+            <nl>Verwerking elk uur in het spel, met automatische verkoopprijzen en transportkosten. Verdeling levert eerst aan de productielocaties van je boerderij; de rest wordt naar keuze opgeslagen of verkocht. Bestaande pallets vervoer je zelf.</nl>
+            <no>Behandles hver time i spillet med automatiske salgspriser og fraktkostnader. Fordeling leverer først til gårdens produksjonsanlegg; resten oppbevares eller selges etter valg. Eksisterende paller flyttes manuelt.</no>
+            <pl>Obsługa co godzinę w grze, z cenami sprzedaży automatycznej i opłatami za transport. Dystrybucja najpierw zaopatruje zakłady twojego gospodarstwa; reszta jest przechowywana lub sprzedawana zgodnie z wyborem. Istniejące palety przewoź ręcznie.</pl>
+            <pt>Processamento a cada hora do jogo, com preços de venda automática e custos de transporte. Distribui primeiro pelas unidades de produção da tua quinta; o restante é armazenado ou vendido conforme escolhido. Transporta as paletes existentes manualmente.</pt>
+            <ro>Procesare în fiecare oră din joc, la prețurile de vânzare automată și cu taxe de transport. Distribuția aprovizionează mai întâi unitățile fermei tale; restul este depozitat sau vândut după alegere. Transportă manual paleții existenți.</ro>
+            <ru>Обработка каждый игровой час, с ценами автоматической продажи и платой за доставку. Распределение сначала снабжает производства вашей фермы; остаток хранится или продаётся по выбору. Готовые поддоны перевозите вручную.</ru>
+            <sv>Behandlas varje timme i spelet med automatiska försäljningspriser och fraktkostnader. Fördelning levererar först till din gårds produktionsanläggningar; resten lagras eller säljs enligt ditt val. Befintliga pallar flyttas manuellt.</sv>
+            <tr>Her oyun saatinde otomatik satış fiyatları ve nakliye ücretleriyle işlenir. Dağıtım önce çiftliğinizin üretim tesislerine yapılır; kalan, seçiminize göre depolanır veya satılır. Mevcut paletler elle taşınmalıdır.</tr>
+            <uk>Обробка щогодини в грі, за цінами автоматичного продажу та з оплатою доставки. Розподіл спершу постачає продукцію виробництвам вашої ферми; залишок зберігається або продається на ваш вибір. Готові піддони перевозьте вручну.</uk>
+            <vi>Xử lý mỗi giờ trong game, áp dụng giá bán tự động và phí vận chuyển. Phân phối trước đến cơ sở sản xuất của trang trại bạn; phần còn lại được lưu trữ hoặc bán theo lựa chọn. Các pallet có sẵn cần được vận chuyển thủ công.</vi>
+        </text>
+        <text name="apm_mode_distribute_store">
+            <en>Distributing, store rest automatically</en>
+            <de>Verteilen, Rest automatisch behalten</de>
+            <cs>分配，剩余自动储存</cs>
+            <br>Distribuindo, resto armazenado automaticamente</br>
+            <ct>分配中，剩餘自動存放</ct>
+            <cz>Distribuování, zbytek automaticky uskladnit</cz>
+            <da>Distribuerer, resten opbevares automatisk</da>
+            <ea>En distribución, el resto se almacena automáticamente</ea>
+            <es>Distribuyendo, el resto se almacena automáticamente</es>
+            <fc>Distribution, reste stocké automatiquement</fc>
+            <fi>Levitys, loput säilytetään automaattisesti</fi>
+            <fr>Distribution, reste stocké automatiquement</fr>
+            <hu>Elosztás, a maradék automatikus tárolása</hu>
+            <id>Mendistribusikan, sisanya disimpan otomatis</id>
+            <it>Distribuzione, resto immagazzinato automaticamente</it>
+            <jp>供給、残りは自動で貯蔵</jp>
+            <kr>배포, 나머지 자동 저장</kr>
+            <nl>Verspreiden, rest automatisch opslaan</nl>
+            <no>Distribusjon, resten oppbevares automatisk</no>
+            <pl>Dystrybucja, reszta automatycznie przechowywana</pl>
+            <pt>A distribuir, resto armazenado automaticamente</pt>
+            <ro>Distribuție, restul depozitat automat</ro>
+            <ru>Распределение, автоматическое хранение остатка</ru>
+            <sv>Distribuerar, resten lagras automatiskt</sv>
+            <tr>Dağıtılıyor, kalan otomatik depolanır</tr>
+            <uk>Дистрибуція, автоматичне зберігання залишку</uk>
+            <vi>Đang phân phối, tự động lưu trữ phần còn lại</vi>
+        </text>
+        <text name="apm_mode_distribute_sell">
+            <en>Distributing, sell rest automatically</en>
+            <de>Verteilen, Rest automatisch verkaufen</de>
+            <cs>分配，剩余自动出售</cs>
+            <br>Distribuindo, resto vendido automaticamente</br>
+            <ct>分配中，剩餘自動出售</ct>
+            <cz>Distribuování, zbytek automaticky prodat</cz>
+            <da>Distribuerer, resten sælges automatisk</da>
+            <ea>En distribución, el resto se vende automáticamente</ea>
+            <es>Distribuyendo, el resto se vende automáticamente</es>
+            <fc>Distribution, reste vendu automatiquement</fc>
+            <fi>Levitys, loput myydään automaattisesti</fi>
+            <fr>Distribution, reste vendu automatiquement</fr>
+            <hu>Elosztás, a maradék automatikus értékesítése</hu>
+            <id>Mendistribusikan, sisanya dijual otomatis</id>
+            <it>Distribuzione, resto venduto automaticamente</it>
+            <jp>供給、残りは自動で売却</jp>
+            <kr>배포, 나머지 자동 판매</kr>
+            <nl>Verspreiden, rest automatisch verkopen</nl>
+            <no>Distribusjon, resten selges automatisk</no>
+            <pl>Dystrybucja, reszta automatycznie sprzedawana</pl>
+            <pt>A distribuir, resto vendido automaticamente</pt>
+            <ro>Distribuție, restul vândut automat</ro>
+            <ru>Распределение, автоматическая продажа остатка</ru>
+            <sv>Distribuerar, resten säljs automatiskt</sv>
+            <tr>Dağıtılıyor, kalan otomatik satılır</tr>
+            <uk>Дистрибуція, автоматичний продаж залишку</uk>
+            <vi>Đang phân phối, tự động bán phần còn lại</vi>
         </text>
     </l10n>
 </modDesc>

@@ -2,10 +2,12 @@
 APMDistribution = {}
 APMDistribution.KEEP = 0
 APMDistribution.SELL = 1
-APMDistribution.DISTRIBUTE = 2
+-- Both distributing modes deliver first; they differ in what happens to the rest.
+APMDistribution.DISTRIBUTE_STORE = 2
+APMDistribution.DISTRIBUTE_SELL = 3
 
 function APMDistribution.isMode(mode)
-    return mode == 0 or mode == 1 or mode == 2
+    return mode == 0 or mode == 1 or mode == 2 or mode == 3
 end
 
 function APMDistribution.isFinite(value)

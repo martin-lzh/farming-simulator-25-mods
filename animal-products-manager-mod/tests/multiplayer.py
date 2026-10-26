@@ -71,8 +71,8 @@ class Peer:
                 return stream
             end
             function loadSnapshot(stream) APM.onReadStream(barn, stream, serverConnection) end
-            function addFactory()
-                factory = mockStorage(0, 500)
+            function addFactory(capacity)
+                factory = mockStorage(0, capacity or 500)
                 local point = {storage = factory, inputFillTypeIds = {[7] = true},
                     owningPlaceable = {rootNode = 20}, getOwnerFarmId = function() return 1 end}
                 g_currentMission.productionChainManager = {
@@ -194,10 +194,12 @@ def run_multiplayer(root):
         session.modes(0)
     passed("server rejects pending requests after permission, farm or object changes")
 
-    for mode, expected_money, expected_factory in ((1, 180, 0), (2, -0.35, 100)):
+    # Mode 3 fills the 40 L factory and sells the remaining 60 L at 2 x 0.9.
+    for mode, capacity, expected_money, expected_factory in (
+            (1, 500, 180, 0), (2, 500, -0.35, 100), (3, 40, 108 - 0.14, 40)):
         session = Session(root)
         for peer in [session.server, *session.clients]:
-            peer.run("addFactory()")
+            peer.run(f"addFactory({capacity})")
         # A dedicated server has no local farm manager, but remote managers still work.
         session.server.run("g_currentMission.farmId = 0")
         for index, peer in enumerate(session.clients):

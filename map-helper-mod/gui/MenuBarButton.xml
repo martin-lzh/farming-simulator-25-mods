@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Added to the map page's button bar at the bottom of the screen (buttonBox in
+     InGameMenuMapFrame.xml), next to Back, Next and Previous; MHMapFrame.injectBarButton
+     moves it right after Previous. Same profile and separator as the native Next button. -->
+<GUI>
+    <Button profile="mh_barButton" name="button" onClick="onClickBarButton">
+        <Bitmap profile="fs25_buttonBoxSeparator" name="separator"/>
+    </Button>
+    <GUIProfiles>
+        <Profile name="mh_barButton" extends="buttonMenuNext">
+            <inputAction value="MENU_EXTRA_1"/>
+            <!-- Triggered by this Mod's own key handler, which gives way to other buttons on
+                 the same key (ScreenElement.callButtonsWithAction would trigger both). -->
+            <isTriggerableByGlobalAction value="false"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>

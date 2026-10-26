@@ -16,7 +16,12 @@ import changes
 import modrelease
 
 ROOT = Path(__file__).resolve().parents[1]
-MODS = {"animal-products-manager": "AnimalProductsManager"}
+MODS = {
+    "animal-products-manager": "AnimalProductsManager",
+    "fill-type-selector": "FillTypeSelector",
+    "map-helper": "MapHelper",
+    "production-overflow": "ProductionOverflow",
+}
 VERSION = r"(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){3}"
 GAME = "Farming Simulator 25 1.24 (PC)"
 # Files that never enter a package and never affect validation or tests; CI skips

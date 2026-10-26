@@ -32,7 +32,7 @@ end
 test("default and invalid modes", function()
     local h = mockHusbandry()
     assert(APM.mode(h, 7) == 0)
-    assert(not APM.applyMode(h, 7, 3))
+    assert(not APM.applyMode(h, 7, 4) and not APM.applyMode(h, 7, -1) and not APM.applyMode(h, 7, nil))
     assert(not APM.applyMode(h, 999, 1))
     assert(APM.mode(h, 7) == 0)
 end)
@@ -150,7 +150,7 @@ test("server rejects cross-farm requests and bad modes", function()
     local connection = {farmId = 2, getIsServer = function() return false end}
     APMModeEvent.new(h, 7, 1):run(connection); assert(APM.mode(h, 7) == 0)
     connection.farmId = 1
-    APMModeEvent.new(h, 7, 3):run(connection); assert(APM.mode(h, 7) == 0)
+    APMModeEvent.new(h, 7, 4):run(connection); assert(APM.mode(h, 7) == 0)
     g_currentMission.allowed = false
     APMModeEvent.new(h, 7, 1):run(connection); assert(APM.mode(h, 7) == 0)
     g_currentMission.allowed = true
@@ -625,22 +625,28 @@ test("animal worker and product destinations keep independent menu actions", fun
     end
     assert(workerCalls == 2)
 end)
-test("each product row uses native production mode translations", function()
+test("product rows use native storing/selling and mod texts for both distributing modes", function()
     local getText = g_i18n.getText
     g_i18n.getText = function(_, key, customMod)
         if key:find("ui_production_output_", 1, true) then
             assert(customMod == nil, "native key resolved in mod namespace")
             return "native:" .. key
         end
-        assert(key ~= "apm_store" and key ~= "apm_sell" and key ~= "apm_distribute")
+        if key:find("apm_mode_", 1, true) then
+            assert(customMod == g_currentModName, "mod text resolved without the mod namespace")
+            return "mod:" .. key
+        end
         return key
     end
     local frame = {selectedHusbandry = mockHusbandry(), setMenuButtonInfoDirty = function() end}
     InGameMenuAnimalsFrame.updateMenuButtons(frame); frame.menuButtonInfo[1].callback()
     for _, row in ipairs(g_gui.dialog.rows) do
-        for i, suffix in ipairs({"storing", "selling", "distributing"}) do
+        assert(#row.option.texts == 4)
+        for i, suffix in ipairs({"storing", "selling"}) do
             assert(row.option.texts[i] == "native:ui_production_output_" .. suffix)
         end
+        assert(row.option.texts[3] == "mod:apm_mode_distribute_store")
+        assert(row.option.texts[4] == "mod:apm_mode_distribute_sell")
     end
     g_gui.dialog:onClickBack()
     g_i18n.getText = getText
@@ -845,5 +851,204 @@ test("inactive leftover inventory still settles once using its saved mode", func
     near(h.spec_husbandryPallets.pendingLiters[7], 0)
     near(h.spec_husbandryPallets.pendingLiters[8], 40)
     assert(APM.products(h, true)[1] == 8)
+end)
+-- Distributing modes: 2 stores the rest natively, 3 sells the rest.
+local fee = 100 * 0.000035
+local function factory(capacity)
+    local storage = mockStorage(0, capacity)
+    receiverList({receiver(storage)})
+    return storage
+end
+-- Records what the native spawner could see and consumes it like getPalletCallback.
+local function nativeSpawner(h, consume)
+    local seen = {}
+    h.updatePallets = function(self)
+        APM.updatePallets(self, function(p)
+            for fillType, amount in pairs(p.spec_husbandryPallets.pendingLiters) do
+                seen[fillType] = amount
+            end
+            if consume ~= nil then consume(p) end
+        end)
+    end
+    return seen
+end
+
+test("isMode accepts the four modes only", function()
+    for mode = 0, 3 do assert(APMDistribution.isMode(mode)) end
+    for _, mode in ipairs({4, -1, 1.5, "1", false}) do assert(not APMDistribution.isMode(mode)) end
+    assert(not APMDistribution.isMode(nil))
+    local h = mockHusbandry(); assert(APM.applyMode(h, 7, 3) and APM.mode(h, 7) == 3)
+end)
+test("mode 3 distributes first, then sells the rest and the recovery buffer", function()
+    local h, storage = mockHusbandry(), factory(30)
+    h.apmState.refunds[7] = 10
+    APM.applyMode(h, 7, APMDistribution.DISTRIBUTE_SELL); g_currentMission.money = 0
+    APM.processHour(h)
+    near(storage.amount, 30)
+    near(g_currentMission.money, 80 * 2 * 0.9 - 30 * fee)
+    near(APM.source(h, 7).available(), 0); near(h.apmState.refunds[7], 0)
+    near(h.spec_husbandryPallets.pendingLiters[8], 40)
+    assert(h.apmState.released[7] == nil)
+    APM.processHour(h); near(g_currentMission.money, 80 * 2 * 0.9 - 30 * fee) -- Nothing left to settle.
+end)
+test("mode 3 sells everything when no production point accepts the product", function()
+    local h = mockHusbandry(); receiverList({})
+    APM.applyMode(h, 7, 3); g_currentMission.money = 0
+    APM.processHour(h)
+    near(g_currentMission.money, 180); near(APM.source(h, 7).available(), 0)
+    local milk = mockHusbandry()
+    milk.spec_husbandry = {storage = mockStorage(60, 100)}
+    milk.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
+    APM.applyMode(milk, 4, 3); g_currentMission.money = 0
+    APM.processHour(milk)
+    near(g_currentMission.money, 108); near(milk.spec_husbandry.storage.amount, 0)
+end)
+test("mode 3 with a zero price keeps the rest hidden for the next hour", function()
+    local h, economy = mockHusbandry(), g_currentMission.economyManager
+    local storage = factory(30)
+    g_currentMission.economyManager = {getPricePerLiter = function() return 0 end}
+    APM.applyMode(h, 7, 3); g_currentMission.money = 0
+    APM.processHour(h)
+    near(storage.amount, 30); near(APM.source(h, 7).available(), 70)
+    local seen = nativeSpawner(h); h:updatePallets(); near(seen[7], 0)
+    g_currentMission.economyManager = economy
+end)
+test("mode 2 leaves the milk remainder in the barn tank", function()
+    local h, storage = mockHusbandry(), mockStorage(0, 20)
+    h.spec_husbandry = {storage = mockStorage(50, 100)}
+    h.spec_husbandryMilk = {hasMilkProduction = true, fillTypes = {4}}
+    h.apmState.refunds[4] = 5 -- An earlier aborted call left product in the buffer.
+    local point = receiver(storage); point.inputFillTypeIds = {[4] = true}; receiverList({point})
+    APM.applyMode(h, 4, APMDistribution.DISTRIBUTE_STORE); g_currentMission.money = 0
+    APM.processHour(h)
+    near(storage.amount, 20); near(h.spec_husbandry.storage.amount, 35); near(h.apmState.refunds[4], 0)
+    near(g_currentMission.money, -20 * fee); assert(h.apmState.released[4] == nil)
+end)
+test("mode 2 hands the pallet remainder to the native spawner and hides later output", function()
+    local h, storage = mockHusbandry(), factory(30)
+    local consume = 0
+    local seen = nativeSpawner(h, function(p)
+        local pending = p.spec_husbandryPallets.pendingLiters
+        local taken = math.min(consume, pending[7]); pending[7] = pending[7] - taken
+    end)
+    APM.applyMode(h, 7, 2); APM.applyMode(h, 8, 1)
+    APM.processHour(h) -- Distributes 30, releases 70 and starts the spawner once.
+    near(storage.amount, 30); near(seen[7], 70); near(seen[8], 0)
+    near(h.apmState.released[7], 70); near(h.spec_husbandryPallets.pendingLiters[7], 70)
+    h.spec_husbandryPallets.pendingLiters[7] = 95 -- Production after the hour.
+    consume = 50; h:updatePallets() -- The asynchronous pallet fills from released output only.
+    near(seen[7], 70); near(h.spec_husbandryPallets.pendingLiters[7], 45); near(h.apmState.released[7], 20)
+    consume = 50; APM.getPalletCallback(h, function(p)
+        near(p.spec_husbandryPallets.pendingLiters[7], 20)
+        p.spec_husbandryPallets.pendingLiters[7] = 0
+    end, {}, 0, 7)
+    near(h.spec_husbandryPallets.pendingLiters[7], 25); assert(h.apmState.released[7] == nil)
+    consume = 0; h:updatePallets(); near(seen[7], 0) -- New output waits for the next hour.
+    APM.processHour(h) -- The factory is full: the new output is released too.
+    near(storage.amount, 30); near(h.apmState.released[7], 25); near(seen[7], 25)
+end)
+test("a hidden backlog from an old mode 2 save is distributed before anything is released", function()
+    local h, storage = mockHusbandry(), factory(500)
+    local seen = nativeSpawner(h)
+    h.spec_husbandryPallets.pendingLiters[7] = 300 -- Backlog of an old mode 2 save.
+    APM.applyMode(h, 7, 2); APM.processHour(h)
+    near(storage.amount, 300); near(h.apmState.released[7] or 0, 0)
+    assert(seen[7] == nil) -- Nothing left to spawn.
+end)
+test("released output is counted once through nested synchronous pallet callbacks", function()
+    local h = mockHusbandry(); factory(30)
+    APM.applyMode(h, 7, 2); APM.processHour(h)
+    h.spec_husbandryPallets.pendingLiters[7] = 90 -- 70 released, 20 produced later.
+    local function fill(liters, nested)
+        return function(p)
+            local pending = p.spec_husbandryPallets.pendingLiters
+            assert(pending[7] <= 70)
+            pending[7] = pending[7] - liters
+            if nested ~= nil then APM.updatePallets(p, nested) end
+        end
+    end
+    -- An existing pallet answers synchronously, and its callback starts the next one.
+    APM.updatePallets(h, function(p)
+        APM.getPalletCallback(p, fill(30, function(q) APM.getPalletCallback(q, fill(20), {}, 0, 7) end), {}, 0, 7)
+    end)
+    near(h.apmState.released[7], 20); near(h.spec_husbandryPallets.pendingLiters[7], 40)
+    assert(h.apmState.palletDepth == 0 and next(h.apmState.hidden) == nil)
+end)
+test("an aborted spawner call keeps only the unconsumed release", function()
+    for _, intoBuffer in ipairs({false, true}) do
+        local h, xml = mockHusbandry(), mockXML(); factory(30)
+        APM.applyMode(h, 7, 2); APM.processHour(h)
+        h.spec_husbandryPallets.pendingLiters[7] = 80 -- 70 released, 10 produced later.
+        raises(APM.updatePallets, h, function(p)
+            p.spec_husbandryPallets.pendingLiters[7] = p.spec_husbandryPallets.pendingLiters[7] - 30
+            error("pallet listener failed")
+        end)
+        nextFrame()
+        if intoBuffer then
+            APM.saveToXMLFile(h, xml, "barn")
+            near(xml.values["barn.product(0)#releasedLiters"], 40)
+            near(h.apmState.refunds[7], 10); near(APM.source(h, 7).available(), 50)
+        else
+            APM.updatePallets(h, function(p) near(p.spec_husbandryPallets.pendingLiters[7], 40) end)
+            near(h.spec_husbandryPallets.pendingLiters[7], 50)
+        end
+        near(h.apmState.released[7], 40); assert(h.apmState.palletDepth == 0)
+    end
+end)
+test("mode changes and owner changes drop released output", function()
+    for _, change in ipairs({"sell", "distributeSell", "store", "owner", "same"}) do
+        local h = mockHusbandry(); factory(30)
+        local seen = nativeSpawner(h)
+        APM.applyMode(h, 7, 2); APM.processHour(h); near(h.apmState.released[7], 70)
+        if change == "sell" then APM.applyMode(h, 7, 1)
+        elseif change == "distributeSell" then APM.applyMode(h, 7, 3)
+        elseif change == "store" then APM.applyMode(h, 7, 0)
+        elseif change == "owner" then h.farmId = 2; APM.onOwnerChanged(h)
+        else APM.applyMode(h, 7, 2) end
+        if change == "same" then
+            near(h.apmState.released[7], 70)
+        else
+            assert(h.apmState.released[7] == nil)
+            APM.applyMode(h, 7, 2) -- Back to mode 2: nothing is released before its next hour.
+            h:updatePallets(); near(seen[7], 0)
+        end
+    end
+end)
+test("released output survives save and load and never exceeds native stock", function()
+    local h, xml = mockHusbandry(), mockXML(); factory(30)
+    APM.applyMode(h, 7, 2); APM.applyMode(h, 8, 3); APM.processHour(h)
+    APM.saveToXMLFile(h, xml, "barn")
+    near(xml.values["barn.product(0)#releasedLiters"], 70)
+    assert(xml.values["barn.product(0)#mode"] == 2 and xml.values["barn.product(1)#mode"] == 3)
+    assert(xml.values["barn.product(1)#releasedLiters"] == nil)
+    for _, pending in ipairs({85, 50}) do
+        local loaded = mockHusbandry()
+        loaded.spec_husbandryPallets.pendingLiters[7] = pending
+        APM.loadFromXMLFile(loaded, xml, "barn", false)
+        assert(APM.mode(loaded, 7) == 2 and APM.mode(loaded, 8) == 3)
+        local seen = nativeSpawner(loaded); loaded:updatePallets()
+        near(seen[7], math.min(pending, 70)); near(seen[8], 0)
+        near(loaded.spec_husbandryPallets.pendingLiters[7], pending)
+    end
+    -- A released amount saved for another mode is ignored.
+    xml:setValue("barn.product(1)#releasedLiters", 40)
+    local loaded = mockHusbandry(); APM.loadFromXMLFile(loaded, xml, "barn", false)
+    assert(loaded.apmState.released[8] == nil)
+    local reset = mockHusbandry(); APM.loadFromXMLFile(reset, xml, "barn", true)
+    assert(next(reset.apmState.released) == nil)
+end)
+test("mode 3 travels through the join stream and mode events", function()
+    local h, c, stream = mockHusbandry(), mockHusbandry(), {}
+    c.isServer = false; APM.applyMode(h, 7, 3); APM.applyMode(h, 8, 2)
+    APM.onWriteStream(h, stream, {}); APM.onReadStream(c, stream, {})
+    assert(APM.mode(c, 7) == 3 and APM.mode(c, 8) == 2 and #stream == 0)
+    local client, packet = mockHusbandry(), {}
+    client.isServer = false
+    APMModeEvent.new(client, 7, 3):writeStream(packet, {})
+    APMModeEvent.emptyNew():readStream(packet, {getIsServer = function() return true end})
+    assert(APM.mode(client, 7) == 3 and #packet == 0)
+    local server = mockHusbandry(); local before = g_server.count
+    APMModeEvent.new(server, 7, 3):run({farmId = 1, getIsServer = function() return false end})
+    assert(APM.mode(server, 7) == 3 and g_server.count == before + 1)
 end)
 print(string.format("%d behavioral tests passed", passed))

@@ -32,13 +32,13 @@
         </Profile>
         <Profile name="apm_productName" extends="fs25_textDefault" with="anchorMiddleLeft">
             <position value="12px 0px"/>
-            <size value="330px 30px"/>
+            <size value="290px 30px"/>
             <textSize value="18px"/>
             <textLayoutMode value="scrolling"/>
         </Profile>
         <Profile name="apm_productMode" extends="fs25_multiTextOption" with="anchorMiddleRight">
             <position value="-12px 0px"/>
-            <width value="350px"/>
+            <width value="430px"/>
         </Profile>
     </GUIProfiles>
 </GUI>
