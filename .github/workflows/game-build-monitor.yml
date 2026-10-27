@@ -1,0 +1,74 @@
+name: Steam game build monitor
+
+on:
+  schedule:
+    - cron: '7 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [dev, main]
+    paths:
+      - .github/workflows/game-build-monitor.yml
+      - tools/game_build_monitor.py
+      - tools/modrelease.py
+      - tools/game-build-baseline.json
+      - tools/tests/test_game_build_monitor.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: steam-game-build-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    if: github.repository == 'martin-lzh/farming-simulator-25-mods'
+    runs-on: windows-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Test build detection and notification history
+        run: python -m unittest discover -s tools/tests -p test_game_build_monitor.py -v
+      - name: Initialize Valve SteamCMD
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $steamcmdDir = Join-Path $env:RUNNER_TEMP 'steamcmd'
+          New-Item -ItemType Directory -Path $steamcmdDir -Force | Out-Null
+          $archive = Join-Path $steamcmdDir 'steamcmd.zip'
+          Invoke-WebRequest 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip' -OutFile $archive -TimeoutSec 60
+          Expand-Archive -LiteralPath $archive -DestinationPath $steamcmdDir
+          $exe = Join-Path $steamcmdDir 'steamcmd.exe'
+          for ($attempt = 1; $attempt -le 2; $attempt++) {
+            $signature = Get-AuthenticodeSignature -LiteralPath $exe
+            if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch '(^|,\s*)O=Valve( Corp\.)?(,|$)') {
+              throw 'SteamCMD must have a valid Valve signature'
+            }
+            & $exe +quit
+            if ($LASTEXITCODE -eq 0) { break }
+            if ($attempt -eq 2) {
+              throw "SteamCMD initialization failed with exit code $LASTEXITCODE"
+            }
+            # Self-update can return nonzero; the second launch must succeed normally.
+            Write-Host 'Retrying the signed SteamCMD executable after its bootstrap update.'
+          }
+      - name: Check the public build (notify only from main)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MONITOR_REPOSITORY: ${{ github.repository }}
+          MONITOR_REF: ${{ github.ref }}
+        run: |
+          $steamcmdExe = Join-Path $env:RUNNER_TEMP 'steamcmd/steamcmd.exe'
+          $monitorArgs = @('tools/game_build_monitor.py', '--steamcmd', $steamcmdExe, '--repository', $env:MONITOR_REPOSITORY)
+          if ($env:MONITOR_REF -eq 'refs/heads/main') { $monitorArgs += '--notify' }
+          python @monitorArgs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }

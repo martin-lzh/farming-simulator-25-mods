@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "appid": "2300320",
+  "name": "Farming Simulator 25",
+  "branch": "public",
+  "repository": "martin-lzh/farming-simulator-25-mods",
+  "observedOn": "2026-10-27",
+  "source": "Valve SteamCMD anonymous app_info_print 2300320",
+  "initialBuild": {
+    "buildid": "25879111",
+    "timeupdated": "1792497682"
+  }
+}
