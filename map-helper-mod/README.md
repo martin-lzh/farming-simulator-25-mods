@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=map-helper-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://www.nexusmods.com/farmingsimulator25/mods/226"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
@@ -17,7 +18,7 @@
 
 Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true) (`FS25_MapHelper.zip` under **Assets**)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true) (`FS25_MapHelper.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/226)
 
 Plan your workers' jobs straight from the map. Map Helper adds a page to the left sidebar of the map. It shows which fields need the work your vehicle can do, sets up jobs with the game's own job settings and keeps them in a to-do list for each vehicle: when one job is done, the next one starts by itself.
 
@@ -109,7 +110,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true)（在 **Assets** 下载 `FS25_MapHelper.zip`）
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=map-helper&expanded=true)（在 **Assets** 下载 `FS25_MapHelper.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/226)
 
 直接在地图上给帮手安排作业。地图助手在地图左侧边栏加入一个页面：列出哪些田地需要你的载具能做的作业，用游戏自带的作业设置安排作业，并为每台载具排成一张待办清单。一个作业完成后，下一个自动开始。
 

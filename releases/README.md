@@ -14,6 +14,8 @@ Each Mod is versioned and released on its own, with tags named `<mod>-v<version>
 
 The workflow runs on pull requests into `main`, on pushes to `main` (merges) and when started by hand. Pushes to `dev` alone don't start it, so an open `dev` → `main` PR is checked once per push. To check `dev` without a PR, run `gh workflow run mods.yml --repo martin-lzh/farming-simulator-25-mods --ref dev`.
 
+A separate workflow, the [Steam game build monitor](../docs/game-build-monitor.md), checks the game's public Steam build every six hours and opens a compatibility Issue when it changes. It never builds or releases anything.
+
 | Job | Runner | When |
 | --- | --- | --- |
 | Changes and release plan | Linux | Always. Lists the changed files and shows the release plan; a release-plan error fails it. |

@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=fill-type-selector-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://www.nexusmods.com/farmingsimulator25/mods/227"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
   <img alt="Platform: PC" src="https://img.shields.io/badge/platform-PC-lightgrey">
@@ -17,7 +18,7 @@
 
 Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 In the base game, an AI worker with an empty spreader or sprayer picks fertilizer by itself and never lime: a lime-only spreader stops at once, and a spreader for fertilizer and lime always buys fertilizer. With this Mod you choose what an empty fertilizer spreader, sprayer or lime spreader applies, the same way you choose seeds on a seeder, and the worker buys exactly that.
 
@@ -27,6 +28,8 @@ In the base game, an AI worker with an empty spreader or sprayer picks fertilize
 2. Press **Y** to switch between the types the implement can apply; **Shift+Y** goes back. The help (F1) shows **Select fertilizer**, followed by your choice, for example **Select fertilizer (Lime)**. The fill level display of the empty tank shows your choice too.
 
    ![Empty sprayer with Herbicide selected: the F1 help shows Select fertilizer (Herbicide) on Y and the empty tank shows Herbicide](assets/screenshots/01-empty-sprayer-herbicide-selected.jpg)
+
+   ![Empty fertilizer spreader with Lime selected: the F1 help shows Select fertilizer (Lime) on Y and the empty tank shows Lime](assets/screenshots/02-empty-spreader-lime-selected.jpg)
 
 3. If the implement or the combination already uses Y, the key is **Alt+Y** and switches forward only. This is the case with a seeder that has several seeds, with Precision Farming, and with a tool carrier or hose reel from the Pumps N' Hoses Pack. To change the key, open Settings → Controls and look for **Select fertilizer (when Y is in use)** under Fill Type Selector.
 
@@ -75,7 +78,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 原版中，料箱为空时 AI 帮手会自己挑肥料，却从不选石灰：只能撒石灰的散布机直接停工，能撒肥料和石灰的肥料散布机总是买肥料。装上本 Mod 后，可以像在播种机上选种子一样，为空的肥料散布机、喷洒机或石灰散布机选好要施用的类型，帮手就会买这一种。
 
@@ -85,6 +88,8 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 2. 按 **Y** 在机具能施用的类型之间切换，**Shift+Y** 反向切换。帮助（F1）中显示“选择肥料”，后面括号里是当前选择，例如“选择肥料 (石灰)”。空料箱的料量显示也会显示所选类型。
 
    ![空喷洒机选择了除草剂：F1 帮助中 Y 键显示“选择肥料 (除草剂)”，空料箱显示除草剂](assets/screenshots/01-empty-sprayer-herbicide-selected.jpg)
+
+   ![空肥料散布机选择了石灰：F1 帮助中 Y 键显示“选择肥料 (石灰)”，空料箱显示石灰](assets/screenshots/02-empty-spreader-lime-selected.jpg)
 
 3. 如果机具或组合已经占用了 Y，按键改为 **Alt+Y**，只能向前切换。可选多种种子的播种机、精准农业，以及 Pumps N' Hoses Pack 的工具架和脐带软管卷筒都属于这种情况。要修改按键，打开“设置 → 控制”，在“肥料选择”下找到“选择肥料（Y 已被占用时）”。
 

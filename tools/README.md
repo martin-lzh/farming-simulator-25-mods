@@ -6,6 +6,7 @@
 - `changes.py`: classifies the files a pull request or push changed for CI; shared verbatim with the other Mod repositories, change it in all three.
 - `modrelease.py`: release planning and publishing shared verbatim with the other Mod repositories; change it in all three.
 - `check_repository.py` and `check_syntax.py`: keep local-only material out of git and check tracked Python, JSON and XML.
+- `game_build_monitor.py` and `game-build-baseline.json`: anonymous SteamCMD check of the public Farming Simulator 25 Build ID, run every six hours by `.github/workflows/game-build-monitor.yml`; on `main` it opens a compatibility Issue when the build changes (see `docs/game-build-monitor.md`).
 - `gui_lab/`: GUI preview lab; renders GIANTS GUI XML plus a scenario (screen size, overrides, injected Mod XML) to a static HTML page in `outputs/gui-lab/` for checking layouts without the game (`uv run tools/gui_lab/render.py <scenario.json>`, see `gui_lab/README.md`).
 - `tests/`: tests for the tools above.
 
@@ -15,5 +16,6 @@
 - `changes.py`：为 CI 归类拉取请求或推送改动的文件；与其他 Mod 仓库完全相同，修改时三个仓库一起改。
 - `modrelease.py`：与其他 Mod 仓库完全相同的发布逻辑，修改时三个仓库一起改。
 - `check_repository.py` 和 `check_syntax.py`：防止本地资料进入仓库，并检查已跟踪的 Python、JSON 和 XML。
+- `game_build_monitor.py` 和 `game-build-baseline.json`：用 SteamCMD 匿名查询 Farming Simulator 25 正式分支的 Build ID，由 `.github/workflows/game-build-monitor.yml` 每六小时运行；在 `main` 上发现构建变化时创建兼容性检查 Issue（见 `docs/game-build-monitor.md`）。
 - `gui_lab/`：GUI 预览工具；把 GIANTS GUI XML 和场景文件（屏幕尺寸、覆盖设置、注入的 Mod XML）渲染成 `outputs/gui-lab/` 下的静态 HTML 页面，无需启动游戏即可检查布局（`uv run tools/gui_lab/render.py <scenario.json>`，见 `gui_lab/README.md`）。
 - `tests/`：上述工具的测试。
