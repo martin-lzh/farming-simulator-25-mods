@@ -29,7 +29,8 @@ GAME = "Farming Simulator 25 1.25 (PC)"
 # only .lua, .xml and .dds files, so Mod images can never be packaged. The Mod
 # README and CHANGELOG are validated, so they stay core.
 NON_CORE = (
-    "README.md", "AGENTS.md", "DEVELOPMENT.md", "docs/**", "assets/**", "releases/**",
+    "README.md", "AGENTS.md", "DEVELOPMENT.md", "CONTRIBUTING.md", "SUPPORT.md",
+    "SECURITY.md", "CODE_OF_CONDUCT.md", "docs/**", "assets/**", "releases/**",
     "*-mod/DEVELOPMENT.md", "*-mod/assets/**/*.png", "*-mod/assets/**/*.jpg",
 )
 
