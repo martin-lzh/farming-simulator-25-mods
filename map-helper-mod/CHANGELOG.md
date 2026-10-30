@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Expand the download, installation and log-reading guide, with matching English and Chinese steps.
+- 补充下载、安装及打开日志的操作步骤，中英文说明同步。
+
 ## 1.0.0.0 — 2026-10-25
 
 - First version. Adds a Map Helper page to the left sidebar of the map in the in-game menu, next to the map filters and Active Workers.
