@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Expand the download, installation and log-reading guide, with matching English and Chinese steps.
+- 补充下载、安装及打开日志的操作步骤，中英文说明同步。
+
 ## 1.0.0.0 — 2026-10-25
 
 - First version. Choose what an empty fertilizer spreader, sprayer or lime spreader will apply with Y (Shift+Y goes back), like choosing seeds on a seeder; the empty tank shows your choice.

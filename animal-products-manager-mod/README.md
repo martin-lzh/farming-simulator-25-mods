@@ -3,7 +3,7 @@
 ![Animal Products Manager](assets/cover.jpg)
 
 <p align="center">
-  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=animal-products-manager&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=animal-products-manager-v%2A&amp;label=latest%20release"></a>
+  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.4"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=animal-products-manager-v%2A&amp;label=latest%20release"></a>
   <a href="https://www.nexusmods.com/farmingsimulator25/mods/220"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
@@ -73,14 +73,28 @@ The list matches the animals in the barn: goats only show goat milk, sheep only 
 
 ### Install and update
 
-Put `FS25_AnimalProductsManager.zip` in `Documents\My Games\FarmingSimulator2025\mods` and activate the Mod when you load a save. To update, replace the old ZIP with the new one; your settings are kept. Products you had set to Distributing in version 1.0.0.3 or earlier use Distributing, store rest automatically.
+For Farming Simulator 25 1.25 on Windows PC. No loader or other Mod is required. In multiplayer, the server and every player use the same Mod version.
+
+1. Close the game before adding or replacing Mod files.
+2. Download `FS25_AnimalProductsManager.zip` from the [GitHub 1.0.0.4 release](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.4): expand **Assets** and choose that file, not **Source code**. Or open the [Nexus page](https://www.nexusmods.com/farmingsimulator25/mods/220), select **Files → Main files → Manual download**, sign in with a free account if asked, then choose **Slow download**.
+3. Open **File Explorer** with **Windows + E** and select **Downloads**. Keep the ZIP as it is; do not extract it.
+4. In another File Explorer window, select **Documents**, then open **My Games → FarmingSimulator2025 → mods**. If Windows stores Documents in OneDrive, use **OneDrive → Documents**. If `FarmingSimulator2025` does not exist yet, start the game once, reach the main menu and quit; then reopen Documents. If only `mods` is missing, right-click inside `FarmingSimulator2025`, choose **New → Folder**, and name it `mods`.
+5. Copy the downloaded ZIP into `mods`. The final path ends in `FarmingSimulator2025\mods\FS25_AnimalProductsManager.zip`. Keep only one copy of this Mod.
+6. Start the game through your usual launcher, choose your save, and tick **Animal Products Manager** in the Mod list before loading it.
+7. Open the Animals page and select a barn that produces milk, eggs or wool: Product destinations appears in the bottom bar.
+
+To update, close the game, download the new ZIP from the same Mod's release page and replace `FS25_AnimalProductsManager.zip` in `mods`; your settings are kept. Products you had set to Distributing in version 1.0.0.3 or earlier use Distributing, store rest automatically.
+
+### Help
+
+If the Mod does not appear, check that the ZIP is in the folder above and ticked for this save. To read the log, return to **Documents → My Games → FarmingSimulator2025**, right-click `log.txt`, choose **Open with → Notepad**, and look for the Mod name or an error. Include the relevant lines and what you did in a [GitHub Issue](https://github.com/martin-lzh/farming-simulator-25-mods/issues/new/choose). More help: [Support](https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SUPPORT.md#english).
 
 ### Uninstall
 
 1. Switch every product of every barn back to Storing.
 2. Let one in-game hour pass so the pallets appear, then save.
-3. Open `Documents\My Games\FarmingSimulator2025\log.txt` and search for `retained`. A line like `Animal Products Manager retained ... liters of ... for recovery` means some product could not go back into the barn and the Mod is still holding it. Keep the Mod active, free up space in that barn, let another in-game hour pass and save again. If you uninstall before that, this product is lost.
-4. Remove `FS25_AnimalProductsManager.zip` from the mods folder.
+3. In File Explorer, open **Documents → My Games → FarmingSimulator2025**, right-click `log.txt`, choose **Open with → Notepad**, and search for `retained`. A line like `Animal Products Manager retained ... liters of ... for recovery` means some product could not go back into the barn and the Mod is still holding it. Keep the Mod active, free up space in that barn, let another in-game hour pass and save again. If you uninstall before that, this product is lost.
+4. Close the game, then remove `FS25_AnimalProductsManager.zip` from the mods folder.
 
 ### License
 
@@ -145,14 +159,28 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ### 安装与更新
 
-把 `FS25_AnimalProductsManager.zip` 放进 `文档\My Games\FarmingSimulator2025\mods`，载入存档时勾选本 Mod。更新时用新 ZIP 替换旧 ZIP，原有设置保留。在 1.0.0.3 及更早版本中设为“分配”的产品，会改用“分配，剩余自动储存”。
+适用于 Windows PC 版模拟农场 25 1.25，不需要加载器或其他 Mod。多人游戏时，服务器和所有玩家使用同一 Mod 版本。
+
+1. 添加或替换 Mod 文件前，先退出游戏。
+2. 打开 [GitHub 1.0.0.4 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/animal-products-manager-v1.0.0.4)，展开 **Assets（附件）**，下载 `FS25_AnimalProductsManager.zip`，不要选择 **Source code（源码）**。也可打开 [Nexus 页面](https://www.nexusmods.com/farmingsimulator25/mods/220)，进入 **Files（文件）→ Main files（主要文件）→ Manual download（手动下载）**；提示登录时使用免费账号，随后选择 **Slow download（慢速下载）**。
+3. 按 **Windows + E** 打开**文件资源管理器**，点击**下载**。保留 ZIP 原样，不要解压。
+4. 在另一个文件资源管理器窗口点击**文档**，依次打开 **My Games → FarmingSimulator2025 → mods**。文档由 OneDrive 管理时，使用 **OneDrive → 文档**。如果还没有 `FarmingSimulator2025`，先启动一次游戏，到主菜单后退出，再打开文档；如果只缺 `mods`，在 `FarmingSimulator2025` 中右键，选择**新建 → 文件夹**，命名为 `mods`。
+5. 把下载的 ZIP 复制到 `mods`，最终路径以 `FarmingSimulator2025\mods\FS25_AnimalProductsManager.zip` 结尾，同一 Mod 只保留一份。
+6. 从平常使用的启动器打开游戏，选择存档，载入前在 Mod 列表中勾选**“动物产品管理”**。
+7. 打开“牲畜”页面，选择产出牛奶、鸡蛋或羊毛的畜舍：底栏会出现“产品去向”。
+
+更新时先退出游戏，从同一 Mod 的发布页下载新 ZIP，替换 `mods` 中的 `FS25_AnimalProductsManager.zip`；原有设置保留。在 1.0.0.3 及更早版本中设为“分配”的产品，会改用“分配，剩余自动储存”。
+
+### 帮助
+
+Mod 没有出现时，检查 ZIP 是否位于上述目录，并确认当前存档已勾选它。查看日志时，回到**文档 → My Games → FarmingSimulator2025**，右键 `log.txt`，选择**打开方式 → 记事本**，查找 Mod 名称或错误。可在 [GitHub Issue](https://github.com/martin-lzh/farming-simulator-25-mods/issues/new/choose) 中附相关几行和操作经过。更多排查见[帮助](https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SUPPORT.md#中文)。
 
 ### 卸载
 
 1. 把所有畜舍的每种产品都切回储存。
 2. 等待一个游戏小时让托盘生成，然后保存。
-3. 打开 `文档\My Games\FarmingSimulator2025\log.txt`，搜索 `retained`。如果有一行类似 `Animal Products Manager retained ... liters of ... for recovery`，说明有产品没能退回畜舍，仍由本 Mod 保管。请保持本 Mod 启用，给那个畜舍腾出空间，再等一个游戏小时后保存。在此之前卸载，这部分产品会丢失。
-4. 从 mods 文件夹中删除 `FS25_AnimalProductsManager.zip`。
+3. 在文件资源管理器中打开**文档 → My Games → FarmingSimulator2025**，右键 `log.txt`，选择**打开方式 → 记事本**，搜索 `retained`。如果有一行类似 `Animal Products Manager retained ... liters of ... for recovery`，说明有产品没能退回畜舍，仍由本 Mod 保管。请保持本 Mod 启用，给那个畜舍腾出空间，再等一个游戏小时后保存。在此之前卸载，这部分产品会丢失。
+4. 退出游戏，再从 mods 文件夹中删除 `FS25_AnimalProductsManager.zip`。
 
 ### 许可
 

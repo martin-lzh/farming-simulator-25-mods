@@ -24,7 +24,7 @@ A separate workflow, the [Steam game build monitor](../docs/game-build-monitor.m
 | Publish new versions and promote betas | Linux | On pushes to `main` whose release plan publishes or promotes something. |
 | CI result | Linux | Always. Passes when every job passed or was skipped on purpose. |
 
-Only these files are non-core, so a change touching nothing else skips Build and test (`NON_CORE` in `tools/ci.py`): the root `README.md`, `AGENTS.md` and `DEVELOPMENT.md`, `docs/`, the root `assets/`, `releases/`, each Mod's `DEVELOPMENT.md`, and `.png`/`.jpg` images under a Mod's `assets/` (packages hold only `.lua`, `.xml` and `.dds` files). Everything else is core, including each Mod's `README.md`, `CHANGELOG.md` and `release.json`, `tools/`, tests and `.github/`. For a pull request the changes are compared with its base; for a push with the previous commit of `main`; a manual run, or a push whose previous commit is unknown, counts as a core change.
+Only these files are non-core, so a change touching nothing else skips Build and test (`NON_CORE` in `tools/ci.py`): the root `README.md`, `AGENTS.md`, `DEVELOPMENT.md`, `CONTRIBUTING.md`, `SUPPORT.md`, `SECURITY.md` and `CODE_OF_CONDUCT.md`, `docs/`, the root `assets/`, `releases/`, each Mod's `DEVELOPMENT.md`, and `.png`/`.jpg` images under a Mod's `assets/` (packages hold only `.lua`, `.xml` and `.dds` files). Everything else is core, including each Mod's `README.md`, `CHANGELOG.md` and `release.json`, `tools/`, tests and `.github/`. For a pull request the changes are compared with its base; for a push with the previous commit of `main`; a manual run, or a push whose previous commit is unknown, counts as a core change.
 
 ## Betas and stable releases
 
