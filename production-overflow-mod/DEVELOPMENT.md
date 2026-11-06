@@ -10,6 +10,10 @@
 - 名称 Production Overflow / 生产余量处理 由维护者 2026-10-25 确定，不再是工作名。
 - 封面 `assets/cover.jpg`（1920×1080）2026-10-25 由 Codex CLI 图像生成制作，以动物产品管理的封面为风格参考，原图和提示词记录在被忽略的 `outputs/production-overflow/cover/`；README 顶部显示。README 截图在 `assets/screenshots/`：维护者 2026-10-25 的游戏内截图（英文界面，FS25 1.25 PC，2000×1250），转为 JPEG 并用红框标出重点按钮和行，不进 ZIP。共 3 张：01 温室草莓“剩余自动储存”、03 乳品厂黄油“剩余自动出售”；04 磨坊几种面粉“剩余自动出售”、两种米粉“储存”，为维护者 2026-10-26 补拍的截图（2560×1600 整幅缩放到 2000×1250，红框标出大麦粉和燕麦粉、选中的高粱粉和小麦粉这两组“剩余自动出售”行，以及底栏的“更改输出模式”）。未拍工厂托盘区。
 
+## 1.0.0.1 发布准备
+
+2026-11-06：本版包含提交 `532250b` 的联机加入同步修复。离线回归覆盖同一工厂的 255、256 条余量模式，逐项核对加入客户端收到的设置。维护者决定本次采用离线验证，跳过单人、主机和客户端实机复测。
+
 ## 1.0.0.0 发布准备
 
 2026-10-25：维护者确认已实机测试（“已经实机测试过了都”，与 Map Helper、Fill Type Selector 一并确认，未提供逐项记录），确定名称 Production Overflow / 生产余量处理，要求以正式版发布 1.0.0.0，与这两个 Mod 的 1.0.0.0 及 Animal Products Manager 1.0.0.4 一起并入 PR #6（dev → main）。发布提交 6f482b4 只改 `modDesc.xml` 版本、`release.json`（`"prerelease": true` 改为 `false`）、CHANGELOG 标题和 README，脚本与已测构建一致，包内只有版本号不同；`FS25_ProductionOverflow.zip` SHA256 `1cdea1c528da8c5150d197705b730f129d54ae9b5babfc9b582ce22919e4f3db`。CHANGELOG 的 Unreleased 条目移到 `## 1.0.0.0 — 2026-10-25`，空的 `0.1.0.0` 占位标题已删除。已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表，CI Release plan 显示 `production-overflow-v1.0.0.0` 为新的正式版。合并由维护者执行。截图和封面图待维护者提供。

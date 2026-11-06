@@ -3,7 +3,7 @@
 ![Production Overflow](assets/cover.jpg)
 
 <p align="center">
-  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=production-overflow-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.1"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=production-overflow-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
   <a href="https://www.nexusmods.com/farmingsimulator25/mods/228"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
@@ -16,9 +16,9 @@
 
 ## English
 
-Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
+Version 1.0.0.1 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0) (`FS25_ProductionOverflow.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.1) (`FS25_ProductionOverflow.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
 
 A factory set to Distributing delivers its products to your other production points once per in-game hour. When those are full, the rest stays in the factory, its storage fills up and production stops. This Mod adds two output modes that deal with that rest: turn it into pallets, or sell it.
 
@@ -70,7 +70,7 @@ If none of your production points accepts the product, the whole stock becomes p
 For Farming Simulator 25 1.25 on Windows PC. No loader or other Mod is required. In multiplayer, the server and every player use the same Mod version.
 
 1. Close the game before adding or replacing Mod files.
-2. Download `FS25_ProductionOverflow.zip` from the [GitHub 1.0.0.0 release](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0): expand **Assets** and choose that file, not **Source code**. Or open the [Nexus page](https://www.nexusmods.com/farmingsimulator25/mods/228), select **Files → Main files → Manual download**, sign in with a free account if asked, then choose **Slow download**.
+2. Download `FS25_ProductionOverflow.zip` from the [GitHub 1.0.0.1 release](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.1): expand **Assets** and choose that file, not **Source code**. Or open the [Nexus page](https://www.nexusmods.com/farmingsimulator25/mods/228), select **Files → Main files → Manual download**, sign in with a free account if asked, then choose **Slow download**.
 3. Open **File Explorer** with **Windows + E** and select **Downloads**. Keep the ZIP as it is; do not extract it.
 4. In another File Explorer window, select **Documents**, then open **My Games → FarmingSimulator2025 → mods**. If Windows stores Documents in OneDrive, use **OneDrive → Documents**. If `FarmingSimulator2025` does not exist yet, start the game once, reach the main menu and quit; then reopen Documents. If only `mods` is missing, right-click inside `FarmingSimulator2025`, choose **New → Folder**, and name it `mods`.
 5. Copy the downloaded ZIP into `mods`. The final path ends in `FarmingSimulator2025\mods\FS25_ProductionOverflow.zip`. Keep only one copy of this Mod.
@@ -93,9 +93,9 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ## 中文
 
-版本 1.0.0.0 · 模拟农场 25 1.25（PC）
+版本 1.0.0.1 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0)（在 **Assets** 下载 `FS25_ProductionOverflow.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.1)（在 **Assets** 下载 `FS25_ProductionOverflow.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/228)
 
 设为“分配”的工厂每游戏小时把产品送往你自己的其他生产点。这些生产点满了以后，剩余产品留在工厂，工厂仓储也会装满，生产随之停止。本 Mod 新增两种输出模式来处理这部分剩余：生成托盘，或者卖掉。
 
@@ -147,7 +147,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 适用于 Windows PC 版模拟农场 25 1.25，不需要加载器或其他 Mod。多人游戏时，服务器和所有玩家使用同一 Mod 版本。
 
 1. 添加或替换 Mod 文件前，先退出游戏。
-2. 打开 [GitHub 1.0.0.0 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.0)，展开 **Assets（附件）**，下载 `FS25_ProductionOverflow.zip`，不要选择 **Source code（源码）**。也可打开 [Nexus 页面](https://www.nexusmods.com/farmingsimulator25/mods/228)，进入 **Files（文件）→ Main files（主要文件）→ Manual download（手动下载）**；提示登录时使用免费账号，随后选择 **Slow download（慢速下载）**。
+2. 打开 [GitHub 1.0.0.1 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/production-overflow-v1.0.0.1)，展开 **Assets（附件）**，下载 `FS25_ProductionOverflow.zip`，不要选择 **Source code（源码）**。也可打开 [Nexus 页面](https://www.nexusmods.com/farmingsimulator25/mods/228)，进入 **Files（文件）→ Main files（主要文件）→ Manual download（手动下载）**；提示登录时使用免费账号，随后选择 **Slow download（慢速下载）**。
 3. 按 **Windows + E** 打开**文件资源管理器**，点击**下载**。保留 ZIP 原样，不要解压。
 4. 在另一个文件资源管理器窗口点击**文档**，依次打开 **My Games → FarmingSimulator2025 → mods**。文档由 OneDrive 管理时，使用 **OneDrive → 文档**。如果还没有 `FarmingSimulator2025`，先启动一次游戏，到主菜单后退出，再打开文档；如果只缺 `mods`，在 `FarmingSimulator2025` 中右键，选择**新建 → 文件夹**，命名为 `mods`。
 5. 把下载的 ZIP 复制到 `mods`，最终路径以 `FarmingSimulator2025\mods\FS25_ProductionOverflow.zip` 结尾，同一 Mod 只保留一份。

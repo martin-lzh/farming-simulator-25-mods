@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.0.0.1 — 2026-11-06
+
 - Players joining a multiplayer game now receive every output mode when a single factory has 256 or more products set to store or sell the rest.
 - 加入多人游戏时，即使同一座工厂有 256 种或更多产出设为“剩余自动储存”或“剩余自动出售”，玩家也能同步每种产出的模式。
 - Expand the download, installation and log-reading guide, with matching English and Chinese steps.
