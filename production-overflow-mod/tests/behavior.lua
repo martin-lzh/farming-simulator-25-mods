@@ -361,6 +361,33 @@ test("joining clients receive the Mod modes after the native stream", function()
     ProductionOverflowPlaceable.onReadStream(broken, other, {})
     assert(#other == 0)
 end)
+for _, count in ipairs({255, 256}) do
+    test(("joining clients receive all %d overflow modes at one factory"):format(count), function()
+        local server, client = mockPoint(), mockPoint({isServer = false})
+        local expected = {}
+        for i = 1, count do
+            local fillType = 1024 - i
+            for _, point in ipairs({server, client}) do
+                point.outputFillTypeIds[fillType] = true
+                table.insert(point.outputFillTypeIdsArray, fillType)
+                point.outputFillTypeIdsToPallets[fillType] = {capacity = 100}
+            end
+            expected[fillType] = i % 2 == 0 and PO.DISTRIBUTE_STORE or PO.DISTRIBUTE_SELL
+            set(server, fillType, expected[fillType])
+        end
+
+        local stream = {}
+        server:writeStream(stream, {})
+        ProductionOverflowPlaceable.onWriteStream(server.owningPlaceable, stream, {})
+        client:readStream(stream, {})
+        ProductionOverflowPlaceable.onReadStream(client.owningPlaceable, stream, {})
+
+        for fillType, mode in pairs(expected) do
+            assert(PO.getMode(client, fillType) == mode, ("wrong mode for fill type %d"):format(fillType))
+        end
+        assert(#stream == 0, "join stream not fully read")
+    end)
+end
 test("the mode event travels with three bits and the server checks the sender", function()
     local packet = {}
     local client = mockPoint({isServer = false})
