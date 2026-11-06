@@ -63,15 +63,20 @@ g_server = {sent = {}, broadcastEvent = function(self, event, sendLocal, ignoreC
     table.insert(self.sent, event)
 end}
 
--- Streams are plain Lua lists in the tests.
+-- Keep the width with each integer so mismatched reads fail on every peer.
 local function push(s, v) table.insert(s, v) end
 local function pop(s) return table.remove(s, 1) end
-streamWriteUInt8, streamReadUInt8 = push, pop
-streamWriteUIntN = function(s, v, bits)
-    assert(v >= 0 and v < 2 ^ bits, "value does not fit the stream bits")
+function streamWriteUIntN(s, v, bits)
+    assert(v >= 0 and v < 2 ^ bits, ("%d does not fit in %d bits"):format(v, bits))
+    push(s, bits)
     push(s, v)
 end
-streamReadUIntN = function(s, bits) return pop(s) end
+function streamReadUIntN(s, bits)
+    assert(pop(s) == bits, "stream read and write widths differ")
+    return pop(s)
+end
+function streamWriteUInt8(s, v) streamWriteUIntN(s, v, 8) end
+function streamReadUInt8(s) return streamReadUIntN(s, 8) end
 NetworkUtil = {writeNodeObject = push, readNodeObject = pop}
 
 -- Same semantics as GS utils/Utils.lua.
@@ -214,13 +219,13 @@ end
 function ProductionPoint:writeStream(streamId, connection)
     for _, set in ipairs({self.outputFillTypeIdsDirectSell, self.outputFillTypeIdsAutoDeliver}) do
         local keys = sortedKeys(set)
-        streamWriteUInt8(streamId, #keys)
+        streamWriteUIntN(streamId, #keys, FillTypeManager.SEND_NUM_BITS)
         for _, fillType in ipairs(keys) do streamWriteUIntN(streamId, fillType, FillTypeManager.SEND_NUM_BITS) end
     end
 end
 function ProductionPoint:readStream(streamId, connection)
     for _, mode in ipairs({ProductionPoint.OUTPUT_MODE.DIRECT_SELL, ProductionPoint.OUTPUT_MODE.AUTO_DELIVER}) do
-        for _ = 1, streamReadUInt8(streamId) do
+        for _ = 1, streamReadUIntN(streamId, FillTypeManager.SEND_NUM_BITS) do
             self:setOutputDistributionMode(streamReadUIntN(streamId, FillTypeManager.SEND_NUM_BITS), mode, true)
         end
     end

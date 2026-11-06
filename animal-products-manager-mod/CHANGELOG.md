@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Expand the download, installation and log-reading guide, with matching English and Chinese steps.
+- 补充下载、安装及打开日志的操作步骤，中英文说明同步。
+
 ## 1.0.0.4 — 2026-10-25
 
 - Distributing is now two modes: "Distributing, store rest automatically" and "Distributing, sell rest automatically". Both deliver to your own production points first, once per in-game hour.

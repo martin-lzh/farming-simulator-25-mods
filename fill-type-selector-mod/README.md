@@ -3,7 +3,7 @@
 ![Fill Type Selector](assets/cover.jpg)
 
 <p align="center">
-  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&amp;expanded=true"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=fill-type-selector-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
+  <a href="https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0"><img alt="Latest release" src="https://img.shields.io/github/v/release/martin-lzh/farming-simulator-25-mods?filter=fill-type-selector-v%2A&amp;include_prereleases&amp;label=latest%20release"></a>
   <a href="https://www.nexusmods.com/farmingsimulator25/mods/227"><img alt="Nexus Mods" src="https://img.shields.io/badge/Nexus%20Mods-download-d98f40"></a>
   <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue"></a>
   <img alt="Farming Simulator 25 1.25" src="https://img.shields.io/badge/Farming%20Simulator%2025-1.25-5c8a1f">
@@ -18,7 +18,7 @@
 
 Version 1.0.0.0 · Farming Simulator 25 1.25 (PC)
 
-**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true) (`FS25_FillTypeSelector.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
+**Download:** [GitHub releases](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0) (`FS25_FillTypeSelector.zip` under **Assets**) · [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 In the base game, an AI worker with an empty spreader or sprayer picks fertilizer by itself and never lime: a lime-only spreader stops at once, and a spreader for fertilizer and lime always buys fertilizer. With this Mod you choose what an empty fertilizer spreader, sprayer or lime spreader applies, the same way you choose seeds on a seeder, and the worker buys exactly that.
 
@@ -64,11 +64,25 @@ Turn on **AI Worker Refill - Fertilizer** in Settings → Game Settings. A worke
 
 ### Install and update
 
-Put `FS25_FillTypeSelector.zip` in `Documents\My Games\FarmingSimulator2025\mods` and activate the Mod when you load a save. To update, replace the old ZIP with the new one; your choices are kept.
+For Farming Simulator 25 1.25 on Windows PC. No loader or other Mod is required. In multiplayer, the server and every player use the same Mod version.
+
+1. Close the game before adding or replacing Mod files.
+2. Download `FS25_FillTypeSelector.zip` from the [GitHub 1.0.0.0 release](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0): expand **Assets** and choose that file, not **Source code**. Or open the [Nexus page](https://www.nexusmods.com/farmingsimulator25/mods/227), select **Files → Main files → Manual download**, sign in with a free account if asked, then choose **Slow download**.
+3. Open **File Explorer** with **Windows + E** and select **Downloads**. Keep the ZIP as it is; do not extract it.
+4. In another File Explorer window, select **Documents**, then open **My Games → FarmingSimulator2025 → mods**. If Windows stores Documents in OneDrive, use **OneDrive → Documents**. If `FarmingSimulator2025` does not exist yet, start the game once, reach the main menu and quit; then reopen Documents. If only `mods` is missing, right-click inside `FarmingSimulator2025`, choose **New → Folder**, and name it `mods`.
+5. Copy the downloaded ZIP into `mods`. The final path ends in `FarmingSimulator2025\mods\FS25_FillTypeSelector.zip`. Keep only one copy of this Mod.
+6. Start the game through your usual launcher, choose your save, and tick **Fill Type Selector** in the Mod list before loading it.
+7. Get into a tractor with an empty sprayer or spreader that accepts several types. Press F1: the help shows Select fertilizer.
+
+To update, close the game, download the new ZIP from the same Mod's release page and replace `FS25_FillTypeSelector.zip` in `mods`; your choices are kept.
+
+### Help
+
+If the Mod does not appear, check that the ZIP is in the folder above and ticked for this save. To read the log, return to **Documents → My Games → FarmingSimulator2025**, right-click `log.txt`, choose **Open with → Notepad**, and look for the Mod name or an error. Include the relevant lines and what you did in a [GitHub Issue](https://github.com/martin-lzh/farming-simulator-25-mods/issues/new/choose). More help: [Support](https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SUPPORT.md#english).
 
 ### Uninstall
 
-Remove the ZIP. Vehicles keep their content, and workers refill as in the base game again.
+Close the game and remove `FS25_FillTypeSelector.zip` from the mods folder. Vehicles keep their content, and workers refill as in the base game again.
 
 ### License
 
@@ -78,7 +92,7 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 版本 1.0.0.0 · 模拟农场 25 1.25（PC）
 
-**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases?q=fill-type-selector&expanded=true)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
+**下载：**[GitHub 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0)（在 **Assets** 下载 `FS25_FillTypeSelector.zip`）· [Nexus Mods](https://www.nexusmods.com/farmingsimulator25/mods/227)
 
 原版中，料箱为空时 AI 帮手会自己挑肥料，却从不选石灰：只能撒石灰的散布机直接停工，能撒肥料和石灰的肥料散布机总是买肥料。装上本 Mod 后，可以像在播种机上选种子一样，为空的肥料散布机、喷洒机或石灰散布机选好要施用的类型，帮手就会买这一种。
 
@@ -124,11 +138,25 @@ PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE). Free for non-comme
 
 ### 安装与更新
 
-把 `FS25_FillTypeSelector.zip` 放进 `文档\My Games\FarmingSimulator2025\mods`，载入存档时勾选本 Mod。更新时用新 ZIP 替换旧 ZIP，原有选择保留。
+适用于 Windows PC 版模拟农场 25 1.25，不需要加载器或其他 Mod。多人游戏时，服务器和所有玩家使用同一 Mod 版本。
+
+1. 添加或替换 Mod 文件前，先退出游戏。
+2. 打开 [GitHub 1.0.0.0 发布页](https://github.com/martin-lzh/farming-simulator-25-mods/releases/tag/fill-type-selector-v1.0.0.0)，展开 **Assets（附件）**，下载 `FS25_FillTypeSelector.zip`，不要选择 **Source code（源码）**。也可打开 [Nexus 页面](https://www.nexusmods.com/farmingsimulator25/mods/227)，进入 **Files（文件）→ Main files（主要文件）→ Manual download（手动下载）**；提示登录时使用免费账号，随后选择 **Slow download（慢速下载）**。
+3. 按 **Windows + E** 打开**文件资源管理器**，点击**下载**。保留 ZIP 原样，不要解压。
+4. 在另一个文件资源管理器窗口点击**文档**，依次打开 **My Games → FarmingSimulator2025 → mods**。文档由 OneDrive 管理时，使用 **OneDrive → 文档**。如果还没有 `FarmingSimulator2025`，先启动一次游戏，到主菜单后退出，再打开文档；如果只缺 `mods`，在 `FarmingSimulator2025` 中右键，选择**新建 → 文件夹**，命名为 `mods`。
+5. 把下载的 ZIP 复制到 `mods`，最终路径以 `FarmingSimulator2025\mods\FS25_FillTypeSelector.zip` 结尾，同一 Mod 只保留一份。
+6. 从平常使用的启动器打开游戏，选择存档，载入前在 Mod 列表中勾选**“肥料选择”**。
+7. 坐进挂着空喷洒机或散布机的拖拉机，机具须支持多种类型。按 F1，帮助中会显示“选择肥料”。
+
+更新时先退出游戏，从同一 Mod 的发布页下载新 ZIP，替换 `mods` 中的 `FS25_FillTypeSelector.zip`；原有选择保留。
+
+### 帮助
+
+Mod 没有出现时，检查 ZIP 是否位于上述目录，并确认当前存档已勾选它。查看日志时，回到**文档 → My Games → FarmingSimulator2025**，右键 `log.txt`，选择**打开方式 → 记事本**，查找 Mod 名称或错误。可在 [GitHub Issue](https://github.com/martin-lzh/farming-simulator-25-mods/issues/new/choose) 中附相关几行和操作经过。更多排查见[帮助](https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SUPPORT.md#中文)。
 
 ### 卸载
 
-删除 ZIP 即可。车辆里的物料不变，帮手恢复按原版方式补充。
+退出游戏，从 mods 文件夹删除 `FS25_FillTypeSelector.zip`。车辆里的物料不变，帮手恢复按原版方式补充。
 
 ### 许可
 

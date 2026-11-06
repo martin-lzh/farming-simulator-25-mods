@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Installation and help / 安装与帮助
+    url: https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SUPPORT.md
+    about: Check downloads, folder layout and troubleshooting / 查看下载、目录和排查步骤
+  - name: Security reporting / 安全反馈
+    url: https://github.com/martin-lzh/farming-simulator-25-mods/blob/main/SECURITY.md
+    about: Request a private channel for vulnerabilities / 通过私密渠道报告漏洞

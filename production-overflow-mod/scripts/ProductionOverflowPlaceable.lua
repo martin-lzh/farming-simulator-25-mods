@@ -108,7 +108,7 @@ end
 -- modes. Joining clients get the Mod modes; released output stays on the server.
 function Spec:onWriteStream(streamId, connection)
     local entries = ProductionOverflow.restEntries(Spec.point(self))
-    streamWriteUInt8(streamId, #entries)
+    streamWriteUIntN(streamId, #entries, FillTypeManager.SEND_NUM_BITS)
     for _, entry in ipairs(entries) do
         streamWriteUIntN(streamId, entry.fillType, FillTypeManager.SEND_NUM_BITS)
         streamWriteUIntN(streamId, entry.mode, ProductionOverflow.MODE_NUM_BITS)
@@ -119,7 +119,7 @@ function Spec:onReadStream(streamId, connection)
     local PO = ProductionOverflow
     local point = Spec.point(self)
     local state = PO.state(point)
-    for _ = 1, streamReadUInt8(streamId) do
+    for _ = 1, streamReadUIntN(streamId, FillTypeManager.SEND_NUM_BITS) do
         local fillType = streamReadUIntN(streamId, FillTypeManager.SEND_NUM_BITS)
         local mode = streamReadUIntN(streamId, PO.MODE_NUM_BITS)
         if state ~= nil and PO.isRestMode(mode) and PO.canUse(point, fillType, mode)

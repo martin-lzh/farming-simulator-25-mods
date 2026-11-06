@@ -2,13 +2,17 @@
 
 ## 当前验收状态
 
-面向 PC 版 FS25 1.25.0.0，modDesc descVersion 114。玩家 README 只写功能和操作；验收状态集中记录在这里。
+联机加入同步已按 PC 版 FS25 1.25.1.0 核对，2026-10-25 的实机验收对应 1.25.0.0。modDesc descVersion 为 114。
 
 - 2026-10-25 首次实现：离线行为测试和多人模拟通过，四个脚本通过本机 `work/tools/fs-utils-bin/fs-luau-compile.exe` 编译。尚未在游戏内测试，下方 POF-01 至 POF-18 全部待维护者执行。
 - 1.0.0.0：维护者 2026-10-25 确认已实机测试，未提供逐项记录（包括主机/客户端），下方 POF 清单不据此逐项标为通过。
 - 首个正式版为 1.0.0.0（见“1.0.0.0 发布准备”），已登记到 `tools/ci.py` 的 `MODS` 和根 README 的 Mod 列表；之后的改动记录在 CHANGELOG 的 Unreleased。
 - 名称 Production Overflow / 生产余量处理 由维护者 2026-10-25 确定，不再是工作名。
 - 封面 `assets/cover.jpg`（1920×1080）2026-10-25 由 Codex CLI 图像生成制作，以动物产品管理的封面为风格参考，原图和提示词记录在被忽略的 `outputs/production-overflow/cover/`；README 顶部显示。README 截图在 `assets/screenshots/`：维护者 2026-10-25 的游戏内截图（英文界面，FS25 1.25 PC，2000×1250），转为 JPEG 并用红框标出重点按钮和行，不进 ZIP。共 3 张：01 温室草莓“剩余自动储存”、03 乳品厂黄油“剩余自动出售”；04 磨坊几种面粉“剩余自动出售”、两种米粉“储存”，为维护者 2026-10-26 补拍的截图（2560×1600 整幅缩放到 2000×1250，红框标出大麦粉和燕麦粉、选中的高粱粉和小麦粉这两组“剩余自动出售”行，以及底栏的“更改输出模式”）。未拍工厂托盘区。
+
+## 1.0.0.1 发布准备
+
+2026-11-06：本版包含提交 `532250b` 的联机加入同步修复。离线回归覆盖同一工厂的 255、256 条余量模式，逐项核对加入客户端收到的设置。维护者决定本次采用离线验证，跳过单人、主机和客户端实机复测。
 
 ## 1.0.0.0 发布准备
 
@@ -72,7 +76,8 @@
 - 切换不在客户端本地先生效：客户端发送 `POModeEvent(生产点, 物料, 目标模式)`，服务器检查后执行 `applyMode` 并广播给所有客户端（`g_server:broadcastEvent(event)`，不排除发送方），所有机器按服务器顺序收敛。原版切换是客户端先生效再发原版事件，两位经理同时切换同一物料时可能不一致；本 Mod 走服务器裁决，代价是客户端要等服务器回包才看到新模式。为此收到事件后置 `PO.uiDirty`，被追加的 `InGameMenuProductionFrame:update` 在下一帧调用 `updateProductionLists()`，不必等原版 5 秒刷新。
 - 服务器检查：生产点有本 Mod 状态、已拥有（不是 `AccessHandler.EVERYONE`）、请求者农场等于所有者（`g_currentMission:getFarmId(connection)`），且有 `manageProductions` 权限（`getHasPlayerPermission("manageProductions", connection, farmId)`，与原版生产菜单的按钮检查同一权限；原版事件本身在服务器上不检查）。模式必须对该物料可用。被拒绝时不广播；客户端本来就没有先行修改，不需要纠正。
 - 应用模式时原版部分一律 `noEventSend = true`，本 Mod 事件里的模式是完整的 0-4，客户端照样在本地设置原版部分，所以选原版模式也只有一个事件。
-- 加入：本 specialization 的 `onWriteStream`/`onReadStream` 排在 `PlaceableProductionPoint` 之后（同一类型中后添加的 specialization 事件监听器后执行，Placeable.lua:665-697），先由原版同步两个集合，再写 `UInt8 数量 + 每项（fillType SEND_NUM_BITS 位，模式 3 位）`。只同步 3/4；放行量只在服务器使用，不同步。客户端只在原版已是 AUTO_DELIVER 且该模式可用时接受。生产点加载失败的放置物写 0 项，保持流对齐。
+- 加入：本 specialization 的 `onWriteStream`/`onReadStream` 排在 `PlaceableProductionPoint` 之后（Placeable.lua:665-697）。原版先同步出售和分配两个集合，Mod 再同步模式 3/4。条目数和物料编号都按 `FillTypeManager.SEND_NUM_BITS` 收发，模式占 3 位。1.25.1.0 将物料位宽从 8 提至 10，官方 SDK 的 `ProductionPoint.lua` 第 536–545、596–605 行也用该位宽同步集合大小。客户端只在原版已是 AUTO_DELIVER 且该模式可用时接受。放行量只在服务器使用，生产点加载失败的放置物写 0 项。
+- 联机加入的离线回归分别在同一工厂设置 255、256 种产出，交替选择两种余量模式，逐项核对客户端读到的物料与模式，并检查数据全部读完。
 - 出售和生成托盘只在服务器（`manager.isServer` 且 `point.isServer`、`point.isOwned`）。
 
 ### 存档
